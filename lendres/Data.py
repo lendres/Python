@@ -5,7 +5,9 @@ Created on Mon Dec 27 18:06:31 2021
 @author: Lance
 """
 import pandas as pd
-import lendres.Console
+from IPython.display import display
+
+import lendres
 
 def LoadAndInspectData(inputFile):
     """
@@ -21,29 +23,31 @@ def LoadAndInspectData(inputFile):
     data : pandas.DataFrame
         Data in a pandas.DataFrame
     """
-    
+
     print("Input file:", inputFile)
-    
+
     data = pd.read_csv(inputFile)
-    
+
     print("\nData size:", data.shape)
 
-    print("\nFirst few records:")    
-    print(data.head())
-    
+    print("\nFirst few records:")
+    display(data.head())
+
     print("\nData description:")
-    print(data.describe())
-    
+    display(data.describe())
+
     # Check data types.
     print("\nData types:")
-    print(data.info())
-    
+    display(data.info())
+
     # See if there are any missing entries, if so they will have to be cleaned.
     print("\nLook for any entries that are missing:")
     notAvailableCounts = data.isna().sum()
     print(notAvailableCounts)
-    
-    if sum(notAvailableCounts) != 0:
+
+    if sum(notAvailableCounts) == 0:
+        print("No entries are missing.")
+    else:
         lendres.Console.PrintWarning("Some data entries are missing.")
-    
+
     return data
