@@ -9,14 +9,12 @@ Created on Mon Dec 27 19:30:11 2021
 import sys
 sys.path.insert(1, "..\\lendres\\")
 
-import lendres.Data
-import lendres.Console
-import lendres.UnivariableAnalysis
+import lendres
 
 data = lendres.Data.LoadAndInspectData("data.csv")
 
 categories = ["age", "bmi", "children", "charges"]
-lendres.UnivariableAnalysis.MakeBoxAndHistogramPlots(data, categories)
+lendres.UnivariateAnalysis.MakeBoxAndHistogramPlots(data, categories, save=True)
 
 categories = ["sex", "children", "smoker", "region"]
-lendres.UnivariableAnalysis.MakePercentageBarPlots(data, categories)
+lendres.UnivariateAnalysis.MakePercentageBarPlots(data, categories, save=True)

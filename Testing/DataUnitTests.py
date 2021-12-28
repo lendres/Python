@@ -10,7 +10,5 @@ import sys
 sys.path.insert(1, "..\\lendres\\")
 
 import lendres
-import lendres.Data
-import lendres.Console
 
 data = lendres.Data.LoadAndInspectData("datawitherrors.csv")

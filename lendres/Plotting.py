@@ -4,9 +4,9 @@ Created on Sat Dec  4 18:49:50 2021
 @author: Lance A. Endres
 """
 
-import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
+import os
+import shutil
 
 # def LabelPlot(plot, title, xAxis, yAxis):
 #     print(type(plot))
@@ -77,7 +77,27 @@ def FormatPlot(scale=1.0, transparentLegend=False):
     plt.rcParams.update(params)
 
 
-def SavePlot(saveFileName, useOutputFolder=True):
+# Default output directory for saving plots.
+defaultOutputDirector = ".\\Output\\"
+
+
+def DeleteOutputDirectory():
+    """
+    Removes all the files and subdirectories in the default output directory and then deletes the directory.
+
+    Parameters
+    ----------
+    None.
+
+    Returns
+    -------
+    None.
+    """
+    if os.path.isdir(defaultOutputDirector):
+        shutil.rmtree(defaultOutputDirector)
+
+
+def SavePlot(saveFileName, figure=None, useDefaultOutputFolder=False):
     """
     Saves a plot with a set of default parameters.
 
@@ -85,12 +105,32 @@ def SavePlot(saveFileName, useOutputFolder=True):
     ----------
     saveFileName : string
         The (optionally) path and file name to save the image to.
-    useOutputFolder : bool
+    figure : Figure
+        The figure to save.  If "None" is specified, the current figure will be used.
+    useDefaultOutputFolder : bool
         If true, the image is saved to a subfolder or the current folder called "Output."
 
     Returns
     -------
     None.
     """
-    path = ".\\Output\\" + saveFileName
-    plt.savefig(path, dpi=500, transparent=True, bbox_inches="tight")
+
+    if figure == None:
+        figure=plt.gcf()
+
+    # Default is to use the save path and file name exactly as it was passed.
+    path = saveFileName
+
+    # If the default ouptput folder is specified, we need to make sure it exists and update
+    # the save path to account for it.
+    if useDefaultOutputFolder:
+
+        # Directory needs to exist.
+        if not os.path.isdir(defaultOutputDirector):
+            os.mkdir(defaultOutputDirector)
+
+        # Update path.
+        path = defaultOutputDirector + saveFileName
+
+    # And, finally, get down to the work.
+    figure.savefig(path, dpi=500, transparent=True, bbox_inches="tight")
