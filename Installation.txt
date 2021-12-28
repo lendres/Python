@@ -1,0 +1,5 @@
+For Windows Machines
+
+Add the environmental variable:
+PYTHONPATH
+C:\Custom Program Files\Python
