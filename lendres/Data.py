@@ -45,10 +45,12 @@ def LoadAndInspectData(inputFile):
     notAvailableCounts = data.isna().sum()
     print(notAvailableCounts)
 
-    if sum(notAvailableCounts) == 0:
-        print("No entries are missing.")
-    else:
+    totalNotAvailable = sum(notAvailableCounts)
+    if totalNotAvailable:
         lendres.Console.PrintWarning("Some data entries are missing.")
+        print("Total missing:", totalNotAvailable)
+    else:
+        print("No entries are missing.")
 
     return data
 

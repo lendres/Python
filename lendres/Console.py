@@ -5,6 +5,9 @@ Created on Sat Dec  4 18:49:50 2021
 @author: Lance A. Endres
 """
 
+import IPython
+
+
 def ClearSpyderConsole():
     try:
         from IPython import get_ipython
@@ -44,7 +47,7 @@ def PrintSectionTitle(title):
     print(hashes)
 
 
-def PrintWarning(message):
+def PrintWarning(message, useMarkDown=False):
     """
     Prints warning message.
 
@@ -56,30 +59,35 @@ def PrintWarning(message):
     Returns
     -------
     None.
-    """    
-    quotingHashes = "######"
-    print("\n" + quotingHashes, "Warning:", message, quotingHashes)
-
-
-def FormatProbabilityForOutput(probability, decimalPlaces=3):
     """
-    Formats and prints a probability.  Displays it as both a fraction and a percentage.
+    PrintBoldMessage("Warning: " + message, useMarkDown)
+
+
+def PrintBoldMessage(message, useMarkDown=False):
+    """
+    Prints a message.  If markdown is enable it will use markdown to make the message bold.  If markdown is not used,
+    it will use asterisks to help the text stand out.
 
     Parameters
     ----------
-    probability : decimal
-        The probability to display.
-    decimalPlacess : int
-        Optional, the number of digits to display (default=3).
+    message : string
+        Warning to dislay.
+    useMarkDown : bool
+        If true, markdown output is enabled.
 
     Returns
     -------
     None.
     """
+    quotingNotation = "***"
 
-    output = str(round(probability, decimalPlaces))
-    output += " (" + str(round(probability*100, decimalPlaces-2)) + " percent)"
-    return  output
+    if useMarkDown:
+        # Don't use spaces between the asterisks and message so it prints bold in markdown.
+        IPython.display.display(IPython.display.Markdown(quotingNotation + message + quotingNotation))
+    else:
+        # Use the ","s in the print function to add spaces between the asterisks and message.  For plain text
+        # output, this makes it more readable.
+        print(quotingNotation, message, quotingNotation)
 
 
 def PrintTwoItemPercentages(data, category, item1Name, item2Name):
