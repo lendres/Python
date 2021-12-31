@@ -51,3 +51,21 @@ def LoadAndInspectData(inputFile):
         lendres.Console.PrintWarning("Some data entries are missing.")
 
     return data
+
+def ChangeToCategory(data, categoryNames):
+    """
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame to change the categories in.
+    categoryNames : list, array of strings
+        Names of the categories to change to the category data type.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    for categoryName in categoryNames:
+        data[categoryName] = data[categoryName].astype('category')
