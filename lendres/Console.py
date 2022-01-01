@@ -90,6 +90,27 @@ def PrintBoldMessage(message, useMarkDown=False):
         print(quotingNotation, message, quotingNotation)
 
 
+def FormatProbabilityForOutput(probability, decimalPlaces=3):
+    """
+    Formats and prints a probability.  Displays it as both a fraction and a percentage.
+
+    Parameters
+    ----------
+    probability : decimal
+        The probability to display.
+    decimalPlacess : int
+        Optional, the number of digits to display (default=3).
+
+    Returns
+    -------
+    None.
+    """
+
+    output = str(round(probability, decimalPlaces))
+    output += " (" + str(round(probability*100, decimalPlaces-2)) + " percent)"
+    return  output
+
+
 def PrintTwoItemPercentages(data, category, item1Name, item2Name):
     """
     Calculates and displays precentages of each item type in a category.
@@ -119,3 +140,44 @@ def PrintTwoItemPercentages(data, category, item1Name, item2Name):
     print("Total entries in the \"" + category + "\" category:", totalCount)
     print("Percent of \"" + item1Name + "\":", FormatProbabilityForOutput(item1Percent))
     print("Percent of \"" + item2Name + "\":", FormatProbabilityForOutput(item2Percent))
+
+
+def PrintHypothesisTestResult(nullHypothesis, alternativeHypothesis, pValue, levelOfSignificance=0.05, precision=4, useMarkDown=False):
+    """
+    Prints the result of a hypothesis test.
+
+    Parameters
+    ----------
+    nullHypothesis
+    data : Pandas DataFrame
+        The data.
+    alternativeHypothesis : string
+        A string that specifies what the alternative hypothesis is.
+     pValue : double
+        The p-value output from the statistical test.
+    levelOfSignificance : double
+        Name of second type of entry in the data[category] series.
+    precision : int
+        The number of significant digits to display for the p-value.
+    useMarkDown : bool
+        If true, markdown output is enabled.
+
+    Returns
+    -------
+    None.
+    """
+
+    # Display the input values that will be compared.  This ensures the values can be checked so that
+    # no mistake was made when entering the information.  The raw p-value is output so it can be examined without
+    # any formatting that may obscure the value.  The the values are output in an easier to read format.
+    print("Raw p-value:", pValue)
+    print("\nP-value:            ", round(pValue, precision))
+    print("Level of significance:", round(levelOfSignificance, precision))
+
+    # Check the test results and print the message.
+    if pValue < levelOfSignificance:
+        PrintBoldMessage("The null hypothesis CAN be rejected.", useMarkDown)
+        print(alternativeHypothesis)
+    else:
+        PrintBoldMessage("The null hypothesis CAN NOT be rejected.", useMarkDown)
+        print(nullHypothesis)

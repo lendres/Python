@@ -19,6 +19,8 @@ import shutil
 #         print("\nPlot is a figure.")
 #         LabelPlot(plot, title, xAxis, yAxis)
 
+# palette=['indianred','mediumseagreen']
+
 def FormatPlot(scale=1.0, transparentLegend=False):
     """
     Sets the font sizes, weights, and other properties of a plot.
