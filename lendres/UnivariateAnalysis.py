@@ -183,8 +183,8 @@ def LabelPercentagesOnCountPlot(axis, data, category, scale=1.0):
         # Find the center of the column/patch on the x-axis.
         x = patch.get_x() + patch.get_width()/2
 
-        # Hieght of the column/patch.  Add 3 so it does not touch the top of the column.
-        y = patch.get_y() + patch.get_height() + 3
+        # Hieght of the column/patch.  Add a little so it does not touch the top of the column.
+        y = patch.get_y() + patch.get_height() + 0.5
 
         # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
         axis.annotate(percentage, (x, y), size=scale*15, fontweight="bold", horizontalalignment="center")
