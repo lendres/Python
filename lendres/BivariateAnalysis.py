@@ -22,7 +22,7 @@ def CreateBiVariateHeatMap(data, scale=1.0, save=False):
         Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
     save : bool
         If true, the plots are saved to the default plotting directory.
-        
+
     Returns
     -------
     figure : Figure
@@ -31,12 +31,12 @@ def CreateBiVariateHeatMap(data, scale=1.0, save=False):
 
      # Must be run before creating figure or plotting data.
     lendres.Plotting.FormatPlot(scale=scale)
-    
-    axis = sns.heatmap(data.corr(), annot=True, annot_kws={"fontsize" : 10})
+
+    axis = sns.heatmap(data.corr(), annot=True, annot_kws={"fontsize" : 10}, fmt=".2f")
     axis.set(title="Heat Map for Continuous Data")
-    
+
     figure = plt.gcf()
-    
+
     plt.show()
 
     if save:
@@ -59,30 +59,30 @@ def CreateBiVariatePairPlot(data, scale=1.0, save=False):
         Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
     save : bool
         If true, the plots are saved to the default plotting directory.
-        
+
     Returns
     -------
     figure : Figure
         The newly created figure.
     """
-    
+
     # Must be run before creating figure or plotting data.
     lendres.Plotting.FormatPlot(scale=scale)
-    
+
     sns.pairplot(data)
-    
+
     figure = plt.gcf()
-    
+
     figure.suptitle("Pair Plot for Continuous Data", y=1.01)
     # plt.gcf().subplots_adjust(top=0.95)
-    
+
     figure = plt.gcf()
-    
+
     plt.show()
-    
+
     if save:
         fileName = "Bivariante Pair Plot"
         lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
 
-    
+
     return figure
