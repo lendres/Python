@@ -6,4 +6,4 @@ import lendres.Console
 import lendres.Data
 import lendres.Plotting
 import lendres.UnivariateAnalysis
-import lendres.LinearRegression
+import lendres.LinearRegressionHelper
