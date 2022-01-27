@@ -64,6 +64,6 @@ class LinearRegressionHelper:
 
     def DisplayModelCoefficients(self):
         dataFrame = pd.DataFrame(np.append(self.regressionModel.coef_, self.regressionModel.intercept_),
-                                 index = xTrainingDataingData.columns.tolist() + ["Intercept"],
+                                 index = self.xTrainingData.columns.tolist() + ["Intercept"],
                                  columns = ["Coefficients"])
         display(dataFrame)
