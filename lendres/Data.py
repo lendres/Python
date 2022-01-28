@@ -5,6 +5,7 @@ Created on Mon Dec 27 18:06:31 2021
 @author: Lance
 """
 import pandas as pd
+import numpy as np
 from IPython.display import display
 
 import lendres
@@ -33,17 +34,40 @@ def LoadAndInspectData(inputFile):
     print("\nFirst few records:")
     display(data.head())
 
-    print("\nData description:")
-    display(data.describe())
+    print("\nRecord random sampling:")
+    np.random.seed(1)
+    display(data.sample(n=10))
 
     # Check data types.
     print("\nData types:")
     display(data.info())
 
+    # Check unique value counts.
+    print("\nUnique counts:")
+    print(data.nunique())
+
     # See if there are any missing entries, if so they will have to be cleaned.
-    print("\nLook for any entries that are missing:")
+    PrintNotAvailableCounts(data)
+
+    return data
+
+
+def PrintNotAvailableCounts(data):
+    """
+    Prints the counts of any missing (not available) entries.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Data in a pandas.DataFrame
+
+    Returns
+    -------
+    None.
+    """
+    print("\nMissing entry counts:")
     notAvailableCounts = data.isna().sum()
-    print(notAvailableCounts)
+    print(notAvailableCounts.to_string())
 
     totalNotAvailable = sum(notAvailableCounts)
     if totalNotAvailable:
@@ -52,7 +76,6 @@ def LoadAndInspectData(inputFile):
     else:
         print("No entries are missing.")
 
-    return data
 
 def ChangeToCategory(data, categoryNames):
     """
@@ -66,8 +89,33 @@ def ChangeToCategory(data, categoryNames):
     Returns
     -------
     None.
-
     """
 
     for categoryName in categoryNames:
         data[categoryName] = data[categoryName].astype('category')
+
+
+def DropRowsWhereDataNotAvailable(data, categoryName, inPlace=False):
+    """
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame to change the categories in.
+    categoryName : string
+        Names of the category to look for not available entries.
+
+    Returns
+    -------
+    DataFrame without the removed rows or None if inPlace=True.
+    """
+    # Gets an DataSeries of boolean values indicating where values were not available.
+    notAvailableMask = data["Price"].isna()
+
+    # numpy.where returns array inside of a tuple for some odd reason.  The [0] extracts the array.
+    dropIndices = np.where(notAvailableMask)[0]
+
+    # Drop the rows.
+    if inPlace:
+        data.drop(dropIndices, inplace=inPlace)
+    else:
+        return data.drop(dropIndices)
