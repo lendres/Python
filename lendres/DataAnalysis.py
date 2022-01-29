@@ -56,6 +56,7 @@ def CreateComparisonPercentageBarPlot(data, primaryCategoryName, primaryCategory
 
     return figure
 
+
 def ExtractProportationData(data, primaryCategoryName, primaryCategoryEntry, subCategoryName):
     """
     Extracts and calculates proportional data.
