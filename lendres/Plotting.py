@@ -79,6 +79,40 @@ def FormatPlot(scale=1.0, transparentLegend=False):
     plt.rcParams.update(params)
 
 
+def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
+    """
+    Creates a new figure that has two axes, one above another.
+
+    Parameters
+    ----------
+    category : string
+        Category name in the DataFrame.
+    scale : double
+        Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+
+    Returns
+    -------
+    figure : Figure
+        The newly created figure.
+    (boxAxis, historgramAxis) : axis array
+        The top axis and bottom axis, respectively, for the box plot and histogram.
+    """
+
+    # Check input.
+    if topPercent <= 0 or topPercent >= 1.0:
+        raise Exception("Top percentage out of rage.")
+
+    # The format setup needs to be run first.
+    FormatPlot(scale=scale)
+
+    figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (topPercent, 1-topPercent)})
+
+    figure.suptitle("\"" + category.title() + "\"" + " Category")
+
+    return (figure, (boxAxis, histogramAxis))
+
+
+
 # Default output directory for saving plots.
 defaultOutputDirector = ".\\Output\\"
 

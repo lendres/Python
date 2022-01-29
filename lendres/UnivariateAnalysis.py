@@ -11,34 +11,6 @@ import numpy as np
 
 import lendres.Plotting
 
-def NewBoxPlotAndHistogramFigure(category, scale=1.0):
-    """
-    Creates a new figure that has a box plot and histogram for a single variable analysis.
-
-    Parameters
-    ----------
-    category : string
-        Category name in the DataFrame.
-    scale : double
-        Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
-
-    Returns
-    -------
-    figure : Figure
-        The newly created figure.
-    (boxAxis, historgramAxis) : axis array
-        The top axis and bottom axis, respectively, for the box plot and histogram.
-    """
-
-    # The format setup needs to be run first.
-    lendres.Plotting.FormatPlot(scale=scale)
-
-    figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (.25, .75)})
-
-    figure.suptitle("\"" + category.title() + "\"" + " Category")
-
-    return (figure, (boxAxis, histogramAxis))
-
 
 def CreateUnivariateBoxPlot(axis, data, category):
     """
@@ -114,7 +86,7 @@ def UnivariateBoxAndHistogramPlot(data, category, scale=1.0):
         The newly created figure.
     """
 
-    figure, (boxAxis, histogramAxis) = NewBoxPlotAndHistogramFigure(category)
+    figure, (boxAxis, histogramAxis) = lendres.Plotting.NewTopAndBottomAxisFigure(category)
 
     CreateUnivariateBoxPlot(boxAxis, data, category)
     CreateUnivariateHistogram(histogramAxis, data, category)
