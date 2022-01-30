@@ -114,7 +114,7 @@ def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
 
     # Check input.
     if topPercent <= 0 or topPercent >= 1.0:
-        raise Exception("Top percentage out of rage.")
+        raise Exception("Top percentage out of range.")
 
     # The format setup needs to be run first.
     FormatPlot(scale=scale)
