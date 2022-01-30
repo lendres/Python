@@ -86,3 +86,14 @@ def CreateBiVariatePairPlot(data, scale=1.0, save=False):
 
 
     return figure
+
+def PlotComparisonByCategory(data, xCategory, yCategory, sortCategory, title):
+    # Must be run before creating figure or plotting data.
+    lendres.Plotting.FormatPlot()
+
+    axis = sns.scatterplot(x=data[xCategory], y=data[yCategory], hue=data[sortCategory], palette= ['indianred','mediumseagreen'])
+    axis.set(title=title, xlabel=xCategory.title(), ylabel=yCategory.title())
+
+    lendres.Plotting.SavePlot(sortCategory + "_" + xCategory + "_verus_" + yCategory + ".png")
+
+    plt.show()

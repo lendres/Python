@@ -8,18 +8,32 @@ import matplotlib.pyplot as plt
 import os
 import shutil
 
-# def LabelPlot(plot, title, xAxis, yAxis):
-#     print(type(plot))
-# #    if isinstance(plot, matplotlib.axes._subplots.AxesSubplot):
-# #        print("\nTrue")
-#     if type(plot) == "<class 'matplotlib.axes._subplots.AxesSubplot'>":
-#         print("\nPlot is an axis.")
-#         LabelAxis(plot, title, xAxis, yAxis)
-#     elif type(plot) == "<class 'matplotlib.figure.Figure'>":
-#         print("\nPlot is a figure.")
-#         LabelPlot(plot, title, xAxis, yAxis)
 
-# palette=['indianred','mediumseagreen']
+def ApplyPlotToEachCategory(function, data, categories, save=False):
+    """
+    Creates a new figure for every entry in the list of categories.
+
+    Parameters
+    ----------
+    data : Pandas DataFrame
+        The data.
+    category : an arry or list of strings
+        Category names in the DataFrame.
+    save : bool
+        If true, the plots are saved to the default plotting directory.
+
+    Returns
+    -------
+    None.
+    """
+
+    for category in categories:
+        figure = function(data, category)
+
+        if save:
+            fileName = function.__name__ + category.title() + " Category"
+            SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
+
 
 def FormatPlot(scale=1.0, transparentLegend=False):
     """

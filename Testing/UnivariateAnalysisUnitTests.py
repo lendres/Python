@@ -11,7 +11,9 @@ saveImages = False
 data = lendres.Data.LoadAndInspectData("data.csv")
 
 categories = ["age", "bmi", "children", "charges"]
-lendres.UnivariateAnalysis.MakeBoxAndHistogramPlots(data, categories, save=saveImages)
+lendres.Plotting.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreateBoxAndHistogramPlot, data, categories, save=saveImages)
 
 categories = ["sex", "children", "smoker", "region"]
-lendres.UnivariateAnalysis.MakePercentageBarPlots(data, categories, save=saveImages)
+lendres.Plotting.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreatePercentageBarPlot, data, categories, save=saveImages)
+
+lendres.UnivariateAnalysis.CreateBoxPlot(data, "charges")

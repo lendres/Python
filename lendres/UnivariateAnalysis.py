@@ -12,7 +12,46 @@ import numpy as np
 import lendres.Plotting
 
 
-def CreateUnivariateBoxPlot(axis, data, category):
+def CreateBoxPlot(data, category, scale=1.0):
+    """
+    Creates a bar chart that shows the percentages of each type of entry of a category.
+
+    Parameters
+    ----------
+    data : Pandas DataFrame
+        The data.
+    category: string
+        Category name in the DataFrame.
+    scale : double
+        Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+
+    Returns
+    -------
+    figure : Figure
+        The newly created figure.
+    """
+
+    # Must be run before creating figure or plotting data.
+    lendres.Plotting.FormatPlot(scale=scale)
+    params = {
+        "figure.figsize"         : (scale*10, scale*1.25)
+    }
+    plt.rcParams.update(params)
+
+    # This creates the bar chart.  At the same time, save the figure so we can return it.
+    axis = plt.gca()
+    PlotBoxPlot(axis, data, category)
+
+    title = "\"" + category.title() + "\"" + " Category"
+    axis.set(title=title, xlabel=category.title(), ylabel="Count")
+
+    # Make sure the plot is shown.
+    plt.show()
+
+    return plt.gcf()
+
+
+def PlotBoxPlot(axis, data, category, autoLabelX=True):
     """
     Univariate box plot creation.
 
@@ -24,6 +63,8 @@ def CreateUnivariateBoxPlot(axis, data, category):
         The data.
     category : string
         Category name in the DataFrame.
+    autoLabelX : bool
+        If true, x axis will be labeled with a name generated from the category.
 
     Returns
     -------
@@ -32,10 +73,14 @@ def CreateUnivariateBoxPlot(axis, data, category):
 
     # Boxplot will be created and a star will indicate the mean value of the column.
     sns.boxplot(x=data[category], ax=axis, showmeans=True, color="cyan")
-    axis.set(xlabel=None)
+    
+    if autoLabelX:
+        axis.set(xlabel=category.title())
+    else:
+        axis.set(xlabel=None)
 
 
-def CreateUnivariateHistogram(axis, data, category, bins=None):
+def PlotHistogram(axis, data, category, autoLabelX=True, bins=None):
     """
     Univariate histogram creation.
 
@@ -56,18 +101,21 @@ def CreateUnivariateHistogram(axis, data, category, bins=None):
     """
 
     if bins:
-        sns.histplot(data[category], kde=False, ax=axis, bins=bins, palette="winter")
+        sns.histplot(data[category], kde=True, ax=axis, bins=bins, palette="winter")
     else:
-        sns.histplot(data[category], kde=False, ax=axis, color="grey")
+        sns.histplot(data[category], kde=True, ax=axis, color="grey")
 
     # Show the mean as vertical line.
     axis.axvline(np.mean(data[category]), color='g', linestyle='--')
 
     # Label the axis.
-    axis.set(xlabel=category.title())
+    if autoLabelX:
+        axis.set(xlabel=category.title())
+    else:
+        axis.set(xlabel=None)
 
 
-def UnivariateBoxAndHistogramPlot(data, category, scale=1.0):
+def CreateBoxAndHistogramPlot(data, category, scale=1.0):
     """
     Creates a new figure that has a box plot and histogram for a single variable analysis.
 
@@ -88,41 +136,12 @@ def UnivariateBoxAndHistogramPlot(data, category, scale=1.0):
 
     figure, (boxAxis, histogramAxis) = lendres.Plotting.NewTopAndBottomAxisFigure(category)
 
-    CreateUnivariateBoxPlot(boxAxis, data, category)
-    CreateUnivariateHistogram(histogramAxis, data, category)
+    PlotBoxPlot(boxAxis, data, category, autoLabelX=False)
+    PlotHistogram(histogramAxis, data, category)
 
     plt.show()
 
     return figure
-
-
-def MakeBoxAndHistogramPlots(data, categories, save=False):
-    """
-    Creates a new figure that has a box plot and histogram for a single variable analysis.  Does this
-    for every entry in the list of categories.
-
-    This is the main entry point for creating the box and histogram plots.
-
-    Parameters
-    ----------
-    data : Pandas DataFrame
-        The data.
-    category : an arry or list of strings
-        Category names in the DataFrame.
-    save : bool
-        If true, the plots are saved to the default plotting directory.
-
-    Returns
-    -------
-    None.
-    """
-
-    for category in categories:
-        figure = UnivariateBoxAndHistogramPlot(data, category)
-
-        if save:
-            fileName = "Box and Histogram Plot " + category.title() + " Category"
-            lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
 
 
 def LabelPercentagesOnCountPlot(axis, data, category, scale=1.0):
@@ -198,29 +217,3 @@ def CreatePercentageBarPlot(data, category, scale=1.0):
     plt.show()
 
     return figure
-
-
-def MakePercentageBarPlots(data, categories, save=False):
-    """
-    Creates a new figure that has a bar plot labeled with a percentage for a single variable analysis.  Does this
-    for every entry in the list of categories.
-
-    Parameters
-    ----------
-    data : Pandas DataFrame
-        The data.
-    category : an arry or list of strings
-        Category names in the DataFrame.
-    save : bool
-        If true, the plots are saved to the default plotting directory.
-
-    Returns
-    -------
-    None.
-    """
-    for category in categories:
-        figure = CreatePercentageBarPlot(data, category)
-
-        if save:
-            fileName  = "Percentage Bar Plot " + category.title() + " Category"
-            lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
