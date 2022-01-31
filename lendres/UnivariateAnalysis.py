@@ -45,10 +45,13 @@ def CreateBoxPlot(data, category, scale=1.0):
     title = "\"" + category.title() + "\"" + " Category"
     axis.set(title=title, xlabel=category.title(), ylabel="Count")
 
+    # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
+    figure = plt.gcf()
+
     # Make sure the plot is shown.
     plt.show()
 
-    return plt.gcf()
+    return figure
 
 
 def PlotBoxPlot(axis, data, category, autoLabelX=True):
@@ -73,7 +76,7 @@ def PlotBoxPlot(axis, data, category, autoLabelX=True):
 
     # Boxplot will be created and a star will indicate the mean value of the column.
     sns.boxplot(x=data[category], ax=axis, showmeans=True, color="cyan")
-    
+
     if autoLabelX:
         axis.set(xlabel=category.title())
     else:
