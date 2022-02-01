@@ -38,6 +38,9 @@ def LoadAndInspectData(inputFile):
     np.random.seed(1)
     display(data.sample(n=10))
 
+    print("\nData summary:")
+    display(data.describe())
+
     # Check data types.
     print("\nData types:")
     display(data.info())
