@@ -14,3 +14,8 @@ data['children'] = data['children'].astype('category')
 
 lendres.BivariateAnalysis.CreateBiVariateHeatMap(data)
 lendres.BivariateAnalysis.CreateBiVariatePairPlot(data)
+
+
+columns = ["age", "charges"]
+lendres.BivariateAnalysis.CreateBiVariateHeatMap(data, columns)
+lendres.BivariateAnalysis.CreateBiVariatePairPlot(data, columns)

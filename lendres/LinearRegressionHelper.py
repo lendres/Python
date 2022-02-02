@@ -63,6 +63,17 @@ class LinearRegressionHelper:
 
 
     def DisplayModelCoefficients(self):
+        """
+        Displays the coefficients and intercept of a linear regression model.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
         dataFrame = pd.DataFrame(np.append(self.regressionModel.coef_, self.regressionModel.intercept_),
                                  index = self.xTrainingData.columns.tolist() + ["Intercept"],
                                  columns = ["Coefficients"])
