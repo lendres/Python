@@ -17,7 +17,7 @@ def ApplyPlotToEachCategory(function, data, categories, save=False):
     ----------
     data : Pandas DataFrame
         The data.
-    category : an arry or list of strings
+    categories : an arry or list of strings
         Category names in the DataFrame.
     save : bool
         If true, the plots are saved to the default plotting directory.

@@ -80,13 +80,15 @@ def PrintNotAvailableCounts(data):
         print("No entries are missing.")
 
 
-def ChangeToCategory(data, categoryNames):
+def ChangeToCategory(data, categories):
     """
+    Changes the data series specified to type "category."
+    
     Parameters
     ----------
     data : pandas.DataFrame
         DataFrame to change the categories in.
-    categoryNames : list, array of strings
+    categories : list, array of strings
         Names of the categories to change to the category data type.
 
     Returns
@@ -94,17 +96,17 @@ def ChangeToCategory(data, categoryNames):
     None.
     """
 
-    for categoryName in categoryNames:
-        data[categoryName] = data[categoryName].astype('category')
+    for category in categories:
+        data[category] = data[category].astype("category")
 
 
-def DropRowsWhereDataNotAvailable(data, categoryName, inPlace=False):
+def DropRowsWhereDataNotAvailable(data, category, inPlace=False):
     """
     Parameters
     ----------
     data : pandas.DataFrame
         DataFrame to change the categories in.
-    categoryName : string
+    category : string
         Names of the category to look for not available entries.
 
     Returns
