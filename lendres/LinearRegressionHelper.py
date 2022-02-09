@@ -15,62 +15,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 
-#import lendres
+import lendres
 
-class LinearRegressionHelper:
-    xTrainingData           = []
-    xTestData               = []
-    yTrainingData           = []
-    yTestData               = []
-    regressionModel         = []
-    data            = []
+class LinearRegressionHelper(lendres.ModelHelper):
 
     def __init__(self):
-        self.data = []
+        lendres.ModelHelper.__init__(self)
 
 
-    def EncodeAllCategoricalColumns(self, data):
-        """
-        Converts all categorical columns (have that data type "category") to one hot encoded values and drops one
-        value per category.  Prepares categorical columns for use in a model.
-    
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-    
-        Returns
-        -------
-        data : DataFrame
-            The new DataFrame with the encoded values.
-        """
-        # Find all the category types in the DataFrame.
-        # Gets all the columns that have the category data type.  That is returned as a DataSeries.  The
-        # index (where the names are) is extracted from that.
-        allCategoricalColumns = data.dtypes[data.dtypes == 'category'].index.tolist()
-    
-        return self.EncodeCategoricalColumns(data, allCategoricalColumns)
-    
-    
-    def EncodeCategoricalColumns(self, data, categories):
-        """
-        Converts the categorical columns "categories" to one hot encoded values and drops one value per category.
-        Prepares categorical columns for use in a model.
-    
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-    
-        Returns
-        -------
-        data : DataFrame
-            The new DataFrame with the encoded values.
-        """
-        return pd.get_dummies(data, columns=categories, drop_first=True)
-
-
-    def CreateLinearModel(self, data, dependentVariable, testSize):
+    def CreateModel(self):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -89,14 +42,8 @@ class LinearRegressionHelper:
             Data in a pandas.DataFrame
         """
 
-        # Remove the dependent varaible from the rest of the data.
-        x = data.drop([dependentVariable], axis=1)
-
-        # The dependent variable.
-        y = data[[dependentVariable]]
-
-        # Split the data.
-        self.xTrainingData, self.xTestData, self.yTrainingData, self.yTestData = train_test_split(x, y, test_size=testSize, random_state=1)
+        if self.xTrainingData == []:
+            raise Exception("The data has not been split.")
 
         self.regressionModel = LinearRegression()
         self.regressionModel.fit(self.xTrainingData, self.yTrainingData)
@@ -114,7 +61,7 @@ class LinearRegressionHelper:
         -------
         DataFrame that contains the model coefficients.
         """
-        
+
         # Make sure the model has been initiated and of the correct type.
         if not isinstance(self.regressionModel, LinearRegression):
             raise Exception("The regression model has not be initiated.")
@@ -124,7 +71,7 @@ class LinearRegressionHelper:
                                  columns=["Coefficients"])
         return dataFrame
 
-        
+
     def GetModelPerformanceScores(self):
         """
         Calculates the model's scores for the split data (training and testing).
@@ -150,10 +97,10 @@ class LinearRegressionHelper:
         trainingScore  = mean_squared_error(self.yTrainingData, self.regressionModel.predict(self.xTrainingData))
         testScore      = mean_squared_error(self.yTestData, self.regressionModel.predict(self.xTestData))
         mseScores      = [trainingScore, testScore]
-        
+
         # Root mean square error.
         rmseScores     = [np.sqrt(trainingScore), np.sqrt(testScore)]
-        
+
         # Mean absolute error.
         trainingScore  = mean_absolute_error(self.yTrainingData, self.regressionModel.predict(self.xTrainingData))
         testScore      = mean_absolute_error(self.yTestData, self.regressionModel.predict(self.xTestData))

@@ -23,5 +23,6 @@ data = pd.get_dummies(data, columns=["region", "sex", "smoker"], drop_first=True
 linearRegressionHelper = LinearRegressionHelper()
 data.info()
 
-linearRegressionHelper.CreateLinearModel(data, "charges", 0.3)
+linearRegressionHelper.SetData(data, "charges", 0.3)
+linearRegressionHelper.CreateModel()
 linearRegressionHelper.DisplayModelCoefficients()
