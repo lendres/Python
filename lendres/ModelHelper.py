@@ -18,15 +18,14 @@ from sklearn.metrics import mean_absolute_error
 #import lendres
 
 class ModelHelper:
-    xTrainingData           = []
-    xTestData               = []
-    yTrainingData           = []
-    yTestData               = []
-    regressionModel         = []
-    data                    = []
 
     def __init__(self):
-        self.data = []
+        self.xTrainingData           = []
+        self.xTestData               = []
+        self.yTrainingData           = []
+        self.yTestData               = []
+        self.regressionModel         = []
+        self.data                    = []
 
 
     def EncodeAllCategoricalColumns(self, data):

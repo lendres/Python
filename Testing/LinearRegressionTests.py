@@ -25,4 +25,9 @@ data.info()
 
 linearRegressionHelper.SetData(data, "charges", 0.3)
 linearRegressionHelper.CreateModel()
-linearRegressionHelper.DisplayModelCoefficients()
+
+print("\n")
+display(linearRegressionHelper.GetModelCoefficients())
+
+print("\n")
+display(linearRegressionHelper.GetModelPerformanceScores())

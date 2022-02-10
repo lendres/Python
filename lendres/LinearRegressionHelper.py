@@ -16,11 +16,12 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 
 import lendres
+from lendres.ModelHelper import ModelHelper
 
-class LinearRegressionHelper(lendres.ModelHelper):
+class LinearRegressionHelper(ModelHelper):
 
-    def __init__(self):
-        lendres.ModelHelper.__init__(self)
+    #def __init__(self):
+        #super().__init__()
 
 
     def CreateModel(self):
@@ -42,7 +43,7 @@ class LinearRegressionHelper(lendres.ModelHelper):
             Data in a pandas.DataFrame
         """
 
-        if self.xTrainingData == []:
+        if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.regressionModel = LinearRegression()
