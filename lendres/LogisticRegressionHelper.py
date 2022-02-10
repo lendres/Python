@@ -8,14 +8,15 @@ Created on Wed Jan 19 07:49:25 2022
 import pandas as pd
 import numpy as np
 
-from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+from sklearn.linear_model import LogisticRegression
 
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 
 from lendres.ModelHelper import ModelHelper
 
-class LinearRegressionHelper(ModelHelper):
+class LogisticRegressionHelper(ModelHelper):
 
     #def __init__(self):
         #super().__init__()
@@ -43,7 +44,7 @@ class LinearRegressionHelper(ModelHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = LinearRegression()
+        self.model = LogisticRegression(solver="liblinear", random_state=1)
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 
@@ -60,12 +61,8 @@ class LinearRegressionHelper(ModelHelper):
         DataFrame that contains various performance scores for the training and test data.
         """
         # Make sure the model has been initiated and of the correct type.
-        if not isinstance(self.model, LinearRegression):
+        if not isinstance(self.model, LogisticRegression):
             raise Exception("The regression model has not be initiated.")
-
-        # Make sure the predictions have been made on the training and test data.
-        if self.yTrainingPredicted == None:
-            self.Predict()
 
         # R squared.
         trainingScore  = self.model.score(self.xTrainingData, self.yTrainingData)
@@ -73,16 +70,16 @@ class LinearRegressionHelper(ModelHelper):
         rSquaredScores = [trainingScore, testScore]
 
         # Mean square error.
-        trainingScore  = mean_squared_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_squared_error(self.yTestData, self.yTestPredicted)
+        trainingScore  = mean_squared_error(self.yTrainingData, self.model.predict(self.xTrainingData))
+        testScore      = mean_squared_error(self.yTestData, self.model.predict(self.xTestData))
         mseScores      = [trainingScore, testScore]
 
         # Root mean square error.
         rmseScores     = [np.sqrt(trainingScore), np.sqrt(testScore)]
 
         # Mean absolute error.
-        trainingScore  = mean_absolute_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_absolute_error(self.yTestData, self.yTestPredicted)
+        trainingScore  = mean_absolute_error(self.yTrainingData, self.model.predict(self.xTrainingData))
+        testScore      = mean_absolute_error(self.yTestData, self.model.predict(self.xTestData))
         maeScores      = [trainingScore, testScore]
 
         dataFrame      = pd.DataFrame({"R Squared" : rSquaredScores,

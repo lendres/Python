@@ -5,7 +5,6 @@ Created on Wed Jan 26 15:53:03 2022
 @author: Lance
 """
 
-import lendres
 
 from lendres.LinearRegressionHelper import LinearRegressionHelper
 
