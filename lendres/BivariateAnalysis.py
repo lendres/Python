@@ -40,7 +40,7 @@ def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False):
     else:
         correlationValues = data[columns].corr()
 
-    axis = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10}, fmt=".2f")
+    axis = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*scale}, fmt=".2f")
     axis.set(title="Heat Map for Continuous Data")
 
     figure = plt.gcf()

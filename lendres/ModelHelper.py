@@ -19,18 +19,19 @@ from sklearn.metrics import mean_absolute_error
 
 class ModelHelper:
 
-    def __init__(self):
-        self.data                    = []
+    def __init__(self, data):
+        self.additionalDroppedColumns  = []
+        self.data                      = data
 
-        self.xTrainingData           = []
-        self.xTestData               = []
-        self.yTrainingData           = []
-        self.yTestData               = []
+        self.xTrainingData             = []
+        self.xTestData                 = []
+        self.yTrainingData             = []
+        self.yTestData                 = []
 
-        self.model                   = None
+        self.model                     = None
 
-        self.yTrainingPredicted     = None
-        self.yTestPredicted         = None
+        self.yTrainingPredicted        = []
+        self.yTestPredicted            = []
 
 
     def EncodeAllCategoricalColumns(self, data):
@@ -74,7 +75,7 @@ class ModelHelper:
         return pd.get_dummies(data, columns=categories, drop_first=True)
 
 
-    def SetData(self, data, dependentVariable, testSize):
+    def SplitData(self, dependentVariable, testSize):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -93,14 +94,12 @@ class ModelHelper:
             Data in a pandas.DataFrame
         """
 
-        # Save it in case it is needed.
-        self.data = data
-
         # Remove the dependent varaible from the rest of the data.
-        x = data.drop([dependentVariable], axis=1)
+        x = self.data.drop([dependentVariable], axis=1)
+        x = x.drop(self.additionalDroppedColumns, axis=1)
 
         # The dependent variable.
-        y = data[[dependentVariable]]
+        y = self.data[[dependentVariable]]
 
         # Split the data.
         self.xTrainingData, self.xTestData, self.yTrainingData, self.yTestData = train_test_split(x, y, test_size=testSize, random_state=1)

@@ -19,10 +19,10 @@ data.info()
 
 data = pd.get_dummies(data, columns=["region", "sex", "smoker"], drop_first=True)
 
-linearRegressionHelper = LinearRegressionHelper()
+linearRegressionHelper = LinearRegressionHelper(data)
 data.info()
 
-linearRegressionHelper.SetData(data, "charges", 0.3)
+linearRegressionHelper.SplitData("charges", 0.3)
 linearRegressionHelper.CreateModel()
 
 print("\n")

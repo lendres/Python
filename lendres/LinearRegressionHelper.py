@@ -17,8 +17,8 @@ from lendres.ModelHelper import ModelHelper
 
 class LinearRegressionHelper(ModelHelper):
 
-    #def __init__(self):
-        #super().__init__()
+    def __init__(self, data):
+        super().__init__(data)
 
 
     def CreateModel(self):
@@ -64,7 +64,7 @@ class LinearRegressionHelper(ModelHelper):
             raise Exception("The regression model has not be initiated.")
 
         # Make sure the predictions have been made on the training and test data.
-        if self.yTrainingPredicted == None:
+        if len(self.yTrainingPredicted) == 0:
             self.Predict()
 
         # R squared.
