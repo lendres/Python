@@ -14,24 +14,12 @@ import seaborn as sns
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 
-from sklearn.metrics import (
-    f1_score,
-    accuracy_score,
-    recall_score,
-    precision_score,
-    confusion_matrix,
-    roc_auc_score,
-    plot_confusion_matrix,
-    precision_recall_curve,
-    roc_curve,
-)
-
 import lendres
 from lendres.ModelHelper import ModelHelper
 
 class LogisticRegressionHelper(ModelHelper):
 
-    
+
     def __init__(self, data):
         super().__init__(data)
 
@@ -42,9 +30,9 @@ class LogisticRegressionHelper(ModelHelper):
 
         newColumn               = column + "_int"
         self.data[newColumn]    = 0
-        
+
         self.additionalDroppedColumns.append(column)
-        
+
         self.data.loc[self.data[column] == trueValue, newColumn] = 1
         return newColumn
 
@@ -92,12 +80,15 @@ class LogisticRegressionHelper(ModelHelper):
         -------
         None.
         """
+        # Initialize to nothing.
         confusionMatrix = None
+
+        # Get the confusion matrix for the correct data set.
         if dataSet == "training":
             if len(self.yTrainingPredicted) == 0:
                 self.Predict()
             confusionMatrix = metrics.confusion_matrix(self.yTrainingData, self.yTrainingPredicted)
-        
+
         elif dataSet == "test":
             if len(self.yTestPredicted) == 0:
                 self.Predict()
@@ -114,7 +105,8 @@ class LogisticRegressionHelper(ModelHelper):
                 for item in confusionMatrix.flatten()
             ]
         ).astype("object").reshape(2, 2)
-        
+
+        # Tack on the type labels to the numerical information.
         labels[0, 0] += "\nTN"
         labels[1, 0] += "\nFN\nType 2"
         labels[0, 1] += "\nFP\nType 1"
@@ -124,9 +116,14 @@ class LogisticRegressionHelper(ModelHelper):
         # The standard scale for this plot will be a little higher than the normal scale.
         scale *= 1.5
         lendres.Plotting.FormatPlot(scale=scale)
+
+        # Not much is shown, so we can shrink the figure size.
         plt.figure(figsize=(7,5))
+
+        # Create plot and set the titles.
         axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 12*scale}, fmt="")
         axis.set(title=dataSet.title()+" Data", ylabel="Actual", xlabel="Predicted")
+
         plt.show()
 
 
@@ -170,43 +167,80 @@ class LogisticRegressionHelper(ModelHelper):
                                        "MAE"       : maeScores},
                                        index=["Training", "Test"])
         return dataFrame
-    
-    
-    
-    
-    
-    
-    # defining a function to compute different metrics to check performance of a classification model built using sklearn
 
-    def model_performance_classification_sklearn_with_threshold(model, predictors, target, threshold=0.5):
+
+
+    def PredictProbabilities(self):
         """
-        Function to compute different metrics, based on the threshold specified, to check classification model performance
-    
-        model: classifier
-        predictors: independent variables
-        target: dependent variable
-        threshold: threshold for classifying the observation as class 1
+        Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
+        the yTrainingPredicted and yTestPredicted variables.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
         """
-    
+        # Predict on test
+        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)
+        self.yTestPredicted       = self.model.predict_proba(self.xTestData)
+
+
+    def PredictWithThreashold(self):
+        """
+        Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
+        the yTrainingPredicted and yTestPredicted variables.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        # Predict on test
+        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)
+        self.yTestPredicted       = self.model.predict_proba(self.xTestData)
+
+
+    def model_performance_classification_sklearn_with_threshold(self, predictors, target, threshold=0.5):
+        """
+        Calculate performance metrics.  Threshold for a positive result can be specified.
+
+        Parameters
+        ----------
+        predictors : independent variables
+        target : dependent variable
+        threshold : threshold for classifying the observation as class 1
+
+        Returns
+        -------
+        DataFrame that contains various performance scores for the training and test data.
+        """
+        # Make sure the model has been initiated and of the correct type.
+        if not isinstance(self.model, LogisticRegression):
+            raise Exception("The regression model has not be initiated.")
+
         # predicting using the independent variables
-        pred_prob = model.predict_proba(predictors)[:, 1]
+        pred_prob = self.model.predict_proba(predictors)[:, 1]
+
         pred_thres = pred_prob > threshold
         pred = np.round(pred_thres)
-    
-        acc = accuracy_score(target, pred)  # to compute Accuracy
-        recall = recall_score(target, pred)  # to compute Recall
-        precision = precision_score(target, pred)  # to compute Precision
-        f1 = f1_score(target, pred)  # to compute F1-score
-    
-        # creating a dataframe of metrics
-        df_perf = pd.DataFrame(
-            {
-                "Accuracy": acc,
-                "Recall": recall,
-                "Precision": precision,
-                "F1": f1,
-            },
-            index=[0],
-        )
-    
-        return df_perf
+
+        # Calculate scores.
+        accuracyScore   = metrics.accuracy_score(target, pred)
+        recallScore     = metrics.recall_score(target, pred)
+        precisionScore  = metrics.precision_score(target, pred)
+        f1Score         = metrics.f1_score(target, pred)
+
+        # Create a DataFrame for returning the values.
+        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScore,
+                                  "Recall"    : recallScore,
+                                  "Precision" : precisionScore,
+                                  "F1"        : f1Score},
+                                 index=[0])
+
+        return dataFrame

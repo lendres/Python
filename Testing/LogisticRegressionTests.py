@@ -34,3 +34,5 @@ display(regressionHelper.GetModelCoefficients())
 
 regressionHelper.PlotConfusionMatrix(dataSet="training")
 regressionHelper.PlotConfusionMatrix(dataSet="test")
+
+print(regressionHelper.yTrainingPredicted[:10])

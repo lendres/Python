@@ -106,6 +106,18 @@ class ModelHelper:
 
 
     def Predict(self):
+        """
+        Runs the prediction (model.predict) on the training and test data.  The results are stored in
+        the yTrainingPredicted and yTestPredicted variables.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
         # Predict on test
         self.yTrainingPredicted   = self.model.predict(self.xTrainingData)
         self.yTestPredicted       = self.model.predict(self.xTestData)
