@@ -127,49 +127,6 @@ class LogisticRegressionHelper(ModelHelper):
         plt.show()
 
 
-    def GetModelPerformanceScores(self):
-        """
-        Calculates the model's scores for the split data (training and testing).
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        DataFrame that contains various performance scores for the training and test data.
-        """
-        # Make sure the model has been initiated and of the correct type.
-        if not isinstance(self.model, LogisticRegression):
-            raise Exception("The regression model has not be initiated.")
-
-        # R squared.
-        trainingScore  = self.model.score(self.xTrainingData, self.yTrainingData)
-        testScore      = self.model.score(self.xTestData, self.yTestData)
-        rSquaredScores = [trainingScore, testScore]
-
-        # Mean square error.
-        trainingScore  = mean_squared_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_squared_error(self.yTestData, self.yTestPredicted)
-        mseScores      = [trainingScore, testScore]
-
-        # Root mean square error.
-        rmseScores     = [np.sqrt(trainingScore), np.sqrt(testScore)]
-
-        # Mean absolute error.
-        trainingScore  = mean_absolute_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_absolute_error(self.yTestData, self.yTestPredicted)
-        maeScores      = [trainingScore, testScore]
-
-        dataFrame      = pd.DataFrame({"R Squared" : rSquaredScores,
-                                       "RMSE"      : rmseScores,
-                                       "MSE"       : mseScores,
-                                       "MAE"       : maeScores},
-                                       index=["Training", "Test"])
-        return dataFrame
-
-
-
     def PredictProbabilities(self):
         """
         Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
@@ -183,38 +140,44 @@ class LogisticRegressionHelper(ModelHelper):
         -------
         None.
         """
-        # Predict on test
-        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)
-        self.yTestPredicted       = self.model.predict_proba(self.xTestData)
+        # Predict probabilities.  The second column (probability of success) is retained.
+        # The first column (probability of not-success) is discarded.
+        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)[:, 1]
+        self.yTestPredicted       = self.model.predict_proba(self.xTestData)[:, 1]
 
 
-    def PredictWithThreashold(self):
+    def PredictWithThreashold(self, threshold):
         """
         Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
         the yTrainingPredicted and yTestPredicted variables.
 
         Parameters
         ----------
-        None.
+        threshold : float
+            Threshold for classifying the observation success.
 
         Returns
         -------
         None.
         """
-        # Predict on test
-        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)
-        self.yTestPredicted       = self.model.predict_proba(self.xTestData)
+        # Predictions from the independent variables using the model.
+        self.PredictProbabilities()
+        
+        self.yTrainingPredicted = self.yTrainingPredicted > threshold
+        self.yTestPredicted     = self.yTestPredicted     > threshold
+        
+        self.yTrainingPredicted = np.round(self.yTrainingPredicted)
+        self.yTestPredicted     = np.round(self.yTestPredicted)
 
 
-    def model_performance_classification_sklearn_with_threshold(self, predictors, target, threshold=0.5):
+    def GetModelPerformanceScores(self, threshold=0.5):
         """
         Calculate performance metrics.  Threshold for a positive result can be specified.
 
         Parameters
         ----------
-        predictors : independent variables
-        target : dependent variable
-        threshold : threshold for classifying the observation as class 1
+        threshold : float
+            Threshold for classifying the observation success.
 
         Returns
         -------
@@ -224,23 +187,31 @@ class LogisticRegressionHelper(ModelHelper):
         if not isinstance(self.model, LogisticRegression):
             raise Exception("The regression model has not be initiated.")
 
-        # predicting using the independent variables
-        pred_prob = self.model.predict_proba(predictors)[:, 1]
-
-        pred_thres = pred_prob > threshold
-        pred = np.round(pred_thres)
+        self.PredictWithThreashold(threshold)
 
         # Calculate scores.
-        accuracyScore   = metrics.accuracy_score(target, pred)
-        recallScore     = metrics.recall_score(target, pred)
-        precisionScore  = metrics.precision_score(target, pred)
-        f1Score         = metrics.f1_score(target, pred)
+        trainingScore   = metrics.accuracy_score(self.yTrainingData, self.yTrainingPredicted)
+        testScore       = metrics.accuracy_score(self.yTestData, self.yTestPredicted)
+        accuracyScores  = [trainingScore, testScore]
+
+        trainingScore   = metrics.recall_score(self.yTrainingData, self.yTrainingPredicted)
+        testScore       = metrics.recall_score(self.yTestData, self.yTestPredicted)
+        recallScores    = [trainingScore, testScore]
+
+        trainingScore   = metrics.precision_score(self.yTrainingData, self.yTrainingPredicted)
+        testScore       = metrics.precision_score(self.yTestData, self.yTestPredicted)
+        precisionScores = [trainingScore, testScore]
+
+        trainingScore   = metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)
+        testScore       = metrics.f1_score(self.yTestData, self.yTestPredicted)
+        f1Scores        = [trainingScore, testScore]
+
 
         # Create a DataFrame for returning the values.
-        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScore,
-                                  "Recall"    : recallScore,
-                                  "Precision" : precisionScore,
-                                  "F1"        : f1Score},
-                                 index=[0])
+        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
+                                  "Recall"    : recallScores,
+                                  "Precision" : precisionScores,
+                                  "F1"        : f1Scores},
+                                 index=["Training", "Test"])
 
         return dataFrame
