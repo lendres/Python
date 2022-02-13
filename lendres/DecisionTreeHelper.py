@@ -12,17 +12,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn import metrics
-from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 
 import lendres
-from lendres.ModelHelper import ModelHelper
+from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
-class DecisionTreeHelper(ModelHelper):
+class DecisionTreeHelper(CategoricalRegressionHelper):
 
 
     def __init__(self, data):
         super().__init__(data)
-
 
 
     def CreateModel(self):
@@ -47,17 +46,18 @@ class DecisionTreeHelper(ModelHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = (, random_state=1)
+        self.model = DecisionTreeClassifier(criterion="gini", random_state=1)
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 
-# Decision Tree arrows are missing, how to fix this? Use the following code as your reference to resolve the issue 
-plt.figure(figsize=(20,30))
-out = tree.plot_tree(model,feature_names=feature_names,filled=True,fontsize=9,node_ids=False,class_names=None,)
-#below code will add arrows to the decision tree split if they are missing
-for o in out:
-     arrow = o.arrow_patch
-     if arrow is not None:
-        arrow.set_edgecolor('black')
-        arrow.set_linewidth(1)
-plt.show()
+
+# # Decision Tree arrows are missing, how to fix this? Use the following code as your reference to resolve the issue
+# plt.figure(figsize=(20,30))
+# out = tree.plot_tree(model,feature_names=feature_names,filled=True,fontsize=9,node_ids=False,class_names=None,)
+# #below code will add arrows to the decision tree split if they are missing
+# for o in out:
+#      arrow = o.arrow_patch
+#      if arrow is not None:
+#         arrow.set_edgecolor('black')
+#         arrow.set_linewidth(1)
+# plt.show()

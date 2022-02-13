@@ -24,14 +24,14 @@ class ModelHelper:
         self.data                      = data
 
         self.xTrainingData             = []
-        self.xTestData                 = []
+        self.xTestingData                 = []
         self.yTrainingData             = []
-        self.yTestData                 = []
+        self.yTestingData                 = []
 
         self.model                     = None
 
         self.yTrainingPredicted        = []
-        self.yTestPredicted            = []
+        self.yTestingPredicted            = []
 
 
     def EncodeAllCategoricalColumns(self, data):
@@ -102,13 +102,13 @@ class ModelHelper:
         y = self.data[[dependentVariable]]
 
         # Split the data.
-        self.xTrainingData, self.xTestData, self.yTrainingData, self.yTestData = train_test_split(x, y, test_size=testSize, random_state=1)
+        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
 
 
     def Predict(self):
         """
         Runs the prediction (model.predict) on the training and test data.  The results are stored in
-        the yTrainingPredicted and yTestPredicted variables.
+        the yTrainingPredicted and yTestingPredicted variables.
 
         Parameters
         ----------
@@ -118,9 +118,9 @@ class ModelHelper:
         -------
         None.
         """
-        # Predict on test
+        # Predict on the training and testing data.
         self.yTrainingPredicted   = self.model.predict(self.xTrainingData)
-        self.yTestPredicted       = self.model.predict(self.xTestData)
+        self.yTestingPredicted    = self.model.predict(self.xTestingData)
 
 
     def GetModelCoefficients(self):

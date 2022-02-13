@@ -70,7 +70,11 @@ def FormatPlot(scale=1.0, transparentLegend=False):
         "axes.labelsize"         : scale*size,
         "xtick.labelsize"        : 0.80*scale*size,
         "ytick.labelsize"        : 0.80*scale*size,
-        "axes.titlepad"          : 25
+        "axes.titlepad"          : 25,
+        "axes.linewidth"         : 1.5*scale,               # Axis border.
+        "patch.linewidth"        : 1.5*scale,               # Legend border.
+        "lines.linewidth"        : 3*scale,
+
     }
 
     # Parameters to create a legend with a border and transparent background.

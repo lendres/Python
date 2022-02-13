@@ -20,6 +20,31 @@ def ClearSpyderConsole():
 ClearSpyderConsole()
 
 
+questionNumber = 0
+
+def PrintQuestionTitle(number=None):
+    """
+    Prints a divider with the question number to the console.
+
+    Parameters
+    ----------
+    None.
+
+    Returns
+    -------
+    None.
+    """
+
+    global questionNumber
+
+    if number == None:
+        questionNumber += 1
+    else:
+        questionNumber = number
+
+    PrintSectionTitle("Question " + str(questionNumber))
+
+
 def PrintSectionTitle(title):
     """
     Prints a divider and title to the console.

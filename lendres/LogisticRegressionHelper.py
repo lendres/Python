@@ -15,26 +15,13 @@ from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 
 import lendres
-from lendres.ModelHelper import ModelHelper
+from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
-class LogisticRegressionHelper(ModelHelper):
+class LogisticRegressionHelper(CategoricalRegressionHelper):
 
 
     def __init__(self, data):
         super().__init__(data)
-
-
-    def ConvertCategoryToNumeric(self, column, trueValue):
-        if len(self.data) == 0:
-            raise Exception("The data has not been set.")
-
-        newColumn               = column + "_int"
-        self.data[newColumn]    = 0
-
-        self.additionalDroppedColumns.append(column)
-
-        self.data.loc[self.data[column] == trueValue, newColumn] = 1
-        return newColumn
 
 
     def CreateModel(self):
@@ -60,78 +47,13 @@ class LogisticRegressionHelper(ModelHelper):
             raise Exception("The data has not been split.")
 
         self.model = LogisticRegression(solver="liblinear", random_state=1)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
-
-
-    def PlotConfusionMatrix(self, dataSet="training", scale=1.0):
-        """
-        Plots the confusion matrix for the model output.
-
-        Parameters
-        ----------
-        dataSet : string
-            Which data set(s) to plot.
-            training - Plots the results from the training data.
-            test     - Plots the results from the test data.
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
-
-        Returns
-        -------
-        None.
-        """
-        # Initialize to nothing.
-        confusionMatrix = None
-
-        # Get the confusion matrix for the correct data set.
-        if dataSet == "training":
-            if len(self.yTrainingPredicted) == 0:
-                self.Predict()
-            confusionMatrix = metrics.confusion_matrix(self.yTrainingData, self.yTrainingPredicted)
-
-        elif dataSet == "test":
-            if len(self.yTestPredicted) == 0:
-                self.Predict()
-            confusionMatrix = metrics.confusion_matrix(self.yTestData, self.yTestPredicted)
-
-        else:
-            raise Exception("Invalid data set specified.")
-
-        # The numpy array has to be set as an object type.  If set (or allowed to assume) a
-        # type of "str" the entry is created only large enough for the initial string (a character
-        # type is used).  It is not possible to append to it.
-        labels = np.asarray(
-            [
-                ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / confusionMatrix.flatten().sum())]
-                for item in confusionMatrix.flatten()
-            ]
-        ).astype("object").reshape(2, 2)
-
-        # Tack on the type labels to the numerical information.
-        labels[0, 0] += "\nTN"
-        labels[1, 0] += "\nFN\nType 2"
-        labels[0, 1] += "\nFP\nType 1"
-        labels[1, 1] += "\nTP"
-
-        # Must be run before creating figure or plotting data.
-        # The standard scale for this plot will be a little higher than the normal scale.
-        scale *= 1.5
-        lendres.Plotting.FormatPlot(scale=scale)
-
-        # Not much is shown, so we can shrink the figure size.
-        plt.figure(figsize=(7,5))
-
-        # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 12*scale}, fmt="")
-        axis.set(title=dataSet.title()+" Data", ylabel="Actual", xlabel="Predicted")
-
-        plt.show()
+        self.model.fit(self.xTrainingData, self.yTrainingData.values.ravel())
 
 
     def PredictProbabilities(self):
         """
         Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
-        the yTrainingPredicted and yTestPredicted variables.
+        the yTrainingPredicted and yTestingPredicted variables.
 
         Parameters
         ----------
@@ -143,14 +65,14 @@ class LogisticRegressionHelper(ModelHelper):
         """
         # Predict probabilities.  The second column (probability of success) is retained.
         # The first column (probability of not-success) is discarded.
-        self.yTrainingPredicted   = self.model.predict_proba(self.xTrainingData)[:, 1]
-        self.yTestPredicted       = self.model.predict_proba(self.xTestData)[:, 1]
+        self.yTrainingPredicted = self.model.predict_proba(self.xTrainingData)[:, 1]
+        self.yTestingPredicted  = self.model.predict_proba(self.xTestingData)[:, 1]
 
 
     def PredictWithThreashold(self, threshold):
         """
         Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
-        the yTrainingPredicted and yTestPredicted variables.
+        the yTrainingPredicted and yTestingPredicted variables.
 
         Parameters
         ----------
@@ -163,59 +85,59 @@ class LogisticRegressionHelper(ModelHelper):
         """
         # Predictions from the independent variables using the model.
         self.PredictProbabilities()
-        
+
         self.yTrainingPredicted = self.yTrainingPredicted > threshold
-        self.yTestPredicted     = self.yTestPredicted     > threshold
-        
+        self.yTestingPredicted  = self.yTestingPredicted  > threshold
+
         self.yTrainingPredicted = np.round(self.yTrainingPredicted)
-        self.yTestPredicted     = np.round(self.yTestPredicted)
+        self.yTestingPredicted  = np.round(self.yTestingPredicted)
 
 
-    def GetModelPerformanceScores(self, threshold=0.5):
+    def CreateRocCurvePlot(self, dataSet="training", scale=1.0):
         """
-        Calculate performance metrics.  Threshold for a positive result can be specified.
+        Creates a plot of the receiver operatoring characteristic curve(s).
 
         Parameters
         ----------
-        threshold : float
-            Threshold for classifying the observation success.
+        dataSet : string
+            Which data set(s) to plot.
+            training - Plots the results from the training data.
+            testing  - Plots the results from the test data.
+            both     - Plots the results from both the training and test data.
+        scale : double
+            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
 
         Returns
         -------
-        DataFrame that contains various performance scores for the training and test data.
+        None.
         """
-        # Make sure the model has been initiated and of the correct type.
-        if not isinstance(self.model, LogisticRegression):
-            raise Exception("The regression model has not be initiated.")
 
-        self.PredictWithThreashold(threshold)
+        self.PredictProbabilities()
 
-        # Calculate scores.
-        trainingScore   = metrics.accuracy_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.accuracy_score(self.yTestData, self.yTestPredicted)
-        accuracyScores  = [trainingScore, testScore]
+        # Must be run before creating figure or plotting data.
+        # The standard scale for this plot will be a little higher than the normal scale.
+        scale *= 1.5
+        lendres.Plotting.FormatPlot(scale=scale)
 
-        trainingScore   = metrics.recall_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.recall_score(self.yTestData, self.yTestPredicted)
-        recallScores    = [trainingScore, testScore]
+        # Plot the ROC curve(s).
+        if dataSet == "both":
+            self.PlotRocCurve("training")
+            self.PlotRocCurve("testing")
+        else:
+            self.PlotRocCurve(dataSet)
 
-        trainingScore   = metrics.precision_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.precision_score(self.yTestData, self.yTestPredicted)
-        precisionScores = [trainingScore, testScore]
+        # Plot the diagonal line, the wrost fit possible line.
+        plt.plot([0, 1], [0, 1], "r--")
 
-        trainingScore   = metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.f1_score(self.yTestData, self.yTestPredicted)
-        f1Scores        = [trainingScore, testScore]
+        # Formatting the axis.
+        axis  = plt.gca()
+        title = "Logistic Regression\nReceiver Operating Characteristic"
+        axis.set(title=title, ylabel="True Positive Rate", xlabel="False Positive Rate")
+        axis.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
+        plt.legend(loc="lower right")
+        plt.show()
 
-        # Create a DataFrame for returning the values.
-        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
-                                  "Recall"    : recallScores,
-                                  "Precision" : precisionScores,
-                                  "F1"        : f1Scores},
-                                 index=["Training", "Test"])
-
-        return dataFrame
 
     def PlotRocCurve(self, dataSet="training", scale=1.0):
         """
@@ -226,7 +148,7 @@ class LogisticRegressionHelper(ModelHelper):
         dataSet : string
             Which data set(s) to plot.
             training - Plots the results from the training data.
-            test     - Plots the results from the test data.
+            testing  - Plots the results from the test data.
         scale : double
             Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
 
@@ -234,34 +156,19 @@ class LogisticRegressionHelper(ModelHelper):
         -------
         None.
         """
-        
-        self.PredictProbabilities()
-        
+
         # Get the confusion matrix for the correct data set.
         if dataSet == "training":
-            rocScore                = metrics.roc_auc_score(self.yTrainingData, self.yTrainingPredicted)
-            fpr, tpr, thresholds = metrics.roc_curve(self.yTrainingData, self.yTrainingPredicted)
+            rocScore                                          = metrics.roc_auc_score(self.yTrainingData, self.yTrainingPredicted)
+            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.yTrainingData, self.yTrainingPredicted)
+            color                                             = "#1f77b4"
 
-        elif dataSet == "test":
-            rocScore                = metrics.roc_auc_score(self.yTestData, self.yTestPredicted)
-            fpr, tpr, thresholds = metrics.roc_curve(self.yTestData, self.yTestPredicted)
+        elif dataSet == "testing":
+            rocScore                                          = metrics.roc_auc_score(self.yTestingData, self.yTestingPredicted)
+            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.yTestingData, self.yTestingPredicted)
+            color                                             = "#ff7f0e"
 
         else:
-            raise Exception("Invalid data set specified.")        
-        
-        
-        # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
-   
-        #figure = plt.figure(figsize=(7, 5))
-        plt.plot(fpr, tpr, label="Logistic Regression (area = %0.2f)" % rocScore)
-        plt.plot([0, 1], [0, 1], "r--")
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
+            raise Exception("Invalid data set specified.")
 
-        axis  = plt.gca()
-        title = "Receiver Operating Characteristic" + dataSet.title()+" Data"
-        axis.set(title=title, ylabel="True Positive Rate", xlabel="False Positive Rate")
-
-        plt.legend(loc="lower right")
-        plt.show()
+        plt.plot(falsePositiveRates, truePositiveRates, label=dataSet.title()+ " Data (area = %0.2f)" % rocScore, color=color)

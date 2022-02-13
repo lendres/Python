@@ -69,12 +69,12 @@ class LinearRegressionHelper(ModelHelper):
 
         # R squared.
         trainingScore  = self.model.score(self.xTrainingData, self.yTrainingData)
-        testScore      = self.model.score(self.xTestData, self.yTestData)
+        testScore      = self.model.score(self.xTestingData, self.yTestingData)
         rSquaredScores = [trainingScore, testScore]
 
         # Mean square error.
         trainingScore  = mean_squared_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_squared_error(self.yTestData, self.yTestPredicted)
+        testScore      = mean_squared_error(self.yTestingData, self.yTestingPredicted)
         mseScores      = [trainingScore, testScore]
 
         # Root mean square error.
@@ -82,7 +82,7 @@ class LinearRegressionHelper(ModelHelper):
 
         # Mean absolute error.
         trainingScore  = mean_absolute_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_absolute_error(self.yTestData, self.yTestPredicted)
+        testScore      = mean_absolute_error(self.yTestingData, self.yTestingPredicted)
         maeScores      = [trainingScore, testScore]
 
         dataFrame      = pd.DataFrame({"R Squared" : rSquaredScores,
