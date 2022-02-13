@@ -31,7 +31,7 @@ def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False):
         The newly created figure.
     """
 
-     # Must be run before creating figure or plotting data.
+    # Must be run before creating figure or plotting data.
     lendres.Plotting.FormatPlot(scale=scale)
 
     correlationValues = []

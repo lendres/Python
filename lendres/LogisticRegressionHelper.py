@@ -93,6 +93,7 @@ class LogisticRegressionHelper(ModelHelper):
             if len(self.yTestPredicted) == 0:
                 self.Predict()
             confusionMatrix = metrics.confusion_matrix(self.yTestData, self.yTestPredicted)
+
         else:
             raise Exception("Invalid data set specified.")
 
@@ -215,3 +216,52 @@ class LogisticRegressionHelper(ModelHelper):
                                  index=["Training", "Test"])
 
         return dataFrame
+
+    def PlotRocCurve(self, dataSet="training", scale=1.0):
+        """
+        Plots the receiver operatoring characteristic curve.
+
+        Parameters
+        ----------
+        dataSet : string
+            Which data set(s) to plot.
+            training - Plots the results from the training data.
+            test     - Plots the results from the test data.
+        scale : double
+            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+
+        Returns
+        -------
+        None.
+        """
+        
+        self.PredictProbabilities()
+        
+        # Get the confusion matrix for the correct data set.
+        if dataSet == "training":
+            rocScore                = metrics.roc_auc_score(self.yTrainingData, self.yTrainingPredicted)
+            fpr, tpr, thresholds = metrics.roc_curve(self.yTrainingData, self.yTrainingPredicted)
+
+        elif dataSet == "test":
+            rocScore                = metrics.roc_auc_score(self.yTestData, self.yTestPredicted)
+            fpr, tpr, thresholds = metrics.roc_curve(self.yTestData, self.yTestPredicted)
+
+        else:
+            raise Exception("Invalid data set specified.")        
+        
+        
+        # Must be run before creating figure or plotting data.
+        lendres.Plotting.FormatPlot(scale=scale)
+   
+        #figure = plt.figure(figsize=(7, 5))
+        plt.plot(fpr, tpr, label="Logistic Regression (area = %0.2f)" % rocScore)
+        plt.plot([0, 1], [0, 1], "r--")
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+
+        axis  = plt.gca()
+        title = "Receiver Operating Characteristic" + dataSet.title()+" Data"
+        axis.set(title=title, ylabel="True Positive Rate", xlabel="False Positive Rate")
+
+        plt.legend(loc="lower right")
+        plt.show()

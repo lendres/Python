@@ -37,3 +37,5 @@ regressionHelper.PlotConfusionMatrix(dataSet="test")
 
 print("\n")
 display(regressionHelper.GetModelPerformanceScores())
+
+regressionHelper.PlotRocCurve()
