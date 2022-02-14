@@ -138,7 +138,8 @@ class CategoricalRegressionHelper(ModelHelper):
 
         Returns
         -------
-        DataFrame that contains various performance scores for the training and test data.
+        dataFrame : DataFrame
+            DataFrame that contains various performance scores for the training and test data.
         """
         # Make sure the model has been initiated and of the correct type.
         if self.model == None:

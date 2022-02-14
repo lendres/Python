@@ -84,7 +84,7 @@ def PrintNotAvailableCounts(data):
 def ChangeToCategory(data, categories):
     """
     Changes the data series specified to type "category."
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -104,7 +104,7 @@ def ChangeToCategory(data, categories):
 def DropRowsWhereDataNotAvailable(data, category, inPlace=False):
     """
     Drops any rows that do not have data available in the category of "category."
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -116,24 +116,25 @@ def DropRowsWhereDataNotAvailable(data, category, inPlace=False):
 
     Returns
     -------
-    DataFrame without the removed rows or None if inPlace=True.
+    : pandas.DataFrame or None
+        DataFrame without the removed rows or None if inPlace=True.
     """
     # Gets an DataSeries of boolean values indicating where values were not available.
     indexMask = data[category].isna()
-    
+
     # The indexMask is a DataSeries that has the indexes from the original DataFrame and the values are the result
     # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
     # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
     dropIndices = indexMask[indexMask].index
-    
+
     # Drop the rows.
     return data.drop(dropIndices, inplace=inPlace)
-    
+
 
 def DropAllRowsWhereDataNotAvailable(data, inPlace=False):
     """
     Drops any rows that are missing one or more entries from the data.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -143,7 +144,8 @@ def DropAllRowsWhereDataNotAvailable(data, inPlace=False):
 
     Returns
     -------
-    DataFrame without the removed rows or None if inPlace=True.
+    : pandas.DataFrame or None
+        DataFrame without the removed rows or None if inPlace=True.
     """
     # Gets an DataSeries of boolean values indicating where values were not available.
     # to_numpy returns array inside of a tuple for some odd reason.  The [0] extracts the array.
@@ -152,7 +154,7 @@ def DropAllRowsWhereDataNotAvailable(data, inPlace=False):
     # Drop the rows.
     return data.drop(dropIndices, inplace=inPlace)
 
-    
+
 def GetRowsWithMissingEntries(data):
     """
     Gets the rows that contain missing data.
@@ -161,15 +163,18 @@ def GetRowsWithMissingEntries(data):
     ----------
     data : pandas.DataFrame
         DataFrame to change the categories in.
-        
+
     Returns
     -------
-    A list that contains the indices of the rows that contain at least one missing entry.
+    locations : numpy array
+        A list that contains the indices of the rows that contain at least one missing entry.
+    count : int
+        Number of rows with missing entries.
     """
-    
+
     locations = data.isna().sum(axis=1).to_numpy().nonzero()[0]
     count     = len(locations)
-        
+
     return locations, count
 
 
@@ -186,7 +191,8 @@ def ExtractLastStringTokens(data, categories):
 
     Returns
     -------
-    A list that contains the indices of the rows that contain at least one missing entry.
+    dataFrame : pandas.DataFrame
+        A DataFrame that contains the indices of the rows that contain at least one missing entry.
     """
     # Initialize variables.
     numberOfRows  = data.shape[0]
@@ -197,7 +203,7 @@ def ExtractLastStringTokens(data, categories):
         for i in range(numberOfRows):
             value = data[category].iloc[i]
             dataFrame[category].iloc[i] = value.split()[1]
-    
+
     return dataFrame
 
 
@@ -212,14 +218,15 @@ def KeepFirstStringToken(value):
 
     Returns
     -------
-    The first token of the string.
+    : string
+        The first token of the string.
     """
-    
+
     # Make sure we are processing a string.
     if isinstance(value, str):
         # Splits the string at the space and returns the first entry as a number.
         return value.split()[0]
-    
+
     else:
         # Entry wasn't a string, return an empty string.
         return ""
@@ -236,19 +243,19 @@ def KeepFirstTokenAsNumber(value):
 
     Returns
     -------
-    float
-        The first token of the string as a number.
+    value: float
+        The first token of the string as a number of np.nan if the entry was not a string or number.
     """
-    
+
     # Make sure we are processing a string.
     if isinstance(value, str):
         # Splits the string at the space and returns the first entry as a number.
         return float(value.split()[0])
-    
+
     elif isinstance(value, float):
         # Already a number, return it.
         return value
-    
+
     else:
         # Entry wasn't a string or number, so return an out of range value.
         return np.nan
@@ -265,29 +272,29 @@ def ConvertMileage(value):
 
     Returns
     -------
-    float
-        The mileage as km per liter.
+    value : float
+        The mileage as km per liter or np.nan if entry was not a string or number.
     """
-    
+
     # Make sure we are processing a string.
     if isinstance(value, str):
         # Splits the string at the space and returns the first entry as a number.
         splitString = value.split()
         value       = float(splitString[0])
-        
+
         if splitString[1] == "km/kg":
             # Approximately 1.35 kg/liter.
             # km   1.35 kg   km
             # -- * ------  = --
             # kg     l       l
             value *= 1.35
-            
+
         return value
 
     elif isinstance(value, float):
         # Already a number, return it.
         return value
-    
+
     else:
         # Entry wasn't a string or number, so return an out of range value.
         return np.nan
@@ -296,7 +303,7 @@ def ConvertMileage(value):
 def GetMinAndMaxValues(data, category, criteria, method="quantity"):
     """
     Display and maximum and minimum values in a DataSeries.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -312,14 +319,14 @@ def GetMinAndMaxValues(data, category, criteria, method="quantity"):
 
     Returns
     -------
-    pandas.DataFrame
+    : pandas.DataFrame
         A DataFrame that has both the minimum and maximum values, along with the indices where those values
         occur.  The DataFrame contains the following headings:
         Smallest_Index", "Smallest", "Largest_Index", "Largest"
     """
     # Initialize the variable so it is in scope.
     numberOfRows = criteria
-    
+
     if method == "quantity":
         # Handled by the initialization above, no need to do anything except that the stupid ass Python parser
         # thinks it needs something.
@@ -333,14 +340,14 @@ def GetMinAndMaxValues(data, category, criteria, method="quantity"):
 
     # Sort then display the start and end of the series.
     sortedSeries = data[category].sort_values()
-    
+
     # Create new DataFrames for the head (smallest values) and the tail (largest values).
     # Reset the index to move the index to a column and create a new, renumbered index.  This lets us combine the two DataFrames at
     # the same index and saves the indices so we can use them later.
     # Also rename the columns to make them more meaningful.
     head = sortedSeries.head(numberOfRows).reset_index()
     head.rename({"index" : "Smallest_Index", category : "Smallest"}, axis=1, inplace=True)
-    
+
     tail = sortedSeries.tail(numberOfRows).reset_index()
     tail.rename({"index" : "Largest_Index", category : "Largest"}, axis=1, inplace=True)
 
@@ -354,7 +361,7 @@ def ReplaceLowOutlierWithMean(data, category, criteria):
 
     Parameters
     ----------
-    data : Pandas DataFrame
+    data : pandas.DataFrame
         The data.
     category: string
         Category name in the DataFrame.
@@ -365,12 +372,12 @@ def ReplaceLowOutlierWithMean(data, category, criteria):
     """
     mean = data[category].mean()
     data.loc[data[category] < criteria, category] = mean
-    
+
 
 def DropMinAndMaxValues(data, category, criteria, method="fraction", inPlace=False):
     """
     Drops any rows that do not have data available in the category of "category."
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -388,23 +395,24 @@ def DropMinAndMaxValues(data, category, criteria, method="fraction", inPlace=Fal
 
     Returns
     -------
-    DataFrame without the removed rows or None if inPlace=True.
+    data : pandas.DataFrame
+        DataFrame without the removed rows or None if inPlace=True.
     """
 
     # This will return a struction that has the values and the indices of the minimums and maximums.
     minAndMaxValues = GetMinAndMaxValues(data, category, criteria, method=method)
-        
+
     # numpy.where returns array inside of a tuple for some odd reason.  The [0] extracts the array.
     dropIndices = pd.concat([minAndMaxValues["Smallest_Index"], minAndMaxValues["Largest_Index"]])
-    
+
     # Drop the rows.
     return data.drop(dropIndices, inplace=inPlace)
 
-    
+
 def DropOutliers(data, category, irqScale=1.5, inPlace=False):
     """
     Drops any rows that are considered outliers by the definition of
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -418,17 +426,18 @@ def DropOutliers(data, category, irqScale=1.5, inPlace=False):
 
     Returns
     -------
-    DataFrame without the removed rows or None if inPlace=True.
+    data : pandas.DataFrame
+        DataFrame without the removed rows or None if inPlace=True.
     """
 
     # Get the stats we need.
     interQuartileRange = stats.iqr(data[category])
     limits             = np.quantile(data[category], q=(0.25, 0.75))
-    
+
     # Set the outlier limits.
     limits[0] -= irqScale*interQuartileRange
     limits[1] += irqScale*interQuartileRange
-    
+
     # Gets an DataSeries of boolean values indicating where values are outside of the range.  These are the
     # values we want to drop.
     indexMask = (data[category] < limits[0]) | (data[category] > limits[1])
@@ -437,7 +446,7 @@ def DropOutliers(data, category, irqScale=1.5, inPlace=False):
     # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
     # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
     dropIndices = indexMask[indexMask].index
-    
+
     # Drop the rows.
     return data.drop(dropIndices, inplace=inPlace)
 
@@ -480,8 +489,8 @@ def DisplayCategoryCounts(data, categories, useMarkDown=False):
     for category in categories:
         lendres.Console.PrintBoldMessage(category, useMarkDown=useMarkDown)
         display(data[category].value_counts())
-   
-    
+
+
 def DisplayAllCategoriesValueCounts(data, useMarkDown=False):
     """
     Displays the value counts of all the DataSeries of type "category."
@@ -503,7 +512,7 @@ def RemoveRowsWithLowValueCounts(data, column, criteria):
     """
     Finds the entries in "column" with low value counts and drops them.
     Performs operation in place.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -515,14 +524,15 @@ def RemoveRowsWithLowValueCounts(data, column, criteria):
 
     Returns
     -------
-    DataFrame with the low value count rows removed.
+    data : pandas.DataFrame
+        DataFrame with the low value count rows removed.
     """
     # Get the value counts of the column.
     valueCounts = data[column].value_counts()
-    
+
     # Extract the values that are below the threshold criteria.
     dropValues = valueCounts[valueCounts.values < criteria].index.tolist()
-    
+
     # Drop the rows.
     for value in dropValues:
          RemoveRowByEntryValue(data, column, value, inPlace=True)
@@ -531,7 +541,7 @@ def RemoveRowsWithLowValueCounts(data, column, criteria):
 def RemoveRowByEntryValue(data, column, value, inPlace=False):
     """
     Finds the locations in "column" that are equal to "value" and drops those rows.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
@@ -545,12 +555,13 @@ def RemoveRowByEntryValue(data, column, value, inPlace=False):
 
     Returns
     -------
-    DataFrame without the removed rows or None if inPlace=True.
+    data : pandas.DataFrame
+        DataFrame without the removed rows or None if inPlace=True.
     """
-        
+
     # Gets indices of the rows we want to drop.
     dropIndices = data[data[column] == value].index.tolist()
-    
+
     # Drop the rows.
     return data.drop(dropIndices, inplace=inPlace)
 
@@ -561,7 +572,7 @@ def MergeCategories(data, column, fromCategories, toCategory):
     specified at once.
     Useful for merging categories of a categorical column.
     Operation performed in place.
-    
+
     Parameters
     ----------
     data : pandas.DataFrame
