@@ -34,7 +34,11 @@ def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False):
     # Must be run before creating figure or plotting data.
     lendres.Plotting.FormatPlot(scale=scale)
 
+    # Initialize so the variable is available.
     correlationValues = []
+    
+    # If the input argument "columns" is "None," plot all the columns, otherwise, only
+    # plot those columns specified in the "columns" argument.
     if columns == None:
         correlationValues = data.corr()
     else:

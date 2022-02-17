@@ -566,6 +566,49 @@ def RemoveRowByEntryValue(data, column, value, inPlace=False):
     return data.drop(dropIndices, inplace=inPlace)
 
 
+def RemoveRowsWithValueOutsideOfCriteria(data, category, criteria, method, inPlace=False):
+    """
+    Replaces values beyond the criteria with the mean value for the category.  Done in place.
+
+    Parameters
+    ----------
+    data : Pandas DataFrame
+        The data.
+    column: string
+        Column name in the DataFrame.
+    criteria : float
+        Values below this will be removed.
+    method : string
+        Determines if high values or low values should be dropped.
+            dropabove - Values above the criteria are removed.
+            dropbelow - Values below the criteria are removed.
+    inPlace : bool
+        If true, the modifications are done in place.
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        DataFrame without the removed rows or None if inPlace=True.
+    """
+    # Gets an DataSeries of boolean values indicating where values are outside of the range.  These are the
+    # values we want to drop.
+    indexMask = None
+    if method == "dropabove":
+        indexMask = data[category] > criteria
+    elif method == "dropbelow":
+        indexMask = data[category] < criteria
+    else:
+        raise Exception("Invalid \"method\" specified.")
+
+    # The indexMask is a DataSeries that has the indexes from the original DataFrame and the values are the result
+    # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
+    # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
+    dropIndices = indexMask[indexMask].index
+    
+    # Drop the rows.
+    return data.drop(dropIndices, inplace=inPlace)
+
+
 def MergeCategories(data, column, fromCategories, toCategory):
     """
     Replaces every instance of a value ("from") with another in a column ("to").  Multiple from values can be
@@ -585,3 +628,45 @@ def MergeCategories(data, column, fromCategories, toCategory):
     """
     for fromCategory in fromCategories:
         data[column] = data[column].replace({fromCategory : toCategory})
+
+
+def MergeNumericalDataByRange(data, column, labels, boundaries, replaceExisting=False):
+    """
+    Take a numerical column and groups them into categories based on range boundaries.
+    
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame to operate on.
+    column : string
+        Column name to perform the merge on.
+    labels : list of strings
+        A list that specifies the names for each range.
+    boundaries : list of ints or floats
+        A list that specifies the end points of the ranges.
+    replaceExisting : bool
+        If true, the existing column of data is replaced by the new column of merged data.
+
+    Returns
+    -------
+    newColumnName : string
+        Name of the new column that contains the categorized numbers.
+    """
+
+    newColumn      = pd.Series(np.zeros(data.shape[0]))
+    existingColumn = data[column]
+    
+    for i in range(existingColumn.size):
+        boundedIndices   = lendres.Algorithms.BoundingBinarySearch(existingColumn.iloc[i], boundaries, returnedUnits="indices")
+        newColumn.loc[i] = labels[boundedIndices[0]]
+
+    # Default to the original column name, then determine how to procede based on if we are to replace
+    # the existing column or add a new one while retaining the original one.
+    newColumnName = column
+    if replaceExisting:
+        data.drop([column], axis=1, inplace=True)
+    else:
+        newColumnName = column + "_categories"
+
+    data[newColumnName] = newColumn.astype('category')
+    return newColumnName

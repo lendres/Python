@@ -5,33 +5,38 @@ Created on Wed Jan 19 07:49:25 2022
 @author: Lance
 """
 
-from IPython.display import display
 import pandas as pd
 import numpy as np
 
-from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
-
-#import lendres
 
 class ModelHelper:
 
     def __init__(self, data):
+        """
+        Constructor.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            DataFrame to operate on.
+            
+        Returns
+        -------
+        None.
+        """
         self.additionalDroppedColumns  = []
         self.data                      = data
 
         self.xTrainingData             = []
-        self.xTestingData                 = []
+        self.xTestingData              = []
         self.yTrainingData             = []
-        self.yTestingData                 = []
+        self.yTestingData              = []
 
         self.model                     = None
 
         self.yTrainingPredicted        = []
-        self.yTestingPredicted            = []
+        self.yTestingPredicted         = []
 
 
     def EncodeAllCategoricalColumns(self, data):

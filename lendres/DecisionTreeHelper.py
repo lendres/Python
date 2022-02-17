@@ -6,8 +6,6 @@ Created on Wed Jan 19 07:49:25 2022
 """
 
 import pandas as pd
-import numpy as np
-
 import matplotlib.pyplot as plt
 
 from sklearn import metrics
@@ -22,8 +20,19 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class DecisionTreeHelper(CategoricalRegressionHelper):
 
-
     def __init__(self, data):
+        """
+        Constructor.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            DataFrame to operate on.
+            
+        Returns
+        -------
+        None.
+        """
         super().__init__(data)
         self.gridSearch = None
 
@@ -73,7 +82,6 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
 
         # Fit the best algorithm to the data.
         self.model.fit(self.xTrainingData, self.yTrainingData)
-
 
 
     def CreateDecisionTreePlot(self, scale=1.0):

@@ -18,6 +18,18 @@ from lendres.ModelHelper import ModelHelper
 class LinearRegressionHelper(ModelHelper):
 
     def __init__(self, data):
+        """
+        Constructor.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            DataFrame to operate on.
+            
+        Returns
+        -------
+        None.
+        """
         super().__init__(data)
 
 
@@ -39,7 +51,6 @@ class LinearRegressionHelper(ModelHelper):
         data : pandas.DataFrame
             Data in a pandas.DataFrame
         """
-
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 

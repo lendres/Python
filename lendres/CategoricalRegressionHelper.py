@@ -18,8 +18,19 @@ from lendres.ModelHelper import ModelHelper
 
 class CategoricalRegressionHelper(ModelHelper):
 
-
     def __init__(self, data):
+        """
+        Constructor.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            DataFrame to operate on.
+            
+        Returns
+        -------
+        None.
+        """
         super().__init__(data)
 
 

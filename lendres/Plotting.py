@@ -73,7 +73,7 @@ def FormatPlot(scale=1.0, transparentLegend=False):
         "axes.titlepad"          : 25,
         "axes.linewidth"         : 1.5*scale,               # Axis border.
         "patch.linewidth"        : 1.5*scale,               # Legend border.
-        "lines.linewidth"        : 3*scale,
+        "lines.linewidth"        : 3*scale
 
     }
 
