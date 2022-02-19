@@ -16,7 +16,6 @@ print("\n\n\n")
 data = lendres.Data.LoadAndInspectData("datawitherrors.csv")
 
 
-
 class TestMergeNumericalDataByRange(unittest.TestCase):
 
     @classmethod

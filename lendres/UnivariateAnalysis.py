@@ -27,7 +27,7 @@ def CreateBoxPlot(data, category, scale=1.0):
 
     Returns
     -------
-    figure : Figure
+    figure : matplotlib.figure.Figure
         The newly created figure.
     """
 
@@ -133,7 +133,7 @@ def CreateBoxAndHistogramPlot(data, category, scale=1.0):
 
     Returns
     -------
-    figure : Figure
+    figure : matplotlib.figure.Figure
         The newly created figure.
     """
 
@@ -199,7 +199,7 @@ def CreatePercentageBarPlot(data, category, scale=1.0):
 
     Returns
     -------
-    figure : Figure
+    figure : matplotlib.figure.Figure
         The newly created figure.
     """
 

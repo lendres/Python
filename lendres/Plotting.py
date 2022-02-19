@@ -35,14 +35,19 @@ def ApplyPlotToEachCategory(function, data, categories, save=False):
             SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
 
 
-def FormatPlot(scale=1.0, transparentLegend=False):
+def FormatPlot(scale=1.0, width=10, height=6, transparentLegend=False):
     """
     Sets the font sizes, weights, and other properties of a plot.
 
     Parameters
     ----------
-    scale : double
-        Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+    scale : float, optional
+        Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the
+        output scale of the plot. The default is 1.0.
+   width : float, optional
+       The width of the figure. The default is 10.
+   height : float, optional
+       The height of the figure. The default is 6.
     transparentLegend : bool
         Option to create a legend with a transparent background.
 
@@ -56,7 +61,7 @@ def FormatPlot(scale=1.0, transparentLegend=False):
 
     # Standard formating parameters.
     params = {
-        "figure.figsize"         : (scale*10, scale*6),
+        "figure.figsize"         : (width, height),
         "font.size"              : 1.2*scale*size,
         "font.weight"            : "bold",
         "figure.titlesize"       : 1.2*scale*size,
@@ -97,6 +102,15 @@ def FormatPlot(scale=1.0, transparentLegend=False):
     plt.rcParams.update(params)
 
 
+def ScaleFigureSize(scale, figure=None):
+
+    if figure == None:
+        figure = plt.gcf()
+
+    width, height = figure.get_size_inches()
+    figure.get_size_inches(width*scale, height*scale)
+
+
 def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
     """
     Creates a new figure that has two axes, one above another.
@@ -110,7 +124,7 @@ def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
 
     Returns
     -------
-    figure : Figure
+    figure : matplotlib.figure.Figure
         The newly created figure.
     (boxAxis, historgramAxis) : axis array
         The top axis and bottom axis, respectively, for the box plot and histogram.
@@ -133,6 +147,19 @@ def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
 
 # Default output directory for saving plots.
 defaultOutputDirector = ".\\Output\\"
+
+
+def GetDefaultOutputDirectory():
+    """
+    Gets the default output location for saving figures.
+
+    Returns
+    -------
+    : string
+        The default saving location for figures.
+
+    """
+    return os.path.join(os.getcwd(), defaultOutputDirector)
 
 
 def DeleteOutputDirectory():
@@ -162,7 +189,9 @@ def SavePlot(saveFileName, figure=None, useDefaultOutputFolder=False):
     figure : Figure
         The figure to save.  If "None" is specified, the current figure will be used.
     useDefaultOutputFolder : bool
-        If true, the image is saved to a subfolder or the current folder called "Output."
+        If true, the image is saved to a subfolder or the current folder called "Output."  If false, the
+        path is assumed to be part of "saveFileName."  If false and no path is part of "saveFileName" the
+        current directory is used.  The default is "False."
 
     Returns
     -------

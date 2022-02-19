@@ -9,25 +9,73 @@ Created on Mon Dec 27 19:30:11 2021
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 import lendres
 
+import unittest
 
-# Import some example data to work with.
-data = pd.read_csv("data.csv")
+class TestPlotting(unittest.TestCase):
 
-lendres.Plotting.FormatPlot()
-axis = plt.gca()
-sns.histplot(data["bmi"], kde=True, ax=axis, palette="winter")
-axis.set(title="Test Plot", xlabel="BMI", ylabel="Count")
+    @classmethod
+    def setUpClass(cls):
+        inputFile = "data.csv"
+        #cls.data = lendres.Data.LoadAndInspectData(inputFile)
+        cls.data   = pd.read_csv(inputFile)
 
-figure  = plt.gcf()
 
-# Make sure directory doesn't exist.
-lendres.Plotting.DeleteOutputDirectory()
+    def testFormatPlotMethod1(self):
+        self.createBasicPlot(scale=2.0)
+        plt.show()
 
-lendres.Plotting.SavePlot("First Test.png", useDefaultOutputFolder=True)
-plt.show()
-lendres.Plotting.SavePlot("Second Test.png", figure=figure, useDefaultOutputFolder=True)
 
-#lendres.Plotting.DeleteOutputDirectory()
+    def testFormatPlotMethod2(self):
+        self.createBasicPlot(width=5, height=3)
+        plt.show()
+
+
+    def testSavePlotBeforeShowMethod1(self):
+        self.createBasicPlot()
+
+        # Test with current figure.
+        fileName = "Plot Before Show (gcf).png"
+        lendres.Plotting.SavePlot(fileName, useDefaultOutputFolder=True)
+
+        fullPath = self.getFullPath(fileName)
+        self.assertTrue(os.path.exists(fullPath))
+        plt.show()
+
+
+    def testSavePlotBeforeShowMethod2(self):
+        figure = self.createBasicPlot()
+
+        # Test with supplied figure.
+        fileName = "Plot Before Show (figure).png"
+        lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
+
+        fullPath = self.getFullPath(fileName)
+        self.assertTrue(os.path.exists(fullPath))
+        plt.show()
+
+
+    def createBasicPlot(self, scale=1.0, width=10, height=6):
+        lendres.Plotting.FormatPlot(scale=scale, width=width, height=height)
+        axis = plt.gca()
+        sns.histplot(TestPlotting.data["bmi"], kde=True, ax=axis, palette="winter")
+        axis.set(title="Test Plot", xlabel="BMI", ylabel="Count")
+        return plt.gcf()
+
+
+    def getFullPath(self, fileName):
+        return os.path.join(lendres.Plotting.GetDefaultOutputDirectory(), fileName)
+
+
+    @classmethod
+    def tearDownClass(cls):
+        # It's not known what test function will be last, so make sure we clean
+        # up any files and directories created.
+        lendres.Plotting.DeleteOutputDirectory()
+
+
+if __name__ == "__main__":
+    unittest.main()

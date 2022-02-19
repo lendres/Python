@@ -8,6 +8,8 @@ Created on Wed Jan 19 07:49:25 2022
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from IPython.display import display
+
 from sklearn import metrics
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
@@ -34,47 +36,68 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         None.
         """
         super().__init__(data)
-        self.gridSearch = None
+        self.gridSearch              = None
+        self.CostComplexityPath      = None
+        self.decisionTreeHelpers = None
+        
+
+    @classmethod    
+    def FromData(cls, original, deep=False):
+        decisionTreeHelper = DecisionTreeHelper(None)
+        decisionTreeHelper.CopyData(original, deep)
+        return decisionTreeHelper
 
 
-    def CreateModel(self, max_depth=None, **kwargs):
+    def CreateModel(self, **kwargs):
         """
-        Creates a linear regression model.  Splits the data and creates the model.
+        Creates a decision tree model.
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
-        dependentVariable : string
-            Name of the column that has the dependant data.
-        testSize : double
-            Fraction of the data to use as test data.  Must be in the range of 0-1.
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
 
         Returns
         -------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
+        None.
         """
 
-        if len(self.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = DecisionTreeClassifier(max_depth=max_depth, **kwargs, random_state=1)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
-
-
-    def CreateGridSearchModel(self, parameters, scoringFunction, cv=5, **kwargs):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = DecisionTreeClassifier(**kwargs, random_state=1)
+        self.model.fit(self.xTrainingData, self.yTrainingData)
 
+
+    def CreateGridSearchModel(self, parameters, scoringFunction, displayBestParameters=True, **kwargs):
+        """
+        Creates a cross validation grid search model.
+
+        Parameters
+        ----------
+        parameters : dictionary
+            Grid search parameters.
+        scoringFunction : function
+            Method use to calculate a score for the model.
+        displayBestParameters : bool
+            If true, it outputs the parameters of the selected model.
+        **kwargs : keyword arguments
+            These arguments are passed on to the GridSearchCV.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Make sure there is data to operate on.
+        if len(self.xTrainingData) == 0:
+            raise Exception("The data has not been split.")
 
         # Type of scoring used to compare parameter combinations.
         scorer = metrics.make_scorer(scoringFunction)
 
         # Run the grid search.
-        self.gridSearch = GridSearchCV(self.model, parameters, scoring=scorer, cv=cv)
+        self.gridSearch = GridSearchCV(self.model, parameters, scoring=scorer, **kwargs)
         self.gridSearch = self.gridSearch.fit(self.xTrainingData, self.yTrainingData)
 
         # Set the model (classifier) to the best combination of parameters.
@@ -82,6 +105,86 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
 
         # Fit the best algorithm to the data.
         self.model.fit(self.xTrainingData, self.yTrainingData)
+
+
+    def DisplayChosenParameters(self, useMarkDown=False):
+        """
+        Prints the model performance scores.
+
+        Parameters
+        ----------
+        useMarkDown : bool
+            If true, markdown output is enabled.
+
+        Returns
+        -------
+        None.
+
+        """
+        lendres.Console.PrintBoldMessage("Chosen Model Parameters", useMarkDown=useMarkDown)
+        display(self.gridSearch.best_params_)
+
+
+    def CreateCostComplexityPruningModel(self, **kwargs):
+        self.model              = DecisionTreeClassifier(random_state=1, **kwargs)
+        self.CostComplexityPath = self.model.cost_complexity_pruning_path(self.xTrainingData, self.yTrainingData)
+
+        ccpAlphas                    = self.CostComplexityPath.ccp_alphas
+        self.decisionTreeHelpers = []
+        
+        for ccpAlpha in ccpAlphas:
+            decisionTreeHelper = DecisionTreeHelper.FromData(self, deep=False)
+            decisionTreeHelper.CreateModel(ccp_alpha=ccpAlpha)
+            decisionTreeHelper.Predict()
+            self.decisionTreeHelpers.append(decisionTreeHelper)
+            
+            
+    def CreateAlphasVersusScoresPlot(self, criteria, scale=1.0):
+
+        criteriaName = criteria.title()
+        
+        # Must be run before creating figure or plotting data.
+        lendres.Plotting.FormatPlot(scale=scale)
+        
+        axis = plt.gca()
+        
+        trainingScores = []
+        testScores     = []
+        
+        for decisionTreeHelper in self.decisionTreeHelpers:
+            decisionTreeHelper.Predict()
+            performanceScores = decisionTreeHelper.GetModelPerformanceScores()
+            trainingScores.append(performanceScores.loc["Training", criteriaName])
+            testScores.append(performanceScores.loc["Testing", criteriaName])
+
+        ccpAlphas = self.CostComplexityPath.ccp_alphas
+
+        # Must be run before creating figure or plotting data.
+        lendres.Plotting.FormatPlot(scale=scale)
+        
+        axis = plt.gca()
+        
+        axis.plot(ccpAlphas, trainingScores, marker='o', label="Training", drawstyle="steps-post", color="#1f77b4")
+        axis.plot(ccpAlphas, testScores, marker='o', label="Testing", drawstyle="steps-post", color="#ff7f0e")
+
+        axis.set(title=criteriaName+" vs Alpha", xlabel="Alpha", ylabel=criteriaName)
+        axis.legend()
+
+        plt.show()
+
+
+    def CreateImpunityVersusAlphaPlot(self, scale=1.0):
+        ccpAlphas  = self.CostComplexityPath.ccp_alphas[:-1]
+        impurities = self.CostComplexityPath.impurities[:-1]
+        
+        # Must be run before creating figure or plotting data.
+        lendres.Plotting.FormatPlot(scale=scale)
+
+        axis = plt.gca()
+        axis.plot(ccpAlphas, impurities, marker='o', drawstyle="steps-post")
+        axis.set(title="Total Impurity vs Effective Alpha\nTraing Data", xlabel="Effective Alpha", ylabel="Total Impurity of Leaves")
+
+        plt.show()
 
 
     def CreateDecisionTreePlot(self, scale=1.0):
@@ -121,6 +224,7 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         importancesDataFrame = self.GetSortedImportance(ascending=True)
         indices              = range(importancesDataFrame.shape[0])
 
+        # Must be run before creating figure or plotting data.
         lendres.Plotting.FormatPlot(scale=scale)
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")

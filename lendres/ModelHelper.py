@@ -37,6 +37,16 @@ class ModelHelper:
 
         self.yTrainingPredicted        = []
         self.yTestingPredicted         = []
+        
+    
+    def CopyData(self, original, deep=False):
+        self.additionalDroppedColumns  = original.additionalDroppedColumns.copy()
+        self.data                      = original.data.copy(deep=deep)
+
+        self.xTrainingData             = original.xTrainingData.copy(deep=deep)
+        self.xTestingData              = original.xTestingData.copy(deep=deep)
+        self.yTrainingData             = original.yTrainingData.copy(deep=deep)
+        self.yTestingData              = original.yTestingData.copy(deep=deep)
 
 
     def EncodeAllCategoricalColumns(self, data):
@@ -51,7 +61,7 @@ class ModelHelper:
 
         Returns
         -------
-        data : DataFrame
+        data : pandas.DataFrame
             The new DataFrame with the encoded values.
         """
         # Find all the category types in the DataFrame.
@@ -108,6 +118,26 @@ class ModelHelper:
 
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
+        
+        
+    def GetDependentVariableName(self):
+        """
+        Returns the name of the dependent variable (column heading).
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        : string
+            The name (column heading) of the dependent variable.
+
+        """
+        if len(self.yTrainingData) == 0:
+            raise Exception("The data has not been split (dependent variable not set).")
+        
+        return self.yTrainingData.columns[0]
 
 
     def Predict(self):

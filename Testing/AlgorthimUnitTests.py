@@ -5,7 +5,6 @@ Created on Wed Feb 16 17:49:44 2022
 @author: Lance
 """
 
-import pandas as pd
 import numpy as np
 
 import lendres

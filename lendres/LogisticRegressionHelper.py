@@ -4,12 +4,9 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-
-import pandas as pd
 import numpy as np
 
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
@@ -93,7 +90,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         self.yTestingPredicted  = np.round(self.yTestingPredicted)
 
 
-    def CreateRocCurvePlot(self, dataSet="training", scale=1.0):
+    def CreateRocCurvePlot(self, dataSet="training", **kwargs):
         """
         Creates a plot of the receiver operatoring characteristic curve(s).
 
@@ -104,20 +101,23 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
             training - Plots the results from the training data.
             testing  - Plots the results from the test data.
             both     - Plots the results from both the training and test data.
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+        **kwargs :  keyword arguments
+            keyword arguments pass on to the plot formating function.
 
         Returns
         -------
-        None.
+        figure : matplotlib.pyplot.figure
+            The newly created figure.
+        axis : matplotlib.pyplot.axis
+            The axis of the plot.
         """
 
         self.PredictProbabilities()
 
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
-        scale *= 1.5
-        lendres.Plotting.FormatPlot(scale=scale)
+        #scale *= 1.5
+        lendres.Plotting.FormatPlot(**kwargs)
 
         # Plot the ROC curve(s).
         if dataSet == "both":
@@ -137,6 +137,10 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
         plt.legend(loc="lower right")
         plt.show()
+
+        figure = plt.gcf()
+
+        return figure, axis
 
 
     def PlotRocCurve(self, dataSet="training", scale=1.0):
