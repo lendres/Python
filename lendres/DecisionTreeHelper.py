@@ -126,8 +126,7 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         display(self.gridSearch.best_params_)
 
 
-    def CreateCostComplexityPruningModel(self, criteria, **kwargs):
-        self.model              = DecisionTreeClassifier(random_state=1, **kwargs)
+    def CreateCostComplexityPruningModel(self, criteria):
         self.costComplexityPath = self.model.cost_complexity_pruning_path(self.xTrainingData, self.yTrainingData)
 
         # Get all the alphas except the trivial case (the case with one node).

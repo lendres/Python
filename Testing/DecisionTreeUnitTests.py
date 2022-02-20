@@ -5,7 +5,9 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import pandas as pd
+import numpy as np
 from IPython.display import display
+from sklearn.metrics import recall_score
 
 import lendres
 from lendres.DecisionTreeHelper import DecisionTreeHelper
@@ -45,7 +47,19 @@ class TestDecisionTreeHelper(unittest.TestCase):
         self.assertEqual(result, "Status_int")
 
 
+    def testHyperparameterTuning(self):
+        parameters = {"max_depth"             : np.arange(1, 3),
+                      "min_samples_leaf"      : [2, 5, 7],
+                      "max_leaf_nodes"        : [2, 5, 10],
+                      "criterion"             : ["entropy", "gini"]
+                     }
+
+        self.regressionHelper.CreateModel()
+        self.regressionHelper.CreateGridSearchModel(parameters, scoringFunction=recall_score)
+
+
     def testCostComplexityPruningModel(self):
+        self.regressionHelper.CreateModel()
         self.regressionHelper.CreateCostComplexityPruningModel("recall")
         self.regressionHelper.Predict()
         result = self.regressionHelper.GetModelPerformanceScores()
@@ -54,6 +68,7 @@ class TestDecisionTreeHelper(unittest.TestCase):
 
 
     def testCostComplexityPrusingPlot(self):
+        self.regressionHelper.CreateModel()
         self.regressionHelper.CreateCostComplexityPruningModel("accuracy")
         self.regressionHelper.CreateAlphasVersusScoresPlot("accuracy")
 
