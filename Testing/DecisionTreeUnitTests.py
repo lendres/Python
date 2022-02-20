@@ -5,6 +5,7 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import pandas as pd
+from IPython.display import display
 
 import lendres
 from lendres.DecisionTreeHelper import DecisionTreeHelper
@@ -44,8 +45,16 @@ class TestDecisionTreeHelper(unittest.TestCase):
         self.assertEqual(result, "Status_int")
 
 
-    def testAlphasPlot(self):
-        self.regressionHelper.CreateCostComplexityPruningModel()
+    def testCostComplexityPruningModel(self):
+        self.regressionHelper.CreateCostComplexityPruningModel("recall")
+        self.regressionHelper.Predict()
+        result = self.regressionHelper.GetModelPerformanceScores()
+        self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.838710, places=6)
+        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.863636, places=6)
+
+
+    def testCostComplexityPrusingPlot(self):
+        self.regressionHelper.CreateCostComplexityPruningModel("accuracy")
         self.regressionHelper.CreateAlphasVersusScoresPlot("accuracy")
 
 

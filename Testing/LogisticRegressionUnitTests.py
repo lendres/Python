@@ -34,10 +34,10 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
 
     def testStandardPlots(self):
-
         self.regressionHelper.CreateRocCurvePlot()
         self.regressionHelper.CreateRocCurvePlot("testing")
         self.regressionHelper.CreateRocCurvePlot("both")
+
 
     def testPredictWithThreashold(self):
         self.regressionHelper.PredictWithThreashold(0.5)

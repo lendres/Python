@@ -6,6 +6,7 @@ Created on Wed Jan 19 07:49:25 2022
 """
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from IPython.display import display
@@ -37,8 +38,8 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         """
         super().__init__(data)
         self.gridSearch              = None
-        self.CostComplexityPath      = None
-        self.decisionTreeHelpers = None
+        self.costComplexityPath      = None
+        self.decisionTreeHelpers     = None
         
 
     @classmethod    
@@ -125,29 +126,29 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         display(self.gridSearch.best_params_)
 
 
-    def CreateCostComplexityPruningModel(self, **kwargs):
+    def CreateCostComplexityPruningModel(self, criteria, **kwargs):
         self.model              = DecisionTreeClassifier(random_state=1, **kwargs)
-        self.CostComplexityPath = self.model.cost_complexity_pruning_path(self.xTrainingData, self.yTrainingData)
+        self.costComplexityPath = self.model.cost_complexity_pruning_path(self.xTrainingData, self.yTrainingData)
 
-        ccpAlphas                    = self.CostComplexityPath.ccp_alphas
+        # Get all the alphas except the trivial case (the case with one node).
+        ccpAlphas                    = self.costComplexityPath.ccp_alphas[:-1]
         self.decisionTreeHelpers = []
-        
+
+        # Create models based on the cost complexity pruning alpha values.
         for ccpAlpha in ccpAlphas:
             decisionTreeHelper = DecisionTreeHelper.FromData(self, deep=False)
             decisionTreeHelper.CreateModel(ccp_alpha=ccpAlpha)
-            decisionTreeHelper.Predict()
             self.decisionTreeHelpers.append(decisionTreeHelper)
-            
-            
-    def CreateAlphasVersusScoresPlot(self, criteria, scale=1.0):
+
+        trainingScores, testScores = self.GetCostComplexityPruningScores(criteria)
+        bestModelIndex = np.argmax(testScores)
+        self.model = self.decisionTreeHelpers[bestModelIndex].model
+
+
+    def GetCostComplexityPruningScores(self, criteria):
 
         criteriaName = criteria.title()
-        
-        # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
-        
-        axis = plt.gca()
-        
+
         trainingScores = []
         testScores     = []
         
@@ -157,11 +158,18 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
             trainingScores.append(performanceScores.loc["Training", criteriaName])
             testScores.append(performanceScores.loc["Testing", criteriaName])
 
-        ccpAlphas = self.CostComplexityPath.ccp_alphas
+        return trainingScores, testScores
+
+
+    def CreateAlphasVersusScoresPlot(self, criteria, scale=1.0):
+
+        criteriaName = criteria.title()
+        trainingScores, testScores = self.GetCostComplexityPruningScores(criteria)
+
+        ccpAlphas = self.costComplexityPath.ccp_alphas[:-1]
 
         # Must be run before creating figure or plotting data.
         lendres.Plotting.FormatPlot(scale=scale)
-        
         axis = plt.gca()
         
         axis.plot(ccpAlphas, trainingScores, marker='o', label="Training", drawstyle="steps-post", color="#1f77b4")
@@ -174,8 +182,8 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
 
 
     def CreateImpunityVersusAlphaPlot(self, scale=1.0):
-        ccpAlphas  = self.CostComplexityPath.ccp_alphas[:-1]
-        impurities = self.CostComplexityPath.impurities[:-1]
+        ccpAlphas  = self.costComplexityPath.ccp_alphas[:-1]
+        impurities = self.costComplexityPath.impurities[:-1]
         
         # Must be run before creating figure or plotting data.
         lendres.Plotting.FormatPlot(scale=scale)

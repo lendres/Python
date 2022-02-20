@@ -102,15 +102,6 @@ def FormatPlot(scale=1.0, width=10, height=6, transparentLegend=False):
     plt.rcParams.update(params)
 
 
-def ScaleFigureSize(scale, figure=None):
-
-    if figure == None:
-        figure = plt.gcf()
-
-    width, height = figure.get_size_inches()
-    figure.get_size_inches(width*scale, height*scale)
-
-
 def NewTopAndBottomAxisFigure(category, topPercent=0.25, scale=1.0):
     """
     Creates a new figure that has two axes, one above another.
