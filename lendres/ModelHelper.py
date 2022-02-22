@@ -118,7 +118,71 @@ class ModelHelper:
 
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
-        
+
+
+    def GetSplitComparisons(self):
+        """
+        Returns the value counts and percentages of the dependant variable for the
+        original, training, and testing data.
+
+        Returns
+        -------
+        comparisonFrame : pandas.DataFrame
+            DataFrame with the counts and percentages.
+        """
+        comparisonFrame = pd.DataFrame(
+                    {"False"    : [self.GetCountAndPrecentString(0, "original"),
+                                   self.GetCountAndPrecentString(0, "training"),
+                                   self.GetCountAndPrecentString(0, "testing")],
+                     "Positive" : [self.GetCountAndPrecentString(1, "original"),
+                                   self.GetCountAndPrecentString(1, "training"),
+                                   self.GetCountAndPrecentString(1, "testing")]},
+                     index=["Original", "Training", "Testing"])
+        return comparisonFrame
+
+
+    def GetCountAndPrecentString(self, classValue, dataSet="original", column=None):
+        """
+        Gets a string that is the value count of "classValue" and the percentage of the total
+        that the "classValue" accounts for in the column.
+
+        Parameters
+        ----------
+        classValue : int or string
+            The value to count and calculate the percentage for.
+        dataSet : string
+            Which data set(s) to plot.
+            original - Gets the results from the original data.
+            training - Gets the results from the training data.
+            testing  - v the results from the test data.
+        column : string, optional
+            If provided, that column will be used for the calculations.  If no value is provided,
+            the dependant variable is used. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        data = None
+
+        if dataSet == "original":
+            data = self.data
+        elif dataSet == "training":
+            data = self.yTrainingData
+        elif dataSet == "testing":
+            data = self.yTestingData
+        else:
+            raise Exception("Invalid data set specified.")
+
+        if column == None:
+            column = self.GetDependentVariableName()
+
+        classValueCount = len(data.loc[data[column] == classValue])
+
+        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/len(data.index) * 100)
+        return string
+
         
     def GetDependentVariableName(self):
         """

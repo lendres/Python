@@ -66,7 +66,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         self.yTestingPredicted  = self.model.predict_proba(self.xTestingData)[:, 1]
 
 
-    def PredictWithThreashold(self, threshold):
+    def PredictWithThreshold(self, threshold):
         """
         Runs the probability prediction (model.predict_proba) on the training and test data.  The results are stored in
         the yTrainingPredicted and yTestingPredicted variables.

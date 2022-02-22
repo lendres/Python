@@ -85,11 +85,8 @@ class CategoricalRegressionHelper(ModelHelper):
 
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
-        scale *= 1.5
-        lendres.Plotting.FormatPlot(scale=scale)
-
         # Not much is shown, so we can shrink the figure size.
-        plt.figure(figsize=(9,6))
+        lendres.Plotting.FormatPlot(scale=scale, width=5.35, height=4)
 
         # Create plot and set the titles.
         axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*scale}, fmt="")
@@ -138,7 +135,7 @@ class CategoricalRegressionHelper(ModelHelper):
         return confusionMatrix
 
 
-    def GetModelPerformanceScores(self, threshold=0.5):
+    def GetModelPerformanceScores(self):
         """
         Calculate performance metrics.  Threshold for a positive result can be specified.
 
@@ -168,8 +165,8 @@ class CategoricalRegressionHelper(ModelHelper):
         testScore       = metrics.recall_score(self.yTestingData, self.yTestingPredicted)
         recallScores    = [trainingScore, testScore]
 
-        trainingScore   = metrics.precision_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.precision_score(self.yTestingData, self.yTestingPredicted)
+        trainingScore   = metrics.precision_score(self.yTrainingData, self.yTrainingPredicted, zero_division=0)
+        testScore       = metrics.precision_score(self.yTestingData, self.yTestingPredicted, zero_division=0)
         precisionScores = [trainingScore, testScore]
 
         trainingScore   = metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)

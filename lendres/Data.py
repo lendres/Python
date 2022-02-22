@@ -81,7 +81,7 @@ def PrintNotAvailableCounts(data):
         print("No entries are missing.")
 
 
-def ChangeToCategory(data, categories):
+def ChangeToCategoryType(data, categories):
     """
     Changes the data series specified to type "category."
 
@@ -409,7 +409,7 @@ def DropMinAndMaxValues(data, category, criteria, method="fraction", inPlace=Fal
     return data.drop(dropIndices, inplace=inPlace)
 
 
-def DropOutliers(data, category, irqScale=1.5, inPlace=False):
+def DropOutliers(data, column, irqScale=1.5, inPlace=False):
     """
     Drops any rows that are considered outliers by the definition of
 
@@ -417,8 +417,8 @@ def DropOutliers(data, category, irqScale=1.5, inPlace=False):
     ----------
     data : pandas.DataFrame
         DataFrame to change the categories in.
-    category : string
-        Names of the category to look for not available entries.
+    column : string
+        Names of the column to look for not available entries.
     irqScale : float
         Scale factor of interquartile range used to define outliers.
     inPlace : bool
@@ -431,8 +431,8 @@ def DropOutliers(data, category, irqScale=1.5, inPlace=False):
     """
 
     # Get the stats we need.
-    interQuartileRange = stats.iqr(data[category])
-    limits             = np.quantile(data[category], q=(0.25, 0.75))
+    interQuartileRange = stats.iqr(data[column])
+    limits             = np.quantile(data[column], q=(0.25, 0.75))
 
     # Set the outlier limits.
     limits[0] -= irqScale*interQuartileRange
@@ -440,7 +440,7 @@ def DropOutliers(data, category, irqScale=1.5, inPlace=False):
 
     # Gets an DataSeries of boolean values indicating where values are outside of the range.  These are the
     # values we want to drop.
-    indexMask = (data[category] < limits[0]) | (data[category] > limits[1])
+    indexMask = (data[column] < limits[0]) | (data[column] > limits[1])
 
     # The indexMask is a DataSeries that has the indexes from the original DataFrame and the values are the result
     # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
@@ -670,3 +670,46 @@ def MergeNumericalDataByRange(data, column, labels, boundaries, replaceExisting=
 
     data[newColumnName] = newColumn.astype('category')
     return newColumnName
+
+
+def EncodeAllCategoricalColumns(data):
+    """
+    Converts all categorical columns (have that data type "category") to one hot encoded values and drops one
+    value per category.  Prepares categorical columns for use in a model.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame to operate on.
+
+    Returns
+    -------
+    data : DataFrame
+        The new DataFrame with the encoded values.
+    """
+    # Find all the category types in the DataFrame.
+    # Gets all the columns that have the category data type.  That is returned as a DataSeries.  The
+    # index (where the names are) is extracted from that.
+    allCategoricalColumns = data.dtypes[data.dtypes == 'category'].index.tolist()
+
+    return EncodeCategoricalColumns(data, allCategoricalColumns)
+
+
+def EncodeCategoricalColumns(data, columns):
+    """
+    Converts the categorical columns "categories" to one hot encoded values and drops one value per category.
+    Prepares categorical columns for use in a model.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame to operate on.
+    columns : list of strings
+        The names of the columns to encode.
+
+    Returns
+    -------
+    data : DataFrame
+        The new DataFrame with the encoded values.
+    """
+    return pd.get_dummies(data, columns=columns, drop_first=True)

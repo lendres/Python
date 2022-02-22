@@ -67,5 +67,11 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.878788, places=6)
 
 
+    def testSplitComparisons(self):
+        result = self.regressionHelper.GetSplitComparisons()
+        self.assertEqual(result.loc["Testing", "Positive"], "66 (70.97%)")
+
+
+
 if __name__ == "__main__":
     unittest.main()
