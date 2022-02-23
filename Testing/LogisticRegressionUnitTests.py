@@ -39,18 +39,24 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         self.regressionHelper.CreateRocCurvePlot("both")
 
 
-    def testPredictWithThreashold(self):
-        self.regressionHelper.PredictWithThreashold(0.5)
+    def testPredictWithThreshold(self):
+        self.regressionHelper.PredictWithThreshold(0.5)
         result = self.regressionHelper.GetModelPerformanceScores()
         self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.834101, places=6)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.878788, places=6)
 
         # Test a separate threashold to be sure we get different values.
-        self.regressionHelper.PredictWithThreashold(0.8)
+        self.regressionHelper.PredictWithThreshold(0.8)
         result = self.regressionHelper.GetModelPerformanceScores()
+        #display(result)
         self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.783410, places=6)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.712121, places=6)
 
+
+    def testGetOdds(self):
+        result = self.regressionHelper.GetOdds(sort=True)
+        #display(result)
+        self.assertAlmostEqual(result.loc["pelvic_incidence", "Odds"], 1.035757, places=6)
 
 if __name__ == "__main__":
     unittest.main()

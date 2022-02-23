@@ -40,6 +40,22 @@ class ModelHelper:
         
     
     def CopyData(self, original, deep=False):
+        """
+        Copies the data from another ModelHelper.  Does not copy any models built
+        or output produce.
+
+        Parameters
+        ----------
+        original : ModelHelper
+            The source of the data.
+        deep : bool, optional
+            Specifies if a deep copy should be done. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         self.additionalDroppedColumns  = original.additionalDroppedColumns.copy()
         self.data                      = original.data.copy(deep=deep)
 

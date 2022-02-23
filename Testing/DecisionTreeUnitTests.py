@@ -19,8 +19,8 @@ class TestDecisionTreeHelper(unittest.TestCase):
     def setUpClass(cls):
         cls.whichData = 1
 
-        inputFile             = ""
-        dependentVariable     = ""
+        inputFile                 = ""
+        dependentVariable         = ""
 
         if cls.whichData == 0:
             inputFile             = "Loan_Modelling.csv"
@@ -117,7 +117,6 @@ class TestDecisionTreeHelper(unittest.TestCase):
         self.regressionHelper.Predict()
         result = self.regressionHelper.GetModelPerformanceScores()
 
-        display(result)
         if TestDecisionTreeHelper.whichData == 0:
             self.assertAlmostEqual(result.loc["Training", "Accuracy"], 1.000000, places=6)
             self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.853333, places=6)
@@ -126,12 +125,15 @@ class TestDecisionTreeHelper(unittest.TestCase):
             self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.569767, places=6)
 
 
-    def testCostComplexityPruningPlot(self):
+    def testCostComplexityPruningPlots(self):
         scoreMethod = "recall"
         #scoreMethod = "precision"
         self.regressionHelper.CreateModel()
         self.regressionHelper.CreateCostComplexityPruningModel(scoreMethod)
+
+        self.regressionHelper.CreateImpunityVersusAlphaPlot()
         self.regressionHelper.CreateAlphasVersusScoresPlot(scoreMethod)
+
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="training")
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")

@@ -4,6 +4,7 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
+import pandas as pd
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -18,6 +19,18 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
 
     def __init__(self, data):
+        """
+        Constructor.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            DataFrame to operate on.
+            
+        Returns
+        -------
+        None.
+        """
         super().__init__(data)
 
 
@@ -88,6 +101,39 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
         self.yTrainingPredicted = np.round(self.yTrainingPredicted)
         self.yTestingPredicted  = np.round(self.yTestingPredicted)
+
+
+    def GetOdds(self, sort=False):
+        """
+        Converts the coefficients to odds and percent changes.
+
+        Parameters
+        ----------
+        sort : bool, optional
+            Specifies if the results should be sorted.  Default is false.
+
+        Returns
+        -------
+        dataFrame : pandas.dataFrame
+            The odds and percent changes in a data frame.
+        """
+        odds = np.exp(self.model.coef_[0])
+
+        # finding the percentage change
+        percentChange = (odds - 1) * 100
+
+        # Remove limit from number of columns to display.
+        pd.set_option("display.max_columns", None)
+        
+        # Add the odds to a dataframe.
+        dataFrame = pd.DataFrame({"Odds" : odds,
+                                 "Percent Change" : percentChange},
+                                 index=self.xTrainingData.columns)
+
+        if sort:
+            dataFrame.sort_values("Odds", axis=0, ascending=False, inplace=True)
+
+        return dataFrame
 
 
     def CreateRocCurvePlot(self, dataSet="training", **kwargs):

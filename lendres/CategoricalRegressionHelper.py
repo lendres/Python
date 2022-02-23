@@ -35,15 +35,44 @@ class CategoricalRegressionHelper(ModelHelper):
 
 
     def ConvertCategoryToNumeric(self, column, trueValue):
+        """
+        Takes a column that has a categorical type with the categories represented
+        as something other than integers and convertes it to integers.  Useful for
+        converting text based columns into columns useful for model building.
+
+        Assumes the column only has two category types so that it can be converted
+        into a binary representation (0 or 1).
+
+        Parameters
+        ----------
+        column : string
+            The column to convert.
+        trueValue : string or other type comparable with the "==" operator.
+            The value in the column that is consided to be the "true" or "1" value.  This
+            value will be output as 1, the other value as 0.
+
+        Returns
+        -------
+        newColumn : string
+            Name of the new column added to the data.
+
+        """
+        # Perform a check to make sure we can continue.
         if len(self.data) == 0:
             raise Exception("The data has not been set.")
 
+        # Create a new column and initialize it to all zeros.
         newColumn               = column + "_int"
         self.data[newColumn]    = 0
 
+        # Add the original column name to a list that will be used to drop columns
+        # when it is time to build a model.
         self.additionalDroppedColumns.append(column)
 
+        # Set the locations that have the "trueValue" as equal to one.
         self.data.loc[self.data[column] == trueValue, newColumn] = 1
+
+        # Return the name of the new column that was added to the data.
         return newColumn
 
 
