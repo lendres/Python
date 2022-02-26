@@ -5,17 +5,19 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import pandas as pd
+import numpy as np
 from IPython.display import display
+from sklearn.metrics import recall_score
 
 import lendres
-from lendres.DecisionTreeHelper import DecisionTreeHelper
+from lendres.DecisionTreeHyperparameterHelper import DecisionTreeHyperparameterHelper
 import unittest
 
-class TestDecisionTreeHelper(unittest.TestCase):
+class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.whichData = 0
+        cls.whichData = 1
 
         inputFile                 = ""
         dependentVariable         = ""
@@ -80,21 +82,21 @@ class TestDecisionTreeHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.data             = TestDecisionTreeHelper.data.copy(deep=True)
-        self.regressionHelper = DecisionTreeHelper(self.data)
+        self.data             = TestDecisionTreeHyperparameterHelper.data.copy(deep=True)
+        self.regressionHelper = DecisionTreeHyperparameterHelper(self.data)
 
-        self.regressionHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3)
+        self.regressionHelper.SplitData(TestDecisionTreeHyperparameterHelper.dependentVariable, 0.3)
    
-        
-    def testStandardPlots(self):
+
+    def testHyperparameterTuning(self):
+        parameters = {"max_depth"             : np.arange(1, 3),
+                      "min_samples_leaf"      : [2, 5, 7],
+                      "max_leaf_nodes"        : [2, 5, 10],
+                      "criterion"             : ["entropy", "gini"]
+                      }
+
         self.regressionHelper.CreateModel()
-        self.regressionHelper.CreateDecisionTreePlot()
-        self.regressionHelper.CreateFeatureImportancePlot()
-
-
-    def testGetDependentVariableName(self):
-        result = self.regressionHelper.GetDependentVariableName()
-        self.assertEqual(result, TestDecisionTreeHelper.dependentVariable)
+        self.regressionHelper.CreateGridSearchModel(parameters, scoringFunction=recall_score)
 
 
 if __name__ == "__main__":

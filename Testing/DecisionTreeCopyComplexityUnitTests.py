@@ -5,17 +5,19 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import pandas as pd
+import numpy as np
 from IPython.display import display
+from sklearn.metrics import recall_score
 
 import lendres
-from lendres.DecisionTreeHelper import DecisionTreeHelper
+from lendres.DecisionTreeCostComplexityHelper import DecisionTreeCostComplexityHelper
 import unittest
 
-class TestDecisionTreeHelper(unittest.TestCase):
+class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.whichData = 0
+        cls.whichData = 1
 
         inputFile                 = ""
         dependentVariable         = ""
@@ -80,21 +82,45 @@ class TestDecisionTreeHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.data             = TestDecisionTreeHelper.data.copy(deep=True)
-        self.regressionHelper = DecisionTreeHelper(self.data)
+        self.data             = TestDecisionTreeCostComplexityHelper.data.copy(deep=True)
+        self.regressionHelper = DecisionTreeCostComplexityHelper(self.data)
 
-        self.regressionHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3)
-   
-        
-    def testStandardPlots(self):
+        self.regressionHelper.SplitData(TestDecisionTreeCostComplexityHelper.dependentVariable, 0.3)
+
+
+    def testCostComplexityPruningModel(self):
         self.regressionHelper.CreateModel()
-        self.regressionHelper.CreateDecisionTreePlot()
-        self.regressionHelper.CreateFeatureImportancePlot()
+        self.regressionHelper.CreateCostComplexityPruningModel("recall")
+
+        self.regressionHelper.Predict()
+        result = self.regressionHelper.GetModelPerformanceScores()
+
+        if TestDecisionTreeCostComplexityHelper.whichData == 0:
+            self.assertAlmostEqual(result.loc["Training", "Accuracy"], 1.000000, places=6)
+            self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.853333, places=6)
+        elif TestDecisionTreeCostComplexityHelper.whichData == 1:
+            self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.781429, places=6)
+            self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.569767, places=6)
 
 
-    def testGetDependentVariableName(self):
-        result = self.regressionHelper.GetDependentVariableName()
-        self.assertEqual(result, TestDecisionTreeHelper.dependentVariable)
+    def testCostComplexityPruningPlots(self):
+        scoreMethod = "recall"
+        #scoreMethod = "precision"
+        self.regressionHelper.CreateModel()
+        self.regressionHelper.CreateCostComplexityPruningModel(scoreMethod)
+
+        self.regressionHelper.CreateImpunityVersusAlphaPlot()
+        self.regressionHelper.CreateAlphasVersusScoresPlot(scoreMethod)
+
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="training")
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+        result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
+        if TestDecisionTreeCostComplexityHelper.whichData == 0:
+            self.assertEqual(result[0, 1], 10)
+            self.assertEqual(result[1, 1], 64)
+        elif TestDecisionTreeCostComplexityHelper.whichData == 1:
+            self.assertEqual(result[0, 1], 39)
+            self.assertEqual(result[1, 1], 49)
 
 
 if __name__ == "__main__":
