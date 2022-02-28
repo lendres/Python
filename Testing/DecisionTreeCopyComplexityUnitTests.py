@@ -5,9 +5,7 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import pandas as pd
-import numpy as np
 from IPython.display import display
-from sklearn.metrics import recall_score
 
 import lendres
 from lendres.DecisionTreeCostComplexityHelper import DecisionTreeCostComplexityHelper

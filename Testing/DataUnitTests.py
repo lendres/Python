@@ -22,7 +22,9 @@ class TestMergeNumericalDataByRange(unittest.TestCase):
     def setUpClass(cls):
         inputFile   = "Loan_Modelling.csv"
         #self.data   = lendres.Data.LoadAndInspectData(inputFile)
-        
+        self.loanData  = DataHelper()
+        self.loanData.LoadAndInspect(inputFile)
+
         cls.data   = pd.read_csv(inputFile)
         
         cls.boundaries = [0,     90000,   91000,   92000,   93000,   94000,   95000,   96000,   99999]
@@ -33,7 +35,10 @@ class TestMergeNumericalDataByRange(unittest.TestCase):
         
     def testValueCounts(self):
         newColumnName = MergeNumericalDataByRange(self.data, "ZIPCode", TestMergeNumericalDataByRange.labels, TestMergeNumericalDataByRange.boundaries);
-        self.assertEqual(data[newColumnName].value_counts()["96000"], 40)
+        self.assertEqual(self.data[newColumnName].value_counts()["96000"], 40)
+
+    def testGetNotAvailableCounts(self):
+        notAvailableCounts, totalNotAvailable = lendres.Data.GetNotAvailableCounts(self.data)
 
 
 if __name__ == "__main__":

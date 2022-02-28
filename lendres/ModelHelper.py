@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 
 class ModelHelper:
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
         
@@ -26,7 +26,7 @@ class ModelHelper:
         None.
         """
         self.additionalDroppedColumns  = []
-        self.data                      = data
+        self.dataHelper                = dataHelper
 
         self.xTrainingData             = []
         self.xTestingData              = []
@@ -57,53 +57,12 @@ class ModelHelper:
 
         """
         self.additionalDroppedColumns  = original.additionalDroppedColumns.copy()
-        self.data                      = original.data.copy(deep=deep)
+        self.dataHelper                = original.dataHelper.Copy(deep=deep)
 
         self.xTrainingData             = original.xTrainingData.copy(deep=deep)
         self.xTestingData              = original.xTestingData.copy(deep=deep)
         self.yTrainingData             = original.yTrainingData.copy(deep=deep)
         self.yTestingData              = original.yTestingData.copy(deep=deep)
-
-
-    def EncodeAllCategoricalColumns(self, data):
-        """
-        Converts all categorical columns (have that data type "category") to one hot encoded values and drops one
-        value per category.  Prepares categorical columns for use in a model.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-
-        Returns
-        -------
-        data : pandas.DataFrame
-            The new DataFrame with the encoded values.
-        """
-        # Find all the category types in the DataFrame.
-        # Gets all the columns that have the category data type.  That is returned as a DataSeries.  The
-        # index (where the names are) is extracted from that.
-        allCategoricalColumns = data.dtypes[data.dtypes == 'category'].index.tolist()
-
-        return self.EncodeCategoricalColumns(data, allCategoricalColumns)
-
-
-    def EncodeCategoricalColumns(self, data, categories):
-        """
-        Converts the categorical columns "categories" to one hot encoded values and drops one value per category.
-        Prepares categorical columns for use in a model.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-
-        Returns
-        -------
-        data : DataFrame
-            The new DataFrame with the encoded values.
-        """
-        return pd.get_dummies(data, columns=categories, drop_first=True)
 
 
     def SplitData(self, dependentVariable, testSize):
@@ -126,11 +85,11 @@ class ModelHelper:
         """
 
         # Remove the dependent varaible from the rest of the data.
-        x = self.data.drop([dependentVariable], axis=1)
+        x = self.dataHelper.drop([dependentVariable], axis=1)
         x = x.drop(self.additionalDroppedColumns, axis=1)
 
         # The dependent variable.
-        y = self.data[[dependentVariable]]
+        y = self.dataHelper[[dependentVariable]]
 
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
@@ -183,7 +142,7 @@ class ModelHelper:
         data = None
 
         if dataSet == "original":
-            data = self.data
+            data = self.dataHelper
         elif dataSet == "training":
             data = self.yTrainingData
         elif dataSet == "testing":

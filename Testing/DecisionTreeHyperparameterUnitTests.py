@@ -86,7 +86,7 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
         self.regressionHelper = DecisionTreeHyperparameterHelper(self.data)
 
         self.regressionHelper.SplitData(TestDecisionTreeHyperparameterHelper.dependentVariable, 0.3)
-   
+
 
     def testHyperparameterTuning(self):
         parameters = {"max_depth"             : np.arange(1, 3),
