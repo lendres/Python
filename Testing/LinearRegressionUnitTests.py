@@ -16,10 +16,12 @@ class TestLinearRegressionHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
-        cls.loanData        = DataHelper(consoleHelper=consoleHelper)
+        inputFile       = "insurance.csv"
 
-        cls.loanData.LoadAndInspectData("insurance.csv")
+        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+        cls.loanData    = DataHelper(consoleHelper=consoleHelper)
+
+        cls.loanData.LoadAndInspectData(inputFile)
         cls.loanData.EncodeCategoricalColumns(["region", "sex", "smoker"])
 
 

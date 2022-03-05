@@ -4,9 +4,10 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
-import pandas as pd
-from IPython.display import display
+#from IPython.display import display
 
+from lendres.ConsoleHelper import ConsoleHelper
+from lendres.DataHelper import DataHelper
 from lendres.LogisticRegressionHelper import LogisticRegressionHelper
 
 import unittest
@@ -15,9 +16,11 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile = "backpain.csv"
-        #cls.data = lendres.Data.LoadAndInspectData(inputFile)
-        cls.data   = pd.read_csv(inputFile)
+        inputFile       = "backpain.csv"
+
+        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+        cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
+        cls.dataHelper.LoadAndInspectData(inputFile)
 
 
     def setUp(self):
@@ -25,8 +28,8 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.data             = TestLogisticRegressionHelper.data.copy(deep=True)
-        self.regressionHelper = LogisticRegressionHelper(self.data)
+        self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
+        self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
 
         columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric("Status", "Abnormal")
         self.regressionHelper.SplitData(columnAsNumeric, 0.3)

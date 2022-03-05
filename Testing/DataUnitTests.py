@@ -4,8 +4,6 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
-
-import lendres
 from lendres.DataHelper import DataHelper
 from lendres.ConsoleHelper import ConsoleHelper
 import unittest
@@ -26,7 +24,7 @@ class TestDataHelper(unittest.TestCase):
 
 
     def setUp(self):
-        self.loanData = DataHelper.Copy(TestDataHelper.loanData, deep=True)
+        self.loanData = TestDataHelper.loanData.Copy(deep=True)
 
 
     def testValueCounts(self):

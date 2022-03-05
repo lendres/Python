@@ -67,7 +67,7 @@ class DataHelper:
 
 
     @classmethod
-    def Copy(cls, original, deep=False):
+    def CopyFrom(cls, original, deep=False):
         """
         Creates a copy from another DataHelper (copy constructor).
 
@@ -85,6 +85,25 @@ class DataHelper:
         """
         dataHelper = DataHelper()
         dataHelper.data = original.data.copy(deep)
+        return dataHelper
+
+
+    def Copy(self, deep=False):
+        """
+        Creates a copy (copy constructor).
+
+        Parameters
+        ----------
+        deep : bool, optional
+            Specifies if a deep copy should be done. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
+        dataHelper = DataHelper()
+        dataHelper.data = self.data.copy(deep)
         return dataHelper
 
 

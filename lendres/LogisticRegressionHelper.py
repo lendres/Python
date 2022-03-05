@@ -18,20 +18,20 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 class LogisticRegressionHelper(CategoricalRegressionHelper):
 
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
         """
-        super().__init__(data)
+        super().__init__(dataHelper)
 
 
     def CreateModel(self):
@@ -124,7 +124,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
         # Remove limit from number of columns to display.
         pd.set_option("display.max_columns", None)
-        
+
         # Add the odds to a dataframe.
         dataFrame = pd.DataFrame({"Odds" : odds,
                                  "Percent Change" : percentChange},

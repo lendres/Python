@@ -21,12 +21,12 @@ class CategoricalRegressionHelper(ModelHelper):
     def __init__(self, data):
         """
         Constructor.
-        
+
         Parameters
         ----------
         data : pandas.DataFrame
             DataFrame to operate on.
-            
+
         Returns
         -------
         None.
@@ -43,6 +43,11 @@ class CategoricalRegressionHelper(ModelHelper):
         Assumes the column only has two category types so that it can be converted
         into a binary representation (0 or 1).
 
+        This is normally done with the pandas.get_dummies function.  This function
+        differs by allowing you to specify which value in the column is converted
+        to true and which is converted to false.  In the pandas function, you do
+        not have that choice.
+
         Parameters
         ----------
         column : string
@@ -58,19 +63,19 @@ class CategoricalRegressionHelper(ModelHelper):
 
         """
         # Perform a check to make sure we can continue.
-        if len(self.data) == 0:
+        if len(self.dataHelper.data) == 0:
             raise Exception("The data has not been set.")
 
         # Create a new column and initialize it to all zeros.
-        newColumn               = column + "_int"
-        self.data[newColumn]    = 0
+        newColumn                          = column + "_int"
+        self.dataHelper.data[newColumn]    = 0
 
         # Add the original column name to a list that will be used to drop columns
         # when it is time to build a model.
         self.additionalDroppedColumns.append(column)
 
         # Set the locations that have the "trueValue" as equal to one.
-        self.data.loc[self.data[column] == trueValue, newColumn] = 1
+        self.dataHelper.data.loc[self.dataHelper.data[column] == trueValue, newColumn] = 1
 
         # Return the name of the new column that was added to the data.
         return newColumn
