@@ -15,12 +15,12 @@ class ModelHelper:
     def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
@@ -37,12 +37,12 @@ class ModelHelper:
 
         self.yTrainingPredicted        = []
         self.yTestingPredicted         = []
-        
-    
+
+
     def CopyData(self, original, deep=False):
         """
         Copies the data from another ModelHelper.  Does not copy any models built
-        or output produce.
+        or output produced.
 
         Parameters
         ----------
@@ -85,11 +85,11 @@ class ModelHelper:
         """
 
         # Remove the dependent varaible from the rest of the data.
-        x = self.dataHelper.drop([dependentVariable], axis=1)
+        x = self.dataHelper.data.drop([dependentVariable], axis=1)
         x = x.drop(self.additionalDroppedColumns, axis=1)
 
         # The dependent variable.
-        y = self.dataHelper[[dependentVariable]]
+        y = self.dataHelper.data[[dependentVariable]]
 
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
@@ -142,7 +142,7 @@ class ModelHelper:
         data = None
 
         if dataSet == "original":
-            data = self.dataHelper
+            data = self.dataHelper.data
         elif dataSet == "training":
             data = self.yTrainingData
         elif dataSet == "testing":
@@ -158,7 +158,7 @@ class ModelHelper:
         string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/len(data.index) * 100)
         return string
 
-        
+
     def GetDependentVariableName(self):
         """
         Returns the name of the dependent variable (column heading).
@@ -175,7 +175,7 @@ class ModelHelper:
         """
         if len(self.yTrainingData) == 0:
             raise Exception("The data has not been split (dependent variable not set).")
-        
+
         return self.yTrainingData.columns[0]
 
 

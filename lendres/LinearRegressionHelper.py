@@ -17,20 +17,20 @@ from lendres.ModelHelper import ModelHelper
 
 class LinearRegressionHelper(ModelHelper):
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
         """
-        super().__init__(data)
+        super().__init__(dataHelper)
 
 
     def CreateModel(self):
@@ -100,5 +100,5 @@ class LinearRegressionHelper(ModelHelper):
                                        "RMSE"      : rmseScores,
                                        "MSE"       : mseScores,
                                        "MAE"       : maeScores},
-                                       index=["Training", "Test"])
+                                       index=["Training", "Testing"])
         return dataFrame

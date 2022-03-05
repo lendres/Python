@@ -4,29 +4,47 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
+#from IPython.display import display
 
-
+from lendres.ConsoleHelper import ConsoleHelper
+from lendres.DataHelper import DataHelper
 from lendres.LinearRegressionHelper import LinearRegressionHelper
+import unittest
 
 
-import pandas as pd
-from IPython.display import display
+class TestLinearRegressionHelper(unittest.TestCase):
 
-inputFile = "insurance.csv"
+    @classmethod
+    def setUpClass(cls):
+        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+        cls.loanData        = DataHelper(consoleHelper=consoleHelper)
 
-data = pd.read_csv(inputFile)
-data.info()
+        cls.loanData.LoadAndInspectData("insurance.csv")
+        cls.loanData.EncodeCategoricalColumns(["region", "sex", "smoker"])
 
-data = pd.get_dummies(data, columns=["region", "sex", "smoker"], drop_first=True)
 
-linearRegressionHelper = LinearRegressionHelper(data)
-data.info()
+    def setUp(self):
+        """
+        Set up function that runs before each test.  Creates a new copy of the data and uses
+        it to create a new regression helper.
+        """
+        loanData = DataHelper.Copy(TestLinearRegressionHelper.loanData, deep=True)
+        self.linearRegressionHelper = LinearRegressionHelper(loanData)
+        self.linearRegressionHelper.SplitData("charges", 0.3)
+        self.linearRegressionHelper.CreateModel()
 
-linearRegressionHelper.SplitData("charges", 0.3)
-linearRegressionHelper.CreateModel()
 
-print("\n")
-display(linearRegressionHelper.GetModelCoefficients())
+    def testModelCoefficients(self):
+        result = self.linearRegressionHelper.GetModelCoefficients()
+        self.assertAlmostEqual(result["Coefficients"]["age"], 251.681865, places=6)
 
-print("\n")
-display(linearRegressionHelper.GetModelPerformanceScores())
+
+
+    def testPerformanceScores(self):
+        self.linearRegressionHelper.Predict()
+        result = self.linearRegressionHelper.GetModelPerformanceScores()
+        self.assertAlmostEqual(result.loc["Testing", "RMSE"], 6063.122657, places=6)
+
+
+if __name__ == "__main__":
+    unittest.main()

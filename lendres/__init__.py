@@ -3,8 +3,8 @@
 
 import lendres.Algorithms
 import lendres.BivariateAnalysis
-import lendres.Console
-import lendres.Data
+import lendres.ConsoleHelper
+import lendres.DataHelper
 import lendres.Plotting
 import lendres.UnivariateAnalysis
 import lendres.ModelHelper
