@@ -227,6 +227,19 @@ class DataHelper:
             self.data[category] = self.data[category].astype("category")
 
 
+    def ChangeAllObjectColumnsToCategories(self):
+        """
+        Changes all the columns with the "object" data type to the "category" data type.
+
+        Returns
+        -------
+        None.
+
+        """
+        columnNames = self.data.dtypes[self.data.dtypes == "object"].index
+        self.ChangeToCategoryType(columnNames)
+
+
     def DropRowsWhereDataNotAvailable(self, category, inPlace=False):
         """
         Drops any rows that do not have self.data available in the category of "category."
@@ -321,8 +334,8 @@ class DataHelper:
             A self.dataFrame that contains the indices of the rows that contain at least one missing entry.
         """
         # Initialize variables.
-        numberOfRows  = self.data.shape[0]
-        self.dataFrame     = pd.self.dataFrame(index=range(numberOfRows), columns=categories)
+        numberOfRows    = self.data.shape[0]
+        self.dataFrame  = pd.self.dataFrame(index=range(numberOfRows), columns=categories)
 
         # Extract all the units information from the cells.  Loop over all the cells and extract the second half of the split string.
         for category in categories:
@@ -592,7 +605,7 @@ class DataHelper:
         None.
         """
         # Find all the category types in the self.dataFrame and loop over them.
-        for category in self.data.dtypes[self.data.dtypes == 'category'].index:
+        for category in self.data.dtypes[self.data.dtypes == "category"].index:
             self.data[category] = self.data[category].cat.remove_unused_categories()
 
 
@@ -631,7 +644,7 @@ class DataHelper:
         None.
         """
         # Find all the category types in the self.dataFrame and loop over them.
-        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == 'category'].index, useMarkDown)
+        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index, useMarkDown)
 
 
     def RemoveRowsWithLowValueCounts(self, column, criteria):
@@ -794,7 +807,7 @@ class DataHelper:
         else:
             newColumnName = column + "_categories"
 
-        self.data[newColumnName] = newColumn.astype('category')
+        self.data[newColumnName] = newColumn.astype("category")
         return newColumnName
 
 
@@ -815,7 +828,7 @@ class DataHelper:
         # Find all the category types in the self.dataFrame.
         # Gets all the columns that have the category self.data type.  That is returned as a self.dataSeries.  The
         # index (where the names are) is extracted from that.
-        allCategoricalColumns = self.data.dtypes[self.data.dtypes == 'category'].index.tolist()
+        allCategoricalColumns = self.data.dtypes[self.data.dtypes == "category"].index.tolist()
         self.EncodeCategoricalColumns(allCategoricalColumns)
 
 

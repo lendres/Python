@@ -8,6 +8,8 @@ import pandas as pd
 from IPython.display import display
 from sklearn.linear_model import LogisticRegression
 
+from lendres.ConsoleHelper import ConsoleHelper
+from lendres.DataHelper import DataHelper
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 import unittest
@@ -17,8 +19,10 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile = "backpain.csv"
-        #cls.data = lendres.Data.LoadAndInspectData(inputFile)
-        cls.data   = pd.read_csv(inputFile)
+
+        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+        cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
+        cls.dataHelper.LoadAndInspectData(inputFile)
 
 
     def setUp(self):
@@ -26,8 +30,8 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.data             = TestCategoricalRegressionHelper.data.copy(deep=True)
-        self.regressionHelper = CategoricalRegressionHelper(self.data)
+        self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
+        self.regressionHelper = CategoricalRegressionHelper(self.dataHelper)
 
         columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric("Status", "Abnormal")
         self.regressionHelper.SplitData(columnAsNumeric, 0.3)

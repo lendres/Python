@@ -10,6 +10,8 @@ from IPython.display import display
 from sklearn.metrics import recall_score
 
 import lendres
+from lendres.ConsoleHelper import ConsoleHelper
+from lendres.DataHelper import DataHelper
 from lendres.DecisionTreeHyperparameterHelper import DecisionTreeHyperparameterHelper
 import unittest
 
@@ -32,7 +34,9 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
             raise Exception("Input selection is incorrect.")
 
         #cls.data = lendres.Data.LoadAndInspectData(inputFile)
-        cls.data              = pd.read_csv(inputFile)
+        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+        cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
+        cls.dataHelper.LoadAndInspectData(inputFile)
         cls.dependentVariable = dependentVariable
 
         if cls.whichData == 0:
@@ -40,19 +44,19 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
         elif cls.whichData == 1:
             cls.fixCreditData()
 
-        print("\nData size after cleaning:")
-        display(cls.data.shape)
+        #print("\nData size after cleaning:")
+        #display(cls.dataHelper.data.shape)
 
 
     @classmethod
     def fixLoanData(cls):
-        cls.data.drop(["ID"], axis=1, inplace=True)
-        cls.data.drop(["ZIPCode"], axis=1, inplace=True)
-        lendres.Data.RemoveRowsWithValueOutsideOfCriteria(cls.data, "Experience", 0, "dropbelow", inPlace=True)
-        lendres.Data.EncodeCategoricalColumns(cls.data, ["Family", "Education"])
-        lendres.Data.DropOutliers(cls.data, "Income", inPlace=True)
-        lendres.Data.DropOutliers(cls.data, "CCAvg", inPlace=True)
-        lendres.Data.DropOutliers(cls.data, "Mortgage", inPlace=True)
+        cls.dataHelper.data.drop(["ID"], axis=1, inplace=True)
+        cls.dataHelper.data.drop(["ZIPCode"], axis=1, inplace=True)
+        cls.dataHelper.RemoveRowsWithValueOutsideOfCriteria("Experience", 0, "dropbelow", inPlace=True)
+        cls.dataHelper.EncodeCategoricalColumns(["Family", "Education"])
+        cls.dataHelper.DropOutliers("Income", inPlace=True)
+        cls.dataHelper.DropOutliers("CCAvg", inPlace=True)
+        cls.dataHelper.DropOutliers("Mortgage", inPlace=True)
 
 
     @classmethod
@@ -66,15 +70,9 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
                          }
         oneHotCols = ["purpose", "housing", "other_credit", "job"]
 
-        # Loop through all columns in the dataframe.
-        for feature in cls.data.columns:
-            # Only apply for columns with categorical strings.
-            if cls.data[feature].dtype == 'object':
-                # Replace strings with an integer.
-                cls.data[feature] = pd.Categorical(cls.data[feature])
-
-        cls.data = cls.data.replace(replaceStruct)
-        cls.data = pd.get_dummies(cls.data, columns=oneHotCols)
+        cls.dataHelper.ChangeAllObjectColumnsToCategories()
+        cls.dataHelper.data = cls.dataHelper.data.replace(replaceStruct)
+        cls.dataHelper.EncodeCategoricalColumns(columns=oneHotCols)
 
 
     def setUp(self):
@@ -82,8 +80,8 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.data             = TestDecisionTreeHyperparameterHelper.data.copy(deep=True)
-        self.regressionHelper = DecisionTreeHyperparameterHelper(self.data)
+        self.dataHelper         = TestDecisionTreeHyperparameterHelper.dataHelper.Copy(deep=True)
+        self.regressionHelper   = DecisionTreeHyperparameterHelper(self.dataHelper)
 
         self.regressionHelper.SplitData(TestDecisionTreeHyperparameterHelper.dependentVariable, 0.3)
 
@@ -97,6 +95,7 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
 
         self.regressionHelper.CreateModel()
         self.regressionHelper.CreateGridSearchModel(parameters, scoringFunction=recall_score)
+        self.regressionHelper.DisplayChosenParameters()
 
 
 if __name__ == "__main__":

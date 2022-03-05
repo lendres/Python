@@ -13,24 +13,24 @@ from lendres.DecisionTreeHelper import DecisionTreeHelper
 
 class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
         """
-        super().__init__(data)
+        super().__init__(dataHelper)
         self.gridSearch              = None
 
 
-    @classmethod    
+    @classmethod
     def FromData(cls, original, deep=False):
         """
         Creates a new DecisionTreeHyperparameterHelper by copying the data from the original.
@@ -91,7 +91,7 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 
-    def DisplayChosenParameters(self, useMarkDown=False):
+    def DisplayChosenParameters(self):
         """
         Prints the model performance scores.
 
@@ -104,5 +104,5 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
         -------
         None.
         """
-        lendres.Console.PrintBoldMessage("Chosen Model Parameters", useMarkDown=useMarkDown)
+        self.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters")
         display(self.gridSearch.best_params_)

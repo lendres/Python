@@ -5,17 +5,37 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 
-# Use this to import from another directory.
-
 import lendres
+from lendres.DataHelper import DataHelper
+from lendres.ConsoleHelper import ConsoleHelper
+import unittest
 
-data = lendres.Data.LoadAndInspectData("data.csv")
-data['children'] = data['children'].astype('category')
+class TestBivariateAnalysis(unittest.TestCase):
 
-lendres.BivariateAnalysis.CreateBiVariateHeatMap(data)
-lendres.BivariateAnalysis.CreateBiVariatePairPlot(data)
+    @classmethod
+    def setUpClass(cls):
+        inputFile           = "data.csv"
+
+        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
+
+        cls.dataHelper      = DataHelper(consoleHelper=consoleHelper)
+        cls.dataHelper.LoadAndInspectData(inputFile)
+
+        cls.dataHelper.ChangeToCategoryType(["children"])
 
 
-columns = ["age", "charges"]
-lendres.BivariateAnalysis.CreateBiVariateHeatMap(data, columns)
-lendres.BivariateAnalysis.CreateBiVariatePairPlot(data, columns)
+    def setUp(self):
+        self.dataHelper = TestBivariateAnalysis.dataHelper.Copy(deep=True)
+
+
+    def testPlots(self):
+        lendres.BivariateAnalysis.CreateBiVariateHeatMap(self.dataHelper.data)
+        lendres.BivariateAnalysis.CreateBiVariatePairPlot(self.dataHelper.data)
+
+        columns = ["age", "charges"]
+        lendres.BivariateAnalysis.CreateBiVariateHeatMap(self.dataHelper.data, columns)
+        lendres.BivariateAnalysis.CreateBiVariatePairPlot(self.dataHelper.data, columns)
+
+
+if __name__ == "__main__":
+    unittest.main()

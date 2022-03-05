@@ -18,20 +18,20 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class DecisionTreeHelper(CategoricalRegressionHelper):
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
         """
-        super().__init__(data)
+        super().__init__(dataHelper)
 
 
     def CreateModel(self, **kwargs):

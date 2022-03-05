@@ -38,6 +38,7 @@ class TestLinearRegressionHelper(unittest.TestCase):
 
     def testModelCoefficients(self):
         result = self.linearRegressionHelper.GetModelCoefficients()
+        #print(result)
         self.assertAlmostEqual(result["Coefficients"]["age"], 251.681865, places=6)
 
 

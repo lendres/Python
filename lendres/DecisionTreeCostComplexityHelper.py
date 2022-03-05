@@ -13,25 +13,25 @@ from lendres.DecisionTreeHelper import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 
-    def __init__(self, data):
+    def __init__(self, dataHelper):
         """
         Constructor.
-        
+
         Parameters
         ----------
-        data : pandas.DataFrame
-            DataFrame to operate on.
-            
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+
         Returns
         -------
         None.
         """
-        super().__init__(data)
-        self.costComplexityPath      = None
-        self.DecisionTreeCostComplexityHelpers     = None
-        
+        super().__init__(dataHelper)
+        self.costComplexityPath                 = None
+        self.DecisionTreeCostComplexityHelpers  = None
 
-    @classmethod    
+
+    @classmethod
     def FromData(cls, original, deep=False):
         """
         Creates a new DecisionTreeCostComplexityHelper by copying the data from the original.
@@ -118,7 +118,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 
         trainingScores = []
         testScores     = []
-        
+
         for decisionTreeHelper in self.decisionTreeHelpers:
             # Predict the dependent variable results and extract the test scores.
             decisionTreeHelper.Predict()
@@ -191,7 +191,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         # Get the data for plotting.
         ccpAlphas  = self.costComplexityPath.ccp_alphas[:-1]
         impurities = self.costComplexityPath.impurities[:-1]
-        
+
         # Must be run before creating figure or plotting data.
         lendres.Plotting.FormatPlot(scale=scale)
 

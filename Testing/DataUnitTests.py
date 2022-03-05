@@ -34,6 +34,17 @@ class TestDataHelper(unittest.TestCase):
 
     def testGetNotAvailableCounts(self):
         notAvailableCounts, totalNotAvailable = TestDataHelper.dataWithErrors.GetNotAvailableCounts()
+        self.assertEqual(totalNotAvailable, 1)
+
+
+    def testGetMinAndMaxValues(self):
+        result = TestDataHelper.loanData.GetMinAndMaxValues("Income", 5, method="quantity")
+        #print(result)
+        self.assertEqual(result["Largest"].iloc[-1], 224)
+
+        solution = TestDataHelper.loanData.data.shape[0] * 0.05
+        result = TestDataHelper.loanData.GetMinAndMaxValues("Income", 5, method="percent")
+        self.assertEqual(len(result["Largest"]), solution)
 
 
 if __name__ == "__main__":
