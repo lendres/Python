@@ -9,6 +9,7 @@ Created on Mon Dec 27 19:30:11 2021
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+
 import os
 
 import lendres
@@ -20,7 +21,7 @@ class TestPlotting(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile = "data.csv"
-        #cls.data = lendres.Data.LoadAndInspectData(inputFile)
+        inputFile = os.path.join("Data", inputFile)
         cls.data   = pd.read_csv(inputFile)
 
 

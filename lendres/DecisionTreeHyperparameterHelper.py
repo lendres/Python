@@ -8,7 +8,8 @@ from IPython.display import display
 
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
-import lendres
+
+from lendres.ConsoleHelper import ConsoleHelper
 from lendres.DecisionTreeHelper import DecisionTreeHelper
 
 class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
@@ -104,5 +105,5 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
         -------
         None.
         """
-        self.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters")
-        display(self.gridSearch.best_params_)
+        self.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters", ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(self.gridSearch.best_params_, ConsoleHelper.VERBOSEREQUESTED)

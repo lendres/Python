@@ -89,10 +89,11 @@ class ModelHelper:
         x = x.drop(self.additionalDroppedColumns, axis=1)
 
         # The dependent variable.
-        y = self.dataHelper.data[[dependentVariable]]
+        y = self.dataHelper.data[dependentVariable]
 
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
+        #self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=y)
 
 
     def GetSplitComparisons(self):
@@ -144,9 +145,9 @@ class ModelHelper:
         if dataSet == "original":
             data = self.dataHelper.data
         elif dataSet == "training":
-            data = self.yTrainingData
+            data = pd.DataFrame(self.yTrainingData)
         elif dataSet == "testing":
-            data = self.yTestingData
+            data = pd.DataFrame(self.yTestingData)
         else:
             raise Exception("Invalid data set specified.")
 
@@ -176,7 +177,7 @@ class ModelHelper:
         if len(self.yTrainingData) == 0:
             raise Exception("The data has not been split (dependent variable not set).")
 
-        return self.yTrainingData.columns[0]
+        return self.yTrainingData.name
 
 
     def Predict(self):

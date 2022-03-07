@@ -83,8 +83,9 @@ class DataHelper:
         None.
 
         """
-        dataHelper = DataHelper()
-        dataHelper.data = original.data.copy(deep)
+        dataHelper                = DataHelper()
+        dataHelper.data           = original.data.copy(deep)
+        dataHelper.consoleHelper  = original.consoleHelper
         return dataHelper
 
 
@@ -102,8 +103,9 @@ class DataHelper:
         None.
 
         """
-        dataHelper = DataHelper()
-        dataHelper.data = self.data.copy(deep)
+        dataHelper                = DataHelper()
+        dataHelper.data           = self.data.copy(deep)
+        dataHelper.consoleHelper  = self.consoleHelper
         return dataHelper
 
 
@@ -127,7 +129,7 @@ class DataHelper:
             raise Exception("The input file is not a string.")
 
         if not os.path.exists(inputFile):
-            raise Exception("The input file does not exist.")
+            raise Exception("The input file \"" + inputFile + "\" does not exist.")
 
 
         # Read the file in.
@@ -609,14 +611,12 @@ class DataHelper:
             self.data[category] = self.data[category].cat.remove_unused_categories()
 
 
-    def DisplayCategoryCounts(self, categories, useMarkDown=False):
+    def DisplayCategoryCounts(self, categories):
         """
         Displays all the values counts for the specified columns columns.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
         categories : list, array of strings
             Names of the categories to operate on.
 
@@ -624,27 +624,26 @@ class DataHelper:
         -------
         None.
         """
-
         for category in categories:
-            self.consoleHelper.PrintBoldMessage(category, useMarkDown=useMarkDown)
-            display(self.data[category].value_counts())
+            self.consoleHelper.Print("\n", ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.PrintBold(category, ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.Display(self.data[category].value_counts(), ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def DisplayAllCategoriesValueCounts(self, useMarkDown=False):
+    def DisplayAllCategoriesValueCounts(self):
         """
         Displays the value counts of all the self.dataSeries of type "category."
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
+        None.
 
         Returns
         -------
         None.
         """
         # Find all the category types in the self.dataFrame and loop over them.
-        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index, useMarkDown)
+        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index)
 
 
     def RemoveRowsWithLowValueCounts(self, column, criteria):
@@ -654,8 +653,6 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
         column : string
             Column to search through.
         criteria : int
@@ -663,8 +660,7 @@ class DataHelper:
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.dataFrame with the low value count rows removed.
+        None.
         """
         # Get the value counts of the column.
         valueCounts = self.data[column].value_counts()
@@ -683,8 +679,6 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
         column : string
             Column to search through.
         value : type of self.data in column
@@ -711,8 +705,6 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : Pandas self.dataFrame
-            The self.data.
         column: string
             Column name in the self.dataFrame.
         criteria : float
@@ -757,13 +749,16 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
+        column : string
+            Column name to perform the operate on.
+        fromCategories : list
+            List of items that will be converted.
+        toCategory : string
+            Item that all the "fromCategories" get converted to.
 
         Returns
         -------
-        self.data : self.dataFrame
-            The new self.dataFrame with the encoded values.
+        None.
         """
         for fromCategory in fromCategories:
             self.data[column] = self.data[column].replace({fromCategory : toCategory})
@@ -775,8 +770,6 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
         column : string
             Column name to perform the merge on.
         labels : list of strings
@@ -811,15 +804,15 @@ class DataHelper:
         return newColumnName
 
 
-    def EncodeAllCategoricalColumns(self):
+    def EncodeAllCategoricalColumns(self, dropFirst=True):
         """
         Converts all categorical columns (have that self.data type "category") to one hot encoded values and drops one
         value per category.  Prepares categorical columns for use in a model.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
+        dropFirst : bool
+            If true, the first category is dropped for the encoding.
 
         Returns
         -------
@@ -829,23 +822,23 @@ class DataHelper:
         # Gets all the columns that have the category self.data type.  That is returned as a self.dataSeries.  The
         # index (where the names are) is extracted from that.
         allCategoricalColumns = self.data.dtypes[self.data.dtypes == "category"].index.tolist()
-        self.EncodeCategoricalColumns(allCategoricalColumns)
+        self.EncodeCategoricalColumns(allCategoricalColumns, dropFirst)
 
 
-    def EncodeCategoricalColumns(self, columns):
+    def EncodeCategoricalColumns(self, columns, dropFirst=True):
         """
         Converts the categorical columns "categories" to one hot encoded values and drops one value per category.
         Prepares categorical columns for use in a model.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
         columns : list of strings
             The names of the columns to encode.
+        dropFirst : bool
+            If true, the first category is dropped for the encoding.
 
         Returns
         -------
         None.
         """
-        self.data = pd.get_dummies(self.data, columns=columns, drop_first=True)
+        self.data = pd.get_dummies(self.data, columns=columns, drop_first=dropFirst)

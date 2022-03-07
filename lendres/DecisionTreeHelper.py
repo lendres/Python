@@ -74,56 +74,6 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         plt.show()
 
 
-    def CreateFeatureImportancePlot(self, scale=1.0):
-        """
-        Plots importance factors as a bar plot.
-
-        Parameters
-        ----------
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
-
-        Returns
-        -------
-        None.
-        """
-        # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
-
-        # Need the values in the reverse order (smallest to largest) for the bar plot to get the largest value on
-        # the top (highest index position).
-        importancesDataFrame = self.GetSortedImportance(ascending=True)
-        indices              = range(importancesDataFrame.shape[0])
-
-        # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
-
-        plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
-        plt.yticks(indices, importancesDataFrame.index, fontsize=12*scale)
-        plt.gca().set(title="Feature Importances", xlabel="Relative Importance")
-
-        plt.show()
-
-
-    def GetSortedImportance(self, ascending=False):
-        """
-        Sorts the importance factors and returns them in a Pandas DataFrame.
-
-        Parameters
-        ----------
-        ascending : bool
-            Specifies if the values should be sorted as ascending or descending.
-
-        Returns
-        -------
-        : pandas.DataFrame
-            DataFrame of the sorted importance values.
-        """
-        return pd.DataFrame(self.model.feature_importances_,
-                            columns=["Importance"],
-                            index=self.xTrainingData.columns).sort_values(by="Importance", ascending=ascending)
-
-
     def GetTreeAsText(self):
         """
         Gets the decision tree as a string.

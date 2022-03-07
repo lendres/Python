@@ -4,10 +4,12 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
+import os
 
 import lendres
 from lendres.DataHelper import DataHelper
 from lendres.ConsoleHelper import ConsoleHelper
+
 import unittest
 
 class TestBivariateAnalysis(unittest.TestCase):
@@ -15,6 +17,8 @@ class TestBivariateAnalysis(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile           = "data.csv"
+
+        inputFile           = os.path.join("Data", inputFile)
 
         consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
 

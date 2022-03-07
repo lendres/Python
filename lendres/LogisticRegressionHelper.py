@@ -57,7 +57,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
             raise Exception("The data has not been split.")
 
         self.model = LogisticRegression(solver="liblinear", random_state=1)
-        self.model.fit(self.xTrainingData, self.yTrainingData.values.ravel())
+        self.model.fit(self.xTrainingData, self.yTrainingData)
 
 
     def PredictProbabilities(self):

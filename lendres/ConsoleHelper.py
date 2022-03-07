@@ -43,10 +43,11 @@ class ConsoleHelper:
     @classmethod
     def setUpClass(cls):
         cls.VERBOSENONE         = 0
-        cls.VERBOSEERROR        = 10
-        cls.VERBOSEWARNING      = 20
-        cls.VERBOSEIMPORTANT    = 30
-        cls.VERBOSEALL          = 40
+        cls.VERBOSEREQUESTED    = 10
+        cls.VERBOSEERROR        = 20
+        cls.VERBOSEWARNING      = 30
+        cls.VERBOSEIMPORTANT    = 40
+        cls.VERBOSEALL          = 50
 
         # Automatically clear the console when this file is imported.
         ConsoleHelper.ClearSpyderConsole()

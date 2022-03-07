@@ -4,9 +4,10 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
-import pandas as pd
-from IPython.display import display
+#from IPython.display import display
 from sklearn.linear_model import LogisticRegression
+
+import os
 
 from lendres.ConsoleHelper import ConsoleHelper
 from lendres.DataHelper import DataHelper
@@ -19,6 +20,8 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile = "backpain.csv"
+
+        inputFile       = os.path.join("Data", inputFile)
 
         consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
         cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
@@ -43,10 +46,10 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
     def testConfusionMatrices(self):
         result = self.regressionHelper.GetConfusionMatrix(dataSet="training")
-        self.assertEqual(result.tolist(), [[56,  17], [ 19, 125]])
+        self.assertEqual(result.tolist(), [[53,  17], [18, 129]])
 
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        self.assertEqual(result.tolist(), [[23,  4], [ 8, 58]])
+        self.assertEqual(result.tolist(), [[25,  5], [9, 54]])
 
 
     def testStandardPlots(self):
@@ -56,8 +59,8 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
     def testModelCoefficients(self):
         result = self.regressionHelper.GetModelCoefficients()
-        self.assertAlmostEqual(result.loc["pelvic_incidence", "Coefficients"], 0.035132, places=6)
-        self.assertAlmostEqual(result.loc["Intercept", "Coefficients"], 1.372051, places=6)
+        self.assertAlmostEqual(result.loc["pelvic_incidence", "Coefficients"], 0.02318, places=3)
+        self.assertAlmostEqual(result.loc["Intercept", "Coefficients"], 1.1290, places=3)
 
 
     def testPredictionsNotCalculated(self):
@@ -67,13 +70,13 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
     def testModelPerformanceScores(self):
         self.regressionHelper.Predict()
         result = self.regressionHelper.GetModelPerformanceScores()
-        self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.834101, places=6)
-        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.878788, places=6)
+        self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.8387, places=3)
+        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.8571, places=3)
 
 
     def testSplitComparisons(self):
         result = self.regressionHelper.GetSplitComparisons()
-        self.assertEqual(result.loc["Testing", "Positive"], "66 (70.97%)")
+        self.assertEqual(result.loc["Testing", "Positive"], "63 (67.74%)")
 
 
 

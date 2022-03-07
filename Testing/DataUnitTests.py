@@ -4,23 +4,31 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
+import os
+
+import DataSetLoading
 from lendres.DataHelper import DataHelper
 from lendres.ConsoleHelper import ConsoleHelper
+
 import unittest
 
 class TestDataHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
-        cls.loanData        = DataHelper(consoleHelper=consoleHelper)
-        cls.loanData.LoadAndInspectData("Loan_Modelling.csv")
+        inputFileWithErrors = "datawitherrors.csv"
 
+        cls.loanData, cls.loadDependentVariable        = DataSetLoading.GetLoan_ModellingData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropExtra=False)
+        cls.loanData.ChangeToCategoryType(["CreditCard", "Online"])
+
+        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         cls.dataWithErrors  = DataHelper(consoleHelper=consoleHelper)
-        cls.dataWithErrors.LoadAndInspectData("datawitherrors.csv")
 
-        cls.boundaries = [0,     90000,   91000,   92000,   93000,   94000,   95000,   96000,   99999]
-        cls.labels     = ["Os", "90000", "91000", "92000", "93000", "94000", "95000", "96000", "99999"]
+        inputFile           = os.path.join("Data", inputFileWithErrors)
+        cls.dataWithErrors.LoadAndInspectData(inputFile)
+
+        cls.boundaries      = [0,     90000,   91000,   92000,   93000,   94000,   95000,   96000,   99999]
+        cls.labels          = ["Os", "90000", "91000", "92000", "93000", "94000", "95000", "96000", "99999"]
 
 
     def setUp(self):
@@ -44,7 +52,11 @@ class TestDataHelper(unittest.TestCase):
 
         solution = TestDataHelper.loanData.data.shape[0] * 0.05
         result = TestDataHelper.loanData.GetMinAndMaxValues("Income", 5, method="percent")
-        self.assertEqual(len(result["Largest"]), solution)
+        self.assertAlmostEqual(len(result["Largest"]), solution, 0)
+
+
+    def testDisplaying(self):
+        self.loanData.DisplayAllCategoriesValueCounts()
 
 
 if __name__ == "__main__":
