@@ -17,7 +17,7 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.whichData = 0
+        cls.whichData = 1
 
         if cls.whichData == 0:
             cls.dataHelper, cls.dependentVariable = DataSetLoading.GetLoan_ModellingData()
@@ -48,6 +48,7 @@ class TestDecisionTreeHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.CreateModel()
         self.regressionHelper.CreateGridSearchModel(parameters, scoringFunction=recall_score)
         self.regressionHelper.DisplayChosenParameters()
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
 
 if __name__ == "__main__":

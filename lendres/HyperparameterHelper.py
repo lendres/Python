@@ -4,10 +4,12 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-from IPython.display import display
+#from IPython.display import display
 
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
+
+from lendres.ConsoleHelper import ConsoleHelper
 
 class HyperparameterHelper():
 
@@ -77,5 +79,5 @@ class HyperparameterHelper():
         -------
         None.
         """
-        self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters")
-        display(self.gridSearch.best_params_)
+        self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters", ConsoleHelper.VERBOSEREQUESTED)
+        self.categoricalHelper.dataHelper.consoleHelper.Display(self.gridSearch.best_params_, ConsoleHelper.VERBOSEREQUESTED)

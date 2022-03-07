@@ -54,7 +54,7 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
         return decisionTreeHelper
 
 
-    def CreateGridSearchModel(self, parameters, scoringFunction, displayBestParameters=True, **kwargs):
+    def CreateGridSearchModel(self, parameters, scoringFunction, **kwargs):
         """
         Creates a cross validation grid search model.
 
@@ -64,8 +64,6 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
             Grid search parameters.
         scoringFunction : function
             Method use to calculate a score for the model.
-        displayBestParameters : bool
-            If true, it outputs the parameters of the selected model.
         **kwargs : keyword arguments
             These arguments are passed on to the GridSearchCV.
 
@@ -98,8 +96,7 @@ class DecisionTreeHyperparameterHelper(DecisionTreeHelper):
 
         Parameters
         ----------
-        useMarkDown : bool
-            If true, markdown output is enabled.
+        None.
 
         Returns
         -------

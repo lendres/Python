@@ -19,7 +19,7 @@ def MakeDataHelper(inputFile, verboseLevel):
     return dataHelper
 
 
-def GetCreditData(verboseLevel=ConsoleHelper.VERBOSENONE, dropFirst=True):
+def GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=True):
     inputFile               = "credit.csv"
     dependentVariable       = "default"
 
@@ -45,7 +45,7 @@ def FixCreditData(dataHelper, dropFirst):
     dataHelper.EncodeCategoricalColumns(columns=oneHotCols, dropFirst=dropFirst)
 
 
-def GetLoan_ModellingData(verboseLevel=ConsoleHelper.VERBOSENONE, dropExtra=True):
+def GetLoan_ModellingData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropExtra=True):
     inputFile               = "Loan_Modelling.csv"
     dependentVariable       = "Personal_Loan"
 
@@ -68,7 +68,7 @@ def FixLoan_ModellingData(dataHelper, dropExtra):
         dataHelper.DropOutliers("Mortgage", inPlace=True)
 
 
-def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSENONE, encode=True):
+def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=True):
     inputFile               = "insurance.csv"
     dependentVariable       = "charges"
 
@@ -80,7 +80,7 @@ def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSENONE, encode=True):
     return dataHelper, dependentVariable
 
 
-def GetBackPainData(verboseLevel=ConsoleHelper.VERBOSENONE):
+def GetBackPainData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     inputFile               = "backpain.csv"
     dependentVariable       = "Status"
 

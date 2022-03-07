@@ -9,6 +9,7 @@ import numpy as np
 from sklearn import metrics
 
 import DataSetLoading
+from lendres.DecisionTreeHelper import DecisionTreeHelper
 from lendres.BaggingHelper import BaggingHelper
 from lendres.RandomForestHelper import RandomForestHelper
 from lendres.HyperparameterHelper import HyperparameterHelper
@@ -33,7 +34,25 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.dataHelper             = TestHyperparameterHelper.dataHelper.Copy(deep=True)
 
 
-    def testBaggingClassifier(self):
+    def testDecisiionTreeClassifier(self):
+        parameters = {"max_depth"             : np.arange(1, 3),
+                      "min_samples_leaf"      : [2, 5, 7],
+                      "max_leaf_nodes"        : [2, 5, 10],
+                      "criterion"             : ["entropy", "gini"]}
+
+        self.regressionHelper       = DecisionTreeHelper(self.dataHelper)
+        self.regressionHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3)
+        self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper)
+
+        self.regressionHelper.CreateModel()
+        self.hyperparameterHelper.CreateGridSearchModel(parameters, metrics.recall_score)
+        self.hyperparameterHelper.DisplayChosenParameters()
+
+        self.regressionHelper.Predict()
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+
+
+    def NotestBaggingClassifier(self):
         parameters = {"max_samples"  : [0.7, 0.8, 0.9, 1],
                       "max_features" : [0.7, 0.8, 0.9, 1],
                       "n_estimators" : [10,  20, 30, 40, 50]}
@@ -49,7 +68,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
 
-    def testRandomForestClassifier(self):
+    def NotestRandomForestClassifier(self):
         parameters = {"n_estimators"     : [150, 200, 250],
                       "min_samples_leaf" : np.arange(5, 10),
                       "max_features"     : np.arange(0.2, 0.7, 0.1),
