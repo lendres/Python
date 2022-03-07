@@ -4,12 +4,8 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
-import os
-
+import DataSetLoading
 import lendres
-
-from lendres.DataHelper import DataHelper
-from lendres.ConsoleHelper import ConsoleHelper
 
 import unittest
 
@@ -17,14 +13,7 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile           = "data.csv"
-
-        inputFile           = os.path.join("Data", inputFile)
-
-        consoleHelper       = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
-
-        cls.dataHelper      = DataHelper(consoleHelper=consoleHelper)
-        cls.dataHelper.LoadAndInspectData(inputFile)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetInsuranceData(encode=False)
 
 
     def setUp(self):

@@ -14,7 +14,7 @@ class TestDecisionTreeHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.whichData = 0
+        cls.whichData = 1
 
         if cls.whichData == 0:
             cls.dataHelper, cls.dependentVariable = DataSetLoading.GetLoan_ModellingData()

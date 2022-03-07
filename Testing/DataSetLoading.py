@@ -68,13 +68,14 @@ def FixLoan_ModellingData(dataHelper, dropExtra):
         dataHelper.DropOutliers("Mortgage", inPlace=True)
 
 
-def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSENONE):
+def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSENONE, encode=True):
     inputFile               = "insurance.csv"
     dependentVariable       = "charges"
 
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
-    dataHelper.EncodeCategoricalColumns(["region", "sex", "smoker"])
+    if encode:
+        dataHelper.EncodeCategoricalColumns(["region", "sex", "smoker"])
 
     return dataHelper, dependentVariable
 
@@ -84,5 +85,7 @@ def GetBackPainData(verboseLevel=ConsoleHelper.VERBOSENONE):
     dependentVariable       = "Status"
 
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    dataHelper.ConvertCategoryToNumeric(dependentVariable, "Abnormal")
 
     return dataHelper, dependentVariable

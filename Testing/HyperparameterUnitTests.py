@@ -19,7 +19,6 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(dropFirst=False)
 
         #print("\nData size after cleaning:")

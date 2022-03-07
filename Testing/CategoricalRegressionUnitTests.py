@@ -7,10 +7,7 @@ Created on Wed Jan 26 15:53:03 2022
 #from IPython.display import display
 from sklearn.linear_model import LogisticRegression
 
-import os
-
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.DataHelper import DataHelper
+import DataSetLoading
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 import unittest
@@ -19,13 +16,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile = "backpain.csv"
-
-        inputFile       = os.path.join("Data", inputFile)
-
-        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
-        cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
-        cls.dataHelper.LoadAndInspectData(inputFile)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetBackPainData()
 
 
     def setUp(self):
@@ -36,8 +27,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = CategoricalRegressionHelper(self.dataHelper)
 
-        columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric("Status", "Abnormal")
-        self.regressionHelper.SplitData(columnAsNumeric, 0.3)
+        self.regressionHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3)
 
         # Fake a model so we have output to use.
         self.regressionHelper.model = LogisticRegression(solver="liblinear", random_state=1)

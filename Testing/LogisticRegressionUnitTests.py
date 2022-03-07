@@ -4,7 +4,7 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
-from IPython.display import display
+#from IPython.display import display
 
 import DataSetLoading
 from lendres.LogisticRegressionHelper import LogisticRegressionHelper
@@ -26,8 +26,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
 
-        columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric(TestLogisticRegressionHelper.dependentVariable, "Abnormal")
-        self.regressionHelper.SplitData(columnAsNumeric, 0.3)
+        self.regressionHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3)
         self.regressionHelper.CreateModel()
 
 

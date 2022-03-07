@@ -20,7 +20,7 @@ class TestPlotting(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile = "data.csv"
+        inputFile = "insurance.csv"
         inputFile = os.path.join("Data", inputFile)
         cls.data   = pd.read_csv(inputFile)
 
