@@ -65,7 +65,7 @@ class ModelHelper:
         self.yTestingData              = original.yTestingData.copy(deep=deep)
 
 
-    def SplitData(self, dependentVariable, testSize):
+    def SplitData(self, dependentVariable, testSize, stratify=True):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -90,10 +90,13 @@ class ModelHelper:
 
         # The dependent variable.
         y = self.dataHelper.data[dependentVariable]
+        if stratify:
+            stratify = y
+        else:
+            stratify = None
 
         # Split the data.
-        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1)
-        #self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=y)
+        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratify)
 
 
     def GetSplitComparisons(self):

@@ -79,6 +79,5 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.assertEqual(result.loc["Testing", "Positive"], "63 (67.74%)")
 
 
-
 if __name__ == "__main__":
     unittest.main()

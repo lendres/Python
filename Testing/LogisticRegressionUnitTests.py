@@ -64,5 +64,6 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         #display(result)
         self.assertAlmostEqual(result.loc["pelvic_incidence", "Odds"], 1.02345, places=3)
 
+
 if __name__ == "__main__":
     unittest.main()

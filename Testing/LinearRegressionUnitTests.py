@@ -4,7 +4,7 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
-#from IPython.display import display
+from IPython.display import display
 import os
 
 from lendres.ConsoleHelper import ConsoleHelper
@@ -20,7 +20,6 @@ class TestLinearRegressionHelper(unittest.TestCase):
         inputFile       = "insurance.csv"
 
         inputFile       = os.path.join("Data", inputFile)
-        print(inputFile)
 
         consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
         cls.loanData    = DataHelper(consoleHelper=consoleHelper)
@@ -36,7 +35,7 @@ class TestLinearRegressionHelper(unittest.TestCase):
         """
         loanData = DataHelper.Copy(TestLinearRegressionHelper.loanData, deep=True)
         self.linearRegressionHelper = LinearRegressionHelper(loanData)
-        self.linearRegressionHelper.SplitData("charges", 0.3)
+        self.linearRegressionHelper.SplitData("charges", 0.3, stratify=False)
         self.linearRegressionHelper.CreateModel()
 
 
@@ -46,12 +45,15 @@ class TestLinearRegressionHelper(unittest.TestCase):
         self.assertAlmostEqual(result["Coefficients"]["age"], 251.681865, places=3)
 
 
-
     def testPerformanceScores(self):
         self.linearRegressionHelper.Predict()
         result = self.linearRegressionHelper.GetModelPerformanceScores()
         self.assertAlmostEqual(result.loc["Testing", "RMSE"], 6063.122657, places=3)
 
+
+    def testSplitComparisons(self):
+        result = self.linearRegressionHelper.GetSplitComparisons()
+        display(result)
 
 if __name__ == "__main__":
     unittest.main()
