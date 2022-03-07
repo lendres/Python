@@ -3,14 +3,5 @@
 
 import lendres.Algorithms
 import lendres.BivariateAnalysis
-import lendres.ConsoleHelper
-import lendres.DataHelper
 import lendres.Plotting
 import lendres.UnivariateAnalysis
-import lendres.ModelHelper
-import lendres.LinearRegressionHelper
-import lendres.LogisticRegressionHelper
-import lendres.CategoricalRegressionHelper
-import lendres.DecisionTreeHelper
-import lendres.DecisionTreeCostComplexityHelper
-import lendres.BaggingHelper

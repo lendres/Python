@@ -52,7 +52,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
 
-    def NotestBaggingClassifier(self):
+    def testBaggingClassifier(self):
         parameters = {"max_samples"  : [0.7, 0.8, 0.9, 1],
                       "max_features" : [0.7, 0.8, 0.9, 1],
                       "n_estimators" : [10,  20, 30, 40, 50]}
@@ -68,7 +68,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
 
-    def NotestRandomForestClassifier(self):
+    def testRandomForestClassifier(self):
         parameters = {"n_estimators"     : [150, 200, 250],
                       "min_samples_leaf" : np.arange(5, 10),
                       "max_features"     : np.arange(0.2, 0.7, 0.1),
