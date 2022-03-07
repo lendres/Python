@@ -143,23 +143,27 @@ class ModelHelper:
         None.
 
         """
-        data = None
+        classValueCount = 0
+        totalCount      = 0
 
         if dataSet == "original":
-            data = self.dataHelper.data
+            if column == None:
+                column = self.GetDependentVariableName()
+            classValueCount = sum(self.dataHelper.data[column] == classValue)
+            totalCount      = self.dataHelper.data[column].size
+
         elif dataSet == "training":
-            data = pd.DataFrame(self.yTrainingData)
+            classValueCount = sum(self.yTrainingData == classValue)
+            totalCount      = self.yTrainingData.size
+
         elif dataSet == "testing":
-            data = pd.DataFrame(self.yTestingData)
+            classValueCount = sum(self.yTestingData == classValue)
+            totalCount      = self.yTestingData.size
+
         else:
             raise Exception("Invalid data set specified.")
 
-        if column == None:
-            column = self.GetDependentVariableName()
-
-        classValueCount = len(data.loc[data[column] == classValue])
-
-        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/len(data.index) * 100)
+        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount * 100)
         return string
 
 

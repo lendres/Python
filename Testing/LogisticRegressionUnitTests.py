@@ -4,11 +4,9 @@ Created on Wed Jan 26 15:53:03 2022
 
 @author: Lance
 """
-#from IPython.display import display
-import os
+from IPython.display import display
 
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.DataHelper import DataHelper
+import DataSetLoading
 from lendres.LogisticRegressionHelper import LogisticRegressionHelper
 
 import unittest
@@ -17,13 +15,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile       = "backpain.csv"
-
-        inputFile       = os.path.join("Data", inputFile)
-
-        consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSENONE)
-        cls.dataHelper  = DataHelper(consoleHelper=consoleHelper)
-        cls.dataHelper.LoadAndInspectData(inputFile)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetBackPainData()
 
 
     def setUp(self):
@@ -34,7 +26,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
 
-        columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric("Status", "Abnormal")
+        columnAsNumeric       = self.regressionHelper.ConvertCategoryToNumeric(TestLogisticRegressionHelper.dependentVariable, "Abnormal")
         self.regressionHelper.SplitData(columnAsNumeric, 0.3)
         self.regressionHelper.CreateModel()
 
@@ -63,6 +55,12 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         result = self.regressionHelper.GetOdds(sort=True)
         #display(result)
         self.assertAlmostEqual(result.loc["pelvic_incidence", "Odds"], 1.02345, places=3)
+
+
+    def testSplitComparisons(self):
+        result = self.regressionHelper.GetSplitComparisons()
+        #display(result)
+        self.assertEqual(result.loc["Original", "Positive"], "210 (67.74%)")
 
 
 if __name__ == "__main__":
