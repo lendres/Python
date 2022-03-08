@@ -8,6 +8,8 @@ Created on Wed Jan 19 07:49:25 2022
 import pandas as pd
 import numpy as np
 
+from lendres.ConsoleHelper import ConsoleHelper
+
 from sklearn.model_selection import train_test_split
 
 class ModelHelper:
@@ -63,6 +65,18 @@ class ModelHelper:
         self.xTestingData              = original.xTestingData.copy(deep=deep)
         self.yTrainingData             = original.yTrainingData.copy(deep=deep)
         self.yTestingData              = original.yTestingData.copy(deep=deep)
+
+
+    def PrintClassName(self):
+        """
+        Displays the class name according to the behavior specified in the ConsoleHelper.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def SplitData(self, dependentVariable, testSize, stratify=True):

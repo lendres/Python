@@ -4,11 +4,11 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-from sklearn.ensemble import BaggingClassifier
+from xgboost import XGBClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
-class BaggingHelper(CategoricalRegressionHelper):
+class XGradientBoostingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper):
         """
@@ -43,5 +43,5 @@ class BaggingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = BaggingClassifier(**kwargs, random_state=1)
+        self.model = XGBClassifier(**kwargs, eval_metric="logloss", use_label_encoder=False, random_state=1)
         self.model.fit(self.xTrainingData, self.yTrainingData)

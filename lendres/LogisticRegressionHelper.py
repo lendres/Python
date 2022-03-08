@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 
-import lendres
 from lendres.PlotHelper import PlotHelper
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 

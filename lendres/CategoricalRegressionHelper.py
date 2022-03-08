@@ -13,7 +13,7 @@ import seaborn as sns
 
 from sklearn import metrics
 
-import lendres
+from lendres.ConsoleHelper import ConsoleHelper
 from lendres.ModelHelper import ModelHelper
 from lendres.PlotHelper import PlotHelper
 
@@ -171,6 +171,19 @@ class CategoricalRegressionHelper(ModelHelper):
             raise Exception("Invalid data set specified.")
 
         return confusionMatrix
+
+
+    def DisplayModelPerformanceScores(self):
+        """
+        Displays the model performance scores based on the settings in the ConsuleHelper.
+
+        Returns
+        -------
+        None.
+
+        """
+        scores = self.GetModelPerformanceScores()
+        self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def GetModelPerformanceScores(self):

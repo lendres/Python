@@ -4,11 +4,12 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
-class BaggingHelper(CategoricalRegressionHelper):
+class GradientBoostingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper):
         """
@@ -43,5 +44,5 @@ class BaggingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = BaggingClassifier(**kwargs, random_state=1)
+        self.model = GradientBoostingClassifier(**kwargs, init=AdaBoostClassifier(random_state=1))
         self.model.fit(self.xTrainingData, self.yTrainingData)
