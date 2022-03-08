@@ -15,6 +15,7 @@ from sklearn import metrics
 
 import lendres
 from lendres.ModelHelper import ModelHelper
+from lendres.PlotHelper import PlotHelper
 
 class CategoricalRegressionHelper(ModelHelper):
 
@@ -48,7 +49,7 @@ class CategoricalRegressionHelper(ModelHelper):
         None.
         """
         # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot(scale=scale)
 
         # Need the values in the reverse order (smallest to largest) for the bar plot to get the largest value on
         # the top (highest index position).
@@ -56,7 +57,7 @@ class CategoricalRegressionHelper(ModelHelper):
         indices              = range(importancesDataFrame.shape[0])
 
         # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot(scale=scale)
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
         plt.yticks(indices, importancesDataFrame.index, fontsize=12*scale)
@@ -123,7 +124,7 @@ class CategoricalRegressionHelper(ModelHelper):
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
-        lendres.Plotting.FormatPlot(scale=scale, width=5.35, height=4)
+        PlotHelper.FormatPlot(scale=scale, width=5.35, height=4)
 
         # Create plot and set the titles.
         axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*scale}, fmt="")

@@ -3,5 +3,5 @@
 
 import lendres.Algorithms
 import lendres.BivariateAnalysis
-import lendres.Plotting
 import lendres.UnivariateAnalysis
+import lendres.ConsoleHelper

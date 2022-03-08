@@ -7,8 +7,6 @@ Created on Mon Dec 27 19:30:11 2021
 from IPython.display import display
 
 import DataSetLoading
-#from lendres.ConsoleHelper import ConsoleHelper
-#from lendres.DataHelper import DataHelper
 from lendres.RandomForestHelper import RandomForestHelper
 
 import unittest
@@ -41,9 +39,11 @@ class TestRandomForestHelper(unittest.TestCase):
         self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        display(result)
+        #display(result)
+        self.assertAlmostEqual(result[1, 1], 38)
         result = self.regressionHelper.GetModelPerformanceScores()
-        display(result)
+        #display(result)
+        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.4222, places=3)
 
 
 if __name__ == "__main__":

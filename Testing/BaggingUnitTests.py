@@ -38,9 +38,11 @@ class TestBaggingHelper(unittest.TestCase):
         self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        display(result)
+        #display(result)
+        self.assertAlmostEqual(result[1, 1], 43)
         result = self.regressionHelper.GetModelPerformanceScores()
-        display(result)
+        #display(result)
+        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.9428, places=3)
 
 
 if __name__ == "__main__":

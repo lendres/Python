@@ -13,6 +13,7 @@ from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 
 import lendres
+from lendres.PlotHelper import PlotHelper
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
@@ -158,7 +159,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
         #scale *= 1.5
-        lendres.Plotting.FormatPlot(**kwargs)
+        PlotHelper.FormatPlot(**kwargs)
 
         # Plot the ROC curve(s).
         if dataSet == "both":

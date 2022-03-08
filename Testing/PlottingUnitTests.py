@@ -12,7 +12,7 @@ import pandas as pd
 
 import os
 
-import lendres
+from lendres.PlotHelper import PlotHelper
 
 import unittest
 
@@ -40,7 +40,7 @@ class TestPlotting(unittest.TestCase):
 
         # Test with current figure.
         fileName = "Plot Before Show (gcf).png"
-        lendres.Plotting.SavePlot(fileName, useDefaultOutputFolder=True)
+        PlotHelper.SavePlot(fileName, useDefaultOutputFolder=True)
 
         fullPath = self.getFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
@@ -52,7 +52,7 @@ class TestPlotting(unittest.TestCase):
 
         # Test with supplied figure.
         fileName = "Plot Before Show (figure).png"
-        lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
+        PlotHelper.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
 
         fullPath = self.getFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
@@ -60,7 +60,7 @@ class TestPlotting(unittest.TestCase):
 
 
     def createBasicPlot(self, scale=1.0, width=10, height=6):
-        lendres.Plotting.FormatPlot(scale=scale, width=width, height=height)
+        PlotHelper.FormatPlot(scale=scale, width=width, height=height)
         axis = plt.gca()
         sns.histplot(TestPlotting.data["bmi"], kde=True, ax=axis, palette="winter")
         axis.set(title="Test Plot", xlabel="BMI", ylabel="Count")
@@ -68,14 +68,14 @@ class TestPlotting(unittest.TestCase):
 
 
     def getFullPath(self, fileName):
-        return os.path.join(lendres.Plotting.GetDefaultOutputDirectory(), fileName)
+        return os.path.join(PlotHelper.GetDefaultOutputDirectory(), fileName)
 
 
     @classmethod
     def tearDownClass(cls):
         # It's not known what test function will be last, so make sure we clean
         # up any files and directories created.
-        lendres.Plotting.DeleteOutputDirectory()
+        PlotHelper.DeleteOutputDirectory()
 
 
 if __name__ == "__main__":

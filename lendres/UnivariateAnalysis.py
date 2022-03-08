@@ -9,7 +9,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
-import lendres.Plotting
+from lendres.PlotHelper import PlotHelper
 
 
 def CreateBoxPlot(data, category, scale=1.0):
@@ -32,7 +32,7 @@ def CreateBoxPlot(data, category, scale=1.0):
     """
 
     # Must be run before creating figure or plotting data.
-    lendres.Plotting.FormatPlot(scale=scale)
+    PlotHelper.FormatPlot(scale=scale)
     params = {
         "figure.figsize"         : (scale*10, scale*1.25)
     }
@@ -137,7 +137,7 @@ def CreateBoxAndHistogramPlot(data, category, scale=1.0):
         The newly created figure.
     """
 
-    figure, (boxAxis, histogramAxis) = lendres.Plotting.NewTopAndBottomAxisFigure(category)
+    figure, (boxAxis, histogramAxis) = PlotHelper.NewTopAndBottomAxisFigure(category)
 
     PlotBoxPlot(boxAxis, data, category, autoLabelX=False)
     PlotHistogram(histogramAxis, data, category)
@@ -204,7 +204,7 @@ def CreatePercentageBarPlot(data, category, scale=1.0):
     """
 
     # Must be run before creating figure or plotting data.
-    lendres.Plotting.FormatPlot(scale=scale)
+    PlotHelper.FormatPlot(scale=scale)
 
     # This creates the bar chart.  At the same time, save the figure so we can return it.
     axis   = sns.countplot(x=data[category], palette='winter')

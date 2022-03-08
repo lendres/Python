@@ -4,7 +4,6 @@ Created on Wed Feb 16 05:52:33 2022
 
 @author: Lance
 """
-import pandas as pd
 import numpy as np
 
 def BoundingBinarySearch(item, points, returnedUnits="indices"):
@@ -72,6 +71,3 @@ def BoundingBinarySearch(item, points, returnedUnits="indices"):
         return [first, last]
     else:
         return [points[first], points[last]]
-
-
-

@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import lendres
+from lendres.PlotHelper import PlotHelper
 from lendres.DecisionTreeHelper import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
@@ -159,7 +160,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         ccpAlphas                  = self.costComplexityPath.ccp_alphas[:-1]
 
         # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot(scale=scale)
         axis = plt.gca()
 
         # The actual plotting part.
@@ -193,7 +194,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         impurities = self.costComplexityPath.impurities[:-1]
 
         # Must be run before creating figure or plotting data.
-        lendres.Plotting.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot(scale=scale)
 
         axis = plt.gca()
         axis.plot(ccpAlphas, impurities, marker='o', drawstyle="steps-post")

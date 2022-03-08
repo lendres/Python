@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 import lendres
+from lendres.PlotHelper import PlotHelper
 
 def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False, useDefaultOutputFolder=True):
     """
@@ -39,7 +40,7 @@ def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False, useDefault
     """
 
     # Must be run before creating figure or plotting data.
-    lendres.Plotting.FormatPlot(scale=scale)
+    PlotHelper.FormatPlot(scale=scale)
 
     # Initialize so the variable is available.
     correlationValues = []
@@ -60,7 +61,7 @@ def CreateBiVariateHeatMap(data, columns=None, scale=1.0, save=False, useDefault
 
     if save:
         fileName = "Bivariante Heat Map"
-        lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
+        PlotHelper.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
 
     return figure, axis
 
@@ -93,7 +94,7 @@ def CreateBiVariatePairPlot(data, columns=None, scale=1.0, save=False, useDefaul
     """
 
     # Must be run before creating figure or plotting data.
-    lendres.Plotting.FormatPlot(scale=scale)
+    PlotHelper.FormatPlot(scale=scale)
 
     if columns == None:
         sns.pairplot(data)
@@ -108,7 +109,7 @@ def CreateBiVariatePairPlot(data, columns=None, scale=1.0, save=False, useDefaul
 
     if save:
         fileName = "Bivariante Pair Plot"
-        lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=useDefaultOutputFolder)
+        PlotHelper.SavePlot(fileName, figure=figure, useDefaultOutputFolder=useDefaultOutputFolder)
 
     return figure
 
@@ -147,7 +148,7 @@ def PlotComparisonByCategory(data, xColumn, yColumn, sortColumn, title, scale=1.
         The axis of the plot.
     """
     # Must be run before creating figure or plotting data.
-    lendres.Plotting.FormatPlot()
+    PlotHelper.FormatPlot()
 
     axis = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
     axis.set(title=title, xlabel=xColumn.title(), ylabel=yColumn.title())
@@ -156,7 +157,7 @@ def PlotComparisonByCategory(data, xColumn, yColumn, sortColumn, title, scale=1.
 
     if save:
         fileName = sortColumn + "_" + xColumn + "_verus_" + yColumn + ".png"
-        lendres.Plotting.SavePlot(fileName, figure=figure, useDefaultOutputFolder=useDefaultOutputFolder)
+        PlotHelper.SavePlot(fileName, figure=figure, useDefaultOutputFolder=useDefaultOutputFolder)
 
     plt.show()
     

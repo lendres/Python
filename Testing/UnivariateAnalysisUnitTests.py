@@ -6,6 +6,7 @@ Created on Mon Dec 27 19:30:11 2021
 """
 import DataSetLoading
 import lendres
+from lendres.PlotHelper import PlotHelper
 
 import unittest
 
@@ -24,10 +25,10 @@ class TestUnivariateAnalysis(unittest.TestCase):
         saveImages = False
 
         categories = ["bmi", "charges"]
-        lendres.Plotting.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreateBoxAndHistogramPlot, self.dataHelper.data, categories, save=saveImages)
+        PlotHelper.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreateBoxAndHistogramPlot, self.dataHelper.data, categories, save=saveImages)
 
         categories = ["children", "smoker"]
-        lendres.Plotting.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreatePercentageBarPlot, self.dataHelper.data, categories, save=saveImages)
+        PlotHelper.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreatePercentageBarPlot, self.dataHelper.data, categories, save=saveImages)
 
         lendres.UnivariateAnalysis.CreateBoxPlot(self.dataHelper.data, "charges")
 

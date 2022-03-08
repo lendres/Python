@@ -7,7 +7,6 @@ Created on Wed Feb 16 17:49:44 2022
 
 import numpy as np
 
-import lendres
 from lendres.Algorithms import BoundingBinarySearch
 import unittest
 
