@@ -172,8 +172,7 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.data in a pandas.self.dataFrame
+        None.
 
         Returns
         -------
@@ -197,8 +196,7 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.data in a pandas.self.dataFrame
+        None.
 
         Returns
         -------
@@ -209,29 +207,31 @@ class DataHelper:
         return notAvailableCounts, totalNotAvailable
 
 
-    def ChangeToCategoryType(self, categories):
+    def ChangeToCategoryType(self, columns):
         """
-        Changes the self.data series specified to type "category."
+        Changes the specified columns to type "category."
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        categories : list, array of strings
-            Names of the categories to change to the category self.data type.
+        columns : list, array of strings
+            Names of the columns to change to the category data type.
 
         Returns
         -------
         None.
         """
 
-        for category in categories:
-            self.data[category] = self.data[category].astype("category")
+        for column in columns:
+            self.data[column] = self.data[column].astype("category")
 
 
     def ChangeAllObjectColumnsToCategories(self):
         """
         Changes all the columns with the "object" data type to the "category" data type.
+
+        Parameters
+        ----------
+        None.
 
         Returns
         -------
@@ -277,51 +277,45 @@ class DataHelper:
         self.data[column] = self.data[column].astype("int")
 
 
-    def DropRowsWhereDataNotAvailable(self, category, inPlace=False):
+    def DropRowsWhereDataNotAvailable(self, columns):
         """
-        Drops any rows that do not have self.data available in the category of "category."
+        Drops any rows that do not have data available in the column.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        category : string
-            Names of the category to look for not available entries.
-        inPlace : bool
-            If true, the modifications are done in place.
+        columns : list of strings
+            Name of the columns to look for not available entries.
 
         Returns
         -------
-        : pandas.self.dataFrame or None
-            self.dataFrame without the removed rows or None if inPlace=True.
+        None
         """
-        # Gets an self.dataSeries of boolean values indicating where values were not available.
-        indexMask = self.data[category].isna()
+        for column in columns:
+            # Gets an self.dataSeries of boolean values indicating where values were not available.
+            indexMask = self.data[column].isna()
 
-        # The indexMask is a self.dataSeries that has the indexes from the original self.dataFrame and the values are the result
-        # of the test statement (bools).  The indices do not necessarily correspond to the location in the self.dataFrame.  For
-        # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
-        dropIndices = indexMask[indexMask].index
+            # The indexMask is a self.dataSeries that has the indexes from the original self.dataFrame and the values are the result
+            # of the test statement (bools).  The indices do not necessarily correspond to the location in the self.dataFrame.  For
+            # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
+            dropIndices = indexMask[indexMask].index
 
-        # Drop the rows.
-        return self.data.drop(dropIndices, inplace=inPlace)
+            # Drop the rows.
+            self.data.drop(dropIndices, inplace=True)
 
 
-    def DropAllRowsWhereDataNotAvailable(self, inPlace=False):
+    def DropAllRowsWhereDataNotAvailable(self, inPlace=True):
         """
         Drops any rows that are missing one or more entries from the self.data.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        inPlace : bool
-            If true, the modifications are done in place.
+        inPlace : bool, optional
+            If true, the modifications are done in place.  Default is true.
 
         Returns
         -------
-        : pandas.self.dataFrame or None
-            self.dataFrame without the removed rows or None if inPlace=True.
+        : pandas.DataFrame or None
+            DataFrame without the removed rows or None if inPlace=True.
         """
         # Gets an self.dataSeries of boolean values indicating where values were not available.
         # to_numpy returns array inside of a tuple for some odd reason.  The [0] extracts the array.
@@ -337,8 +331,7 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
+        None.
 
         Returns
         -------
@@ -354,33 +347,31 @@ class DataHelper:
         return locations, count
 
 
-    def ExtractLastStringTokens(self, categories):
+    def ExtractLastStringTokens(self, columns):
         """
-        Gets last string token from all the categories.
+        Gets the second string token from all entries in the specified columns.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        categories : list, array of strings
-            Names of the categories to operate on.
+        columns : list, array of strings
+            Names of the columns to operate on.
 
         Returns
         -------
-        self.dataFrame : pandas.self.dataFrame
-            A self.dataFrame that contains the indices of the rows that contain at least one missing entry.
+        dataFrame : pandas.DataFrame
+            A DataFrame that contains the string tokens.
         """
         # Initialize variables.
         numberOfRows    = self.data.shape[0]
-        self.dataFrame  = pd.self.dataFrame(index=range(numberOfRows), columns=categories)
+        dataFrame       = pd.DataFrame(index=range(numberOfRows), columns=columns)
 
         # Extract all the units information from the cells.  Loop over all the cells and extract the second half of the split string.
-        for category in categories:
+        for column in columns:
             for i in range(numberOfRows):
-                value = self.data[category].iloc[i]
-                self.dataFrame[category].iloc[i] = value.split()[1]
+                value = self.data[column].iloc[i]
+                dataFrame[column].iloc[i] = value.split()[1]
 
-        return self.dataFrame
+        return dataFrame
 
 
     def KeepFirstStringToken(self, value):
@@ -439,7 +430,7 @@ class DataHelper:
 
     def ConvertMileage(self, value):
         """
-        Takes a value from the mileage category, strips the units string, converts the units, and returns it as a float.
+        Takes a value from the mileage column, strips the units string, converts the units, and returns it as a float.
 
         Parameters
         ----------
@@ -476,16 +467,14 @@ class DataHelper:
             return np.nan
 
 
-    def GetMinAndMaxValues(self, category, criteria, method="quantity"):
+    def GetMinAndMaxValues(self, column, criteria, method="quantity"):
         """
         Display and maximum and minimum values in a self.dataSeries.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        category : string
-            Names of the category to sort and display.
+        column : string
+            Names of the column to sort and display.
         criteria : list of two floats or a float
             The criteria used to determine which numbers are dropped.  See "method" for more information.
         method : string
@@ -509,57 +498,55 @@ class DataHelper:
             numberOfRows = criteria
         elif method == "percent":
             # Convert the fraction to a number of rows.
-            numberOfRows = round(len(self.data[category]) * criteria / 100)
+            numberOfRows = round(len(self.data[column]) * criteria / 100)
         else:
             # A boo-boo was made.
             raise Exception("Invalid \"method\" specified.")
 
         # Sort then display the start and end of the series.
-        sortedSeries = self.data[category].sort_values()
+        sortedSeries = self.data[column].sort_values()
 
         # Create new self.dataFrames for the head (smallest values) and the tail (largest values).
         # Reset the index to move the index to a column and create a new, renumbered index.  This lets us combine the two self.dataFrames at
         # the same index and saves the indices so we can use them later.
         # Also rename the columns to make them more meaningful.
         head = sortedSeries.head(numberOfRows).reset_index()
-        head.rename({"index" : "Smallest_Index", category : "Smallest"}, axis=1, inplace=True)
+        head.rename({"index" : "Smallest_Index", column : "Smallest"}, axis=1, inplace=True)
 
         tail = sortedSeries.tail(numberOfRows).reset_index()
-        tail.rename({"index" : "Largest_Index", category : "Largest"}, axis=1, inplace=True)
+        tail.rename({"index" : "Largest_Index", column : "Largest"}, axis=1, inplace=True)
 
         # Combine the two along the columns and return the result.
         return pd.concat([head, tail], axis=1)
 
 
-    def ReplaceLowOutlierWithMean(self, category, criteria):
+    def ReplaceLowOutlierWithMean(self, column, criteria):
         """
-        Replaces values beyond the criteria with the mean value for the category.  Done in place.
+        Replaces values beyond the criteria with the mean value for the column.  Done in place.
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            The self.data.
-        category: string
-            Category name in the self.dataFrame.
+        column : string
+            Column name in the data.
+        criteria : float
+            Criteria used to determine what is an outlier.
 
         Returns
         -------
         None.
         """
-        mean = self.data[category].mean()
-        self.data.loc[self.data[category] < criteria, category] = mean
+        mean = self.data[column].mean()
+        self.data.loc[self.data[column] < criteria, column] = mean
 
 
-    def DropMinAndMaxValues(self, category, criteria, method="fraction", inPlace=False):
+    def DropMinAndMaxValues(self, column, criteria, method="fraction", inPlace=False):
         """
-        Drops any rows that do not have self.data available in the category of "category."
+        Drops any rows that do not have data available in the column of "column."
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
-        category : string
-            Names of the category to look for not available entries.
+        column : string
+            Names of the column to look for not available entries.
         criteria : list of two floats or a float
             The criteria used to determine which numbers are dropped.  See "method" for more information.
         method : string
@@ -576,7 +563,7 @@ class DataHelper:
         """
 
         # This will return a struction that has the values and the indices of the minimums and maximums.
-        minAndMaxValues = self.GetMinAndMaxValues(category, criteria, method=method)
+        minAndMaxValues = self.GetMinAndMaxValues(column, criteria, method=method)
 
         # numpy.where returns array inside of a tuple for some odd reason.  The [0] extracts the array.
         dropIndices = pd.concat([minAndMaxValues["Smallest_Index"], minAndMaxValues["Largest_Index"]])
@@ -591,8 +578,6 @@ class DataHelper:
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to change the categories in.
         column : string
             Names of the column to look for not available entries.
         irqScale : float
@@ -629,45 +614,44 @@ class DataHelper:
 
     def RemoveAllUnusedCategories(self):
         """
-        Removes any unused categories (value count is zero) from all series that are of type "category."
+        Removes any unused categories (value count is zero) from all series that are of type "column."
         Performs operation "in place."
 
         Parameters
         ----------
-        self.data : pandas.self.dataFrame
-            self.dataFrame to operate on.
+        None.
 
         Returns
         -------
         None.
         """
-        # Find all the category types in the self.dataFrame and loop over them.
-        for category in self.data.dtypes[self.data.dtypes == "category"].index:
-            self.data[category] = self.data[category].cat.remove_unused_categories()
+        # Find all the column types in the self.dataFrame and loop over them.
+        for column in self.data.dtypes[self.data.dtypes == "category"].index:
+            self.data[column] = self.data[column].cat.remove_unused_categories()
 
 
-    def DisplayCategoryCounts(self, categories):
+    def DisplayCategoryCounts(self, columns):
         """
         Displays all the values counts for the specified columns columns.
 
         Parameters
         ----------
-        categories : list, array of strings
-            Names of the categories to operate on.
+        columns : list, array of strings
+            Names of the columns to operate on.
 
         Returns
         -------
         None.
         """
-        for category in categories:
+        for column in columns:
             self.consoleHelper.Print("\n", ConsoleHelper.VERBOSEREQUESTED)
-            self.consoleHelper.PrintBold(category, ConsoleHelper.VERBOSEREQUESTED)
-            self.consoleHelper.Display(self.data[category].value_counts(), ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.PrintBold(column, ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.Display(self.data[column].value_counts(), ConsoleHelper.VERBOSEREQUESTED)
 
 
     def DisplayAllCategoriesValueCounts(self):
         """
-        Displays the value counts of all the self.dataSeries of type "category."
+        Displays the value counts of all columns of type "category."
 
         Parameters
         ----------
@@ -677,7 +661,7 @@ class DataHelper:
         -------
         None.
         """
-        # Find all the category types in the self.dataFrame and loop over them.
+        # Find all the category types in the DataFrame and passes them to the display function.
         self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index)
 
 
@@ -734,9 +718,9 @@ class DataHelper:
         return self.data.drop(dropIndices, inplace=inPlace)
 
 
-    def RemoveRowsWithValueOutsideOfCriteria(self, category, criteria, method, inPlace=False):
+    def RemoveRowsWithValueOutsideOfCriteria(self, column, criteria, method, inPlace=False):
         """
-        Replaces values beyond the criteria with the mean value for the category.  Done in place.
+        Replaces values beyond the criteria with the mean value for the column.  Done in place.
 
         Parameters
         ----------
@@ -760,9 +744,9 @@ class DataHelper:
         # values we want to drop.
         indexMask = None
         if method == "dropabove":
-            indexMask = self.data[category] > criteria
+            indexMask = self.data[column] > criteria
         elif method == "dropbelow":
-            indexMask = self.data[category] < criteria
+            indexMask = self.data[column] < criteria
         else:
             raise Exception("Invalid \"method\" specified.")
 
@@ -841,20 +825,20 @@ class DataHelper:
 
     def EncodeAllCategoricalColumns(self, dropFirst=True):
         """
-        Converts all categorical columns (have that self.data type "category") to one hot encoded values and drops one
-        value per category.  Prepares categorical columns for use in a model.
+        Converts all categorical columns (that have data type "category") to encoded values.
+        Prepares categorical columns for use in a model.
 
         Parameters
         ----------
         dropFirst : bool
-            If true, the first category is dropped for the encoding.
+            If true, the first category is dropped for the encoding (one hot encoding).
 
         Returns
         -------
         None.
         """
-        # Find all the category types in the self.dataFrame.
-        # Gets all the columns that have the category self.data type.  That is returned as a self.dataSeries.  The
+        # Find all the category types in the data.
+        # Gets all the columns that have the category data type.  That is returned as a DataSeries.  The
         # index (where the names are) is extracted from that.
         allCategoricalColumns = self.data.dtypes[self.data.dtypes == "category"].index.tolist()
         self.EncodeCategoricalColumns(allCategoricalColumns, dropFirst)
@@ -862,7 +846,7 @@ class DataHelper:
 
     def EncodeCategoricalColumns(self, columns, dropFirst=True):
         """
-        Converts the categorical columns "categories" to one hot encoded values and drops one value per category.
+        Converts the categorical columns ("category" data type) to encoded values.
         Prepares categorical columns for use in a model.
 
         Parameters

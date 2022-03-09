@@ -45,18 +45,18 @@ def FixCreditData(dataHelper, dropFirst):
     dataHelper.EncodeCategoricalColumns(columns=oneHotCols, dropFirst=dropFirst)
 
 
-def GetLoan_ModellingData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropExtra=True):
+def GetLoanModellingData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropExtra=True):
     inputFile               = "Loan_Modelling.csv"
     dependentVariable       = "Personal_Loan"
 
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
-    FixLoan_ModellingData(dataHelper, dropExtra)
+    FixLoanModellingData(dataHelper, dropExtra)
 
     return dataHelper, dependentVariable
 
 
-def FixLoan_ModellingData(dataHelper, dropExtra):
+def FixLoanModellingData(dataHelper, dropExtra):
     dataHelper.data.drop(["ID"], axis=1, inplace=True)
     dataHelper.RemoveRowsWithValueOutsideOfCriteria("Experience", 0, "dropbelow", inPlace=True)
     dataHelper.EncodeCategoricalColumns(["Family", "Education"])
@@ -80,6 +80,15 @@ def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=True):
     return dataHelper, dependentVariable
 
 
+def GetDataWithErrors(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "datawitherrors.csv"
+    dependentVariable       = "charges"
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    return dataHelper, dependentVariable
+
+
 def GetBackPainData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     inputFile               = "backpain.csv"
     dependentVariable       = "Status"
@@ -87,5 +96,14 @@ def GetBackPainData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     dataHelper.ConvertCategoryToNumeric(dependentVariable, "Abnormal")
+
+    return dataHelper, dependentVariable
+
+
+def GetUsedCarsData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "used_cars_data.csv"
+    dependentVariable       = "Price"
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     return dataHelper, dependentVariable

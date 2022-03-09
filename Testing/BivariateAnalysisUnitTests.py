@@ -5,7 +5,9 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import DataSetLoading
-import lendres
+
+from lendres.ConsoleHelper           import ConsoleHelper
+from lendres.BivariateAnalysis       import BivariateAnalysis
 
 import unittest
 
@@ -13,20 +15,29 @@ class TestBivariateAnalysis(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetInsuranceData(encode=False)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
 
 
     def setUp(self):
         self.dataHelper = TestBivariateAnalysis.dataHelper.Copy(deep=True)
 
 
-    def testPlots(self):
-        lendres.BivariateAnalysis.CreateBiVariateHeatMap(self.dataHelper.data)
-        lendres.BivariateAnalysis.CreateBiVariatePairPlot(self.dataHelper.data)
+    def testHeatMapPlots(self):
+        BivariateAnalysis.CreateBivariateHeatMap(self.dataHelper.data)
 
         columns = ["age", "charges"]
-        lendres.BivariateAnalysis.CreateBiVariateHeatMap(self.dataHelper.data, columns)
-        lendres.BivariateAnalysis.CreateBiVariatePairPlot(self.dataHelper.data, columns)
+        BivariateAnalysis.CreateBivariateHeatMap(self.dataHelper.data, columns)
+
+
+    def testPairPlots(self):
+        BivariateAnalysis.CreateBivariatePairPlot(self.dataHelper.data)
+
+        columns = ["age", "charges"]
+        BivariateAnalysis.CreateBivariatePairPlot(self.dataHelper.data, columns)
+
+
+    def testPlotComparisonByCategory(self):
+        BivariateAnalysis.PlotComparisonByCategory(self.dataHelper.data, "age", "charges", "sex", "Sorted by Sex")
 
 
 if __name__ == "__main__":

@@ -8,7 +8,6 @@ Created on Wed Jan 19 07:49:25 2022
 import numpy as np
 import matplotlib.pyplot as plt
 
-import lendres
 from lendres.PlotHelper import PlotHelper
 from lendres.DecisionTreeHelper import DecisionTreeHelper
 
@@ -133,7 +132,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         return trainingScores, testScores
 
 
-    def CreateAlphasVersusScoresPlot(self, criteria, scale=1.0):
+    def CreateAlphasVersusScoresPlot(self, criteria):
         """
         Plots the alphas versus training and/or testing scores for all the models
         generated from a cost complexity pruning model.
@@ -146,9 +145,6 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
                 "recall"
                 "precision"
                 "f1"
-        scale : float, optional
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for
-            the output scale of the plot. The default is 1.0.
 
         Returns
         -------
@@ -160,7 +156,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         ccpAlphas                  = self.costComplexityPath.ccp_alphas[:-1]
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot()
         axis = plt.gca()
 
         # The actual plotting part.
@@ -175,15 +171,13 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         plt.show()
 
 
-    def CreateImpunityVersusAlphaPlot(self, scale=1.0):
+    def CreateImpunityVersusAlphaPlot(self):
         """
         Creates an impunity versus alpha plot.
 
         Parameters
         ----------
-        scale : float, optional
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for
-            the output scale of the plot. The default is 1.0.
+        None.
 
         Returns
         -------
@@ -194,7 +188,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         impurities = self.costComplexityPath.impurities[:-1]
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot()
 
         axis = plt.gca()
         axis.plot(ccpAlphas, impurities, marker='o', drawstyle="steps-post")

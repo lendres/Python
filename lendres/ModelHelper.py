@@ -71,6 +71,29 @@ class ModelHelper:
 
     @classmethod
     def GetModelComparisons(cls, models, score):
+        """
+        Creates a comparison of a score across several models.
+
+        Extracts the training and testing "score" for each model and puts it into a DataFrame.  The models must
+        all have a "GetModelPerformanceScores" function that returns a DataFrame that contains a "score" column
+        and "Testing" and "Training" rows.
+
+        If the model has a model.description and it is not blank, that value is used for the name of the model,
+        otherwise, the class name of the model is used.
+
+        Parameters
+        ----------
+        models : list
+            List of models to compare.
+        score : string
+            Score to extract from the list of performance scores.  This must be a column in the DataFrame
+            returned by the "GetModelPerformanceScores" function.
+
+        Returns
+        -------
+        comparisonFrame : pandas.DataFrame
+            A DataFrame that contains a list of the models and each models training and testing score.
+        """
 
         trainingScores = []
         testingScores  = []
@@ -94,6 +117,7 @@ class ModelHelper:
 
         return comparisonFrame
 
+
     @classmethod
     def PrintModelComparisons(cls, models, score):
         comparisons = cls.GetModelComparisons(models, score)
@@ -112,18 +136,18 @@ class ModelHelper:
         self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def SplitData(self, dependentVariable, testSize, stratify=True):
+    def SplitData(self, dependentVariable, testSize, stratify=False):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
         dependentVariable : string
             Name of the column that has the dependant data.
         testSize : double
             Fraction of the data to use as test data.  Must be in the range of 0-1.
+        stratify : bool
+            If true, the approximate ratio of value in the dependent variable is maintained.
 
         Returns
         -------

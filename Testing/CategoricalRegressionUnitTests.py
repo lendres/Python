@@ -27,7 +27,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = CategoricalRegressionHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3)
+        self.regressionHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
 
         # Fake a model so we have output to use.
         self.regressionHelper.model = LogisticRegression(solver="liblinear", random_state=1)

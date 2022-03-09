@@ -5,8 +5,9 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import DataSetLoading
-import lendres
+
 from lendres.PlotHelper import PlotHelper
+from lendres.UnivariateAnalysis import UnivariateAnalysis
 
 import unittest
 
@@ -22,15 +23,13 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
 
     def testPlots(self):
-        saveImages = False
-
         categories = ["bmi", "charges"]
-        PlotHelper.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreateBoxAndHistogramPlot, self.dataHelper.data, categories, save=saveImages)
+        PlotHelper.ApplyPlotToEachCategory(UnivariateAnalysis.CreateBoxAndHistogramPlot, self.dataHelper.data, categories)
 
         categories = ["children", "smoker"]
-        PlotHelper.ApplyPlotToEachCategory(lendres.UnivariateAnalysis.CreatePercentageBarPlot, self.dataHelper.data, categories, save=saveImages)
+        PlotHelper.ApplyPlotToEachCategory(UnivariateAnalysis.CreatePercentageBarPlot, self.dataHelper.data, categories)
 
-        lendres.UnivariateAnalysis.CreateBoxPlot(self.dataHelper.data, "charges")
+        UnivariateAnalysis.CreateBoxPlot(self.dataHelper.data, "charges")
 
 
 if __name__ == "__main__":

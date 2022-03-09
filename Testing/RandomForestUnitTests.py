@@ -15,11 +15,7 @@ class TestRandomForestHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(dropFirst=False)
-
-        #print("\nData size after cleaning:")
-        #display(cls.dataHelper.data.shape)
 
 
     def setUp(self):
@@ -38,11 +34,11 @@ class TestRandomForestHelper(unittest.TestCase):
         self.regressionHelper.CreateModel()
         self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        #display(result)
         self.assertAlmostEqual(result[1, 1], 38)
+
         result = self.regressionHelper.GetModelPerformanceScores()
-        #display(result)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.4222, places=3)
 
 

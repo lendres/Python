@@ -5,21 +5,22 @@ Created on Mon Dec 27 19:30:11 2021
 @author: Lance
 """
 import numpy as np
-from IPython.display import display
-from sklearn import metrics
+from IPython.display                 import display
+from sklearn                         import metrics
+
+from sklearn.tree                    import DecisionTreeClassifier
+from sklearn.ensemble                import AdaBoostClassifier
 
 import DataSetLoading
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.ModelHelper import ModelHelper
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import AdaBoostClassifier
-from lendres.DecisionTreeHelper import DecisionTreeHelper
-from lendres.BaggingHelper import BaggingHelper
-from lendres.RandomForestHelper import RandomForestHelper
-from lendres.AdaBoostHelper import AdaBoostHelper
-from lendres.GradientBoostingHelper import GradientBoostingHelper
+from lendres.ConsoleHelper           import ConsoleHelper
+from lendres.ModelHelper             import ModelHelper
+from lendres.DecisionTreeHelper      import DecisionTreeHelper
+from lendres.BaggingHelper           import BaggingHelper
+from lendres.RandomForestHelper      import RandomForestHelper
+from lendres.AdaBoostHelper          import AdaBoostHelper
+from lendres.GradientBoostingHelper  import GradientBoostingHelper
 from lendres.XGradientBoostingHelper import XGradientBoostingHelper
-from lendres.HyperparameterHelper import HyperparameterHelper
+from lendres.HyperparameterHelper    import HyperparameterHelper
 
 import unittest
 
@@ -39,17 +40,13 @@ class TestHyperparameterHelper(unittest.TestCase):
     def setUpClass(cls):
         cls.regresionHelpers = []
 
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED,
-                                                                             dropFirst=False)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
 
         if skipTests:
             print("\nThe following tests have been skipped:")
             for test in skippedTests:
                 print("    ", test)
             print("\n")
-
-        #print("\nData size after cleaning:")
-        #display(cls.dataHelper.data.shape)
 
 
     def setUp(self):

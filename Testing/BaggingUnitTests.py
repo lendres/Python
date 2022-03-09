@@ -4,8 +4,6 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
-from IPython.display import display
-
 import DataSetLoading
 from lendres.BaggingHelper import BaggingHelper
 
@@ -15,11 +13,7 @@ class TestBaggingHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(dropFirst=False)
-
-        #print("\nData size after cleaning:")
-        #display(cls.dataHelper.data.shape)
 
 
     def setUp(self):
@@ -30,18 +24,18 @@ class TestBaggingHelper(unittest.TestCase):
         self.dataHelper         = TestBaggingHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = BaggingHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3)
+        self.regressionHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testResults(self):
         self.regressionHelper.CreateModel()
         self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        #display(result)
         self.assertAlmostEqual(result[1, 1], 43)
+
         result = self.regressionHelper.GetModelPerformanceScores()
-        #display(result)
         self.assertAlmostEqual(result.loc["Training", "Recall"], 0.9428, places=3)
 
 

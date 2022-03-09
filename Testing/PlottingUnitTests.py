@@ -26,21 +26,21 @@ class TestPlotting(unittest.TestCase):
 
 
     def testFormatPlotMethod1(self):
-        self.createBasicPlot(scale=2.0)
+        self.createBasicPlot("Format by Scale", scale=2.0)
         plt.show()
 
 
     def testFormatPlotMethod2(self):
-        self.createBasicPlot(width=5, height=3)
+        self.createBasicPlot("Format by Width and Height", width=5, height=3)
         plt.show()
 
 
     def testSavePlotBeforeShowMethod1(self):
-        self.createBasicPlot()
+        self.createBasicPlot("Save Before Show 1")
 
         # Test with current figure.
         fileName = "Plot Before Show (gcf).png"
-        PlotHelper.SavePlot(fileName, useDefaultOutputFolder=True)
+        PlotHelper.SavePlot(fileName)
 
         fullPath = self.getFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
@@ -48,22 +48,26 @@ class TestPlotting(unittest.TestCase):
 
 
     def testSavePlotBeforeShowMethod2(self):
-        figure = self.createBasicPlot()
+        figure = self.createBasicPlot("Save Before Show 2")
 
         # Test with supplied figure.
         fileName = "Plot Before Show (figure).png"
-        PlotHelper.SavePlot(fileName, figure=figure, useDefaultOutputFolder=True)
+        PlotHelper.SavePlot(fileName, figure=figure)
 
         fullPath = self.getFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
         plt.show()
 
 
-    def createBasicPlot(self, scale=1.0, width=10, height=6):
-        PlotHelper.FormatPlot(scale=scale, width=width, height=height)
+    def createBasicPlot(self, titlePrefix, scale=1.0, width=10, height=6):
+        PlotHelper.scale = scale
+        PlotHelper.FormatPlot(width=width, height=height)
         axis = plt.gca()
         sns.histplot(TestPlotting.data["bmi"], kde=True, ax=axis, palette="winter")
-        axis.set(title="Test Plot", xlabel="BMI", ylabel="Count")
+        PlotHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabel="Count", titlePrefix=titlePrefix)
+
+        # Reset the scale to the default for the next plot.
+        PlotHelper.scale = 1.0
         return plt.gcf()
 
 

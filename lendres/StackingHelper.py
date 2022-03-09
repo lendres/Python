@@ -4,12 +4,11 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import StackingClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
-class GradientBoostingHelper(CategoricalRegressionHelper):
+class StackingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper):
         """
@@ -27,7 +26,7 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         super().__init__(dataHelper)
 
 
-    def CreateModel(self, initializer=AdaBoostClassifier(random_state=1), **kwargs):
+    def CreateModel(self, **kwargs):
         """
         Creates a decision tree model.
 
@@ -46,5 +45,5 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = GradientBoostingClassifier(init=initializer, **kwargs)
+        self.model = StackingClassifier(**kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)

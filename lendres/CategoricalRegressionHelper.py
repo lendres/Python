@@ -35,33 +35,30 @@ class CategoricalRegressionHelper(ModelHelper):
         super().__init__(dataHelper)
 
 
-    def CreateFeatureImportancePlot(self, scale=1.0):
+    def CreateFeatureImportancePlot(self, titlePrefix=None):
         """
         Plots importance factors as a bar plot.
 
         Parameters
         ----------
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
 
         Returns
         -------
         None.
         """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(scale=scale)
-
         # Need the values in the reverse order (smallest to largest) for the bar plot to get the largest value on
         # the top (highest index position).
         importancesDataFrame = self.GetSortedImportance(ascending=True)
         indices              = range(importancesDataFrame.shape[0])
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(scale=scale)
+        PlotHelper.FormatPlot()
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
-        plt.yticks(indices, importancesDataFrame.index, fontsize=12*scale)
-        plt.gca().set(title="Feature Importances", xlabel="Relative Importance")
+        plt.yticks(indices, importancesDataFrame.index, fontsize=12*PlotHelper.scale)
+        PlotHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
 
         plt.show()
 
@@ -85,7 +82,7 @@ class CategoricalRegressionHelper(ModelHelper):
                             index=self.xTrainingData.columns).sort_values(by="Importance", ascending=ascending)
 
 
-    def CreateConfusionMatrixPlot(self, dataSet="training", scale=1.0):
+    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -95,8 +92,8 @@ class CategoricalRegressionHelper(ModelHelper):
             Which data set(s) to plot.
             training - Plots the results from the training data.
             testing  - Plots the results from the test data.
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
 
         Returns
         -------
@@ -124,11 +121,11 @@ class CategoricalRegressionHelper(ModelHelper):
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
-        PlotHelper.FormatPlot(scale=scale, width=5.35, height=4)
+        PlotHelper.FormatPlot(width=5.35, height=4)
 
         # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*scale}, fmt="")
-        axis.set(title=dataSet.title()+" Data", ylabel="Actual", xlabel="Predicted")
+        axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
+        PlotHelper.Label(axis, title=dataSet.title()+" Data", xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
         plt.show()
 
