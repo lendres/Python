@@ -40,6 +40,8 @@ class ModelHelper:
         self.yTrainingPredicted        = []
         self.yTestingPredicted         = []
 
+        self.description               = ""
+
 
     def CopyData(self, original, deep=False):
         """
@@ -67,6 +69,38 @@ class ModelHelper:
         self.yTestingData              = original.yTestingData.copy(deep=deep)
 
 
+    @classmethod
+    def GetModelComparisons(cls, models, score):
+
+        trainingScores = []
+        testingScores  = []
+        index          = []
+
+        for model in models:
+            results = model.GetModelPerformanceScores()
+            trainingScores.append(results.loc["Training", score])
+            testingScores.append(results.loc["Testing", score])
+
+            # The name of the model to use as the index.  Use the more useful "description"
+            # if it is available, otherwise use the calls name.
+            if model.description == "":
+                index.append(model.__class__.__name__)
+            else:
+                index.append(model.description)
+
+        comparisonFrame = pd.DataFrame({"Training "+score : trainingScores,
+                                        "Testing "+score  : testingScores},
+                                        index=index)
+
+        return comparisonFrame
+
+    @classmethod
+    def PrintModelComparisons(cls, models, score):
+        comparisons = cls.GetModelComparisons(models, score)
+
+        models[0].dataHelper.consoleHelper.Display(comparisons)
+
+
     def PrintClassName(self):
         """
         Displays the class name according to the behavior specified in the ConsoleHelper.
@@ -74,7 +108,6 @@ class ModelHelper:
         Returns
         -------
         None.
-
         """
         self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
 

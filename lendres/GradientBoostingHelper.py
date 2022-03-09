@@ -44,5 +44,5 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = GradientBoostingClassifier(**kwargs, init=AdaBoostClassifier(random_state=1))
+        self.model = GradientBoostingClassifier(init=AdaBoostClassifier(random_state=1), **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)
