@@ -33,28 +33,23 @@ class LinearRegressionHelper(ModelHelper):
         super().__init__(dataHelper)
 
 
-    def CreateModel(self):
+    def CreateModel(self, **kwargs):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
-        dependentVariable : string
-            Name of the column that has the dependant data.
-        testSize : double
-            Fraction of the data to use as test data.  Must be in the range of 0-1.
+        **kwargs : keyword arguments
+            These arguments are passed on to the model.
 
         Returns
         -------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
+        None.
         """
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = LinearRegression()
+        self.model = LinearRegression(random_state=1, **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 

@@ -27,14 +27,28 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         super().__init__(dataHelper)
 
 
-    def CreateModel(self, initializer=AdaBoostClassifier(random_state=1), **kwargs):
+    def CreateStandardModel(self, **kwargs):
         """
         Creates a decision tree model.
 
         Parameters
         ----------
-        initializer : sklearn.ensemble classifier
-            Classifier used to initialize the gradient boosting.
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
+
+        Returns
+        -------
+        None.
+        """
+        self.CreateModel(init=AdaBoostClassifier(random_state=1), **kwargs)
+
+
+    def CreateModel(self, **kwargs):
+        """
+        Creates a decision tree model.
+
+        Parameters
+        ----------
         **kwargs : keyword arguments
             These arguments are passed on to the DecisionTreeClassifier.
 
@@ -46,5 +60,5 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = GradientBoostingClassifier(init=initializer, **kwargs)
+        self.model = GradientBoostingClassifier(random_state=1, **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)

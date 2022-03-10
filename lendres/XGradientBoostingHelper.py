@@ -43,5 +43,5 @@ class XGradientBoostingHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = XGBClassifier(**kwargs, eval_metric="logloss", use_label_encoder=False, random_state=1)
+        self.model = XGBClassifier(eval_metric="logloss", use_label_encoder=False, random_state=1, **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)

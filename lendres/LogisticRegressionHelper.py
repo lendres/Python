@@ -45,13 +45,12 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
         Returns
         -------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
+        None.
         """
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = LogisticRegression(solver="liblinear", random_state=1, **kwargs)
+        self.model = LogisticRegression(random_state=1, **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 

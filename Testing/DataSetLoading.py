@@ -107,3 +107,12 @@ def GetUsedCarsData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     return dataHelper, dependentVariable
+
+
+def GetCardioGoodFitnessData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "CardioGoodFitness.csv"
+    dependentVariable       = "Product"
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    return dataHelper, dependentVariable

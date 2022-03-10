@@ -43,5 +43,5 @@ class AdaBoostHelper(CategoricalRegressionHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = AdaBoostClassifier(**kwargs, random_state=1)
+        self.model = AdaBoostClassifier(random_state=1, **kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)
