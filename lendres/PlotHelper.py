@@ -5,6 +5,10 @@ Created on Sat Dec  4 18:49:50 2021
 """
 
 import matplotlib.pyplot as plt
+
+import seaborn as sns
+sns.set(color_codes=True)
+
 import os
 import shutil
 
@@ -85,7 +89,8 @@ class PlotHelper():
             "xtick.labelsize"        : 0.80*cls.scale*size,
             "ytick.labelsize"        : 0.80*cls.scale*size,
             "axes.titlepad"          : 25,
-            "axes.linewidth"         : 1.5*cls.scale,               # Axis border.
+            "axes.linewidth"         : 0.75*cls.scale,               # Axis border.
+            "axes.edgecolor"         : "black",                     # Axis border.
             "patch.linewidth"        : 1.5*cls.scale,               # Legend border.
             "lines.linewidth"        : 3*cls.scale
 

@@ -25,7 +25,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
 
         self.regressionHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
-        self.regressionHelper.CreateModel()
+        self.regressionHelper.CreateModel(solver="liblinear")
 
 
     def testStandardPlots(self):

@@ -26,7 +26,7 @@ import unittest
 
 # Some of these tests take a long time to run.  Use this to skip some.  Useful for testing
 # new unit tests so you don't have to run them all to see if the new one works.
-skipTests = 1
+skipTests = 0
 if skipTests:
     #skippedTests = ["Decision Tree", "Bagging", "Random Forest", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
     skippedTests = ["Decision Tree", "Bagging", "AdaBoost", "X Gradient Boosting"]
@@ -58,7 +58,7 @@ class TestHyperparameterHelper(unittest.TestCase):
 
 
     @unittest.skipIf("Decision Tree" in skippedTests, "Skipped decision tree unit test.")
-    def testDecisiionTreeClassifier(self):
+    def testDecisionTreeClassifier(self):
         parameters = {"max_depth"             : np.arange(1, 3),
                       "min_samples_leaf"      : [2, 5, 7],
                       "max_leaf_nodes"        : [2, 5, 10],
@@ -66,7 +66,7 @@ class TestHyperparameterHelper(unittest.TestCase):
 
         self.regressionHelper   = DecisionTreeHelper(self.dataHelper)
         scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 48)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 24)
 
 
     @unittest.skipIf("Bagging" in skippedTests, "Skipped bagging unit test.")
@@ -77,7 +77,7 @@ class TestHyperparameterHelper(unittest.TestCase):
 
         self.regressionHelper   = BaggingHelper(self.dataHelper)
         scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 48)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 35)
 
 
     @unittest.skipIf("Random Forest" in skippedTests, "Skipped random forest unit test.")
@@ -114,7 +114,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper             = GradientBoostingHelper(self.dataHelper)
         self.regressionHelper.description = "Default Gradient Boosting"
         scores, confusionMatrix           = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 46)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 43)
 
 
     @unittest.skipIf("X Gradient Boosting" in skippedTests, "Skipped extreme gradient boosting unit test.")
@@ -134,13 +134,13 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     def testZComparison(self):
         # Needs to run after at least two of the other tests have been run.
-        print("\nmodel comparisons.")
+        print("\n\n\nModel comparisons:")
         result = ModelHelper.GetModelComparisons(TestHyperparameterHelper.regresionHelpers, "Recall")
         display(result)
 
 
     def RunClassifier(self, parameters):
-        self.regressionHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3)
+        self.regressionHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper)
 
         self.regressionHelper.CreateModel()
@@ -160,7 +160,6 @@ class TestHyperparameterHelper(unittest.TestCase):
         TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
 
         return scores, confusionMatrix
-
 
 
 if __name__ == "__main__":

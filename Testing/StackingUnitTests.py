@@ -55,11 +55,11 @@ class TestStackingHelper(unittest.TestCase):
 
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        self.assertAlmostEqual(result[1, 1], 30)
+        self.assertAlmostEqual(result[1, 1], 28)
 
         self.regressionHelper.DisplayModelPerformanceScores()
         result = self.regressionHelper.GetModelPerformanceScores()
-        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.3488, places=3)
+        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.3255, places=3)
 
 
 if __name__ == "__main__":

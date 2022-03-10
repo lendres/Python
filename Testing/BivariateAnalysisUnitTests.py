@@ -15,29 +15,35 @@ class TestBivariateAnalysis(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
+        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
+        cls.cardioDataHelper,    cls.cardioDependentVariable    = DataSetLoading.GetCardioGoodFitnessData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
 
     def setUp(self):
-        self.dataHelper = TestBivariateAnalysis.dataHelper.Copy(deep=True)
+        self.insuranceDataHelper = TestBivariateAnalysis.insuranceDataHelper.Copy(deep=True)
+        self.cardioDataHelper    = TestBivariateAnalysis.cardioDataHelper.Copy(deep=True)
 
 
     def testHeatMapPlots(self):
-        BivariateAnalysis.CreateBivariateHeatMap(self.dataHelper.data)
+        BivariateAnalysis.CreateBivariateHeatMap(self.insuranceDataHelper.data)
 
         columns = ["age", "charges"]
-        BivariateAnalysis.CreateBivariateHeatMap(self.dataHelper.data, columns)
+        BivariateAnalysis.CreateBivariateHeatMap(self.insuranceDataHelper.data, columns)
 
 
     def testPairPlots(self):
-        BivariateAnalysis.CreateBivariatePairPlot(self.dataHelper.data)
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data)
 
         columns = ["age", "charges"]
-        BivariateAnalysis.CreateBivariatePairPlot(self.dataHelper.data, columns)
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns)
 
 
     def testPlotComparisonByCategory(self):
-        BivariateAnalysis.PlotComparisonByCategory(self.dataHelper.data, "age", "charges", "sex", "Sorted by Sex")
+        BivariateAnalysis.PlotComparisonByCategory(self.insuranceDataHelper.data, "age", "charges", "sex", "Sorted by Sex")
+
+
+    def testProportionalData(self):
+        BivariateAnalysis.CreateComparisonPercentageBarPlot(self.cardioDataHelper.data, "Product", ["TM498", "TM798"], "Gender")
 
 
 if __name__ == "__main__":

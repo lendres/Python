@@ -137,7 +137,7 @@ class BivariateAnalysis:
     def CreateComparisonPercentageBarPlot(cls, data, primaryCategoryName, primaryCategoryEntries, subCategoryName):
         """
         Creates a bar chart that shows the percentages of each type of entry of a category.
-    
+
         Parameters
         ----------
         data : Pandas DataFrame
@@ -146,58 +146,59 @@ class BivariateAnalysis:
             Category name in the DataFrame.
         scale : double
             Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
-    
+
         Returns
         -------
         figure : Figure
             The newly created figure.
         """
-    
+
         # Create data.
         data0 = cls.ExtractProportationData(data, primaryCategoryName, primaryCategoryEntries[0], subCategoryName)
         data1 = cls.ExtractProportationData(data, primaryCategoryName, primaryCategoryEntries[1], subCategoryName)
-        
+
         # Combine the two for plotting.
         proportionData = pd.concat([data0, data1], ignore_index=True)
-        
+
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
-    
+
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
         axis   = sns.barplot(x=subCategoryName, y="Proportion", data=proportionData, hue=primaryCategoryName)
         figure = plt.gcf()
-    
+
         # Label the individual columns with a percentage, then add the titles to the plot.
         #LabelPercentagesOnCountPlot(axis, proportionData, category, scale)
-    
+
         title = "\"" + subCategoryName.title() + "\"" + " Category"
         axis.set(title=title, xlabel=primaryCategoryName.title(), ylabel="Proportion")
-    
+
         # Make sure the plot is shown.
         plt.show()
-    
+
         return figure
-    
+
+
     @classmethod
-    def ExtractProportationData(data, primaryCategoryName, primaryCategoryEntry, subCategoryName):
+    def ExtractProportationData(cls, data, primaryCategoryName, primaryCategoryEntry, subCategoryName):
         """
         Extracts and calculates proportional data.
-    
+
         Parameters
         ----------
         data : Pandas DataFrame
             The data.
-     
-    
+
+
         Returns
         -------
         extractedProportions : Pandas DataFrame
             A DataFrame similar to the one below where a primary category is extracted and then broken down
             by a sub-category.  The proportion of each sub-category is calculated and in a column called "Proportion."
-            
+
             In the example below, the "Product" would be the primary category and "Gender" would be the sub-category.
-        
+
           Product  Gender  Proportion
         0   TM798    Male       0.825
         1   TM798  Female       0.175
@@ -205,11 +206,11 @@ class BivariateAnalysis:
         # Retrieve the primary category and sub-category columns for the rows where the primary category contain
         # the entries "primaryCategoryEntry."
         extractedProportions = data[(data[primaryCategoryName] == primaryCategoryEntry)][[primaryCategoryName, subCategoryName]]
-        
+
         extractedProportions = extractedProportions.value_counts(normalize=True).reset_index(name="Proportion")
         extractedProportions.rename({"index" : subCategoryName}, axis="columns", inplace=True)
-        
+
         # Removes any empty categories in the column that were left over from the original data.
         extractedProportions[primaryCategoryName] = extractedProportions[primaryCategoryName].cat.remove_unused_categories()
-        
+
         return extractedProportions

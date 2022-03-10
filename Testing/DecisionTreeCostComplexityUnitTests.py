@@ -18,7 +18,7 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
         cls.whichData = 0
 
         if cls.whichData == 0:
-            cls.dataHelper, cls.dependentVariable = DataSetLoading.GetLoan_ModellingData()
+            cls.dataHelper, cls.dependentVariable = DataSetLoading.GetLoanModellingData()
         elif cls.whichData == 1:
             cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData()
 

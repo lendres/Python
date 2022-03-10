@@ -115,4 +115,7 @@ def GetCardioGoodFitnessData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
 
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
+    categoryDataNames       = ["Product", "Gender", "MaritalStatus", "Usage", "Fitness"]
+    dataHelper.ChangeToCategoryType(categoryDataNames)
+
     return dataHelper, dependentVariable

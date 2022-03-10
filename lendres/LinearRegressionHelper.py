@@ -49,7 +49,7 @@ class LinearRegressionHelper(ModelHelper):
         if len(self.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
-        self.model = LinearRegression(random_state=1, **kwargs)
+        self.model = LinearRegression(**kwargs)
         self.model.fit(self.xTrainingData, self.yTrainingData)
 
 
