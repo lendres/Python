@@ -33,9 +33,7 @@ class UnivariateAnalysis:
 
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
-        params = {
-            "figure.figsize"         : (PlotHelper.scale*10, PlotHelper.scale*1.25)
-        }
+        params = {"figure.figsize" : (PlotHelper.scale*10, PlotHelper.scale*1.25)}
         plt.rcParams.update(params)
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
