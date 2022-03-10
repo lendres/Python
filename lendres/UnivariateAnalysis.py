@@ -9,7 +9,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
-from lendres.PlotHelper import PlotHelper
+from lendres.PlotHelper       import PlotHelper
+from lendres.DataHelper       import DataHelper
+from lendres.ConsoleHelper    import ConsoleHelper
 
 class UnivariateAnalysis:
 
@@ -216,3 +218,28 @@ class UnivariateAnalysis:
         plt.show()
 
         return figure
+
+
+    @classmethod
+    def BoxPlotAndLimitsDisplay(cls, dataHelper, columns, count):
+        """
+        Creates a box plot and displays the min and max values.
+
+        Parameters
+        ----------
+        dataHelper : DataHelper
+            DataHelper that contains the data.
+        columns : list of strings
+            Columns to generate the display for.
+        count : int
+            Number of minimum and maximum values to display.
+
+        Returns
+        -------
+        None.
+
+        """
+        for column in columns:
+            cls.CreateBoxPlot(dataHelper.data, column)
+            minMaxValues = dataHelper.GetMinAndMaxValues(column, count, method="quantity")
+            dataHelper.consoleHelper.Display(minMaxValues, ConsoleHelper.VERBOSEREQUESTED)

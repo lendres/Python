@@ -26,16 +26,18 @@ class PlotHelper():
     scale                  = 1.0
 
     @classmethod
-    def ApplyPlotToEachCategory(cls, function, data, categories, save=False):
+    def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False):
         """
-        Creates a new figure for every entry in the list of categories.
+        Creates a new figure for every entry in the list of columns.
 
         Parameters
         ----------
         data : Pandas DataFrame
             The data.
-        categories : an arry or list of strings
-            Category names in the DataFrame.
+        columns : an arry or list of strings
+            Column names in the DataFrame.
+        plotFunction : function
+            Plotting function to apply to all columns.
         save : bool
             If true, the plots are saved to the default plotting directory.
 
@@ -43,11 +45,11 @@ class PlotHelper():
         -------
         None.
         """
-        for category in categories:
-            figure = function(data, category)
+        for column in columns:
+            figure = plotFunction(data, column)
 
             if save:
-                fileName = function.__name__ + category.title() + " Category"
+                fileName = plotFunction.__name__ + column.title() + " Category"
                 cls.SavePlot(fileName, figure=figure)
 
 
@@ -144,13 +146,13 @@ class PlotHelper():
 
 
     @classmethod
-    def NewTopAndBottomAxisFigure(cls, category, topPercent=0.25):
+    def NewTopAndBottomAxisFigure(cls, column, topPercent=0.25):
         """
         Creates a new figure that has two axes, one above another.
 
         Parameters
         ----------
-        category : string
+        column : string
             Category name in the DataFrame.
 
         Returns
@@ -169,7 +171,7 @@ class PlotHelper():
 
         figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (topPercent, 1-topPercent)})
 
-        figure.suptitle("\"" + category.title() + "\"" + " Category")
+        figure.suptitle("\"" + column.title() + "\"" + " Category")
 
         return (figure, (boxAxis, histogramAxis))
 

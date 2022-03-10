@@ -9,6 +9,15 @@ import IPython
 
 class ConsoleHelper:
 
+    # Class variables.
+    VERBOSENONE         = 0
+    VERBOSEREQUESTED    = 10
+    VERBOSEERROR        = 20
+    VERBOSEWARNING      = 30
+    VERBOSEIMPORTANT    = 40
+    VERBOSEALL          = 50
+
+
     def __init__(self, useMarkDown=False, verboseLevel=40):
         """
         Constructor.
@@ -42,13 +51,6 @@ class ConsoleHelper:
 
     @classmethod
     def setUpClass(cls):
-        cls.VERBOSENONE         = 0
-        cls.VERBOSEREQUESTED    = 10
-        cls.VERBOSEERROR        = 20
-        cls.VERBOSEWARNING      = 30
-        cls.VERBOSEIMPORTANT    = 40
-        cls.VERBOSEALL          = 50
-
         # Automatically clear the console when this file is imported.
         ConsoleHelper.ClearSpyderConsole()
 

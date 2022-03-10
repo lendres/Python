@@ -25,14 +25,14 @@ class DataHelper:
         fileName : stirng, optional
             Path to load the data from.  This is a shortcut for creating a DataHelper and
             then calling "LoadAndInspectData."
-        data : pandas.self.dataFrame, optional
+        data : pandas.DataFrame, optional
             DataFrame to operate on. The default is None.  If None is specified, the
             data should be loaded in a separate function call, e.g., with "LoadAndInspectData"
             or by providing a fileName to load the data from.  You cannot provide both a file
             and data.
         deep : bool, optional
             Specifies if a deep copy should be done. The default is False.  Only valid if
-            the "self.data" parameter is specified.
+            the "data" parameter is specified.
         consolueHelper : ConsolueHelper
             Class the prints messages.  The following verbose levels are used.
             Specified how much output should be written. The default is 2.
@@ -111,7 +111,7 @@ class DataHelper:
 
     def LoadAndInspectData(self, inputFile):
         """
-        Loads a self.data file and performs some initial inspections and reports results.
+        Loads a data file and performs some initial inspections and reports results.
 
         Parameters
         ----------
@@ -120,8 +120,8 @@ class DataHelper:
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.data in a pandas.self.dataFrame
+        data : pandas.DataFrame
+            Data in a pandas.DataFrame
         """
 
         # Validate the input file.
@@ -205,6 +205,29 @@ class DataHelper:
         notAvailableCounts = self.data.isna().sum()
         totalNotAvailable = sum(notAvailableCounts)
         return notAvailableCounts, totalNotAvailable
+
+
+    def ApplyToAllCategories(self, columns, function):
+        """
+        Runs a function on every column in the list.
+
+        This runs the "apply" operation on the columns.  Therefore, "function" must take a
+        pandas Series as the input.
+
+        Parameters
+        ----------
+        columns : list of strings
+            Columns to operate on.
+        function : function
+            The function that is applied to each column.
+
+        Returns
+        -------
+        None.
+
+        """
+        for column in columns:
+             self.data[column] = self.data[column].apply(function)
 
 
     def ChangeToCategoryType(self, columns):
@@ -291,11 +314,11 @@ class DataHelper:
         None
         """
         for column in columns:
-            # Gets an self.dataSeries of boolean values indicating where values were not available.
+            # Gets an Series of boolean values indicating where values were not available.
             indexMask = self.data[column].isna()
 
-            # The indexMask is a self.dataSeries that has the indexes from the original self.dataFrame and the values are the result
-            # of the test statement (bools).  The indices do not necessarily correspond to the location in the self.dataFrame.  For
+            # The indexMask is a Series that has the indexes from the original DataFrame and the values are the result
+            # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
             # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
             dropIndices = indexMask[indexMask].index
 
@@ -305,7 +328,7 @@ class DataHelper:
 
     def DropAllRowsWhereDataNotAvailable(self, inPlace=True):
         """
-        Drops any rows that are missing one or more entries from the self.data.
+        Drops any rows that are missing one or more entries from the data.
 
         Parameters
         ----------
@@ -327,7 +350,7 @@ class DataHelper:
 
     def GetRowsWithMissingEntries(self):
         """
-        Gets the rows that contain missing self.data.
+        Gets the rows that contain missing data.
 
         Parameters
         ----------
@@ -381,7 +404,7 @@ class DataHelper:
         Parameters
         ----------
         value : string
-            The self.data entry.
+            The entry to be split.
 
         Returns
         -------
@@ -406,11 +429,11 @@ class DataHelper:
         Parameters
         ----------
         value : string
-            The self.data entry.
+            The entry to be split.
 
         Returns
         -------
-        value: float
+        value : float
             The first token of the string as a number of np.nan if the entry was not a string or number.
         """
 
@@ -435,7 +458,7 @@ class DataHelper:
         Parameters
         ----------
         value : string
-            The self.data entry.
+            The entry to be split.
 
         Returns
         -------
@@ -469,7 +492,7 @@ class DataHelper:
 
     def GetMinAndMaxValues(self, column, criteria, method="quantity"):
         """
-        Display and maximum and minimum values in a self.dataSeries.
+        Display and maximum and minimum values in a Series.
 
         Parameters
         ----------
@@ -484,9 +507,9 @@ class DataHelper:
 
         Returns
         -------
-        : pandas.self.dataFrame
-            A self.dataFrame that has both the minimum and maximum values, along with the indices where those values
-            occur.  The self.dataFrame contains the following headings:
+        : pandas.DataFrame
+            A DataFrame that has both the minimum and maximum values, along with the indices where those values
+            occur.  The DataFrame contains the following headings:
             Smallest_Index", "Smallest", "Largest_Index", "Largest"
         """
         # Initialize the variable so it is in scope.
@@ -506,8 +529,8 @@ class DataHelper:
         # Sort then display the start and end of the series.
         sortedSeries = self.data[column].sort_values()
 
-        # Create new self.dataFrames for the head (smallest values) and the tail (largest values).
-        # Reset the index to move the index to a column and create a new, renumbered index.  This lets us combine the two self.dataFrames at
+        # Create new DataFrames for the head (smallest values) and the tail (largest values).
+        # Reset the index to move the index to a column and create a new, renumbered index.  This lets us combine the two DataFrames at
         # the same index and saves the indices so we can use them later.
         # Also rename the columns to make them more meaningful.
         head = sortedSeries.head(numberOfRows).reset_index()
@@ -558,8 +581,8 @@ class DataHelper:
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.dataFrame without the removed rows or None if inPlace=True.
+        data : pandas.DataFrame
+            DataFrame without the removed rows or None if inPlace=True.
         """
 
         # This will return a struction that has the values and the indices of the minimums and maximums.
@@ -587,8 +610,8 @@ class DataHelper:
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.dataFrame without the removed rows or None if inPlace=True.
+        data : pandas.DataFrame
+            DataFrame without the removed rows or None if inPlace=True.
         """
 
         # Get the stats we need.
@@ -599,12 +622,12 @@ class DataHelper:
         limits[0] -= irqScale*interQuartileRange
         limits[1] += irqScale*interQuartileRange
 
-        # Gets an self.dataSeries of boolean values indicating where values are outside of the range.  These are the
+        # Gets an Series of boolean values indicating where values are outside of the range.  These are the
         # values we want to drop.
         indexMask = (self.data[column] < limits[0]) | (self.data[column] > limits[1])
 
-        # The indexMask is a self.dataSeries that has the indexes from the original self.dataFrame and the values are the result
-        # of the test statement (bools).  The indices do not necessarily correspond to the location in the self.dataFrame.  For
+        # The indexMask is a Series that has the indexes from the original DataFrame and the values are the result
+        # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
         # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
         dropIndices = indexMask[indexMask].index
 
@@ -625,7 +648,7 @@ class DataHelper:
         -------
         None.
         """
-        # Find all the column types in the self.dataFrame and loop over them.
+        # Find all the column types in the DataFrame and loop over them.
         for column in self.data.dtypes[self.data.dtypes == "category"].index:
             self.data[column] = self.data[column].cat.remove_unused_categories()
 
@@ -700,15 +723,15 @@ class DataHelper:
         ----------
         column : string
             Column to search through.
-        value : type of self.data in column
+        value : type of data in column
             Value to search for and remove.
         inPlace : bool
             Specified is the operation should be performed in place.
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.dataFrame without the removed rows or None if inPlace=True.
+        data : pandas.DataFrame
+            DataFrame without the removed rows or None if inPlace=True.
         """
 
         # Gets indices of the rows we want to drop.
@@ -725,7 +748,7 @@ class DataHelper:
         Parameters
         ----------
         column: string
-            Column name in the self.dataFrame.
+            Column name in the DataFrame.
         criteria : float
             Values below this will be removed.
         method : string
@@ -737,10 +760,10 @@ class DataHelper:
 
         Returns
         -------
-        self.data : pandas.self.dataFrame
-            self.dataFrame without the removed rows or None if inPlace=True.
+        data : pandas.DataFrame
+            DataFrame without the removed rows or None if inPlace=True.
         """
-        # Gets an self.dataSeries of boolean values indicating where values are outside of the range.  These are the
+        # Gets an Series of boolean values indicating where values are outside of the range.  These are the
         # values we want to drop.
         indexMask = None
         if method == "dropabove":
@@ -750,8 +773,8 @@ class DataHelper:
         else:
             raise Exception("Invalid \"method\" specified.")
 
-        # The indexMask is a self.dataSeries that has the indexes from the original self.dataFrame and the values are the result
-        # of the test statement (bools).  The indices do not necessarily correspond to the location in the self.dataFrame.  For
+        # The indexMask is a Series that has the indexes from the original DataFrame and the values are the result
+        # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
         # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
         dropIndices = indexMask[indexMask].index
 
@@ -796,7 +819,7 @@ class DataHelper:
         boundaries : list of ints or floats
             A list that specifies the end points of the ranges.
         replaceExisting : bool
-            If true, the existing column of self.data is replaced by the new column of merged self.data.
+            If true, the existing column of data is replaced by the new column of merged data.
 
         Returns
         -------

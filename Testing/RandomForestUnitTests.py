@@ -4,9 +4,8 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
-from IPython.display import display
-
 import DataSetLoading
+
 from lendres.RandomForestHelper import RandomForestHelper
 
 import unittest
