@@ -6,6 +6,7 @@ Created on Sat Dec  4 18:49:50 2021
 """
 
 import IPython
+import os
 
 class ConsoleHelper:
 
@@ -18,7 +19,7 @@ class ConsoleHelper:
     VERBOSEALL          = 50
 
 
-    def __init__(self, useMarkDown=False, verboseLevel=40):
+    def __init__(self, useMarkDown=False, verboseLevel=50):
         """
         Constructor.
 
@@ -52,7 +53,7 @@ class ConsoleHelper:
     @classmethod
     def setUpClass(cls):
         # Automatically clear the console when this file is imported.
-        ConsoleHelper.ClearSpyderConsole()
+        cls.ClearSpyderConsole()
 
 
     @classmethod
@@ -63,14 +64,13 @@ class ConsoleHelper:
         Returns
         -------
         None.
-
         """
-        try:
-            from IPython import get_ipython
-            get_ipython().magic('clear')
-            get_ipython().magic('reset -f')
-        except:
-            pass
+        if any('SPYDER' in name for name in os.environ):
+            try:
+                IPython.get_ipython().magic('clear')
+                IPython.get_ipython().magic('reset -f')
+            except:
+                pass
 
 
     @classmethod
@@ -226,7 +226,6 @@ class ConsoleHelper:
         Returns
         -------
         None.
-
         """
         if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
             IPython.display.display(message)
@@ -247,7 +246,6 @@ class ConsoleHelper:
         -------
         None.
         """
-
         output = str(round(probability, decimalPlaces))
         output += " (" + str(round(probability*100, decimalPlaces-2)) + " percent)"
         return  output
@@ -272,7 +270,6 @@ class ConsoleHelper:
         -------
         None.
         """
-
         counts     = data[category].value_counts()
         totalCount = data[category].count()
 
@@ -308,7 +305,6 @@ class ConsoleHelper:
         -------
         None.
         """
-
         # Display the input values that will be compared.  This ensures the values can be checked so that
         # no mistake was made when entering the information.  The raw p-value is output so it can be examined without
         # any formatting that may obscure the value.  The the values are output in an easier to read format.
