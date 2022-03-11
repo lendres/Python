@@ -14,7 +14,7 @@ import io
 import lendres
 from lendres.ConsoleHelper import ConsoleHelper
 
-class DataHelper:
+class DataHelper():
 
     def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
         """

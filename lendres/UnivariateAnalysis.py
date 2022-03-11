@@ -13,7 +13,7 @@ from lendres.PlotHelper       import PlotHelper
 from lendres.DataHelper       import DataHelper
 from lendres.ConsoleHelper    import ConsoleHelper
 
-class UnivariateAnalysis:
+class UnivariateAnalysis():
 
     @classmethod
     def CreateBoxPlot(cls, data, column):

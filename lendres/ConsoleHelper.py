@@ -8,7 +8,7 @@ Created on Sat Dec  4 18:49:50 2021
 import IPython
 import os
 
-class ConsoleHelper:
+class ConsoleHelper():
 
     # Class variables.
     VERBOSENONE         = 0

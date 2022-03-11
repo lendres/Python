@@ -10,7 +10,7 @@ import seaborn as sns
 
 from lendres.PlotHelper import PlotHelper
 
-class BivariateAnalysis:
+class BivariateAnalysis():
 
     @classmethod
     def CreateBivariateHeatMap(cls, data, columns=None):

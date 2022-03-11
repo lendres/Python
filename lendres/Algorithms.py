@@ -9,7 +9,7 @@ import numpy as np
 def BoundingBinarySearch(item, points, returnedUnits="indices"):
     """
     Finds the bounding values for item in a list of points.
-    
+
     The search algorithm is a binary search.
 
     Parameters
@@ -29,19 +29,18 @@ def BoundingBinarySearch(item, points, returnedUnits="indices"):
         A list of length two that has either the indices or the values that bound the
         input "item."  If "item" is in "points," the list will contain two entries that
         are the same (the index/value).
-        
-        If "item" is not in the list, [np.NaN, np.NaN] is returned.
 
+        If "item" is not in the list, [np.NaN, np.NaN] is returned.
     """
     first = 0
     last  = len(points)-1
-    
+
     # Check for out of range.
     if item < points[first] or item > points[last]:
         return [np.nan, np.nan]
-    
+
     continueSearch = True
-    
+
     while (continueSearch):
 
         # Find the midpoint index.
@@ -52,7 +51,7 @@ def BoundingBinarySearch(item, points, returnedUnits="indices"):
             first          = midpoint
             last           = midpoint
             continueSearch = False
-        
+
         # This catches when the point is bounded.
         elif item > points[midpoint-1] and item < points[midpoint]:
             first          = midpoint-1

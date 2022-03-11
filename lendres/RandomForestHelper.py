@@ -4,13 +4,8 @@ Created on Wed Jan 19 07:49:25 2022
 
 @author: Lance
 """
-
-#import pandas as pd
-#import matplotlib.pyplot as plt
-
 from sklearn.ensemble import RandomForestClassifier
 
-#import lendres
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class RandomForestHelper(CategoricalRegressionHelper):
