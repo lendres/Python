@@ -26,7 +26,7 @@ class PlotHelper():
     scale                  = 1.0
 
     @classmethod
-    def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False):
+    def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
         """
         Creates a new figure for every entry in the list of columns.
 
@@ -40,13 +40,15 @@ class PlotHelper():
             Plotting function to apply to all columns.
         save : bool
             If true, the plots are saved to the default plotting directory.
+        **kwargs : keyword arguments
+            These arguments are passed on to the plotFunction.
 
         Returns
         -------
         None.
         """
         for column in columns:
-            figure = plotFunction(data, column)
+            figure = plotFunction(data, column, **kwargs)
 
             if save:
                 fileName = plotFunction.__name__ + column.title() + " Category"

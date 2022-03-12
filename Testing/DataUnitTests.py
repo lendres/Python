@@ -14,7 +14,7 @@ class TestDataHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        verboseLevel = ConsoleHelper.VERBOSENONE
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
 
         cls.loanData, cls.loanDependentVariable = DataSetLoading.GetLoanModellingData(verboseLevel=verboseLevel, dropExtra=False)
         cls.loanData.ChangeToCategoryType(["CreditCard", "Online"])
@@ -60,6 +60,7 @@ class TestDataHelper(unittest.TestCase):
 
     def testDisplaying(self):
         self.loanData.DisplayAllCategoriesValueCounts()
+        self.loanData.DisplayUniqueValues(["Online", "CreditCard"])
 
 
     def testStringExtraction(self):
@@ -70,7 +71,7 @@ class TestDataHelper(unittest.TestCase):
         result = self.usedCarData.ExtractLastStringTokens(columns)
         result = result.nunique()
 
-        self.usedCarData.consoleHelper.Print("", ConsoleHelper.VERBOSEREQUESTED)
+        self.usedCarData.consoleHelper.PrintTitle("Extracted String Token Counts", ConsoleHelper.VERBOSEREQUESTED)
         self.usedCarData.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
 
         self.assertEqual(result.loc["Mileage"], 2)

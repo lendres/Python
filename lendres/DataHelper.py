@@ -7,7 +7,7 @@ Created on Mon Dec 27 18:06:31 2021
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
-from IPython.display import display
+
 import os
 import io
 
@@ -43,7 +43,6 @@ class DataHelper():
         Returns
         -------
         None.
-
         """
         # Save the console helper first so it can be used while processing things.
         self.consoleHelper  = None
@@ -81,7 +80,6 @@ class DataHelper():
         Returns
         -------
         None.
-
         """
         dataHelper                = DataHelper()
         dataHelper.data           = original.data.copy(deep)
@@ -101,7 +99,6 @@ class DataHelper():
         Returns
         -------
         None.
-
         """
         dataHelper                = DataHelper()
         dataHelper.data           = self.data.copy(deep)
@@ -150,7 +147,7 @@ class DataHelper():
         self.consoleHelper.Print("\nData summary:")
         self.consoleHelper.Display(self.data.describe())
 
-        # Check self.data types.
+        # Check data types.
         buffer = io.StringIO()
         self.data.info(buf=buffer)
         self.consoleHelper.Print("\nData types:")
@@ -164,6 +161,24 @@ class DataHelper():
         self.PrintNotAvailableCounts()
 
         return self.data
+
+
+    def PrintFinalDataSummary(self):
+        """
+        Prints a final data summary.
+
+        Returns
+        -------
+        None.
+        """
+        self.consoleHelper.PrintTitle("Data Type", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.shape, ConsoleHelper.VERBOSEREQUESTED)
+
+        self.consoleHelper.PrintTitle("Continuous Data", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.describe().T, ConsoleHelper.VERBOSEREQUESTED)
+
+        self.consoleHelper.PrintTitle("Categorical", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.describe(include=["category"]).T, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def PrintNotAvailableCounts(self):
@@ -207,7 +222,68 @@ class DataHelper():
         return notAvailableCounts, totalNotAvailable
 
 
-    def ApplyToAllCategories(self, columns, function):
+    def DisplayUniqueValues(self, columns):
+        """
+        Prints a list of the unique values in a column.
+
+        Parameters
+        ----------
+        columns : list of strings
+            Columns to display the counts for.
+
+        Returns
+        -------
+        None.
+        """
+        for column in columns:
+            title  = "Unique counts in \"" + column + "\":"
+            self.consoleHelper.PrintTitle(title, ConsoleHelper.VERBOSEREQUESTED)
+
+            values = pd.DataFrame(np.sort(self.data[column].unique()), columns=["Values"])
+            self.consoleHelper.Display(values, ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def DisplayCategoryCounts(self, columns):
+        """
+        Displays all the values counts for the specified columns columns.
+
+        Will not dispaly NaN values.
+
+        Parameters
+        ----------
+        columns : list, array of strings
+            Names of the columns to operate on.
+
+        Returns
+        -------
+        None.
+        """
+        for column in columns:
+            title  = "Category counts in \"" + column + "\":"
+            self.consoleHelper.PrintTitle(title, ConsoleHelper.VERBOSEREQUESTED)
+
+            self.consoleHelper.Display(self.data[column].value_counts(), ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def DisplayAllCategoriesValueCounts(self):
+        """
+        Displays the value counts of all columns of type "category."
+
+        Will not dispaly NaN values.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        # Find all the category types in the DataFrame and passes them to the display function.
+        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index)
+
+
+    def ApplyTo(self, columns, function):
         """
         Runs a function on every column in the list.
 
@@ -224,7 +300,6 @@ class DataHelper():
         Returns
         -------
         None.
-
         """
         for column in columns:
              self.data[column] = self.data[column].apply(function)
@@ -243,7 +318,6 @@ class DataHelper():
         -------
         None.
         """
-
         for column in columns:
             self.data[column] = self.data[column].astype("category")
 
@@ -291,7 +365,6 @@ class DataHelper():
         -------
         newColumn : string
             Name of the new column added to the data.
-
         """
         # Set the locations that have the "trueValue" as equal to one.  Have to do
         # the not equal first.
@@ -363,7 +436,6 @@ class DataHelper():
         count : int
             Number of rows with missing entries.
         """
-
         locations = self.data.isna().sum(axis=1).to_numpy().nonzero()[0]
         count     = len(locations)
 
@@ -411,7 +483,6 @@ class DataHelper():
         : string
             The first token of the string.
         """
-
         # Make sure we are processing a string.
         if isinstance(value, str):
             # Splits the string at the space and returns the first entry as a number.
@@ -436,7 +507,6 @@ class DataHelper():
         value : float
             The first token of the string as a number of np.nan if the entry was not a string or number.
         """
-
         # Make sure we are processing a string.
         if isinstance(value, str):
             # Splits the string at the space and returns the first entry as a number.
@@ -465,7 +535,6 @@ class DataHelper():
         value : float
             The mileage as km per liter or np.nan if entry was not a string or number.
         """
-
         # Make sure we are processing a string.
         if isinstance(value, str):
             # Splits the string at the space and returns the first entry as a number.
@@ -584,7 +653,6 @@ class DataHelper():
         data : pandas.DataFrame
             DataFrame without the removed rows or None if inPlace=True.
         """
-
         # This will return a struction that has the values and the indices of the minimums and maximums.
         minAndMaxValues = self.GetMinAndMaxValues(column, criteria, method=method)
 
@@ -613,7 +681,6 @@ class DataHelper():
         data : pandas.DataFrame
             DataFrame without the removed rows or None if inPlace=True.
         """
-
         # Get the stats we need.
         interQuartileRange = stats.iqr(self.data[column])
         limits             = np.quantile(self.data[column], q=(0.25, 0.75))
@@ -653,41 +720,6 @@ class DataHelper():
             self.data[column] = self.data[column].cat.remove_unused_categories()
 
 
-    def DisplayCategoryCounts(self, columns):
-        """
-        Displays all the values counts for the specified columns columns.
-
-        Parameters
-        ----------
-        columns : list, array of strings
-            Names of the columns to operate on.
-
-        Returns
-        -------
-        None.
-        """
-        for column in columns:
-            self.consoleHelper.Print("\n", ConsoleHelper.VERBOSEREQUESTED)
-            self.consoleHelper.PrintBold(column, ConsoleHelper.VERBOSEREQUESTED)
-            self.consoleHelper.Display(self.data[column].value_counts(), ConsoleHelper.VERBOSEREQUESTED)
-
-
-    def DisplayAllCategoriesValueCounts(self):
-        """
-        Displays the value counts of all columns of type "category."
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        # Find all the category types in the DataFrame and passes them to the display function.
-        self.DisplayCategoryCounts(self.data.dtypes[self.data.dtypes == "category"].index)
-
-
     def RemoveRowsWithLowValueCounts(self, column, criteria):
         """
         Finds the entries in "column" with low value counts and drops them.
@@ -715,7 +747,7 @@ class DataHelper():
              self.RemoveRowByEntryValue(column, value, inPlace=True)
 
 
-    def RemoveRowByEntryValue(self, column, value, inPlace=False):
+    def RemoveRowByEntryValue(self, column, value, inPlace=True):
         """
         Finds the locations in "column" that are equal to "value" and drops those rows.
 
@@ -733,7 +765,6 @@ class DataHelper():
         data : pandas.DataFrame
             DataFrame without the removed rows or None if inPlace=True.
         """
-
         # Gets indices of the rows we want to drop.
         dropIndices = self.data[self.data[column] == value].index.tolist()
 
@@ -826,7 +857,6 @@ class DataHelper():
         newColumnName : string
             Name of the new column that contains the categorized numbers.
         """
-
         newColumn      = pd.Series(np.zeros(self.data.shape[0]))
         existingColumn = self.data[column]
 

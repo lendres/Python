@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from lendres.PlotHelper       import PlotHelper
-from lendres.DataHelper       import DataHelper
 from lendres.ConsoleHelper    import ConsoleHelper
 
 class UnivariateAnalysis():
@@ -32,7 +31,6 @@ class UnivariateAnalysis():
         figure : matplotlib.figure.Figure
             The newly created figure.
         """
-
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
         params = {"figure.figsize" : (PlotHelper.scale*10, PlotHelper.scale*1.25)}
@@ -74,7 +72,6 @@ class UnivariateAnalysis():
         -------
         None.
         """
-
         # Boxplot will be created and a star will indicate the mean value of the column.
         sns.boxplot(x=data[column], ax=axis, showmeans=True, color="cyan")
 
@@ -104,7 +101,6 @@ class UnivariateAnalysis():
         -------
         None.
         """
-
         if bins:
             sns.histplot(data[column], kde=True, ax=axis, bins=bins, palette="winter")
         else:
@@ -172,7 +168,7 @@ class UnivariateAnalysis():
 
         for patch in axis.patches:
             # Percentage of the column.
-            percentage = '{:.1f}%'.format(100*patch.get_height()/total)
+            percentage = "{:.1f}%".format(100*patch.get_height()/total)
 
             # Find the center of the column/patch on the x-axis.
             x = patch.get_x() + patch.get_width()/2
@@ -221,7 +217,7 @@ class UnivariateAnalysis():
 
 
     @classmethod
-    def BoxPlotAndLimitsDisplay(cls, dataHelper, columns, count):
+    def BoxPlotAndLimitsDisplay(cls, dataHelper, columns, count=5):
         """
         Creates a box plot and displays the min and max values.
 
@@ -237,7 +233,6 @@ class UnivariateAnalysis():
         Returns
         -------
         None.
-
         """
         for column in columns:
             cls.CreateBoxPlot(dataHelper.data, column)
