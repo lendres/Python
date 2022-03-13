@@ -130,31 +130,31 @@ class DataHelper():
 
 
         # Read the file in.
-        self.consoleHelper.Print("\nInput file: "+"\n"+inputFile)
+        self.consoleHelper.PrintTitle("Input File: " + inputFile)
         self.data = pd.read_csv(inputFile)
 
-        self.consoleHelper.Print("\nData size:")
+        self.consoleHelper.PrintTitle("Data Size")
         self.consoleHelper.Display(self.data.shape)
 
 
-        self.consoleHelper.Print("\nFirst few records:")
+        self.consoleHelper.PrintTitle("First Few Records")
         self.consoleHelper.Display(self.data.head())
 
         np.random.seed(1)
-        self.consoleHelper.Print("\nRecord random sampling:")
+        self.consoleHelper.PrintTitle("Random Sampling")
         self.consoleHelper.Display(self.data.sample(n=10))
 
-        self.consoleHelper.Print("\nData summary:")
+        self.consoleHelper.PrintTitle("Data Summary")
         self.consoleHelper.Display(self.data.describe())
 
         # Check data types.
         buffer = io.StringIO()
         self.data.info(buf=buffer)
-        self.consoleHelper.Print("\nData types:")
+        self.consoleHelper.PrintTitle("Data Types")
         self.consoleHelper.Print(buffer.getvalue())
 
         # Check unique value counts.
-        self.consoleHelper.Print("\nUnique counts:")
+        self.consoleHelper.PrintTitle("Unique Counts")
         self.consoleHelper.Display(self.data.nunique())
 
         # See if there are any missing entries, if so they will have to be cleaned.
@@ -171,8 +171,11 @@ class DataHelper():
         -------
         None.
         """
-        self.consoleHelper.PrintTitle("Data Type", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Data Size", ConsoleHelper.VERBOSEREQUESTED)
         self.consoleHelper.Display(self.data.shape, ConsoleHelper.VERBOSEREQUESTED)
+
+        self.consoleHelper.PrintTitle("Data Types", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.info(), ConsoleHelper.VERBOSEREQUESTED)
 
         self.consoleHelper.PrintTitle("Continuous Data", ConsoleHelper.VERBOSEREQUESTED)
         self.consoleHelper.Display(self.data.describe().T, ConsoleHelper.VERBOSEREQUESTED)
@@ -195,7 +198,7 @@ class DataHelper():
         """
         notAvailableCounts, totalNotAvailable = self.GetNotAvailableCounts()
 
-        self.consoleHelper.Print("\nMissing entry counts:")
+        self.consoleHelper.PrintTitle("Missing Entry Counts")
         self.consoleHelper.Display(notAvailableCounts)
 
         if totalNotAvailable:
@@ -663,43 +666,45 @@ class DataHelper():
         return self.data.drop(dropIndices, inplace=inPlace)
 
 
-    def DropOutliers(self, column, irqScale=1.5, inPlace=False):
+    def DropOutliers(self, columns, irqScale=1.5):
         """
         Drops any rows that are considered outliers by the definition of
 
         Parameters
         ----------
-        column : string
-            Names of the column to look for not available entries.
+        columns : string or list of strings
+            Names of the column(s) to have outliers dropped.
         irqScale : float
             Scale factor of interquartile range used to define outliers.
-        inPlace : bool
-            If true, the modifications are done in place.
 
         Returns
         -------
         data : pandas.DataFrame
             DataFrame without the removed rows or None if inPlace=True.
         """
-        # Get the stats we need.
-        interQuartileRange = stats.iqr(self.data[column])
-        limits             = np.quantile(self.data[column], q=(0.25, 0.75))
+        if type(columns) != list:
+            columns = [columns]
 
-        # Set the outlier limits.
-        limits[0] -= irqScale*interQuartileRange
-        limits[1] += irqScale*interQuartileRange
+        for column in columns:
+            # Get the stats we need.
+            interQuartileRange = stats.iqr(self.data[column])
+            limits             = np.quantile(self.data[column], q=(0.25, 0.75))
 
-        # Gets an Series of boolean values indicating where values are outside of the range.  These are the
-        # values we want to drop.
-        indexMask = (self.data[column] < limits[0]) | (self.data[column] > limits[1])
+            # Set the outlier limits.
+            limits[0] -= irqScale*interQuartileRange
+            limits[1] += irqScale*interQuartileRange
 
-        # The indexMask is a Series that has the indexes from the original DataFrame and the values are the result
-        # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
-        # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
-        dropIndices = indexMask[indexMask].index
+            # Gets an Series of boolean values indicating where values are outside of the range.  These are the
+            # values we want to drop.
+            indexMask = (self.data[column] < limits[0]) | (self.data[column] > limits[1])
 
-        # Drop the rows.
-        return self.data.drop(dropIndices, inplace=inPlace)
+            # The indexMask is a Series that has the indexes from the original DataFrame and the values are the result
+            # of the test statement (bools).  The indices do not necessarily correspond to the location in the DataFrame.  For
+            # example some rows may have been removed.  Extract only the indices we want to remove by using the mask itself.
+            dropIndices = indexMask[indexMask].index
+
+            # Drop the rows.
+            self.data.drop(dropIndices, inplace=True)
 
 
     def RemoveAllUnusedCategories(self):

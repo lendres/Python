@@ -4,6 +4,8 @@ Created on Mon Dec 27 19:30:11 2021
 
 @author: Lance
 """
+from sklearn.linear_model import LogisticRegression
+
 import DataSetLoading
 from lendres.BaggingHelper import BaggingHelper
 
@@ -27,7 +29,7 @@ class TestBaggingHelper(unittest.TestCase):
         self.regressionHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
 
 
-    def testResults(self):
+    def testDefaultResults(self):
         self.regressionHelper.CreateModel()
         self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
@@ -38,6 +40,18 @@ class TestBaggingHelper(unittest.TestCase):
         result = self.regressionHelper.GetModelPerformanceScores()
         self.assertAlmostEqual(result.loc["Training", "Recall"], 0.9428, places=3)
 
+
+    def testLogisticRegressionClassifier(self):
+        baseEstimator = LogisticRegression(solver='liblinear', max_iter=1000, random_state=1)
+        self.regressionHelper.CreateModel(base_estimator=baseEstimator)
+        self.regressionHelper.Predict()
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+
+        result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
+        self.assertAlmostEqual(result[1, 1], 32)
+
+        result = self.regressionHelper.GetModelPerformanceScores()
+        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.3380, places=3)
 
 if __name__ == "__main__":
     unittest.main()

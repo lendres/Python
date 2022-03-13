@@ -177,9 +177,9 @@ class CategoricalRegressionHelper(ModelHelper):
         Returns
         -------
         None.
-
         """
         scores = self.GetModelPerformanceScores()
+        self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)
 
 
