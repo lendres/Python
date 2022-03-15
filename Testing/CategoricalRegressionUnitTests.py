@@ -8,6 +8,7 @@ Created on Wed Jan 26 15:53:03 2022
 from sklearn.linear_model import LogisticRegression
 
 import DataSetLoading
+from lendres.ConsoleHelper import ConsoleHelper
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 import unittest
@@ -66,7 +67,8 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
     def testSplitComparisons(self):
         result = self.regressionHelper.GetSplitComparisons()
-        self.assertEqual(result.loc["Testing", "Positive"], "63 (67.74%)")
+        self.regressionHelper.dataHelper.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
+        self.assertEqual(result.loc["Testing", "True"], "63 (67.74%)")
 
 
 if __name__ == "__main__":

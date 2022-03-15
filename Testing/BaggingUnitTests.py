@@ -7,6 +7,7 @@ Created on Mon Dec 27 19:30:11 2021
 from sklearn.linear_model import LogisticRegression
 
 import DataSetLoading
+from lendres.ConsoleHelper           import ConsoleHelper
 from lendres.BaggingHelper import BaggingHelper
 
 import unittest
@@ -15,7 +16,7 @@ class TestBaggingHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(dropFirst=False)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
 
 
     def setUp(self):
@@ -52,6 +53,7 @@ class TestBaggingHelper(unittest.TestCase):
 
         result = self.regressionHelper.GetModelPerformanceScores()
         self.assertAlmostEqual(result.loc["Training", "Recall"], 0.3380, places=3)
+        self.regressionHelper.DisplayModelPerformanceScores()
 
 if __name__ == "__main__":
     unittest.main()

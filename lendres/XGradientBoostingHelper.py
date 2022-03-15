@@ -33,7 +33,7 @@ class XGradientBoostingHelper(CategoricalRegressionHelper):
         Parameters
         ----------
         **kwargs : keyword arguments
-            These arguments are passed on to the DecisionTreeClassifier.
+            These arguments are passed on to the XGBClassifier.
 
         Returns
         -------

@@ -7,6 +7,7 @@ Created on Mon Dec 27 19:30:11 2021
 from IPython.display import display
 
 import DataSetLoading
+from lendres.ConsoleHelper           import ConsoleHelper
 from lendres.XGradientBoostingHelper import XGradientBoostingHelper
 
 import unittest
@@ -16,7 +17,7 @@ class TestXGradientBoostingHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(dropFirst=False)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
 
         #print("\nData size after cleaning:")
         #display(cls.dataHelper.data.shape)

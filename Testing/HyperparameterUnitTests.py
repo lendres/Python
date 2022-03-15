@@ -26,7 +26,7 @@ import unittest
 
 # Some of these tests take a long time to run.  Use this to skip some.  Useful for testing
 # new unit tests so you don't have to run them all to see if the new one works.
-skipTests = 0
+skipTests = 1
 if skipTests:
     #skippedTests = ["Decision Tree", "Bagging", "Random Forest", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
     skippedTests = ["Decision Tree", "Bagging", "AdaBoost", "X Gradient Boosting"]
@@ -135,8 +135,16 @@ class TestHyperparameterHelper(unittest.TestCase):
     def testZComparison(self):
         # Needs to run after at least two of the other tests have been run.
         print("\n\n\nModel comparisons:")
-        result = ModelHelper.GetModelComparisons(TestHyperparameterHelper.regresionHelpers, "Recall")
+
+        # Test getting a single score.
+        result = ModelHelper.GetModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
         display(result)
+
+        # Test getting multiple scores and test using the print function.
+        ModelHelper.PrintModelComparisons(["Accuracy", "Recall"], TestHyperparameterHelper.regresionHelpers)
+
+        # Test using the internally saved model helpers of ModelHelpr.
+        ModelHelper.PrintModelComparisons(["Accuracy", "Recall"])
 
 
     def RunClassifier(self, parameters):
@@ -158,6 +166,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
         TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
+        ModelHelper.SaveModelHelper(self.regressionHelper)
 
         return scores, confusionMatrix
 
