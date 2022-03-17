@@ -35,7 +35,7 @@ class CategoricalRegressionHelper(ModelHelper):
         super().__init__(dataHelper)
 
 
-    def CreateFeatureImportancePlot(self, titlePrefix=None):
+    def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0):
         """
         Plots importance factors as a bar plot.
 
@@ -43,6 +43,9 @@ class CategoricalRegressionHelper(ModelHelper):
         ----------
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
+        yFontScale : float
+            Scale factor for the y axis labels.  If there are a lot of features, they tend to run together
+            and may need to be shrunk.
 
         Returns
         -------
@@ -57,7 +60,7 @@ class CategoricalRegressionHelper(ModelHelper):
         PlotHelper.FormatPlot()
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
-        plt.yticks(indices, importancesDataFrame.index, fontsize=12*PlotHelper.scale)
+        plt.yticks(indices, importancesDataFrame.index, fontsize=12*PlotHelper.scale*yFontScale)
         PlotHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
 
         plt.show()
