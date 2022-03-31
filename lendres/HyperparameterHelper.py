@@ -19,8 +19,8 @@ class HyperparameterHelper():
 
         Parameters
         ----------
-        categoricalHelper : categoricalHelper
-            categoricalHelper (model) used in the grid search.
+        categoricalHelper : CategoricalHelper
+            CategoricalHelper used in the grid search.
 
         Returns
         -------
