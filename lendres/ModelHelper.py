@@ -35,6 +35,8 @@ class ModelHelper:
 
         self.xTrainingData             = []
         self.xTestingData              = []
+        self.xValidationData           = []
+        self.yValidationData           = []
         self.yTrainingData             = []
         self.yTestingData              = []
 
@@ -213,7 +215,7 @@ class ModelHelper:
         self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def SplitData(self, dependentVariable, testSize, stratify=False):
+    def SplitData(self, dependentVariable, testSize, validationSize=None, stratify=False):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -223,6 +225,8 @@ class ModelHelper:
             Name of the column that has the dependant data.
         testSize : double
             Fraction of the data to use as test data.  Must be in the range of 0-1.
+        validationSize : double
+            Fraction of the non-test data to use as validation data.  Must be in the range of 0-1.
         stratify : bool
             If true, the approximate ratio of value in the dependent variable is maintained.
 
@@ -245,6 +249,10 @@ class ModelHelper:
         # Split the data.
         self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratify)
 
+        if validationSize != None:
+            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratify)
+
+
 
     def GetSplitComparisons(self):
         """
@@ -265,12 +273,16 @@ class ModelHelper:
         # If the data has been split, we will add the split information as well.
         if len(self.xTrainingData) != 0:
             false.append(self.GetCountAndPrecentString(0, "training"))
-            false.append(self.GetCountAndPrecentString(0, "testing"))
-
             true.append(self.GetCountAndPrecentString(1, "training"))
-            true.append(self.GetCountAndPrecentString(1, "testing"))
-
             index.append("Training")
+
+            if len(self.xValidationData) != 0:
+                false.append(self.GetCountAndPrecentString(0, "validation"))
+                true.append(self.GetCountAndPrecentString(1, "validation"))
+                index.append("Validation")
+
+            false.append(self.GetCountAndPrecentString(0, "testing"))
+            true.append(self.GetCountAndPrecentString(1, "testing"))
             index.append("Testing")
 
         # Create the data frame.
@@ -316,6 +328,10 @@ class ModelHelper:
         elif dataSet == "training":
             classValueCount = sum(self.yTrainingData == classValue)
             totalCount      = self.yTrainingData.size
+
+        elif dataSet == "validation":
+            classValueCount = sum(self.yValidationData == classValue)
+            totalCount      = self.yValidationData.size
 
         elif dataSet == "testing":
             classValueCount = sum(self.yTestingData == classValue)
