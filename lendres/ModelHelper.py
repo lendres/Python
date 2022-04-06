@@ -36,14 +36,16 @@ class ModelHelper:
         self.xTrainingData             = []
         self.xTestingData              = []
         self.xValidationData           = []
-        self.yValidationData           = []
+
         self.yTrainingData             = []
+        self.yValidationData           = []
         self.yTestingData              = []
 
-        self.model                     = None
-
         self.yTrainingPredicted        = []
+        self.yValidationPredicted      = []
         self.yTestingPredicted         = []
+
+        self.model                     = None
 
         # Features for comparing models.
         self.description               = ""
@@ -165,11 +167,11 @@ class ModelHelper:
 
         Parameters
         ----------
+        scores : string or list of strings.
+            The score or scores to print out.
         modelHelpers : list of ModelHelpers
             A list of ModelHelpers to get and print the scores of.  If none is supplied, the saved list
             of MOdelHelpers is used.
-        scores : string or list of strings.
-            The score or scores to print out.
 
         Returns
         -------
@@ -242,15 +244,19 @@ class ModelHelper:
         # The dependent variable.
         y = self.dataHelper.data[dependentVariable]
         if stratify:
-            stratify = y
+            stratifyInput = y
         else:
-            stratify = None
+            stratifyInput = None
 
         # Split the data.
-        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratify)
+        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratifyInput)
 
         if validationSize != None:
-            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratify)
+            if stratify:
+                stratifyInput = self.yTrainingData
+            else:
+                stratifyInput = None
+            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
 
 
 
@@ -377,8 +383,11 @@ class ModelHelper:
         None.
         """
         # Predict on the training and testing data.
-        self.yTrainingPredicted   = self.model.predict(self.xTrainingData)
-        self.yTestingPredicted    = self.model.predict(self.xTestingData)
+        self.yTrainingPredicted        = self.model.predict(self.xTrainingData)
+        self.yTestingPredicted         = self.model.predict(self.xTestingData)
+
+        if len(self.yValidationData) != 0:
+            self.yValidationPredicted  = self.model.predict(self.xValidationData)
 
 
     def GetModelCoefficients(self):

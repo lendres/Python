@@ -6,6 +6,7 @@ Created on Thu Mar 31 06:40:01 2022
 """
 
 from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score
 
 from lendres.ConsoleHelper import ConsoleHelper
@@ -30,9 +31,14 @@ class CrossValidationHelper():
         self.results        = None
 
 
-    def CreateModel(self, splits, score):
-        # defining kfold
-        self.kFold = KFold(n_splits=splits, random_state=1, shuffle=True)
+    def CreateModel(self, splits, score, stratified=False):
+        # Defining kfold technique.
+
+        if stratified:
+            self.kFold = StratifiedKFold(n_splits=splits, random_state=1, shuffle=True)
+        else:
+            self.kFold = KFold(n_splits=splits, random_state=1, shuffle=True)
+
         self.results = cross_val_score(self.modelHelper.model, self.modelHelper.xTrainingData, self.modelHelper.yTrainingData, cv=self.kFold, scoring=score)
 
 

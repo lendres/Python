@@ -144,7 +144,8 @@ class CategoricalRegressionHelper(ModelHelper):
         dataSet : string
             Which data set(s) to plot.
             training - Plots the results from the training data.
-            testing  - Plots the results from the test data.
+            validation - Plots the result from the validation data.
+            testing  - Plots the results from the testing data.
         scale : double
             Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
 
@@ -161,6 +162,11 @@ class CategoricalRegressionHelper(ModelHelper):
             if len(self.yTrainingPredicted) == 0:
                 self.Predict()
             confusionMatrix = metrics.confusion_matrix(self.yTrainingData, self.yTrainingPredicted)
+
+        elif dataSet == "validation":
+            if len(self.yValidationPredicted) == 0:
+                self.Predict()
+            confusionMatrix = metrics.confusion_matrix(self.yValidationData, self.yValidationPredicted)
 
         elif dataSet == "testing":
             if len(self.yTestingPredicted) == 0:
@@ -208,32 +214,48 @@ class CategoricalRegressionHelper(ModelHelper):
             raise Exception("The predicted values have not been calculated.")
 
         # Calculate scores.
+        # TRAINING.
         # Accuracy.
-        trainingScore   = metrics.accuracy_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.accuracy_score(self.yTestingData, self.yTestingPredicted)
-        accuracyScores  = [trainingScore, testScore]
-
+        accuracyScores   = [metrics.accuracy_score(self.yTrainingData, self.yTrainingPredicted)]
         # Recall.
-        trainingScore   = metrics.recall_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.recall_score(self.yTestingData, self.yTestingPredicted)
-        recallScores    = [trainingScore, testScore]
-
+        recallScores     = [metrics.recall_score(self.yTrainingData, self.yTrainingPredicted)]
         # Precision.
-        trainingScore   = metrics.precision_score(self.yTrainingData, self.yTrainingPredicted, zero_division=0)
-        testScore       = metrics.precision_score(self.yTestingData, self.yTestingPredicted, zero_division=0)
-        precisionScores = [trainingScore, testScore]
-
+        precisionScores  = [metrics.precision_score(self.yTrainingData, self.yTrainingPredicted, zero_division=0)]
         # F1.
-        trainingScore   = metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)
-        testScore       = metrics.f1_score(self.yTestingData, self.yTestingPredicted)
-        f1Scores        = [trainingScore, testScore]
+        f1Scores         = [metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)]
+        # Index.
+        index            = ["Training"]
 
+        # VALIDATION.
+        if len(self.yValidationData) != 0:
+           # Accuracy.
+            accuracyScores.append(metrics.accuracy_score(self.yValidationData, self.yValidationPredicted))
+            # Recall.
+            recallScores.append(metrics.recall_score(self.yValidationData, self.yValidationPredicted))
+            # Precision.
+            precisionScores.append(metrics.precision_score(self.yValidationData, self.yValidationPredicted, zero_division=0))
+            # F1.
+            f1Scores.append(metrics.f1_score(self.yValidationData, self.yValidationPredicted))
+            # Index.
+            index.append("Validation")
+
+        # TESTING.
+       # Accuracy.
+        accuracyScores.append(metrics.accuracy_score(self.yTestingData, self.yTestingPredicted))
+        # Recall.
+        recallScores.append(metrics.recall_score(self.yTestingData, self.yTestingPredicted))
+        # Precision.
+        precisionScores.append(metrics.precision_score(self.yTestingData, self.yTestingPredicted, zero_division=0))
+        # F1.
+        f1Scores.append(metrics.f1_score(self.yTestingData, self.yTestingPredicted))
+        # Index.
+        index.append("Testing")
 
         # Create a DataFrame for returning the values.
         dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
                                   "Recall"    : recallScores,
                                   "Precision" : precisionScores,
                                   "F1"        : f1Scores},
-                                 index=["Training", "Testing"])
+                                 index=index)
 
         return dataFrame

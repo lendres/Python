@@ -72,6 +72,9 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         self.yTrainingPredicted = self.model.predict_proba(self.xTrainingData)[:, 1]
         self.yTestingPredicted  = self.model.predict_proba(self.xTestingData)[:, 1]
 
+        if len(self.yValidationData) != 0:
+            self.yValidationPredicted = self.model.predict_proba(self.xValidationData)[:, 1]
+
 
     def PredictWithThreshold(self, threshold):
         """
@@ -91,10 +94,14 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         self.PredictProbabilities()
 
         self.yTrainingPredicted = self.yTrainingPredicted > threshold
-        self.yTestingPredicted  = self.yTestingPredicted  > threshold
-
         self.yTrainingPredicted = np.round(self.yTrainingPredicted)
+
+        self.yTestingPredicted  = self.yTestingPredicted  > threshold
         self.yTestingPredicted  = np.round(self.yTestingPredicted)
+
+        if len(self.yValidationData) != 0:
+            self.yValidationPredicted  = self.yValidationPredicted  > threshold
+            self.yValidationPredicted  = np.round(self.yValidationPredicted)
 
 
     def GetOdds(self, sort=False):

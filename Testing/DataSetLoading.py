@@ -119,3 +119,15 @@ def GetCardioGoodFitnessData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     dataHelper.ChangeToCategoryType(categoryDataNames)
 
     return dataHelper, dependentVariable
+
+
+def GetCardiacData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "Cardiac.csv"
+    dependentVariable       = "UnderRisk"
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    dataHelper.ConvertCategoryToNumeric("Gender", "Male")
+    dataHelper.ConvertCategoryToNumeric("UnderRisk", "yes")
+
+    return dataHelper, dependentVariable
