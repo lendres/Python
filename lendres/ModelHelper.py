@@ -71,8 +71,10 @@ class ModelHelper:
         self.dataHelper                = original.dataHelper.Copy(deep=deep)
 
         self.xTrainingData             = original.xTrainingData.copy(deep=deep)
-        self.xTestingData              = original.xTestingData.copy(deep=deep)
         self.yTrainingData             = original.yTrainingData.copy(deep=deep)
+        self.xValidationData           = original.xValidationData.copy(deep=deep)
+        self.yValidationData           = original.yValidationData.copy(deep=deep)
+        self.xTestingData              = original.xTestingData.copy(deep=deep)
         self.yTestingData              = original.yTestingData.copy(deep=deep)
 
 
