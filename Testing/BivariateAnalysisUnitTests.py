@@ -11,7 +11,7 @@ from lendres.BivariateAnalysis       import BivariateAnalysis
 
 import unittest
 
-import seaborn as sns
+#import seaborn as sns
 
 class TestBivariateAnalysis(unittest.TestCase):
 
@@ -34,26 +34,16 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testPairPlots(self):
-        #BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data)
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data)
 
-        #BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, hue="sex")
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, hue="sex")
 
-        #columns = ["age", "bmi"]
-        #BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns)
-
-
-        #BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
+        columns = ["age", "bmi"]
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns)
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
 
         columns = list(self.insuranceDataHelper.data.columns)
-        #print(columns)
-        #print("Column type", type(columns))
-        #sns.pairplot(self.insuranceDataHelper.data, hue="sex")
-        print("With columns.")
-        sns.pairplot(self.insuranceDataHelper.data[columns], hue="sex")
-        print("Using bivariate pair plot.")
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
-        print("Done pair plotting.")
-
 
 
     def testPlotComparisonByCategory(self):
