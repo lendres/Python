@@ -82,19 +82,13 @@ class BivariateAnalysis():
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
-        print("columns:", columns)
-        print("hue:", hue)
-
-
         if columns != None and hue != None:
-            print("columns:", columns)
-            columns = columns.append(hue)
-            print("columns2:", columns)
+            columns.append(hue)
 
         if columns == None:
             sns.pairplot(data, hue=hue)
         else:
-            sns.«(data[columns], hue=hue)
+            sns.pairplot(data[columns], hue=hue)
 
         figure = plt.gcf()
 

@@ -12,9 +12,6 @@ from lendres.BivariateAnalysis       import BivariateAnalysis
 import unittest
 
 
-import seaborn as sns
-
-
 class TestBivariateAnalysis(unittest.TestCase):
 
     @classmethod
@@ -36,21 +33,19 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testPairPlots(self):
-        print("\ncolumns0a")
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data)
 
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, hue="sex")
 
-        print("\ncolumns1a")
         columns = ["age", "bmi"]
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns)
 
-        print("\n\ncolumns2a", columns)
-        sns.pairplot(self.insuranceDataHelper.data[columns])
-        print("\n\ncolumns3a")
-        sns.pairplot(self.insuranceDataHelper.data[columns], hue="sex")
-        print("\n\ncolumns4a", columns)
-        self.insuranceDataHelper.ConvertCategoryToNumeric("sex", "male")
+
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
+
+        columns = list(self.insuranceDataHelper.data.columns)
+        BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
+
 
 
     def testPlotComparisonByCategory(self):
