@@ -57,7 +57,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def CreateBivariatePairPlot(cls, data, columns=None):
+    def CreateBivariatePairPlot(cls, data, columns=None, hue=None):
         """
         Creates a new figure that has a bar plot labeled with a percentage for a single variable analysis.  Does this
         for every entry in the list of columns.
@@ -70,6 +70,8 @@ class BivariateAnalysis():
             If specified, only those columns are used for the correlation, otherwise all numeric columns will be used.
         save : bool, optional
             If true, the plots as images.  The default is False.
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
 
         Returns
         -------
@@ -80,10 +82,19 @@ class BivariateAnalysis():
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
+        print("columns:", columns)
+        print("hue:", hue)
+
+
+        if columns != None and hue != None:
+            print("columns:", columns)
+            columns = columns.append(hue)
+            print("columns2:", columns)
+
         if columns == None:
-            sns.pairplot(data)
+            sns.pairplot(data, hue=hue)
         else:
-            sns.pairplot(data[columns])
+            sns.«(data[columns], hue=hue)
 
         figure = plt.gcf()
 
