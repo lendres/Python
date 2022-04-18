@@ -83,7 +83,8 @@ class BivariateAnalysis():
         PlotHelper.FormatPlot()
 
         if columns != None and hue != None:
-            columns.append(hue)
+            if not hue in columns:
+                columns.append(hue)
 
         if columns == None:
             sns.pairplot(data, hue=hue)
