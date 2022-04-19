@@ -16,6 +16,8 @@ class TestDataHelper(unittest.TestCase):
     def setUpClass(cls):
         verboseLevel = ConsoleHelper.VERBOSEREQUESTED
 
+        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
+
         cls.loanData, cls.loanDependentVariable = DataSetLoading.GetLoanModellingData(verboseLevel=verboseLevel, dropExtra=False)
         cls.loanData.ChangeToCategoryType(["CreditCard", "Online"])
 
@@ -28,9 +30,10 @@ class TestDataHelper(unittest.TestCase):
 
 
     def setUp(self):
-        self.loanData       = TestDataHelper.loanData.Copy(deep=True)
-        self.dataWithErrors = TestDataHelper.dataWithErrors.Copy(deep=True)
-        self.usedCarData    = TestDataHelper.usedCarData.Copy(deep=True)
+        self.insuranceDataHelper = TestDataHelper.insuranceDataHelper.Copy(deep=True)
+        self.loanData            = TestDataHelper.loanData.Copy(deep=True)
+        self.dataWithErrors      = TestDataHelper.dataWithErrors.Copy(deep=True)
+        self.usedCarData         = TestDataHelper.usedCarData.Copy(deep=True)
 
 
     def testValueCounts(self):
@@ -76,6 +79,11 @@ class TestDataHelper(unittest.TestCase):
 
         self.assertEqual(result.loc["Mileage"], 2)
         self.assertEqual(result.loc["Engine"], 1)
+
+
+    def testCategoryConversion(self):
+        self.insuranceDataHelper.data["smoker"] = self.insuranceDataHelper.data["smoker"].astype("category")
+        self.insuranceDataHelper.ConvertCategoryToNumeric("smoker", "yes")
 
 
 if __name__ == "__main__":

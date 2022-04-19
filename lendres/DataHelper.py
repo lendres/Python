@@ -354,7 +354,9 @@ class DataHelper():
         This is normally done with the pandas.get_dummies function.  This function
         differs by allowing you to specify which value in the column is converted
         to true and which is converted to false.  In the pandas function, you do
-        not have that choice.
+        not have that choice.  It also maintains the column name.  This can be
+        useful when dealing with a dependent variable.  If get_dummies is used,
+        the new column name would have to be determined.
 
         Parameters
         ----------
@@ -366,14 +368,18 @@ class DataHelper():
 
         Returns
         -------
-        newColumn : string
-            Name of the new column added to the data.
+        None.
         """
-        # Set the locations that have the "trueValue" as equal to one.  Have to do
-        # the not equal first.
-        self.data.loc[self.data[column] != trueValue, column] = 0
-        self.data.loc[self.data[column] == trueValue, column] = 1
-        self.data[column] = self.data[column].astype("int")
+        series = None
+        if pd.api.types.is_categorical_dtype(self.data[column]):
+            series = self.data[column].astype("object")
+        else:
+            series = self.data[column]
+
+        # Set the locations that have the "trueValue" as equal to one.  Have to do the not equal first.
+        series.loc[self.data[column] != trueValue] = 0
+        series.loc[self.data[column] == trueValue] = 1
+        self.data[column] = series.astype("int")
 
 
     def DropRowsWhereDataNotAvailable(self, columns):
@@ -387,7 +393,7 @@ class DataHelper():
 
         Returns
         -------
-        None
+        None.
         """
         for column in columns:
             # Gets an Series of boolean values indicating where values were not available.
