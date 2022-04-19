@@ -32,7 +32,6 @@ class ModelHelper:
         -------
         None.
         """
-        self.additionalDroppedColumns  = []
         self.dataHelper                = dataHelper
 
         self.xTrainingData             = []
@@ -69,7 +68,6 @@ class ModelHelper:
         -------
         None.
         """
-        self.additionalDroppedColumns  = original.additionalDroppedColumns.copy()
         self.dataHelper                = original.dataHelper.Copy(deep=deep)
 
         self.xTrainingData             = original.xTrainingData.copy(deep=deep)
@@ -243,7 +241,6 @@ class ModelHelper:
         """
         # Remove the dependent varaible from the rest of the data.
         x = self.dataHelper.data.drop([dependentVariable], axis=1)
-        x = x.drop(self.additionalDroppedColumns, axis=1)
 
         # The dependent variable.
         y = self.dataHelper.data[dependentVariable]
