@@ -13,7 +13,7 @@ from lendres.DecisionTreeHelper import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 
-    def __init__(self, dataHelper):
+    def __init__(self, dataHelper, description=""):
         """
         Constructor.
 
@@ -21,12 +21,14 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        description : string
+            A description of the model.
 
         Returns
         -------
         None.
         """
-        super().__init__(dataHelper)
+        super().__init__(dataHelper, description)
         self.costComplexityPath                 = None
         self.DecisionTreeCostComplexityHelpers  = None
 

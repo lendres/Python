@@ -17,7 +17,7 @@ class ModelHelper:
     savedModelHelpers         = {}
 
 
-    def __init__(self, dataHelper):
+    def __init__(self, dataHelper, description=""):
         """
         Constructor.
 
@@ -25,6 +25,8 @@ class ModelHelper:
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        description : string
+            A description of the model.
 
         Returns
         -------
@@ -48,7 +50,7 @@ class ModelHelper:
         self.model                     = None
 
         # Features for comparing models.
-        self.description               = ""
+        self.description               = description
 
 
     def CopyData(self, original, deep=False):

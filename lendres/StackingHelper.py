@@ -10,7 +10,7 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class StackingHelper(CategoricalRegressionHelper):
 
-    def __init__(self, dataHelper):
+    def __init__(self, dataHelper, description=""):
         """
         Constructor.
 
@@ -18,12 +18,14 @@ class StackingHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        description : string
+            A description of the model.
 
         Returns
         -------
         None.
         """
-        super().__init__(dataHelper)
+        super().__init__(dataHelper, description)
 
 
     def CreateModel(self, **kwargs):
