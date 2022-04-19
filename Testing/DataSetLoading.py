@@ -63,9 +63,9 @@ def FixLoanModellingData(dataHelper, dropExtra):
 
     if dropExtra:
         dataHelper.data.drop(["ZIPCode"], axis=1, inplace=True)
-        dataHelper.DropOutliers("Income", inPlace=True)
-        dataHelper.DropOutliers("CCAvg", inPlace=True)
-        dataHelper.DropOutliers("Mortgage", inPlace=True)
+        dataHelper.DropOutliers("Income")
+        dataHelper.DropOutliers("CCAvg")
+        dataHelper.DropOutliers("Mortgage")
 
 
 def GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=True):

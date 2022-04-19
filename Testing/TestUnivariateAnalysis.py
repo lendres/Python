@@ -24,10 +24,10 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
     def testPlots(self):
         categories = ["bmi", "charges"]
-        PlotHelper.ApplyPlotToEachCategory(UnivariateAnalysis.CreateBoxAndHistogramPlot, self.dataHelper.data, categories)
+        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateBoxAndHistogramPlot)
 
         categories = ["children", "smoker"]
-        PlotHelper.ApplyPlotToEachCategory(UnivariateAnalysis.CreatePercentageBarPlot, self.dataHelper.data, categories)
+        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreatePercentageBarPlot)
 
         UnivariateAnalysis.CreateBoxPlot(self.dataHelper.data, "charges")
 

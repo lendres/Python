@@ -370,16 +370,13 @@ class DataHelper():
         -------
         None.
         """
-        series = None
         if pd.api.types.is_categorical_dtype(self.data[column]):
-            series = self.data[column].astype("object")
-        else:
-            series = self.data[column]
+            self.data[column] = self.data[column].astype("object")
 
         # Set the locations that have the "trueValue" as equal to one.  Have to do the not equal first.
-        series.loc[self.data[column] != trueValue] = 0
-        series.loc[self.data[column] == trueValue] = 1
-        self.data[column] = series.astype("int")
+        self.data.loc[self.data[column] != trueValue, column] = 0
+        self.data.loc[self.data[column] == trueValue, column] = 1
+        self.data[column] = self.data[column].astype("int")
 
 
     def DropRowsWhereDataNotAvailable(self, columns):

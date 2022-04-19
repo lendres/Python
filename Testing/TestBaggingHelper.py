@@ -52,7 +52,7 @@ class TestBaggingHelper(unittest.TestCase):
         self.assertAlmostEqual(result[1, 1], 32)
 
         result = self.regressionHelper.GetModelPerformanceScores()
-        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.3380, places=3)
+        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.3333, places=3)
         self.regressionHelper.DisplayModelPerformanceScores()
 
 if __name__ == "__main__":

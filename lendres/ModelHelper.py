@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
+Created on January 19, 2022.
 
 @author: Lance
 """
@@ -72,8 +71,11 @@ class ModelHelper:
 
         self.xTrainingData             = original.xTrainingData.copy(deep=deep)
         self.yTrainingData             = original.yTrainingData.copy(deep=deep)
-        self.xValidationData           = original.xValidationData.copy(deep=deep)
-        self.yValidationData           = original.yValidationData.copy(deep=deep)
+
+        if len(original.xValidationData) != 0:
+            self.xValidationData           = original.xValidationData.copy(deep=deep)
+            self.yValidationData           = original.yValidationData.copy(deep=deep)
+
         self.xTestingData              = original.xTestingData.copy(deep=deep)
         self.yTestingData              = original.yTestingData.copy(deep=deep)
 

@@ -54,7 +54,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
     def testSplitComparisons(self):
         result = self.regressionHelper.GetSplitComparisons()
-        self.assertEqual(result.loc["Original", "Positive"], "210 (67.74%)")
+        self.assertEqual(result.loc["Original", "True"], "210 (67.74%)")
 
 
 if __name__ == "__main__":
