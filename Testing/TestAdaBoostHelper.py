@@ -24,7 +24,7 @@ class TestAdaBostHelper(unittest.TestCase):
         self.dataHelper         = TestAdaBostHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = AdaBoostHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestAdaBostHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestAdaBostHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testResults(self):

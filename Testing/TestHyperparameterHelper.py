@@ -148,7 +148,7 @@ class TestHyperparameterHelper(unittest.TestCase):
 
 
     def RunClassifier(self, parameters):
-        self.regressionHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper)
 
         self.regressionHelper.CreateModel()

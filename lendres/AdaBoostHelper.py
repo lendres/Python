@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
 from sklearn.ensemble import AdaBoostClassifier
@@ -42,8 +40,8 @@ class AdaBoostHelper(CategoricalRegressionHelper):
         None.
         """
 
-        if len(self.xTrainingData) == 0:
+        if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = AdaBoostClassifier(random_state=1, **kwargs)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)

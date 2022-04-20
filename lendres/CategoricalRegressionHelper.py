@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
-
 import pandas as pd
 import numpy as np
 
@@ -84,7 +81,7 @@ class CategoricalRegressionHelper(ModelHelper):
         """
         return pd.DataFrame(self.model.feature_importances_,
                             columns=["Importance"],
-                            index=self.xTrainingData.columns).sort_values(by="Importance", ascending=ascending)
+                            index=self.dataHelper.xTrainingData.columns).sort_values(by="Importance", ascending=ascending)
 
 
     def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None):
@@ -163,17 +160,17 @@ class CategoricalRegressionHelper(ModelHelper):
         if dataSet == "training":
             if len(self.yTrainingPredicted) == 0:
                 self.Predict()
-            confusionMatrix = metrics.confusion_matrix(self.yTrainingData, self.yTrainingPredicted)
+            confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTrainingData, self.yTrainingPredicted)
 
         elif dataSet == "validation":
             if len(self.yValidationPredicted) == 0:
                 self.Predict()
-            confusionMatrix = metrics.confusion_matrix(self.yValidationData, self.yValidationPredicted)
+            confusionMatrix = metrics.confusion_matrix(self.dataHelper.yValidationData, self.yValidationPredicted)
 
         elif dataSet == "testing":
             if len(self.yTestingPredicted) == 0:
                 self.Predict()
-            confusionMatrix = metrics.confusion_matrix(self.yTestingData, self.yTestingPredicted)
+            confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTestingData, self.yTestingPredicted)
 
         else:
             raise Exception("Invalid data set specified.")
@@ -218,38 +215,38 @@ class CategoricalRegressionHelper(ModelHelper):
         # Calculate scores.
         # TRAINING.
         # Accuracy.
-        accuracyScores   = [metrics.accuracy_score(self.yTrainingData, self.yTrainingPredicted)]
+        accuracyScores   = [metrics.accuracy_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
         # Recall.
-        recallScores     = [metrics.recall_score(self.yTrainingData, self.yTrainingPredicted)]
+        recallScores     = [metrics.recall_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
         # Precision.
-        precisionScores  = [metrics.precision_score(self.yTrainingData, self.yTrainingPredicted, zero_division=0)]
+        precisionScores  = [metrics.precision_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, zero_division=0)]
         # F1.
-        f1Scores         = [metrics.f1_score(self.yTrainingData, self.yTrainingPredicted)]
+        f1Scores         = [metrics.f1_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
         # Index.
         index            = ["Training"]
 
         # VALIDATION.
-        if len(self.yValidationData) != 0:
+        if len(self.dataHelper.yValidationData) != 0:
            # Accuracy.
-            accuracyScores.append(metrics.accuracy_score(self.yValidationData, self.yValidationPredicted))
+            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yValidationData, self.yValidationPredicted))
             # Recall.
-            recallScores.append(metrics.recall_score(self.yValidationData, self.yValidationPredicted))
+            recallScores.append(metrics.recall_score(self.dataHelper.yValidationData, self.yValidationPredicted))
             # Precision.
-            precisionScores.append(metrics.precision_score(self.yValidationData, self.yValidationPredicted, zero_division=0))
+            precisionScores.append(metrics.precision_score(self.dataHelper.yValidationData, self.yValidationPredicted, zero_division=0))
             # F1.
-            f1Scores.append(metrics.f1_score(self.yValidationData, self.yValidationPredicted))
+            f1Scores.append(metrics.f1_score(self.dataHelper.yValidationData, self.yValidationPredicted))
             # Index.
             index.append("Validation")
 
         # TESTING.
-       # Accuracy.
-        accuracyScores.append(metrics.accuracy_score(self.yTestingData, self.yTestingPredicted))
+        # Accuracy.
+        accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
         # Recall.
-        recallScores.append(metrics.recall_score(self.yTestingData, self.yTestingPredicted))
+        recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted))
         # Precision.
-        precisionScores.append(metrics.precision_score(self.yTestingData, self.yTestingPredicted, zero_division=0))
+        precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0))
         # F1.
-        f1Scores.append(metrics.f1_score(self.yTestingData, self.yTestingPredicted))
+        f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted))
         # Index.
         index.append("Testing")
 

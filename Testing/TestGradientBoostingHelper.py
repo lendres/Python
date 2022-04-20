@@ -27,7 +27,7 @@ class TestGradientBoostingHelper(unittest.TestCase):
         self.dataHelper         = TestGradientBoostingHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = GradientBoostingHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestGradientBoostingHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestGradientBoostingHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testResults(self):

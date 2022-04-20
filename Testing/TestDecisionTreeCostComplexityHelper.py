@@ -34,7 +34,7 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
         self.dataHelper         = TestDecisionTreeCostComplexityHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = DecisionTreeCostComplexityHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestDecisionTreeCostComplexityHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestDecisionTreeCostComplexityHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testCostComplexityPruningModel(self):

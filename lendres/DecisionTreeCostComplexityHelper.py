@@ -74,7 +74,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         None.
         """
         # Build the path.
-        self.costComplexityPath  = self.model.cost_complexity_pruning_path(self.xTrainingData, self.yTrainingData)
+        self.costComplexityPath  = self.model.cost_complexity_pruning_path(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
         # Get all the alphas except the trivial case (the case with one node).
         ccpAlphas                = self.costComplexityPath.ccp_alphas[:-1]

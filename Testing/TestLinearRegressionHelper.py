@@ -27,7 +27,7 @@ class TestregressionHelper(unittest.TestCase):
         """
         dataHelper = DataHelper.Copy(TestregressionHelper.dataHelper, deep=True)
         self.regressionHelper = LinearRegressionHelper(dataHelper)
-        self.regressionHelper.SplitData("charges", 0.3, stratify=False)
+        self.regressionHelper.dataHelper.SplitData("charges", 0.3, stratify=False)
         self.regressionHelper.CreateModel()
 
 

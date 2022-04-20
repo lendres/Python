@@ -28,11 +28,11 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = CategoricalRegressionHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
 
         # Fake a model so we have output to use.
         self.regressionHelper.model = LogisticRegression(solver="liblinear", random_state=1)
-        self.regressionHelper.model.fit(self.regressionHelper.xTrainingData, self.regressionHelper.yTrainingData.values.ravel())
+        self.regressionHelper.model.fit(self.regressionHelper.dataHelper.xTrainingData, self.regressionHelper.dataHelper.yTrainingData.values.ravel())
 
 
     def testConfusionMatrices(self):
@@ -66,7 +66,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
 
     def testSplitComparisons(self):
-        result = self.regressionHelper.GetSplitComparisons()
+        result = self.regressionHelper.dataHelper.GetSplitComparisons()
         self.regressionHelper.dataHelper.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
         self.assertEqual(result.loc["Testing", "True"], "63 (67.74%)")
 

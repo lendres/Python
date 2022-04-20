@@ -27,7 +27,7 @@ class TestBaggingHelper(unittest.TestCase):
         self.dataHelper         = TestBaggingHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = BaggingHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testDefaultResults(self):
@@ -52,7 +52,7 @@ class TestBaggingHelper(unittest.TestCase):
         self.assertAlmostEqual(result[1, 1], 32)
 
         result = self.regressionHelper.GetModelPerformanceScores()
-        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.3333, places=3)
+        self.assertAlmostEqual(result.loc["Training", "Recall"], 0.33, places=1)
         self.regressionHelper.DisplayModelPerformanceScores()
 
 if __name__ == "__main__":

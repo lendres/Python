@@ -48,11 +48,11 @@ class LinearRegressionHelper(ModelHelper):
         -------
         None.
         """
-        if len(self.xTrainingData) == 0:
+        if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = LinearRegression(**kwargs)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
 
     def GetModelPerformanceScores(self):
@@ -76,21 +76,21 @@ class LinearRegressionHelper(ModelHelper):
             self.Predict()
 
         # R squared.
-        trainingScore  = self.model.score(self.xTrainingData, self.yTrainingData)
-        testScore      = self.model.score(self.xTestingData, self.yTestingData)
+        trainingScore  = self.model.score(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        testScore      = self.model.score(self.dataHelper.xTestingData, self.dataHelper.yTestingData)
         rSquaredScores = [trainingScore, testScore]
 
         # Mean square error.
-        trainingScore  = mean_squared_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_squared_error(self.yTestingData, self.yTestingPredicted)
+        trainingScore  = mean_squared_error(self.dataHelper.yTrainingData, self.yTrainingPredicted)
+        testScore      = mean_squared_error(self.dataHelper.yTestingData, self.yTestingPredicted)
         mseScores      = [trainingScore, testScore]
 
         # Root mean square error.
         rmseScores     = [np.sqrt(trainingScore), np.sqrt(testScore)]
 
         # Mean absolute error.
-        trainingScore  = mean_absolute_error(self.yTrainingData, self.yTrainingPredicted)
-        testScore      = mean_absolute_error(self.yTestingData, self.yTestingPredicted)
+        trainingScore  = mean_absolute_error(self.dataHelper.yTrainingData, self.yTrainingPredicted)
+        testScore      = mean_absolute_error(self.dataHelper.yTestingData, self.yTestingPredicted)
         maeScores      = [trainingScore, testScore]
 
         dataFrame      = pd.DataFrame({"R Squared" : rSquaredScores,

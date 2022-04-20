@@ -34,16 +34,16 @@ class TestModelHelper(unittest.TestCase):
         dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
 
         modelHelper = ModelHelper(dataHelper)
-        modelHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=False)
+        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=False)
 
-        result = modelHelper.GetSplitComparisons()
+        result = modelHelper.dataHelper.GetSplitComparisons()
         print()
         display(result)
 
         modelHelper = ModelHelper(dataHelper)
-        modelHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=True)
+        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=True)
 
-        result = modelHelper.GetSplitComparisons()
+        result = modelHelper.dataHelper.GetSplitComparisons()
         print()
         display(result)
 
@@ -52,17 +52,17 @@ class TestModelHelper(unittest.TestCase):
         dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
 
         modelHelper = ModelHelper(dataHelper)
-        modelHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)
+        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)
 
-        result = modelHelper.GetSplitComparisons()
+        result = modelHelper.dataHelper.GetSplitComparisons()
         print()
         display(result)
 
         regressionHelper = BaggingHelper(dataHelper)
-        regressionHelper.SplitData(TestModelHelper.dependentVariable, 0.2, validationSize=0.25, stratify=True)
+        regressionHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, validationSize=0.25, stratify=True)
 
         sm = SMOTE(sampling_strategy=1, k_neighbors=5, random_state=1)
-        regressionHelper.xTrainingData, regressionHelper.yTrainingData = sm.fit_resample(regressionHelper.xTrainingData, regressionHelper.yTrainingData)
+        regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData = sm.fit_resample(regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData)
 
         regressionHelper.CreateModel()
         regressionHelper.Predict()

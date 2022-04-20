@@ -1,15 +1,11 @@
 """
 Created on January 19, 2022.
-
 @author: Lance
 """
-
 import pandas as pd
 import numpy as np
 
 from lendres.ConsoleHelper import ConsoleHelper
-
-from sklearn.model_selection import train_test_split
 
 class ModelHelper:
 
@@ -32,14 +28,6 @@ class ModelHelper:
         None.
         """
         self.dataHelper                = dataHelper
-
-        self.xTrainingData             = []
-        self.xTestingData              = []
-        self.xValidationData           = []
-
-        self.yTrainingData             = []
-        self.yValidationData           = []
-        self.yTestingData              = []
 
         self.yTrainingPredicted        = []
         self.yValidationPredicted      = []
@@ -68,16 +56,6 @@ class ModelHelper:
         None.
         """
         self.dataHelper                = original.dataHelper.Copy(deep=deep)
-
-        self.xTrainingData             = original.xTrainingData.copy(deep=deep)
-        self.yTrainingData             = original.yTrainingData.copy(deep=deep)
-
-        if len(original.xValidationData) != 0:
-            self.xValidationData           = original.xValidationData.copy(deep=deep)
-            self.yValidationData           = original.yValidationData.copy(deep=deep)
-
-        self.xTestingData              = original.xTestingData.copy(deep=deep)
-        self.yTestingData              = original.yTestingData.copy(deep=deep)
 
 
     @classmethod
@@ -221,157 +199,6 @@ class ModelHelper:
         self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def SplitData(self, dependentVariable, testSize, validationSize=None, stratify=False):
-        """
-        Creates a linear regression model.  Splits the data and creates the model.
-
-        Parameters
-        ----------
-        dependentVariable : string
-            Name of the column that has the dependant data.
-        testSize : double
-            Fraction of the data to use as test data.  Must be in the range of 0-1.
-        validationSize : double
-            Fraction of the non-test data to use as validation data.  Must be in the range of 0-1.
-        stratify : bool
-            If true, the approximate ratio of value in the dependent variable is maintained.
-
-        Returns
-        -------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
-        """
-        # Remove the dependent varaible from the rest of the data.
-        x = self.dataHelper.data.drop([dependentVariable], axis=1)
-
-        # The dependent variable.
-        y = self.dataHelper.data[dependentVariable]
-        if stratify:
-            stratifyInput = y
-        else:
-            stratifyInput = None
-
-        # Split the data.
-        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratifyInput)
-
-        if validationSize != None:
-            if stratify:
-                stratifyInput = self.yTrainingData
-            else:
-                stratifyInput = None
-            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
-
-
-
-    def GetSplitComparisons(self):
-        """
-        Returns the value counts and percentages of the dependant variable for the
-        original, training (if available), and testing (if available) data.
-
-        Returns
-        -------
-        comparisonFrame : pandas.DataFrame
-            DataFrame with the counts and percentages.
-        """
-        # Get results for original data.
-        false = [self.GetCountAndPrecentString(0, "original")]
-        true  = [self.GetCountAndPrecentString(1, "original")]
-        index = ["Original"]
-
-
-        # If the data has been split, we will add the split information as well.
-        if len(self.xTrainingData) != 0:
-            false.append(self.GetCountAndPrecentString(0, "training"))
-            true.append(self.GetCountAndPrecentString(1, "training"))
-            index.append("Training")
-
-            if len(self.xValidationData) != 0:
-                false.append(self.GetCountAndPrecentString(0, "validation"))
-                true.append(self.GetCountAndPrecentString(1, "validation"))
-                index.append("Validation")
-
-            false.append(self.GetCountAndPrecentString(0, "testing"))
-            true.append(self.GetCountAndPrecentString(1, "testing"))
-            index.append("Testing")
-
-        # Create the data frame.
-        comparisonFrame = pd.DataFrame(
-                    {"False" : false,
-                     "True"  : true},
-                     index=index)
-
-        return comparisonFrame
-
-
-    def GetCountAndPrecentString(self, classValue, dataSet="original", column=None):
-        """
-        Gets a string that is the value count of "classValue" and the percentage of the total
-        that the "classValue" accounts for in the column.
-
-        Parameters
-        ----------
-        classValue : int or string
-            The value to count and calculate the percentage for.
-        dataSet : string
-            Which data set(s) to plot.
-            original - Gets the results from the original data.
-            training - Gets the results from the training data.
-            testing  - v the results from the test data.
-        column : string, optional
-            If provided, that column will be used for the calculations.  If no value is provided,
-            the dependant variable is used. The default is None.
-
-        Returns
-        -------
-        None.
-        """
-        classValueCount = 0
-        totalCount      = 0
-
-        if dataSet == "original":
-            if column == None:
-                column = self.GetDependentVariableName()
-            classValueCount = sum(self.dataHelper.data[column] == classValue)
-            totalCount      = self.dataHelper.data[column].size
-
-        elif dataSet == "training":
-            classValueCount = sum(self.yTrainingData == classValue)
-            totalCount      = self.yTrainingData.size
-
-        elif dataSet == "validation":
-            classValueCount = sum(self.yValidationData == classValue)
-            totalCount      = self.yValidationData.size
-
-        elif dataSet == "testing":
-            classValueCount = sum(self.yTestingData == classValue)
-            totalCount      = self.yTestingData.size
-
-        else:
-            raise Exception("Invalid data set specified.")
-
-        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount * 100)
-        return string
-
-
-    def GetDependentVariableName(self):
-        """
-        Returns the name of the dependent variable (column heading).
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        : string
-            The name (column heading) of the dependent variable.
-        """
-        if len(self.yTrainingData) == 0:
-            raise Exception("The data has not been split (dependent variable not set).")
-
-        return self.yTrainingData.name
-
-
     def Predict(self):
         """
         Runs the prediction (model.predict) on the training and test data.  The results are stored in
@@ -386,11 +213,11 @@ class ModelHelper:
         None.
         """
         # Predict on the training and testing data.
-        self.yTrainingPredicted        = self.model.predict(self.xTrainingData)
-        self.yTestingPredicted         = self.model.predict(self.xTestingData)
+        self.yTrainingPredicted        = self.model.predict(self.dataHelper.xTrainingData)
+        self.yTestingPredicted         = self.model.predict(self.dataHelper.xTestingData)
 
-        if len(self.yValidationData) != 0:
-            self.yValidationPredicted  = self.model.predict(self.xValidationData)
+        if len(self.dataHelper.yValidationData) != 0:
+            self.yValidationPredicted  = self.model.predict(self.dataHelper.xValidationData)
 
 
     def GetModelCoefficients(self):
@@ -410,6 +237,6 @@ class ModelHelper:
             raise Exception("The regression model has not be initiated.")
 
         dataFrame = pd.DataFrame(np.append(self.model.coef_, self.model.intercept_),
-                                 index=self.xTrainingData.columns.tolist()+["Intercept"],
+                                 index=self.dataHelper.xTrainingData.columns.tolist()+["Intercept"],
                                  columns=["Coefficients"])
         return dataFrame

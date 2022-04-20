@@ -34,7 +34,7 @@ class TestDecisionTreeHelper(unittest.TestCase):
         self.dataHelper         = TestDecisionTreeHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = DecisionTreeHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testStandardPlots(self):
@@ -44,7 +44,7 @@ class TestDecisionTreeHelper(unittest.TestCase):
 
 
     def testGetDependentVariableName(self):
-        result = self.regressionHelper.GetDependentVariableName()
+        result = self.regressionHelper.dataHelper.GetDependentVariableName()
         self.assertEqual(result, TestDecisionTreeHelper.dependentVariable)
 
 

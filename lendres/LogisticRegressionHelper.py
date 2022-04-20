@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
 import pandas as pd
@@ -49,11 +47,11 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        if len(self.xTrainingData) == 0:
+        if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = LogisticRegression(random_state=1, **kwargs)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
 
     def PredictProbabilities(self):
@@ -71,11 +69,11 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         """
         # Predict probabilities.  The second column (probability of success) is retained.
         # The first column (probability of not-success) is discarded.
-        self.yTrainingPredicted = self.model.predict_proba(self.xTrainingData)[:, 1]
-        self.yTestingPredicted  = self.model.predict_proba(self.xTestingData)[:, 1]
+        self.yTrainingPredicted = self.model.predict_proba(self.dataHelper.xTrainingData)[:, 1]
+        self.yTestingPredicted  = self.model.predict_proba(self.dataHelper.xTestingData)[:, 1]
 
-        if len(self.yValidationData) != 0:
-            self.yValidationPredicted = self.model.predict_proba(self.xValidationData)[:, 1]
+        if len(self.dataHelper.yValidationData) != 0:
+            self.yValidationPredicted = self.model.predict_proba(self.dataHelper.xValidationData)[:, 1]
 
 
     def PredictWithThreshold(self, threshold):
@@ -101,7 +99,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         self.yTestingPredicted  = self.yTestingPredicted  > threshold
         self.yTestingPredicted  = np.round(self.yTestingPredicted)
 
-        if len(self.yValidationData) != 0:
+        if len(self.dataHelper.yValidationData) != 0:
             self.yValidationPredicted  = self.yValidationPredicted  > threshold
             self.yValidationPredicted  = np.round(self.yValidationPredicted)
 
@@ -131,7 +129,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         # Add the odds to a dataframe.
         dataFrame = pd.DataFrame({"Odds" : odds,
                                  "Percent Change" : percentChange},
-                                 index=self.xTrainingData.columns)
+                                 index=self.dataHelper.xTrainingData.columns)
 
         if sort:
             dataFrame.sort_values("Odds", axis=0, ascending=False, inplace=True)
@@ -212,13 +210,13 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
 
         # Get the confusion matrix for the correct data set.
         if dataSet == "training":
-            rocScore                                          = metrics.roc_auc_score(self.yTrainingData, self.yTrainingPredicted)
-            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.yTrainingData, self.yTrainingPredicted)
+            rocScore                                          = metrics.roc_auc_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)
+            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.dataHelper.yTrainingData, self.yTrainingPredicted)
             color                                             = "#1f77b4"
 
         elif dataSet == "testing":
-            rocScore                                          = metrics.roc_auc_score(self.yTestingData, self.yTestingPredicted)
-            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.yTestingData, self.yTestingPredicted)
+            rocScore                                          = metrics.roc_auc_score(self.dataHelper.yTestingData, self.yTestingPredicted)
+            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.dataHelper.yTestingData, self.yTestingPredicted)
             color                                             = "#ff7f0e"
 
         else:

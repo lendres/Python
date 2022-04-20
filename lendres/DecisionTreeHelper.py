@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -50,11 +47,11 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         None.
         """
 
-        if len(self.xTrainingData) == 0:
+        if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = DecisionTreeClassifier(**kwargs, random_state=1)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
 
     def CreateDecisionTreePlot(self, scale=1.0):
@@ -71,7 +68,7 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         None.
         """
         plt.figure(figsize=(20,30))
-        featureNames = list(self.xTrainingData.columns)
+        featureNames = list(self.dataHelper.xTrainingData.columns)
         tree.plot_tree(self.model, feature_names=featureNames, filled=True, fontsize=9*scale, node_ids=True, class_names=True)
         plt.show()
 
@@ -126,16 +123,3 @@ class DecisionTreeHelper(CategoricalRegressionHelper):
         file = open(fileNameForExport, "w")
         file.write(treeText)
         file.close()
-
-
-
-# # Decision Tree arrows are missing, how to fix this? Use the following code as your reference to resolve the issue
-# plt.figure(figsize=(20,30))
-# out = tree.plot_tree(model,feature_names=feature_names,filled=True,fontsize=9,node_ids=False,class_names=None,)
-# #below code will add arrows to the decision tree split if they are missing
-# for o in out:
-#      arrow = o.arrow_patch
-#      if arrow is not None:
-#         arrow.set_edgecolor('black')
-#         arrow.set_linewidth(1)
-# plt.show()

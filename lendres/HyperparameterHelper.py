@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
 #from IPython.display import display
@@ -49,7 +47,7 @@ class HyperparameterHelper():
 
         """
         # Make sure there is data to operate on.
-        if len(self.categoricalHelper.xTrainingData) == 0:
+        if len(self.categoricalHelper.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         # Type of scoring used to compare parameter combinations.
@@ -57,13 +55,13 @@ class HyperparameterHelper():
 
         # Run the grid search.
         self.gridSearch = GridSearchCV(self.categoricalHelper.model, parameters, scoring=scorer, **kwargs)
-        self.gridSearch = self.gridSearch.fit(self.categoricalHelper.xTrainingData, self.categoricalHelper.yTrainingData)
+        self.gridSearch = self.gridSearch.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
 
         # Set the model (categoricalHelper) to the best combination of parameters.
         self.categoricalHelper.model = self.gridSearch.best_estimator_
 
         # Fit the best algorithm to the data.
-        self.categoricalHelper.model.fit(self.categoricalHelper.xTrainingData, self.categoricalHelper.yTrainingData)
+        self.categoricalHelper.model.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
 
 
     def DisplayChosenParameters(self):

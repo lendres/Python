@@ -24,7 +24,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
         self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
         self.regressionHelper.CreateModel(solver="liblinear")
 
 
@@ -53,7 +53,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
 
     def testSplitComparisons(self):
-        result = self.regressionHelper.GetSplitComparisons()
+        result = self.regressionHelper.dataHelper.GetSplitComparisons()
         self.assertEqual(result.loc["Original", "True"], "210 (67.74%)")
 
 

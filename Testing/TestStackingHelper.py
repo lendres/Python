@@ -20,7 +20,7 @@ class TestStackingHelper(unittest.TestCase):
     def setUpClass(cls):
 
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
-
+        #cls.dataHelper.PrintFinalDataSummary()
 
     def setUp(self):
         """
@@ -30,22 +30,21 @@ class TestStackingHelper(unittest.TestCase):
         self.dataHelper         = TestStackingHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = StackingHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        self.regressionHelper.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
 
 
     def testResults(self):
         estimator1       = AdaBoostHelper(self.dataHelper)
-        estimator1.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        estimator1.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
         estimator1.CreateModel()
 
         estimator2       = GradientBoostingHelper(self.dataHelper)
-        estimator2.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        estimator2.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
         estimator2.CreateModel()
 
         finalEstimator   = XGradientBoostingHelper(self.dataHelper)
-        finalEstimator.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        finalEstimator.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
         finalEstimator.CreateModel()
-
 
         estimators       = [('AdaBoost', estimator1.model), ('Gradient Boost', estimator2.model)]
         final_estimator  = finalEstimator.model

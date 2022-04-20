@@ -25,7 +25,7 @@ class TestRandomForestHelper(unittest.TestCase):
         self.dataHelper         = TestRandomForestHelper.dataHelper.Copy(deep=True)
         self.regressionHelper   = RandomForestHelper(self.dataHelper)
 
-        self.regressionHelper.SplitData(TestRandomForestHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper.dataHelper.SplitData(TestRandomForestHelper.dependentVariable, 0.3, stratify=True)
 
 
     def testResults(self):
