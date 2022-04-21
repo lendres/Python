@@ -1,9 +1,7 @@
 """
-Created on Sat Dec  4 18:49:50 2021
-
+Created on December 4, 2021
 @author: Lance A. Endres
 """
-
 import matplotlib.pyplot as plt
 
 import seaborn as sns
@@ -176,6 +174,33 @@ class PlotHelper():
         figure.suptitle("\"" + column.title() + "\"" + " Category")
 
         return (figure, (boxAxis, histogramAxis))
+
+
+    @classmethod
+    def NewSideBySideAxisFigure(cls, title):
+        """
+        Creates a new figure that has two axes, one above another.
+
+        Parameters
+        ----------
+        title : string
+            Title to use for the plot.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        (leftAxis, rightAxis) : axis array
+            The left axis and right axis, respectively.
+        """
+        # The format setup needs to be run first.
+        cls.FormatPlot(width=15, height=5)
+
+        figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
+
+        figure.suptitle("\"" + title.title() + "\"" + " Category")
+
+        return (figure, (leftAxis, rightAxis))
 
 
     @classmethod

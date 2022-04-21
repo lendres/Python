@@ -56,8 +56,8 @@ class TestStackingHelper(unittest.TestCase):
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
         self.assertAlmostEqual(result[1, 1], 28)
 
-        self.regressionHelper.DisplayModelPerformanceScores()
-        result = self.regressionHelper.GetModelPerformanceScores()
+        self.regressionHelper.DisplayModelPerformanceScores(final=True)
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.3255, places=3)
 
 

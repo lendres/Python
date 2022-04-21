@@ -37,7 +37,7 @@ class TestRandomForestHelper(unittest.TestCase):
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
         self.assertAlmostEqual(result[1, 1], 38)
 
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.4222, places=3)
 
 

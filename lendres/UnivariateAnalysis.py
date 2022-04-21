@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 20:32:47 2021
-
+Created on December 27, 2021
 @author: Lance
 """
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -238,3 +235,23 @@ class UnivariateAnalysis():
             cls.CreateBoxPlot(dataHelper.data, column)
             minMaxValues = dataHelper.GetMinAndMaxValues(column, count, method="quantity")
             dataHelper.consoleHelper.Display(minMaxValues, ConsoleHelper.VERBOSEREQUESTED)
+
+
+    @classmethod
+    def CreateSideBySideHistogramPlot(cls, leftData, rightData, title, leftTitle, rightTitle, bins=None):
+        # Create the figure and axes.
+        figure, (leftAxis, rightAxis) = PlotHelper.NewSideBySideAxisFigure(title)
+
+        if bins != None:
+            sns.histplot(leftData, kde=True, ax=leftAxis, bins=bins, palette="winter")
+            sns.histplot(rightData, kde=True, ax=rightAxis, bins=bins,palette="winter")
+        else:
+            sns.histplot(leftData, kde=True, ax=leftAxis, palette="winter")
+            sns.histplot(rightData, kde=True, ax=rightAxis, palette="winter")
+
+        leftAxis.set(xlabel=leftTitle)
+        rightAxis.set(xlabel=rightTitle)
+
+        plt.show()
+
+        return figure

@@ -16,7 +16,7 @@ from lendres.PlotHelper import PlotHelper
 
 class CategoricalRegressionHelper(ModelHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -32,6 +32,29 @@ class CategoricalRegressionHelper(ModelHelper):
         None.
         """
         super().__init__(dataHelper, description)
+
+        if model != None:
+            self.model = model
+
+
+    def fit(self):
+        """
+        Creates a decision tree model.
+
+        Parameters
+        ----------
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
+
+        Returns
+        -------
+        None.
+        """
+
+        if len(self.dataHelper.xTrainingData) == 0:
+            raise Exception("The data has not been split.")
+
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
 
     def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0):
@@ -178,7 +201,7 @@ class CategoricalRegressionHelper(ModelHelper):
         return confusionMatrix
 
 
-    def DisplayModelPerformanceScores(self):
+    def DisplayModelPerformanceScores(self, final=False):
         """
         Displays the model performance scores based on the settings in the ConsuleHelper.
 
@@ -186,12 +209,12 @@ class CategoricalRegressionHelper(ModelHelper):
         -------
         None.
         """
-        scores = self.GetModelPerformanceScores()
+        scores = self.GetModelPerformanceScores(final)
         self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def GetModelPerformanceScores(self):
+    def GetModelPerformanceScores(self, final=False):
         """
         Calculate performance metrics.  Threshold for a positive result can be specified.
 
@@ -238,17 +261,18 @@ class CategoricalRegressionHelper(ModelHelper):
             # Index.
             index.append("Validation")
 
-        # TESTING.
-        # Accuracy.
-        accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-        # Recall.
-        recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-        # Precision.
-        precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0))
-        # F1.
-        f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-        # Index.
-        index.append("Testing")
+        if final:
+            # TESTING.
+            # Accuracy.
+            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
+            # Recall.
+            recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted))
+            # Precision.
+            precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0))
+            # F1.
+            f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted))
+            # Index.
+            index.append("Testing")
 
         # Create a DataFrame for returning the values.
         dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,

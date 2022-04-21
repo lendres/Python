@@ -39,7 +39,7 @@ class TestGradientBoostingHelper(unittest.TestCase):
         self.assertAlmostEqual(result[1, 1], 40)
 
         self.regressionHelper.DisplayModelPerformanceScores()
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.4444, places=3)
 
 

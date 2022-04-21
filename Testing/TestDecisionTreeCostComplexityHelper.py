@@ -42,7 +42,7 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
         self.regressionHelper.CreateCostComplexityPruningModel("recall")
 
         self.regressionHelper.Predict()
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
 
         if TestDecisionTreeCostComplexityHelper.whichData == 0:
             self.assertAlmostEqual(result.loc["Training", "Accuracy"], 1.0000, places=3)

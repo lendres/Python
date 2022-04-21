@@ -127,16 +127,20 @@ class ModelHelper:
         columns = []
         for score in scores:
             columns.append("Training " + score)
+            if len(modelHelpers[0].dataHelper.xValidationData) != 0:
+                columns.append("Validation " + score)
             columns.append("Testing " + score)
 
         # Initialize the DataFrame to the correct size and add the index and columns.
         comparisonFrame = pd.DataFrame(index=index, columns=columns)
 
         for modelHelper in modelHelpers:
-            results = modelHelper.GetModelPerformanceScores()
+            results = modelHelper.GetModelPerformanceScores(final=True)
 
             for score in scores:
                 comparisonFrame.loc[modelHelper.GetName(), "Training "+score] = results.loc["Training", score]
+                if len(modelHelper.dataHelper.xValidationData) != 0:
+                    comparisonFrame.loc[modelHelper.GetName(), "Validation "+score]  = results.loc["Validation", score]
                 comparisonFrame.loc[modelHelper.GetName(), "Testing "+score]  = results.loc["Testing", score]
 
         return comparisonFrame

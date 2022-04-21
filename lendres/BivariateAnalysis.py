@@ -150,8 +150,6 @@ class BivariateAnalysis():
             The data.
         category: string
             Category name in the DataFrame.
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
 
         Returns
         -------

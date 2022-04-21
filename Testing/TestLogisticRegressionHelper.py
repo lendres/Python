@@ -36,13 +36,13 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
     def testPredictWithThreshold(self):
         self.regressionHelper.PredictWithThreshold(0.5)
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.8387, places=3)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.8571, places=3)
 
         # Test a separate threashold to be sure we get different values.
         self.regressionHelper.PredictWithThreshold(0.8)
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.7926, places=3)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.7460, places=3)
 

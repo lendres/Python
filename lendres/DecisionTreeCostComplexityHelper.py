@@ -124,7 +124,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         for decisionTreeHelper in self.decisionTreeHelpers:
             # Predict the dependent variable results and extract the test scores.
             decisionTreeHelper.Predict()
-            performanceScores = decisionTreeHelper.GetModelPerformanceScores()
+            performanceScores = decisionTreeHelper.GetModelPerformanceScores(final=True)
 
             # The test scores are returned in a DataFrame with all available test scores.
             # Here we extract just the scores for the specific criteria we are using.

@@ -40,7 +40,7 @@ class TestXGradientBoostingHelper(unittest.TestCase):
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
         self.assertAlmostEqual(result[1, 1], 48)
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         #display(result)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.5333, places=3)
 

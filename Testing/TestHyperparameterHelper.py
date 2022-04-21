@@ -26,10 +26,10 @@ import unittest
 
 # Some of these tests take a long time to run.  Use this to skip some.  Useful for testing
 # new unit tests so you don't have to run them all to see if the new one works.
-skipTests = 1
+skipTests = 0
 if skipTests:
     #skippedTests = ["Decision Tree", "Bagging", "Random Forest", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
-    skippedTests = ["Decision Tree", "Bagging", "AdaBoost", "X Gradient Boosting"]
+    skippedTests = ["AdaBoost", "X Gradient Boosting"]
 else:
     skippedTests = []
 
@@ -64,9 +64,12 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "max_leaf_nodes"        : [2, 5, 10],
                       "criterion"             : ["entropy", "gini"]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper   = DecisionTreeHelper(self.dataHelper)
-        scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 24)
+        self.regressionHelper.description = "Decision Tree"
+        scores, confusionMatrix = self.RunClassifier(parameters, True)
+
+        self.assertAlmostEqual(confusionMatrix[1, 1], 34)
 
 
     @unittest.skipIf("Bagging" in skippedTests, "Skipped bagging unit test.")
@@ -75,34 +78,39 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "max_features" : [0.7, 0.9],
                       "n_estimators" : [10,  20]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper   = BaggingHelper(self.dataHelper)
-        scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 35)
+        self.regressionHelper.description = "Bagging"
+        scores, confusionMatrix = self.RunClassifier(parameters, True)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 27)
 
 
     @unittest.skipIf("Random Forest" in skippedTests, "Skipped random forest unit test.")
     def testRandomForestClassifier(self):
         parameters = {"n_estimators"     : [10, 20],
-                      "min_samples_leaf" : np.arange(5, 8),
-                      "max_features"     : np.arange(0.2, 0.7, 0.1),
-                      "max_samples"      : np.arange(0.3, 0.7, 0.1)}
+                      "min_samples_leaf" : [5, 8],
+                      "max_features"     : [0.2, 0.7],
+                      "max_samples"      : [0.3, 0.7]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = RandomForestHelper(self.dataHelper)
-        self.regressionHelper.description = "Default Random Forest"
-        scores, confusionMatrix           = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 36)
+        self.regressionHelper.description = "Random Forest"
+        scores, confusionMatrix           = self.RunClassifier(parameters, False)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 39)
 
 
     @unittest.skipIf("AdaBoost" in skippedTests, "Skipped adaboost unit test.")
     def testAdaBoostClassifier(self):
         parameters = {"base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
                                           DecisionTreeClassifier(max_depth=2, random_state=1)],
-                      "n_estimators"   : np.arange(10, 25),
-                      "learning_rate"  : np.arange(0.1, 0.5)}
+                      "n_estimators"   : [10, 25],
+                      "learning_rate"  : [0.1, 0.5]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper   = AdaBoostHelper(self.dataHelper)
-        scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 25)
+        self.regressionHelper.description = "Adaboost"
+        scores, confusionMatrix = self.RunClassifier(parameters, True)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 36)
 
 
     @unittest.skipIf("Gradient Boosting" in skippedTests, "Skipped gradient boosting unit test.")
@@ -111,25 +119,28 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "subsample"    : [0.8, 0.9],
                       "max_features" : [0.7, 0.8]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = GradientBoostingHelper(self.dataHelper)
-        self.regressionHelper.description = "Default Gradient Boosting"
-        scores, confusionMatrix           = self.RunClassifier(parameters)
+        self.regressionHelper.description = "Gradient Boosting"
+        scores, confusionMatrix           = self.RunClassifier(parameters, False)
         self.assertAlmostEqual(confusionMatrix[1, 1], 43)
 
 
     @unittest.skipIf("X Gradient Boosting" in skippedTests, "Skipped extreme gradient boosting unit test.")
     def testXGradientBoostingClassifier(self):
-        parameters = {"n_estimators": np.arange(10, 20),
-                      "scale_pos_weight"  : [0, 5],
+        parameters = {"n_estimators": np.arange(10, 20, 5),
+                      "scale_pos_weight"  : [5],
                       "subsample"         : [0.5, 0.9],
                       "learning_rate"     : [0.2, 0.05],
                       "gamma"             : [0, 3],
-                      "colsample_bytree"  : [0.5, 0.9],
-                      "colsample_bylevel" : [0.5, 0.9]}
+                      "colsample_bytree"  : [0.5],
+                      "colsample_bylevel" : [0.5]}
 
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper   = XGradientBoostingHelper(self.dataHelper)
-        scores, confusionMatrix = self.RunClassifier(parameters)
-        self.assertAlmostEqual(confusionMatrix[1, 1], 81)
+        self.regressionHelper.description = "X Gradient Boost"
+        scores, confusionMatrix = self.RunClassifier(parameters, True)
+        self.assertAlmostEqual(confusionMatrix[1, 1], 55)
 
 
     def testZComparison(self):
@@ -141,14 +152,15 @@ class TestHyperparameterHelper(unittest.TestCase):
         display(result)
 
         # Test getting multiple scores and test using the print function.
+        print("\n\n")
         ModelHelper.PrintModelComparisons(["Accuracy", "Recall"], TestHyperparameterHelper.regresionHelpers)
 
         # Test using the internally saved model helpers of ModelHelpr.
+        print("\n\n")
         ModelHelper.PrintModelComparisons(["Accuracy", "Recall"])
 
 
-    def RunClassifier(self, parameters):
-        self.regressionHelper.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
+    def RunClassifier(self, parameters, saveToModelHelper):
         self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper)
 
         self.regressionHelper.CreateModel()
@@ -159,14 +171,16 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.PrintClassName()
         self.hyperparameterHelper.DisplayChosenParameters()
 
-        self.regressionHelper.DisplayModelPerformanceScores()
-        scores = self.regressionHelper.GetModelPerformanceScores()
+        self.regressionHelper.DisplayModelPerformanceScores(final=True)
+        scores = self.regressionHelper.GetModelPerformanceScores(final=True)
 
-        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titlePrefix=self.regressionHelper.description)
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
-        TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
-        ModelHelper.SaveModelHelper(self.regressionHelper)
+        if saveToModelHelper:
+            TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
+        else:
+            ModelHelper.SaveModelHelper(self.regressionHelper)
 
         return scores, confusionMatrix
 

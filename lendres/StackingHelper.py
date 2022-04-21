@@ -42,8 +42,8 @@ class StackingHelper(CategoricalRegressionHelper):
         None.
         """
 
-        if len(self.xTrainingData) == 0:
+        if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         self.model = StackingClassifier(**kwargs)
-        self.model.fit(self.xTrainingData, self.yTrainingData)
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
