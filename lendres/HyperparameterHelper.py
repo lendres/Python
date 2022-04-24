@@ -4,8 +4,9 @@ Created on January 19, 2022
 """
 #from IPython.display import display
 
-from sklearn import metrics
-from sklearn.model_selection import GridSearchCV
+from sklearn                   import metrics
+from sklearn.model_selection   import GridSearchCV
+from sklearn.model_selection   import RandomizedSearchCV
 
 from lendres.ConsoleHelper import ConsoleHelper
 
@@ -18,24 +19,28 @@ class HyperparameterHelper():
         Parameters
         ----------
         categoricalHelper : CategoricalHelper
-            CategoricalHelper used in the search.
+            CategoricalHelper used in the grid search.
 
         Returns
         -------
         None.
         """
         self.categoricalHelper    = categoricalHelper
-        self.gridSearch           = None
+        self.searcher             = None
 
 
-    def CreateGridSearchModel(self, parameters, scoringFunction, **kwargs):
+    def CreateSearchModel(self, which, parameters, scoringFunction, **kwargs):
         """
         Creates a cross validation grid search model.
 
         Parameters
         ----------
+        which : string
+            Type of search to perform.
+            random : Random search.
+            grid : Grid search.
         parameters : dictionary
-            Grid search parameters.
+            Search parameters.
         scoringFunction : function
             Method use to calculate a score for the model.
         **kwargs : keyword arguments
@@ -54,11 +59,15 @@ class HyperparameterHelper():
         scorer = metrics.make_scorer(scoringFunction)
 
         # Run the grid search.
-        self.gridSearch = GridSearchCV(self.categoricalHelper.model, parameters, scoring=scorer, **kwargs)
-        self.gridSearch = self.gridSearch.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
+        if which == "grid":
+            self.searcher = GridSearchCV(self.categoricalHelper.model, parameters, scoring=scorer, **kwargs)
+        elif which == "random":
+            self.searcher = RandomizedSearchCV(self.categoricalHelper.model, parameters, scoring=scorer, **kwargs)
+
+        self.searcher = self.searcher.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
 
         # Set the model (categoricalHelper) to the best combination of parameters.
-        self.categoricalHelper.model = self.gridSearch.best_estimator_
+        self.categoricalHelper.model = self.searcher.best_estimator_
 
         # Fit the best algorithm to the data.
         self.categoricalHelper.model.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
@@ -78,4 +87,4 @@ class HyperparameterHelper():
         None.
         """
         self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters", ConsoleHelper.VERBOSEREQUESTED)
-        self.categoricalHelper.dataHelper.consoleHelper.Display(self.gridSearch.best_params_, ConsoleHelper.VERBOSEREQUESTED)
+        self.categoricalHelper.dataHelper.consoleHelper.Display(self.searcher.best_params_, ConsoleHelper.VERBOSEREQUESTED)

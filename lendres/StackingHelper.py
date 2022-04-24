@@ -41,7 +41,6 @@ class StackingHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-
         if len(self.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
