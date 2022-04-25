@@ -2,13 +2,13 @@
 Created on January 19, 2022
 @author: Lance
 """
-from sklearn.ensemble import StackingClassifier
+from sklearn.ensemble                     import StackingClassifier
 
-from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
+from lendres.CategoricalRegressionHelper  import CategoricalRegressionHelper
 
 class StackingHelper(CategoricalRegressionHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -16,6 +16,8 @@ class StackingHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -23,26 +25,24 @@ class StackingHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = StackingHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(self, **kwargs):
         """
         Creates a decision tree model.
 
         Parameters
         ----------
-        initializer : sklearn.ensemble classifier
-            Classifier used to initialize the gradient boosting.
         **kwargs : keyword arguments
             These arguments are passed on to the DecisionTreeClassifier.
 
         Returns
         -------
-        None.
+        StackingClassifier.
         """
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = StackingClassifier(**kwargs)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return StackingClassifier(**kwargs)

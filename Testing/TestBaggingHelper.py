@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 from sklearn.linear_model import LogisticRegression
@@ -25,14 +23,13 @@ class TestBaggingHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestBaggingHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = BaggingHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestBaggingHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper   = BaggingHelper(self.dataHelper)
 
 
     def testDefaultResults(self):
-        self.regressionHelper.CreateModel()
-        self.regressionHelper.Predict()
+        self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
@@ -44,8 +41,9 @@ class TestBaggingHelper(unittest.TestCase):
 
     def testLogisticRegressionClassifier(self):
         baseEstimator = LogisticRegression(solver='liblinear', max_iter=1000, random_state=1)
-        self.regressionHelper.CreateModel(base_estimator=baseEstimator)
-        self.regressionHelper.Predict()
+        self.regressionHelper   = BaggingHelper(self.dataHelper, BaggingHelper.CreateDefaultModel(base_estimator=baseEstimator))
+
+        self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
@@ -54,6 +52,7 @@ class TestBaggingHelper(unittest.TestCase):
         result = self.regressionHelper.GetModelPerformanceScores()
         self.assertAlmostEqual(result.loc["Training", "Recall"], 0.33, places=1)
         self.regressionHelper.DisplayModelPerformanceScores()
+
 
 if __name__ == "__main__":
     unittest.main()

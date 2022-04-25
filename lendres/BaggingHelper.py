@@ -2,13 +2,13 @@
 Created on January 19, 2022
 @author: Lance
 """
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble                    import BaggingClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class BaggingHelper(CategoricalRegressionHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -16,6 +16,8 @@ class BaggingHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -23,10 +25,14 @@ class BaggingHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = BaggingHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(self, **kwargs):
         """
         Creates a decision tree model.
 
@@ -37,11 +43,6 @@ class BaggingHelper(CategoricalRegressionHelper):
 
         Returns
         -------
-        None.
+        BaggingClassifier.
         """
-
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = BaggingClassifier(**kwargs, random_state=1)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return BaggingClassifier(random_state=1, **kwargs)

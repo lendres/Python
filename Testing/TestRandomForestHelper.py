@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 import DataSetLoading
@@ -23,15 +21,14 @@ class TestRandomForestHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestRandomForestHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = RandomForestHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestRandomForestHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestRandomForestHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper   = RandomForestHelper(self.dataHelper)
 
 
     def testResults(self):
         print("\nTest 1")
-        self.regressionHelper.CreateModel()
-        self.regressionHelper.Predict()
+        self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")

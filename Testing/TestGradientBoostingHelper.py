@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 import DataSetLoading
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.GradientBoostingHelper import GradientBoostingHelper
+from lendres.ConsoleHelper             import ConsoleHelper
+from lendres.GradientBoostingHelper    import GradientBoostingHelper
 
 import unittest
 
@@ -15,8 +13,7 @@ class TestGradientBoostingHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED,
-                                                                             dropFirst=False)
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
 
 
     def setUp(self):
@@ -25,14 +22,13 @@ class TestGradientBoostingHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestGradientBoostingHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = GradientBoostingHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestGradientBoostingHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestGradientBoostingHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper   = GradientBoostingHelper(self.dataHelper)
 
 
     def testResults(self):
-        self.regressionHelper.CreateModel()
-        self.regressionHelper.Predict()
+        self.regressionHelper.FitPredict()
 
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")

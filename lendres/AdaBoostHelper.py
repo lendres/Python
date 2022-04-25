@@ -8,7 +8,7 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class AdaBoostHelper(CategoricalRegressionHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -16,6 +16,8 @@ class AdaBoostHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -23,10 +25,14 @@ class AdaBoostHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = AdaBoostHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(cls, **kwargs):
         """
         Creates a decision tree model.
 
@@ -37,11 +43,6 @@ class AdaBoostHelper(CategoricalRegressionHelper):
 
         Returns
         -------
-        None.
+        AdaBoostClassifier.
         """
-
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = AdaBoostClassifier(random_state=1, **kwargs)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return AdaBoostClassifier(random_state=1, **kwargs)

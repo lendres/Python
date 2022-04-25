@@ -2,21 +2,21 @@
 Created on January 19, 2022
 @author: Lance
 """
-import pandas as pd
-import numpy as np
+import pandas                   as pd
+import numpy                    as np
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+import matplotlib.pyplot        as plt
+import seaborn                  as sns
 
-from sklearn import metrics
+from sklearn                    import metrics
 
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.ModelHelper import ModelHelper
-from lendres.PlotHelper import PlotHelper
+from lendres.ConsoleHelper      import ConsoleHelper
+from lendres.ModelHelper        import ModelHelper
+from lendres.PlotHelper         import PlotHelper
 
 class CategoricalRegressionHelper(ModelHelper):
 
-    def __init__(self, dataHelper, model=None, description=""):
+    def __init__(self, dataHelper, model, description=""):
         """
         Constructor.
 
@@ -24,6 +24,8 @@ class CategoricalRegressionHelper(ModelHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -31,30 +33,7 @@ class CategoricalRegressionHelper(ModelHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
-
-        if model != None:
-            self.model = model
-
-
-    def fit(self):
-        """
-        Creates a decision tree model.
-
-        Parameters
-        ----------
-        **kwargs : keyword arguments
-            These arguments are passed on to the DecisionTreeClassifier.
-
-        Returns
-        -------
-        None.
-        """
-
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        super().__init__(dataHelper, model, description)
 
 
     def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0):

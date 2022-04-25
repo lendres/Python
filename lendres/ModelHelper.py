@@ -2,17 +2,21 @@
 Created on January 19, 2022.
 @author: Lance
 """
-import pandas as pd
-import numpy as np
+import pandas                         as pd
+import numpy                          as np
+import seaborn                        as sns
 
-from lendres.ConsoleHelper import ConsoleHelper
+from matplotlib                       import pyplot as plt
+
+from lendres.ConsoleHelper            import ConsoleHelper
+from lendres.PlotHelper               import PlotHelper
 
 class ModelHelper:
 
     savedModelHelpers         = {}
 
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model, description=""):
         """
         Constructor.
 
@@ -20,6 +24,8 @@ class ModelHelper:
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -33,7 +39,7 @@ class ModelHelper:
         self.yValidationPredicted      = []
         self.yTestingPredicted         = []
 
-        self.model                     = None
+        self.model                     = model
 
         # Features for comparing models.
         self.description               = description
@@ -56,6 +62,54 @@ class ModelHelper:
         None.
         """
         self.dataHelper                = original.dataHelper.Copy(deep=deep)
+
+
+    @classmethod
+    def RunModels(cls, modelHelpers):
+        """
+        Runs all the models.  The model is saved for later conparison.
+
+        Parameters
+        ----------
+        modelHelpers : List of ModelHelper
+            List of models to run.
+
+        Returns
+        -------
+        None.
+        """
+        for modelHelper in modelHelpers:
+            modelHelper.dataHelper.consoleHelper.PrintSectionTitle(modelHelper.description)
+            ModelHelper.RunModel(modelHelper)
+
+
+    @classmethod
+    def RunModel(cls, regressionHelper, saveModel=True, **kwargs):
+        """
+        Runs one model, plots the testing confusion matrix, and displays the performance scores.
+
+        Parameters
+        ----------
+        regressionHelper : ModelHelper
+            Model to run.
+        saveModel : bool
+            If true, the model is saved for later comparison.
+
+        Returns
+        -------
+        None.
+        """
+        # Store to use for comparison.
+        if saveModel:
+            ModelHelper.SaveModelHelper(regressionHelper)
+
+        # Create the model.
+        regressionHelper.CreateModel(**kwargs)
+        regressionHelper.Predict()
+
+        # Output.
+        regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+        regressionHelper.DisplayModelPerformanceScores(final=False)
 
 
     @classmethod
@@ -174,6 +228,30 @@ class ModelHelper:
         modelHelper.dataHelper.consoleHelper.Display(comparisons, ConsoleHelper.VERBOSEREQUESTED)
 
 
+    @classmethod
+    def CreateScorePlotForAllModels(cls, score, width=20):
+        dataFrame = ModelHelper.GetModelComparisons(score)
+
+        # Prepare the DataFrame for plotting.  This transforms the DataFrame
+        dataFrame = dataFrame.transpose()
+        dataFrame.reset_index(inplace=True)
+        dataFrame = dataFrame.melt(id_vars='index')
+        dataFrame.rename(columns={"index" : "Index", "variable" : "Model", "value" : score}, inplace=True)
+
+        # Create the plot.
+        PlotHelper.FormatPlot(width=width, height=4)
+        axes = sns.barplot(x="Model", y=score, data=dataFrame, hue="Index")
+
+        # Clear the title legend, move its location to top center, and list the entries horizontally.
+        axes.legend().set_title(None)
+        axes.legend(bbox_to_anchor=(0.5,1.2), loc="upper center", ncol=len(dataFrame.columns))
+
+        # Rotate the X axis labels to vertical so they fit without running together.
+        plt.xticks(rotation=90)
+
+        plt.show()
+
+
     def GetName(self):
         """
         Gets the name of the model.  If a description has been provided, that is used.  Otherwise,
@@ -201,6 +279,59 @@ class ModelHelper:
         None.
         """
         self.dataHelper.consoleHelper.Print(self.__class__.__name__, ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def fit(self, x, y=None):
+        """
+        Fits the model.  Used to create capatibility with the sklearn API.
+
+        Parameters
+        ----------
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
+
+        Returns
+        -------
+        None.
+        """
+        self.Fit()
+
+
+    def FitPredict(self):
+        """
+        Fits a hyperparameter search and runs predict.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.Fit()
+        self.Predict()
+
+
+    def Fit(self):
+        """
+        Fits the model.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        if len(self.dataHelper.xTrainingData) == 0:
+            raise Exception("The data has not been split.")
+
+        if self.model == None:
+            raise Exception("The model has not been created.")
+
+        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
 
 
     def Predict(self):

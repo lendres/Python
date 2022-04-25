@@ -1,26 +1,24 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 import numpy as np
-from IPython.display                 import display
-from sklearn                         import metrics
+from IPython.display                    import display
+from sklearn                            import metrics
 
-from sklearn.tree                    import DecisionTreeClassifier
-from sklearn.ensemble                import AdaBoostClassifier
+from sklearn.tree                       import DecisionTreeClassifier
+from sklearn.ensemble                   import AdaBoostClassifier
 
 import DataSetLoading
-from lendres.ConsoleHelper           import ConsoleHelper
-from lendres.ModelHelper             import ModelHelper
-from lendres.DecisionTreeHelper      import DecisionTreeHelper
-from lendres.BaggingHelper           import BaggingHelper
-from lendres.RandomForestHelper      import RandomForestHelper
-from lendres.AdaBoostHelper          import AdaBoostHelper
-from lendres.GradientBoostingHelper  import GradientBoostingHelper
-from lendres.XGradientBoostingHelper import XGradientBoostingHelper
-from lendres.HyperparameterHelper    import HyperparameterHelper
+from lendres.ConsoleHelper              import ConsoleHelper
+from lendres.ModelHelper                import ModelHelper
+from lendres.DecisionTreeHelper         import DecisionTreeHelper
+from lendres.BaggingHelper              import BaggingHelper
+from lendres.RandomForestHelper         import RandomForestHelper
+from lendres.AdaBoostHelper             import AdaBoostHelper
+from lendres.GradientBoostingHelper     import GradientBoostingHelper
+from lendres.XGradientBoostingHelper    import XGradientBoostingHelper
+from lendres.HyperparameterHelper       import HyperparameterHelper
 
 import unittest
 
@@ -40,7 +38,9 @@ class TestHyperparameterHelper(unittest.TestCase):
     def setUpClass(cls):
         cls.regresionHelpers = []
 
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
+        #VERBOSETESTING
+        #VERBOSEREQUESTED
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSETESTING, dropFirst=False)
 
         if skipTests:
             print("\nThe following tests have been skipped:")
@@ -65,7 +65,7 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "criterion"             : ["entropy", "gini"]}
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
-        self.regressionHelper   = DecisionTreeHelper(self.dataHelper)
+        self.regressionHelper             = DecisionTreeHelper(self.dataHelper)
         self.regressionHelper.description = "Decision Tree"
         scores, confusionMatrix = self.RunClassifier(parameters, True)
 
@@ -79,9 +79,9 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "n_estimators" : [10,  20]}
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
-        self.regressionHelper   = BaggingHelper(self.dataHelper)
+        self.regressionHelper             = BaggingHelper(self.dataHelper)
         self.regressionHelper.description = "Bagging"
-        scores, confusionMatrix = self.RunClassifier(parameters, True)
+        scores, confusionMatrix           = self.RunClassifier(parameters, True)
         self.assertAlmostEqual(confusionMatrix[1, 1], 27)
 
 
@@ -107,7 +107,7 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "learning_rate"  : [0.1, 0.5]}
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
-        self.regressionHelper   = AdaBoostHelper(self.dataHelper)
+        self.regressionHelper             = AdaBoostHelper(self.dataHelper)
         self.regressionHelper.description = "Adaboost"
         scores, confusionMatrix = self.RunClassifier(parameters, True)
         self.assertAlmostEqual(confusionMatrix[1, 1], 36)
@@ -137,19 +137,21 @@ class TestHyperparameterHelper(unittest.TestCase):
                       "colsample_bylevel" : [0.5]}
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
-        self.regressionHelper   = XGradientBoostingHelper(self.dataHelper)
+        self.regressionHelper             = XGradientBoostingHelper(self.dataHelper)
         self.regressionHelper.description = "X Gradient Boost"
-        scores, confusionMatrix = self.RunClassifier(parameters, True)
+        scores, confusionMatrix           = self.RunClassifier(parameters, True)
         self.assertAlmostEqual(confusionMatrix[1, 1], 55)
 
 
     def testZComparison(self):
         # Needs to run after at least two of the other tests have been run.
-        print("\n\n\nModel comparisons:")
+        # The "Z" used after "test" and before the test name is used to make sure this is called at the end.  The
+        # functions are run alphabetically.
+        self.dataHelper.consoleHelper.PrintNewLine()
+        self.dataHelper.consoleHelper.PrintSectionTitle("Model Comparisons")
 
         # Test getting a single score.
-        result = ModelHelper.GetModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
-        display(result)
+        ModelHelper.PrintModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
 
         # Test getting multiple scores and test using the print function.
         print("\n\n")
@@ -160,27 +162,44 @@ class TestHyperparameterHelper(unittest.TestCase):
         ModelHelper.PrintModelComparisons(["Accuracy", "Recall"])
 
 
-    def RunClassifier(self, parameters, saveToModelHelper):
-        self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper)
+    def testZPlot(self):
+        # Needs to run after at least two of the other tests have been run.
+        # The "Z" used after "test" and before the test name is used to make sure this is called at the end.  The
+        # functions are run alphabetically.
+        ModelHelper.CreateScorePlotForAllModels("F1", width=8)
 
-        self.regressionHelper.CreateModel()
-        self.hyperparameterHelper.CreateGridSearchModel(parameters, metrics.recall_score)
-        self.regressionHelper.Predict()
 
-        self.regressionHelper.dataHelper.consoleHelper.Print("\n", ConsoleHelper.VERBOSEREQUESTED)
+    def testZZAdditionalOutput(self):
+        parameters = {"base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
+                                          DecisionTreeClassifier(max_depth=2, random_state=1)],
+                      "n_estimators"   : [10, 25],
+                      "learning_rate"  : [0.1, 0.5]}
+
+        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.regressionHelper             = AdaBoostHelper(self.dataHelper)
+        self.regressionHelper.description = "Adaboost"
+
+        self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper, metrics.recall_score, "grid", True)
+        self.hyperparameterHelper.RunHypertuning(parameters, saveModel=False)
+        self.hyperparameterHelper.RunHypertuning(parameters, saveModel=False)
+
+
+    def RunClassifier(self, parameters, saveToModelHelper, testingOutput=False):
+        self.dataHelper.consoleHelper.PrintNewLine()
         self.regressionHelper.PrintClassName()
-        self.hyperparameterHelper.DisplayChosenParameters()
 
-        self.regressionHelper.DisplayModelPerformanceScores(final=True)
+        self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper, metrics.recall_score, "grid", testingOutput)
+        self.hyperparameterHelper.RunHypertuning(parameters, saveModel=saveToModelHelper)
+
         scores = self.regressionHelper.GetModelPerformanceScores(final=True)
 
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titlePrefix=self.regressionHelper.description)
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
         if saveToModelHelper:
-            TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
-        else:
             ModelHelper.SaveModelHelper(self.regressionHelper)
+        else:
+            TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
 
         return scores, confusionMatrix
 

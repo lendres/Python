@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Sat Apr  9 10:57:49 2022
-
+Created on April 9, 2022
 @author: Lance
 """
 

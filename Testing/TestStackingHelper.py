@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
+from sklearn.ensemble                     import StackingClassifier
+
 import DataSetLoading
 
-from lendres.ConsoleHelper           import ConsoleHelper
-from lendres.AdaBoostHelper          import AdaBoostHelper
-from lendres.GradientBoostingHelper  import GradientBoostingHelper
-from lendres.XGradientBoostingHelper import XGradientBoostingHelper
-from lendres.StackingHelper          import StackingHelper
+from lendres.ConsoleHelper                import ConsoleHelper
+from lendres.AdaBoostHelper               import AdaBoostHelper
+from lendres.GradientBoostingHelper       import GradientBoostingHelper
+from lendres.XGradientBoostingHelper      import XGradientBoostingHelper
+from lendres.StackingHelper               import StackingHelper
 
 import unittest
 
@@ -18,9 +18,8 @@ class TestStackingHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
-        #cls.dataHelper.PrintFinalDataSummary()
+
 
     def setUp(self):
         """
@@ -28,29 +27,27 @@ class TestStackingHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestStackingHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = StackingHelper(self.dataHelper)
-
-        self.regressionHelper.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        self.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
 
 
     def testResults(self):
         estimator1       = AdaBoostHelper(self.dataHelper)
         estimator1.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
-        estimator1.CreateModel()
+        estimator1.Fit()
 
         estimator2       = GradientBoostingHelper(self.dataHelper)
         estimator2.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
-        estimator2.CreateModel()
+        estimator2.Fit()
 
         finalEstimator   = XGradientBoostingHelper(self.dataHelper)
         finalEstimator.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
-        finalEstimator.CreateModel()
+        finalEstimator.Fit()
 
         estimators       = [('AdaBoost', estimator1.model), ('Gradient Boost', estimator2.model)]
         final_estimator  = finalEstimator.model
 
-        self.regressionHelper.CreateModel(estimators=estimators, final_estimator=final_estimator)
-        self.regressionHelper.Predict()
+        self.regressionHelper   = StackingHelper(self.dataHelper, StackingClassifier(estimators=estimators, final_estimator=final_estimator))
+        self.regressionHelper.FitPredict()
 
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")

@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Feb 16 17:49:44 2022
-
+Created on Febuary 16, 2022
 @author: Lance
 """
-
 import numpy as np
 
 from lendres.Algorithms import BoundingBinarySearch

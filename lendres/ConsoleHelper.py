@@ -11,12 +11,15 @@ import os
 class ConsoleHelper():
 
     # Class variables.
-    VERBOSENONE         = 0
+    VERBOSENONE         =  0
+    VERBOSETESTING      =  5
     VERBOSEREQUESTED    = 10
     VERBOSEERROR        = 20
     VERBOSEWARNING      = 30
     VERBOSEIMPORTANT    = 40
     VERBOSEALL          = 50
+
+    markdownTitleLevel  =  3
 
 
     def __init__(self, useMarkDown=False, verboseLevel=50):
@@ -130,23 +133,35 @@ class ConsoleHelper():
             Title to dislay.
         level : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
+        markdownTitleLevel : int, optional
+            If markdown is being used, this is the title level to use, i.e., "#", "##", et cetera.
 
         Returns
         -------
         None.
         """
         if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
-            quotingHashes = "######"
 
-            # The last number is accounting for spaces.
-            hashesRequired = len(title) + 2*len(quotingHashes) + 4
-            hashes = ""
-            for i in range(hashesRequired):
-                hashes += "#"
+            if self.useMarkDown:
+                # Don't use spaces between the asterisks and message so it prints bold in markdown.
+                prefix = "#"
+                for i in range(ConsoleHelper.markdownTitleLevel):
+                    prefix += "#"
 
-            print("\n\n\n" + hashes)
-            print(quotingHashes + "  " + title + "  " + quotingHashes)
-            print(hashes)
+                IPython.display.display(IPython.display.Markdown(prefix + " " + title))
+
+            else:
+                quotingHashes = "######"
+
+                # The last number is accounting for spaces.
+                hashesRequired = len(title) + 2*len(quotingHashes) + 4
+                hashes = ""
+                for i in range(hashesRequired):
+                    hashes += "#"
+
+                print("\n\n\n" + hashes)
+                print(quotingHashes + "  " + title + "  " + quotingHashes)
+                print(hashes)
 
 
     def Print(self, message, level=None):
@@ -212,19 +227,20 @@ class ConsoleHelper():
         self.PrintBold("WARNING: " + message, ConsoleHelper.VERBOSEWARNING)
 
 
-    def PrintNewLine(self):
+    def PrintNewLine(self, level=VERBOSEREQUESTED):
         """
         Displays a line return.
 
         Parameters
         ----------
-        None.
+        level : int, optional
+            Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        self.Print("\n", ConsoleHelper.VERBOSEREQUESTED)
+        self.Print("\n", level)
 
 
     def PrintTitle(self, title, level=None):

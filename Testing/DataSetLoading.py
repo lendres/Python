@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Sun Mar  6 13:37:28 2022
-
+Created on Mar 6, 2022
 @author: Lance
 """
 import os

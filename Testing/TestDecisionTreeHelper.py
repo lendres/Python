@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
-#from IPython.display import display
+#from IPython.display             import display
 
 import DataSetLoading
-from lendres.DecisionTreeHelper import DecisionTreeHelper
+from lendres.DecisionTreeHelper   import DecisionTreeHelper
 
 import unittest
 
@@ -22,9 +20,6 @@ class TestDecisionTreeHelper(unittest.TestCase):
         elif cls.whichData == 1:
             cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData()
 
-        #print("\nData size after cleaning:")
-        #display(cls.dataHelper.data.shape)
-
 
     def setUp(self):
         """
@@ -32,13 +27,13 @@ class TestDecisionTreeHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestDecisionTreeHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = DecisionTreeHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestDecisionTreeHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper   = DecisionTreeHelper(self.dataHelper, DecisionTreeHelper.CreateDefaultModel())
 
 
     def testStandardPlots(self):
-        self.regressionHelper.CreateModel()
+        self.regressionHelper.FitPredict()
         self.regressionHelper.CreateDecisionTreePlot()
         self.regressionHelper.CreateFeatureImportancePlot()
 

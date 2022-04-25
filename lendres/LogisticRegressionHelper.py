@@ -2,21 +2,19 @@
 Created on January 19, 2022
 @author: Lance
 """
-import pandas as pd
-import numpy as np
+import pandas                               as pd
+import numpy                                as np
+import matplotlib.pyplot                    as plt
 
-import matplotlib.pyplot as plt
+from sklearn                                import metrics
+from sklearn.linear_model                   import LogisticRegression
 
-from sklearn import metrics
-from sklearn.linear_model import LogisticRegression
-
-from lendres.PlotHelper import PlotHelper
-from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
+from lendres.PlotHelper                     import PlotHelper
+from lendres.CategoricalRegressionHelper    import CategoricalRegressionHelper
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
 
-
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -24,6 +22,8 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -31,10 +31,14 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = LogisticRegressionHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(cls, **kwargs):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -47,11 +51,7 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = LogisticRegression(random_state=1, **kwargs)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return LogisticRegression(random_state=1, **kwargs)
 
 
     def PredictProbabilities(self):

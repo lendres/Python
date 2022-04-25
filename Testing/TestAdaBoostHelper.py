@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 import DataSetLoading
@@ -28,8 +26,7 @@ class TestAdaBostHelper(unittest.TestCase):
 
 
     def testResults(self):
-        self.regressionHelper.CreateModel()
-        self.regressionHelper.Predict()
+        self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
         result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")

@@ -1,18 +1,14 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
-
-# Use this to import from another directory.
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
+import seaborn                 as sns
+import matplotlib.pyplot       as plt
+import pandas                  as pd
 
 import os
 
-from lendres.PlotHelper import PlotHelper
+from lendres.PlotHelper        import PlotHelper
 
 import unittest
 

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on January 19, 2022
 @author: Lance
 """
 
@@ -17,7 +15,7 @@ from lendres.ModelHelper import ModelHelper
 
 class LinearRegressionHelper(ModelHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -25,6 +23,8 @@ class LinearRegressionHelper(ModelHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -32,10 +32,14 @@ class LinearRegressionHelper(ModelHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = LinearRegressionHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(self, **kwargs):
         """
         Creates a linear regression model.  Splits the data and creates the model.
 
@@ -46,13 +50,9 @@ class LinearRegressionHelper(ModelHelper):
 
         Returns
         -------
-        None.
+        LinearRegression.
         """
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = LinearRegression(**kwargs)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return LinearRegression(**kwargs)
 
 
     def GetModelPerformanceScores(self):

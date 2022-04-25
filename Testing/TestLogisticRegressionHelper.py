@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 26 15:53:03 2022
-
+Created on January 26, 2022
 @author: Lance
 """
 import DataSetLoading
@@ -22,10 +20,10 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper = LogisticRegressionHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
-        self.regressionHelper.CreateModel(solver="liblinear")
+        self.regressionHelper = LogisticRegressionHelper(self.dataHelper, LogisticRegressionHelper.CreateDefaultModel(solver="liblinear"))
+        self.regressionHelper.Fit()
 
 
     def testStandardPlots(self):

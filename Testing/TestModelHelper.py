@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 26 15:53:03 2022
-
+Created on January 26, 2022
 @author: Lance
 """
 from IPython.display import display
@@ -33,14 +31,14 @@ class TestModelHelper(unittest.TestCase):
     def testBasicSplit(self):
         dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
 
-        modelHelper = ModelHelper(dataHelper)
+        modelHelper = ModelHelper(dataHelper, BaggingHelper(dataHelper))
         modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=False)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
         print()
         display(result)
 
-        modelHelper = ModelHelper(dataHelper)
+        modelHelper = ModelHelper(dataHelper, BaggingHelper(dataHelper))
         modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=True)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
@@ -51,8 +49,8 @@ class TestModelHelper(unittest.TestCase):
     def testValidationSplit(self):
         dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
 
-        modelHelper = ModelHelper(dataHelper)
-        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)
+        modelHelper = ModelHelper(dataHelper,  BaggingHelper(dataHelper))
+        dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
         print()
@@ -64,15 +62,13 @@ class TestModelHelper(unittest.TestCase):
         sm = SMOTE(sampling_strategy=1, k_neighbors=5, random_state=1)
         regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData = sm.fit_resample(regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData)
 
-        regressionHelper.CreateModel()
-        regressionHelper.Predict()
+        regressionHelper.FitPredict()
 
         result = regressionHelper.GetModelPerformanceScores()
         #display(result)
 
         self.assertAlmostEqual(result["Recall"]["Validation"], 0.5789, places=3)
         self.assertAlmostEqual(result["Precision"]["Validation"], 0.2650, places=3)
-
 
 
 if __name__ == "__main__":

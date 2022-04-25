@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 27 19:30:11 2021
-
+Created on December 27, 2021
 @author: Lance
 """
 #from IPython.display import display
 
 import DataSetLoading
-from lendres.DecisionTreeCostComplexityHelper import DecisionTreeCostComplexityHelper
+from lendres.DecisionTreeHelper                   import DecisionTreeHelper
+from lendres.DecisionTreeCostComplexityHelper     import DecisionTreeCostComplexityHelper
 
 import unittest
 
@@ -22,9 +21,6 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
         elif cls.whichData == 1:
             cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData()
 
-        #print("\nData size after cleaning:")
-        #display(cls.dataHelper.data.shape)
-
 
     def setUp(self):
         """
@@ -32,13 +28,13 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestDecisionTreeCostComplexityHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper   = DecisionTreeCostComplexityHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestDecisionTreeCostComplexityHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestDecisionTreeCostComplexityHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper   = DecisionTreeCostComplexityHelper(self.dataHelper, DecisionTreeHelper.CreateDefaultModel())
 
 
     def testCostComplexityPruningModel(self):
-        self.regressionHelper.CreateModel()
+        self.regressionHelper.Fit()
         self.regressionHelper.CreateCostComplexityPruningModel("recall")
 
         self.regressionHelper.Predict()
@@ -55,7 +51,7 @@ class TestDecisionTreeCostComplexityHelper(unittest.TestCase):
     def testCostComplexityPruningPlots(self):
         scoreMethod = "recall"
         #scoreMethod = "precision"
-        self.regressionHelper.CreateModel()
+        self.regressionHelper.Fit()
         self.regressionHelper.CreateCostComplexityPruningModel(scoreMethod)
 
         self.regressionHelper.CreateImpunityVersusAlphaPlot()

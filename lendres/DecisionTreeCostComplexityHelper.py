@@ -1,19 +1,17 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 19 07:49:25 2022
-
+Created on Wed January 19, 2022
 @author: Lance
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
+import numpy                      as np
+import matplotlib.pyplot          as plt
 
-from lendres.PlotHelper import PlotHelper
-from lendres.DecisionTreeHelper import DecisionTreeHelper
+from lendres.PlotHelper           import PlotHelper
+from lendres.DecisionTreeHelper   import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -21,6 +19,8 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -28,13 +28,13 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        super().__init__(dataHelper, model, description)
         self.costComplexityPath                 = None
         self.DecisionTreeCostComplexityHelpers  = None
 
 
     @classmethod
-    def FromData(cls, original, deep=False):
+    def FromData(cls, original, deep=False, **kwargs):
         """
         Creates a new DecisionTreeCostComplexityHelper by copying the data from the original.
 
@@ -43,7 +43,9 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         original : DecisionTreeCostComplexityHelper
             The source instance to copy from.
         deep : bool, optional
-            DESCRIPSpecifies if a deep copy should be done. The default is False.
+            Specifies if a deep copy should be done. The default is False.
+        **kwargs : keyword arguments
+            These arguments are passed on to the DecisionTreeClassifier.
 
         Returns
         -------
@@ -51,7 +53,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
             Returns a new DecisionTreeCostComplexityHelper based on data copied from the original.
 
         """
-        decisionTreeHelper = DecisionTreeCostComplexityHelper(None)
+        decisionTreeHelper = DecisionTreeCostComplexityHelper(None, DecisionTreeHelper.CreateDefaultModel(**kwargs))
         decisionTreeHelper.CopyData(original, deep)
         return decisionTreeHelper
 
@@ -82,8 +84,8 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 
         # Create models based on the cost complexity pruning alpha values.
         for ccpAlpha in ccpAlphas:
-            decisionTreeHelper = DecisionTreeCostComplexityHelper.FromData(self, deep=False)
-            decisionTreeHelper.CreateModel(ccp_alpha=ccpAlpha)
+            decisionTreeHelper = DecisionTreeCostComplexityHelper.FromData(self, deep=False, ccp_alpha=ccpAlpha)
+            decisionTreeHelper.Fit()
             self.decisionTreeHelpers.append(decisionTreeHelper)
 
         # Calculate the scores and use them to select the best model.  The model is

@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 26 15:53:03 2022
-
+Created on January 26, 2022
 @author: Lance
 """
-#from IPython.display import display
 
 import DataSetLoading
-from lendres.DataHelper import DataHelper
-from lendres.LinearRegressionHelper import LinearRegressionHelper
+from lendres.DataHelper                import DataHelper
+from lendres.LinearRegressionHelper    import LinearRegressionHelper
 
 import unittest
 
@@ -26,9 +23,11 @@ class TestregressionHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         dataHelper = DataHelper.Copy(TestregressionHelper.dataHelper, deep=True)
+        dataHelper.SplitData("charges", 0.3, stratify=False)
+
         self.regressionHelper = LinearRegressionHelper(dataHelper)
-        self.regressionHelper.dataHelper.SplitData("charges", 0.3, stratify=False)
-        self.regressionHelper.CreateModel()
+
+        self.regressionHelper.Fit()
 
 
     def testModelCoefficients(self):

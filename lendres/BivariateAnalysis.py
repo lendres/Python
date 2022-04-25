@@ -4,11 +4,11 @@ Spyder Editor
 
 This is a temporary script file.
 """
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas                as pd
+import matplotlib.pyplot     as plt
+import seaborn               as sns
 
-from lendres.PlotHelper import PlotHelper
+from lendres.PlotHelper      import PlotHelper
 
 class BivariateAnalysis():
 

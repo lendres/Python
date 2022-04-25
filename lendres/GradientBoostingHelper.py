@@ -9,7 +9,7 @@ from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
 class GradientBoostingHelper(CategoricalRegressionHelper):
 
-    def __init__(self, dataHelper, description=""):
+    def __init__(self, dataHelper, model=None, description=""):
         """
         Constructor.
 
@@ -17,6 +17,8 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that has the data in a pandas.DataFrame.
+        model : Model
+            A regression model.
         description : string
             A description of the model.
 
@@ -24,9 +26,13 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
         -------
         None.
         """
-        super().__init__(dataHelper, description)
+        if model == None:
+            model = GradientBoostingHelper.CreateDefaultModel()
+
+        super().__init__(dataHelper, model, description)
 
 
+    @classmethod
     def CreateStandardModel(self, **kwargs):
         """
         Creates a decision tree model.
@@ -38,12 +44,13 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
 
         Returns
         -------
-        None.
+        GradientBoostingClassifier.
         """
-        self.CreateModel(init=AdaBoostClassifier(random_state=1), **kwargs)
+        return GradientBoostingHelper.CreateModel(init=AdaBoostClassifier(random_state=1), **kwargs)
 
 
-    def CreateModel(self, **kwargs):
+    @classmethod
+    def CreateDefaultModel(self, **kwargs):
         """
         Creates a decision tree model.
 
@@ -54,11 +61,6 @@ class GradientBoostingHelper(CategoricalRegressionHelper):
 
         Returns
         -------
-        None.
+        GradientBoostingClassifier.
         """
-
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        self.model = GradientBoostingClassifier(random_state=1, **kwargs)
-        self.model.fit(self.dataHelper.xTrainingData, self.dataHelper.yTrainingData)
+        return GradientBoostingClassifier(random_state=1, **kwargs)

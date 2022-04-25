@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jan 26 15:53:03 2022
-
+Created on January 26, 2022
 @author: Lance
 """
 #from IPython.display import display
@@ -26,16 +24,17 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
-        self.regressionHelper = CategoricalRegressionHelper(self.dataHelper)
+        self.dataHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
 
-        self.regressionHelper.dataHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
+        self.regressionHelper = CategoricalRegressionHelper(self.dataHelper, LogisticRegression(solver="liblinear", random_state=1))
+
 
         # Fake a model so we have output to use.
-        self.regressionHelper.model = LogisticRegression(solver="liblinear", random_state=1)
-        self.regressionHelper.model.fit(self.regressionHelper.dataHelper.xTrainingData, self.regressionHelper.dataHelper.yTrainingData.values.ravel())
+        self.regressionHelper.Fit()
 
 
     def testConfusionMatrices(self):
+        self.regressionHelper.Predict()
         result = self.regressionHelper.GetConfusionMatrix(dataSet="training")
         self.assertEqual(result.tolist(), [[53,  17], [18, 129]])
 
@@ -44,28 +43,32 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
 
 
     def testStandardPlots(self):
+        self.regressionHelper.Predict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="training")
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 
 
     def testModelCoefficients(self):
+        self.regressionHelper.Predict()
         result = self.regressionHelper.GetModelCoefficients()
         self.assertAlmostEqual(result.loc["pelvic_incidence", "Coefficients"], 0.02318, places=3)
         self.assertAlmostEqual(result.loc["Intercept", "Coefficients"], 1.1290, places=3)
 
 
     def testPredictionsNotCalculated(self):
+        # Cannot call "FitPredict" is test setup because we want to test this exception.
         self.assertRaises(Exception, self.regressionHelper.GetModelPerformanceScores)
 
 
     def testModelPerformanceScores(self):
         self.regressionHelper.Predict()
-        result = self.regressionHelper.GetModelPerformanceScores()
+        result = self.regressionHelper.GetModelPerformanceScores(final=True)
         self.assertAlmostEqual(result.loc["Training", "Accuracy"], 0.8387, places=3)
         self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.8571, places=3)
 
 
     def testSplitComparisons(self):
+        self.regressionHelper.Predict()
         result = self.regressionHelper.dataHelper.GetSplitComparisons()
         self.regressionHelper.dataHelper.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
         self.assertEqual(result.loc["Testing", "True"], "63 (67.74%)")
