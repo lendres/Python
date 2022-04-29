@@ -1,11 +1,11 @@
 """
-Created on Mar 6, 2022
+Created on March 6, 2022
 @author: Lance
 """
 import os
 
-from lendres.ConsoleHelper import ConsoleHelper
-from lendres.DataHelper import DataHelper
+from lendres.ConsoleHelper        import ConsoleHelper
+from lendres.DataHelper           import DataHelper
 
 def MakeDataHelper(inputFile, verboseLevel):
     inputFile          = os.path.join("Data", inputFile)
@@ -127,5 +127,14 @@ def GetCardiacData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
 
     dataHelper.ConvertCategoryToNumeric("Gender", "Male")
     dataHelper.ConvertCategoryToNumeric("UnderRisk", "yes")
+
+    return dataHelper, dependentVariable
+
+
+def GetTechnicalSupportData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "technical_support_data.csv"
+    dependentVariable       = None
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     return dataHelper, dependentVariable

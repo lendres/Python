@@ -49,8 +49,10 @@ class BivariateAnalysis():
         axis = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
         axis.set(title="Heat Map for Continuous Data")
 
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
+        # Make sure the plot is shown.
         plt.show()
 
         return figure, axis
@@ -91,6 +93,7 @@ class BivariateAnalysis():
         else:
             sns.pairplot(data[columns], hue=hue)
 
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
         figure.suptitle("Pair Plot for Continuous Data", y=1.01)
@@ -132,6 +135,7 @@ class BivariateAnalysis():
         axis.set(title=title, xlabel=xColumn.title(), ylabel=yColumn.title())
         axis.get_legend().set_title(sortColumn.title())
 
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
         plt.show()
