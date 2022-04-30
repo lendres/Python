@@ -202,7 +202,7 @@ class PlotHelper():
 
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
 
-        figure.suptitle(title.title())
+        figure.suptitle(title)
 
         return (figure, (leftAxis, rightAxis))
 
