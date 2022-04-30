@@ -177,7 +177,7 @@ class PlotHelper():
 
 
     @classmethod
-    def NewSideBySideAxisFigure(cls, title):
+    def NewSideBySideAxisFigure(cls, title, width=15, height=5):
         """
         Creates a new figure that has two axes, one above another.
 
@@ -185,6 +185,10 @@ class PlotHelper():
         ----------
         title : string
             Title to use for the plot.
+       width : float, optional
+           The width of the figure. The default is 15.
+       height : float, optional
+           The height of the figure. The default is 5.
 
         Returns
         -------
@@ -194,13 +198,48 @@ class PlotHelper():
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
-        cls.FormatPlot(width=15, height=5)
+        cls.FormatPlot(width=width, height=height)
 
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
 
-        figure.suptitle("\"" + title.title() + "\"" + " Category")
+        figure.suptitle(title.title())
 
         return (figure, (leftAxis, rightAxis))
+
+
+    @classmethod
+    def SetAxisToSquare(cls, axis):
+        """
+        Sets the axis to have a square aspect ratio.
+
+        Parameters
+        ----------
+        axis : axis
+            Axis to set the aspect ratio of.
+
+        Returns
+        -------
+        None.
+        """
+        axis.set_aspect(1./axis.get_data_ratio())
+
+    @classmethod
+    def CategoryTitle(cls, categoryName):
+        """
+        Formats a string as a category title.  It is converted to title case, quotes
+        added around the category name and "Category" added as a suffix.
+
+        Parameters
+        ----------
+        categoryName : string
+            Category name to convert to a title.
+
+        Returns
+        -------
+        title : string
+            The category converted to a title.
+        """
+        return "\"" + categoryName.title() + "\"" + " Category"
 
 
     @classmethod
