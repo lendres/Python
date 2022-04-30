@@ -13,6 +13,10 @@ from scipy.spatial.distance           import cdist
 from sklearn.metrics                  import silhouette_samples
 from sklearn.metrics                  import silhouette_score
 
+# To visualize the elbow curve and silhouette scores.
+from yellowbrick.cluster              import KElbowVisualizer
+from yellowbrick.cluster              import SilhouetteVisualizer
+
 from lendres.ConsoleHelper            import ConsoleHelper
 from lendres.PlotHelper               import PlotHelper
 
@@ -71,7 +75,29 @@ class KMeansHelper():
 
         return figure
 
-    def CreateSilhouetteAnalysisPlots(self, data, rangeOfClusters):
+    def CreateSilhouetteAnalysisPlotsself, data, rangeOfClusters):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+        rangeOfClusters : list of ints
+            The range of clusters to calculate the distortions for.
+
+        Returns
+        -------
+        None.
+        """
+        for clusters in rangeOfClusters:
+            # visualizer = SilhouetteVisualizer(clusterer, ax=leftAxis)
+            # visualizer.fit(data)
+            # visualizer.show()
+
+
+
+    def CreateTwoColumnSilhouetteVisualizationPlots(self, data, rangeOfClusters):
         """
         Constructor.
 
@@ -89,22 +115,17 @@ class KMeansHelper():
         X = data
 
         for clusters in rangeOfClusters:
+
             # Create a subplot with 1 row and 2 columns.
             title = "K-Means Clustering Silhouette Analysis with %d Clusters" % clusters
             figure, (leftAxis, rightAxis) = PlotHelper.NewSideBySideAxisFigure(title, width=15, height=6)
 
-            # The 1st subplot is the silhouette plot.
-            # The silhouette coefficient can range from -1, 1.
-            #leftAxis.set_xlim([-1, 1])
-
-            # The (clusters+1)*10 is for inserting blank space between silhouette.
-            # Plots of individual clusters, to demarcate them clearly.
-            leftAxis.set_ylim([0, len(X) + (clusters + 1) * 10])
-
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            clusterer     = KMeans(n_clusters=clusters, random_state=10)
+            clusterer     = KMeans(n_clusters=clusters, random_state=1)
             clusterLabels = clusterer.fit_predict(X)
+
+            colors = cm.nipy_spectral(clusterLabels.astype(float) / clusters)
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
@@ -140,19 +161,26 @@ class KMeansHelper():
                 # Compute the new yLower for next plot.
                 yLower = yUpper + 10
 
-            # Set titles of left axis.
-            leftAxis.set(xlabel="Silhouette Coefficient Values", ylabel="Cluster Label")
-            PlotHelper.SetAxisToSquare(leftAxis)
-
             # The vertical line for average silhouette score of all the values.
             leftAxis.axvline(x=silhouetteAverage, color="red", linestyle="--")
 
             # Clear the yaxis labels / ticks.
             leftAxis.set_yticks([])
-            #leftAxis.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
+
+            # # The 1st subplot is the silhouette plot.
+            # # The silhouette coefficient can range from -1, 1.
+            # #leftAxis.set_xlim([-1, 1])
+
+            # # The (clusters+1)*10 is for inserting blank space between silhouette.
+            # # Plots of individual clusters, to demarcate them clearly.
+            # leftAxis.set_ylim([0, len(X) + (clusters + 1) * 10])
+
+            # Set titles of left axis.
+            leftAxis.set(title="", xlabel="Silhouette Coefficient Values", ylabel="Cluster Label")
+            PlotHelper.SetAxisToSquare(leftAxis)
+
 
             # Right plot showing the actual clusters formed.
-            colors = cm.nipy_spectral(clusterLabels.astype(float) / clusters)
             rightAxis.scatter(X[:, 0], X[:, 1], marker=".", s=30, lw=0, alpha=0.7, c=colors, edgecolor="k")
 
             # Labeling the clusters.

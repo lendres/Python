@@ -41,10 +41,10 @@ class TestKMeansHelper(unittest.TestCase):
             shuffle=True,
             random_state=1,
         )
-        self.kMeansHelper.CreateSilhouetteAnalysisPlots(X, range(2, 7))
+        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(X, range(2, 7))
 
         scaledData = self.dataHelper.data.iloc[:,2:5].apply(zscore).to_numpy()
-        self.kMeansHelper.CreateSilhouetteAnalysisPlots(scaledData, range(2, 7))
+        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(scaledData, range(2, 7))
 
 if __name__ == "__main__":
     unittest.main()
