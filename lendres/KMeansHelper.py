@@ -6,6 +6,7 @@ import numpy                          as np
 from matplotlib                       import pyplot                     as plt
 import matplotlib.cm                  as cm
 import matplotlib.ticker              as ticker
+import seaborn                        as sns
 
 from sklearn.cluster                  import KMeans
 from scipy.stats                      import zscore
@@ -39,6 +40,7 @@ class KMeansHelper():
         """
         self.dataHelper                = dataHelper
         self.model                     = None
+        self.labelColumn               = "K Means Label"
 
 
     def CreateElbowPlot(self, data, clusters):
@@ -125,6 +127,7 @@ class KMeansHelper():
         -------
         None.
         """
+        # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
         for clusters in rangeOfClusters:
@@ -152,6 +155,9 @@ class KMeansHelper():
         None.
         """
         X = data
+
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
 
         for clusters in rangeOfClusters:
 
@@ -200,17 +206,14 @@ class KMeansHelper():
         """
         This is taken from:
             yellowbrick/yellowbrick/cluster/silhouette.py
-        Prepare the figure for rendering by setting the title and adjusting
-        the limits on the axes, adding labels and a legend.
+        Prepare the figure for rendering by setting the title and adjusting the limits on the axes, adding labels and a legend.
         """
-
         # Set the title.
         if setTitle:
             if title == None:
                 visualizer.set_title(("Silhouette Plot of {} Clustering with {} Centers").format(visualizer.name, visualizer.n_clusters_))
             else:
                 visualizer.set_title(title)
-
 
         # Set the X and Y limits
         # The silhouette coefficient can range from -1, 1;
@@ -238,3 +241,33 @@ class KMeansHelper():
 
         # Show legend (Average Silhouette Score axis)
         visualizer.ax.legend(loc="best")
+
+
+    def LabelData(self, colums, clusters):
+        clusterer                              = KMeans(n_clusters=clusters, random_state=1)
+        clusterer.fit(self.dataHelper.data.iloc[:, colums])
+        self.dataHelper.data[self.labelColumn] = clusterer.labels_
+
+
+    def CreateBoxPlotForClusters(self, data, labels, clusters):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        dataHelper : DataHelper
+            DataHelper that has the data in a pandas.DataFrame.
+        clusters : int
+            The range of clusters to calculate the distortions for.
+
+        Returns
+        -------
+        None.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
+
+        for i in range(data.shape[1]):
+            print("Box plot", i)
+            sns.boxplot(x=labels, y=data.iloc[:, i])
+            plt.show()
