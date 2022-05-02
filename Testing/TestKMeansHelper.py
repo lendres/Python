@@ -14,6 +14,8 @@ from   sklearn.datasets                 import make_blobs
 
 from   lendres.DataHelper               import DataHelper
 
+from   IPython.display                  import display
+
 import unittest
 
 class TestKMeansHelper(unittest.TestCase):
@@ -74,6 +76,13 @@ class TestKMeansHelper(unittest.TestCase):
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()
         self.kMeansHelper.CreateBoxPlotForClusters()
+
+
+    def testGroupStats(self):
+        self.kMeansHelper.CreateModel(6)
+        self.kMeansHelper.FitPredict()
+        display(self.kMeansHelper.GetGroupMeans())
+        display(self.kMeansHelper.GetGroupCounts())
 
 
 if __name__ == "__main__":

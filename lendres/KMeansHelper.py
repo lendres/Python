@@ -2,26 +2,26 @@
 Created on April 27, 2022
 @author: Lance
 """
-import numpy                          as np
-from matplotlib                       import pyplot                     as plt
-import matplotlib.cm                  as cm
-import matplotlib.ticker              as ticker
-import seaborn                        as sns
+import numpy                            as np
+from   matplotlib                       import pyplot                     as plt
+import matplotlib.cm                    as cm
+import matplotlib.ticker                as ticker
+import seaborn                          as sns
 
-from sklearn.cluster                  import KMeans
-from scipy.stats                      import zscore
-from scipy.spatial.distance           import cdist
+from   sklearn.cluster                  import KMeans
+from   scipy.stats                      import zscore
+from   scipy.spatial.distance           import cdist
 
-from sklearn.metrics                  import silhouette_samples
-from sklearn.metrics                  import silhouette_score
+from   sklearn.metrics                  import silhouette_samples
+from   sklearn.metrics                  import silhouette_score
 
 # To visualize the elbow curve and silhouette scores.
-from yellowbrick.cluster              import KElbowVisualizer
-from yellowbrick.cluster              import SilhouetteVisualizer
+from   yellowbrick.cluster              import KElbowVisualizer
+from   yellowbrick.cluster              import SilhouetteVisualizer
 
-#from lendres.ConsoleHelper            import ConsoleHelper
-from lendres.PlotHelper               import PlotHelper
-from lendres.ClusterHelper            import ClusterHelper
+#from   lendres.ConsoleHelper            import ConsoleHelper
+from   lendres.PlotHelper               import PlotHelper
+from   lendres.ClusterHelper            import ClusterHelper
 
 
 class KMeansHelper(ClusterHelper):

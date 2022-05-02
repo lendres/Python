@@ -2,11 +2,11 @@
 Created on December 27, 2021
 @author: Lance
 """
-from sklearn.linear_model import LogisticRegression
+from   sklearn.linear_model            import LogisticRegression
 
 import DataSetLoading
-from lendres.ConsoleHelper           import ConsoleHelper
-from lendres.BaggingHelper import BaggingHelper
+from   lendres.ConsoleHelper           import ConsoleHelper
+from   lendres.BaggingHelper           import BaggingHelper
 
 import unittest
 

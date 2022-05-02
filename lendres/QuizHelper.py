@@ -4,25 +4,25 @@ Created on April 9, 2022
 """
 
 # To help with reading and manipulation of data
-import numpy as np
-import pandas as pd
+import numpy                         as np
+import pandas                        as pd
 
 # To help with data visualization
-import matplotlib.pyplot as plt
-import seaborn as sns
+import matplotlib.pyplot             as plt
+import seaborn                       as sns
 
 
 from lendres.PlotHelper              import PlotHelper
 
 # To get different performance metrics
-import sklearn.metrics as metrics
+import sklearn.metrics               as metrics
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     recall_score,
     accuracy_score,
     precision_score,
-    f1_score,
+    f1_score
 )
 
 
@@ -68,12 +68,7 @@ def confusion_matrix_sklearn(model, predictors, target, titlePrefix=None):
     """
     y_pred = model.predict(predictors)
     cm     = confusion_matrix(target, y_pred)
-    # labels = np.asarray(
-    #     [
-    #         ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / cm.flatten().sum())]
-    #         for item in cm.flatten()
-    #     ]
-    # ).reshape(2, 2)
+
     labels = np.asarray(
         [
             ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / cm.flatten().sum())]

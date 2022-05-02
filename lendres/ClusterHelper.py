@@ -88,6 +88,14 @@ class ClusterHelper():
         self.dataHelper.data[self.labelColumn] = self.model.labels_
 
 
+    def GetGroupMeans(self):
+        return self.dataHelper.data.groupby([self.labelColumn]).mean()
+
+
+    def GetGroupCounts(self):
+        return self.dataHelper.data.groupby([self.labelColumn]).sum()
+
+
     def CreateBoxPlotForClusters(self):
         """
         Constructor.

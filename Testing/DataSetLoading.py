@@ -138,3 +138,12 @@ def GetTechnicalSupportData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     return dataHelper, dependentVariable
+
+
+def GetCustomerSpendData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "Cust_Spend_Data.csv"
+    dependentVariable       = None
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    return dataHelper, dependentVariable
