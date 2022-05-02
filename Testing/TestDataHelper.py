@@ -14,7 +14,7 @@ class TestDataHelper(unittest.TestCase):
     def setUpClass(cls):
         verboseLevel = ConsoleHelper.VERBOSEREQUESTED
 
-        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
+        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=verboseLevel, encode=False)
 
         cls.loanData, cls.loanDependentVariable = DataSetLoading.GetLoanModellingData(verboseLevel=verboseLevel, dropExtra=False)
         cls.loanData.ChangeToCategoryType(["CreditCard", "Online"])

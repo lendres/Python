@@ -23,6 +23,9 @@ class PlotHelper():
     # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
     scale                  = 1.0
 
+    # Standard size.
+    size                   = 20
+
     @classmethod
     def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
         """
@@ -54,16 +57,31 @@ class PlotHelper():
 
 
     @classmethod
+    def GetScaledStandardSize(cls):
+        """
+        Gets the standard font size adjusted with the scaling factor.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        return cls.scale*cls.size
+
+    @classmethod
     def FormatPlot(cls, width=10, height=6, transparentLegend=False):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
         Parameters
         ----------
-       width : float, optional
-           The width of the figure. The default is 10.
-       height : float, optional
-           The height of the figure. The default is 6.
+        width : float, optional
+            The width of the figure. The default is 10.
+        height : float, optional
+            The height of the figure. The default is 6.
         transparentLegend : bool
             Option to create a legend with a transparent background.
 
@@ -71,51 +89,49 @@ class PlotHelper():
         -------
         None.
         """
-        # Standard size.
-        size = 20
+        standardSize = cls.GetScaledStandardSize()
 
         # Standard formating parameters.
-        params = {
+        parameters = {
             "figure.figsize"         : (width, height),
-            "font.size"              : 1.2*cls.scale*size,
+            "font.size"              : 1.2*standardSize,
             "font.weight"            : "bold",
-            "figure.titlesize"       : 1.2*cls.scale*size,
+            "figure.titlesize"       : 1.2*standardSize,
             "figure.titleweight"     : "bold",
-            "legend.fontsize"        : 0.8*cls.scale*size,
-            "legend.title_fontsize"  : 0.85*cls.scale*size,
+            "legend.fontsize"        : 0.8*standardSize,
+            "legend.title_fontsize"  : 0.85*standardSize,
             "legend.edgecolor"       : "black",
-            "axes.titlesize"         : 1.1*cls.scale*size,
+            "axes.titlesize"         : 1.1*standardSize,
             "axes.titleweight"       : "bold",
             "axes.labelweight"       : "bold",
-            "axes.labelsize"         : cls.scale*size,
-            "xtick.labelsize"        : 0.80*cls.scale*size,
-            "ytick.labelsize"        : 0.80*cls.scale*size,
+            "axes.labelsize"         : standardSize,
+            "xtick.labelsize"        : 0.80*standardSize,
+            "ytick.labelsize"        : 0.80*standardSize,
             "axes.titlepad"          : 25,
-            "axes.linewidth"         : 0.75*cls.scale,               # Axis border.
+            "axes.linewidth"         : 0.75*cls.scale,              # Axis border.
             "axes.edgecolor"         : "black",                     # Axis border.
             "patch.linewidth"        : 1.5*cls.scale,               # Legend border.
             "lines.linewidth"        : 3*cls.scale
-
         }
 
         # Parameters to create a legend with a border and transparent background.
-        transparentLegendParams = {
+        transparentLegendParameters = {
             "legend.framealpha"      : None,
             "legend.facecolor"       : (1, 1, 1, 0)
         }
 
         # Parameters for a legend with a border and a solid background.
-        nonTransparentLegendParams = {
+        nonTransparentLegendParameters = {
             "legend.framealpha"      : 1.0,
             "legend.facecolor"       : 'inherit'
         }
 
         if transparentLegend:
-            params.update(transparentLegendParams)
+            parameters.update(transparentLegendParameters)
         else:
-            params.update(nonTransparentLegendParams)
+            parameters.update(nonTransparentLegendParameters)
 
-        plt.rcParams.update(params)
+        plt.rcParams.update(parameters)
 
 
     @classmethod

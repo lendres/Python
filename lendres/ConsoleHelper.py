@@ -77,27 +77,27 @@ class ConsoleHelper():
 
 
     @classmethod
-    def ConvertPrintLevel(cls, level):
+    def ConvertPrintLevel(cls, verboseLevel):
         """
         Converts a level of None into a default value.
 
         Parameters
         ----------
-        level : int
+        verboseLevel : int
             Level that the message is printed at.
 
         Returns
         -------
-        level : int
+        verboseLevel : int
             A valid print level.
         """
-        if level == None:
+        if verboseLevel == None:
             return cls.VERBOSEALL
         else:
-            return level
+            return verboseLevel
 
 
-    def PrintQuestionTitle(self, number=None, level=None):
+    def PrintQuestionTitle(self, number=None, verboseLevel=None):
         """
         Prints a divider with the question number to the console.
 
@@ -106,14 +106,14 @@ class ConsoleHelper():
         number : int, optional
             The question number.  If none is provided, the previously printed number
             is incremented by one and that value is used.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
 
             if number == None:
                 self.questionNumber += 1
@@ -123,7 +123,7 @@ class ConsoleHelper():
             self.PrintSectionTitle("Question " + str(self.questionNumber))
 
 
-    def PrintSectionTitle(self, title, level=None):
+    def PrintSectionTitle(self, title, verboseLevel=None):
         """
         Prints a divider and title to the console.
 
@@ -131,16 +131,16 @@ class ConsoleHelper():
         ----------
         title : string
             Title to dislay.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
         markdownTitleLevel : int, optional
-            If markdown is being used, this is the title level to use, i.e., "#", "##", et cetera.
+            If markdown is being used, this is the title Level to use, i.e., "#", "##", et cetera.
 
         Returns
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
 
             if self.useMarkDown:
                 # Don't use spaces between the asterisks and message so it prints bold in markdown.
@@ -164,26 +164,26 @@ class ConsoleHelper():
                 print(hashes)
 
 
-    def Print(self, message, level=None):
+    def Print(self, message, verboseLevel=None):
         """
-        Displays a message if the specified level is at or above the verbose level.
+        Displays a message if the specified level is at or above the verbose Level.
 
         Parameters
         ----------
         message : string
             Message to display.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
             print(message)
 
 
-    def PrintBold(self, message, level=None):
+    def PrintBold(self, message, verboseLevel=None):
         """
         Prints a message.  If markdown is enable it will use markdown to make the message bold.  If markdown is not used,
         it will use asterisks to help the text stand out.
@@ -192,14 +192,14 @@ class ConsoleHelper():
         ----------
         message : string
             Warning to dislay.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
             quotingNotation = "***"
 
             if self.useMarkDown:
@@ -227,23 +227,23 @@ class ConsoleHelper():
         self.PrintBold("WARNING: " + message, ConsoleHelper.VERBOSEWARNING)
 
 
-    def PrintNewLine(self, level=VERBOSEREQUESTED):
+    def PrintNewLine(self, verboseLevel=None):
         """
         Displays a line return.
 
         Parameters
         ----------
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        self.Print("\n", level)
+        self.Print("\n", verboseLevel)
 
 
-    def PrintTitle(self, title, level=None):
+    def PrintTitle(self, title, verboseLevel=None):
         """
         Prints a title.  With mark down, this is printed bold.  Without markdown, a new line
         is printed, then the title is printed.
@@ -252,7 +252,7 @@ class ConsoleHelper():
         ----------
         title : string
             Title to rpint.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
@@ -262,10 +262,10 @@ class ConsoleHelper():
         if not self.useMarkDown:
             self.PrintNewLine()
 
-        self.PrintBold(title, level)
+        self.PrintBold(title, verboseLevel)
 
 
-    def Display(self, message, level=None):
+    def Display(self, message, verboseLevel=None):
         """
         Displays a message if the specified level is at or above the verbose level.
 
@@ -273,14 +273,14 @@ class ConsoleHelper():
         ----------
         message : string
             Message to display.
-        level : int, optional
+        verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
         Returns
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(level):
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
             IPython.display.display(message)
 
 

@@ -2,14 +2,14 @@
 Created on January 19, 2022.
 @author: Lance
 """
-import pandas                         as pd
-import numpy                          as np
-import seaborn                        as sns
+import pandas                           as pd
+import numpy                            as np
+import seaborn                          as sns
 
-from matplotlib                       import pyplot                     as plt
+from   matplotlib                       import pyplot                     as plt
 
-from lendres.ConsoleHelper            import ConsoleHelper
-from lendres.PlotHelper               import PlotHelper
+from   lendres.ConsoleHelper            import ConsoleHelper
+from   lendres.PlotHelper               import PlotHelper
 
 class ModelHelper:
 

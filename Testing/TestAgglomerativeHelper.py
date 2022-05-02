@@ -2,9 +2,14 @@
 Created on April 27, 2022
 @author: Lance
 """
+import pandas                           as pd
+
 import DataSetLoading
 
+from   lendres.ConsoleHelper            import ConsoleHelper
 from   lendres.AgglomerativeHelper      import AgglomerativeHelper
+
+from   IPython.display                  import display
 
 import unittest
 
@@ -12,8 +17,11 @@ class TestAgglomerativeHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCustomerSpendData()
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
 
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCustomerSpendData(verboseLevel=verboseLevel)
+        # Used to display all the columns in the output.
+        pd.set_option("display.max_columns", None)
 
     def setUp(self):
         """
@@ -25,13 +33,26 @@ class TestAgglomerativeHelper(unittest.TestCase):
         self.agglomerativeHelper.ScaleData(method="zscore")
 
 
-    #def test(self):
-
-
     def testBoxPlots(self):
         self.agglomerativeHelper.CreateModel(3)
         self.agglomerativeHelper.FitPredict()
         self.agglomerativeHelper.CreateBoxPlotForClusters()
+
+
+    def testGroupStats(self):
+        self.agglomerativeHelper.CreateModel(3)
+        self.agglomerativeHelper.FitPredict()
+        self.dataHelper.consoleHelper.PrintTitle("Group Means", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetGroupMeans(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.PrintTitle("Group Counts", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetGroupCounts(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def testDendrogramPlot(self):
+        self.agglomerativeHelper.CreateDendrogramPlot()
+        self.agglomerativeHelper.CreateDendrogramPlot(method="complete", xLabelScale=0.75)
 
 
 if __name__ == "__main__":

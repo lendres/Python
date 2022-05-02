@@ -6,12 +6,12 @@ import numpy                            as np
 from   matplotlib                       import pyplot                     as plt
 import seaborn                          as sns
 
-from   sklearn.cluster                  import AgglomerativeClustering
+from   sklearn.decomposition            import PCA
 from   scipy.cluster.hierarchy          import cophenet
 from   scipy.cluster.hierarchy          import dendrogram
 from   scipy.cluster.hierarchy          import linkage
 
-# Pairwise distribution between data points.
+# Pairwise distribution between data points.f
 from   scipy.spatial.distance          import pdist
 
 #from lendres.ConsoleHelper            import ConsoleHelper
@@ -19,7 +19,7 @@ from   lendres.PlotHelper               import PlotHelper
 from   lendres.ClusterHelper            import ClusterHelper
 
 
-class AgglomerativeHelper(ClusterHelper):
+class PrincipleComponentAnalysisHelper(ClusterHelper):
 
     def __init__(self, dataHelper, columns, copyMethod="include"):
         """
@@ -39,6 +39,10 @@ class AgglomerativeHelper(ClusterHelper):
 
     def CreateModel(self, clusters):
         self.model = AgglomerativeClustering(n_clusters=clusters, affinity='euclidean', linkage='average')
+
+
+    def FitTransform(self):
+
 
 
     def CreateDendrogramPlot(self, metric="euclidean", method="average", xLabelScale=1.0):
