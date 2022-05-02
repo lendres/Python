@@ -2,17 +2,16 @@
 Created on December 27, 2021
 hor: Lance
 """
-import pandas as pd
-import numpy as np
-import scipy.stats as stats
+from   matplotlib                     import pyplot                     as plt
+import pandas                         as pd
+import numpy                          as np
+import scipy.stats                    as stats
 
 import os
 import io
 
-from sklearn.model_selection import train_test_split
-
 import lendres
-from lendres.ConsoleHelper import ConsoleHelper
+from   lendres.ConsoleHelper          import ConsoleHelper
 
 class DataHelper():
 
@@ -63,14 +62,14 @@ class DataHelper():
         self.data = None
 
         # Either load the data from file or the supplied existing data, but not both.
-        if fileName != None:
+        if fileName is not None:
             self.LoadAndInspectData(fileName)
 
-        elif data != None:
+        elif data is not None:
             if copy:
-                self.data = self.data.copy(deep)
+                self.data = data.copy(deep)
             else:
-                self.data = self.data
+                self.data = data
 
 
     @classmethod

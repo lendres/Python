@@ -21,11 +21,12 @@ from yellowbrick.cluster              import SilhouetteVisualizer
 
 #from lendres.ConsoleHelper            import ConsoleHelper
 from lendres.PlotHelper               import PlotHelper
+from lendres.ClusterHelper            import ClusterHelper
 
 
-class KMeansHelper():
+class KMeansHelper(ClusterHelper):
 
-    def __init__(self, dataHelper):
+    def __init__(self, dataHelper, columns, copyMethod="include"):
         """
         Constructor.
 
@@ -38,19 +39,19 @@ class KMeansHelper():
         -------
         None.
         """
-        self.dataHelper                = dataHelper
-        self.model                     = None
-        self.labelColumn               = "K Means Label"
+        super().__init__(dataHelper, columns, copyMethod)
 
 
-    def CreateElbowPlot(self, data, clusters):
+    def CreateModel(self, clusters):
+        self.model = KMeans(n_clusters=clusters, random_state=1)
+
+
+    def CreateElbowPlot(self, clusters):
         """
         Constructor.
 
         Parameters
         ----------
-        dataHelper : DataHelper
-            DataHelper that has the data in a pandas.DataFrame.
         clusters : list of ints
             The clusters to calculate the distortions for.
 
@@ -59,13 +60,14 @@ class KMeansHelper():
         figure : matplotlib.figure.Figure
             The newly created figure.
         """
+        dataLength      = self.scaledData.shape[0]
         meanDistortions = []
 
         for k in clusters:
-            self.model = KMeans(n_clusters=k)
-            self.model.fit_predict(data)
+            self.model = KMeans(n_clusters=k, random_state=1)
+            self.FitPredict()
 
-            meanDistortions.append(sum(np.min(cdist(data, self.model.cluster_centers_, 'euclidean'), axis=1)) / data.shape[0])
+            meanDistortions.append(sum(np.min(cdist(self.scaledData, self.model.cluster_centers_, "euclidean"), axis=1)) / dataLength)
 
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
@@ -80,9 +82,7 @@ class KMeansHelper():
         return figure
 
 
-    def CreateElbowPlot2(self, data, clusters):
-        X = data
-
+    def CreateElbowPlot2(self, clusters):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
@@ -90,16 +90,14 @@ class KMeansHelper():
         visualizer = KElbowVisualizer(self.model,
                                       k=clusters,
                                       metric="silhouette",
-                                      timings=False,
+                                      timings=False
         )
 
-        visualizer.fit(X)
+        visualizer.fit(self.scaledData)
         visualizer.show()
 
 
-    def DisplaySilhouetteAnalysScores(self, data, rangeOfClusters):
-        X = data
-
+    def DisplaySilhouetteAnalysScores(self, rangeOfClusters):
         for clusters in rangeOfClusters:
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
@@ -107,12 +105,12 @@ class KMeansHelper():
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
-            clusterLabels = clusterer.fit_predict(X)
-            silhouetteAverage = silhouette_score(X, clusterLabels)
+            clusterLabels = clusterer.fit_predict(self.scaledData)
+            silhouetteAverage = silhouette_score(self.scaledData, clusterLabels)
             print("For %d clusters" % clusters, "the average silhouette score is:", silhouetteAverage)
 
 
-    def CreateSilhouetteAnalysisPlots(self, data, rangeOfClusters):
+    def CreateSilhouetteAnalysisPlots(self, rangeOfClusters):
         """
         Constructor.
 
@@ -133,7 +131,7 @@ class KMeansHelper():
         for clusters in rangeOfClusters:
 
             visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1))
-            visualizer.fit(data)
+            visualizer.fit(self.scaledData)
 
             self.SihlouettePlotFinalize(visualizer)
             plt.show()
@@ -171,7 +169,7 @@ class KMeansHelper():
 
             colors = cm.nipy_spectral(np.arange(0, clusters) / float(clusters))
             visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1), ax=leftAxis, colors=colors)
-            visualizer.fit(data)
+            visualizer.fit(X)
 
             # Axis must be set to square after call finalize.
             self.SihlouettePlotFinalize(visualizer, setTitle=False, xLabelIncrement=0.2)
@@ -241,33 +239,3 @@ class KMeansHelper():
 
         # Show legend (Average Silhouette Score axis)
         visualizer.ax.legend(loc="best")
-
-
-    def LabelData(self, colums, clusters):
-        clusterer                              = KMeans(n_clusters=clusters, random_state=1)
-        clusterer.fit(self.dataHelper.data.iloc[:, colums])
-        self.dataHelper.data[self.labelColumn] = clusterer.labels_
-
-
-    def CreateBoxPlotForClusters(self, data, labels, clusters):
-        """
-        Constructor.
-
-        Parameters
-        ----------
-        dataHelper : DataHelper
-            DataHelper that has the data in a pandas.DataFrame.
-        clusters : int
-            The range of clusters to calculate the distortions for.
-
-        Returns
-        -------
-        None.
-        """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
-
-        for i in range(data.shape[1]):
-            print("Box plot", i)
-            sns.boxplot(x=labels, y=data.iloc[:, i])
-            plt.show()

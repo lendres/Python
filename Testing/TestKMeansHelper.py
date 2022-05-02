@@ -3,12 +3,16 @@ Created on April 27, 2022
 @author: Lance
 """
 import DataSetLoading
-from lendres.KMeansHelper           import KMeansHelper
-import numpy                        as np
+from   lendres.KMeansHelper             import KMeansHelper
+import pandas                           as pd
+import numpy                            as np
 
-from sklearn.preprocessing          import StandardScaler
-from scipy.stats                    import zscore
-from sklearn.datasets               import make_blobs
+
+from   sklearn.preprocessing            import StandardScaler
+from   scipy.stats                      import zscore
+from   sklearn.datasets                 import make_blobs
+
+from   lendres.DataHelper               import DataHelper
 
 import unittest
 
@@ -27,7 +31,7 @@ class TestKMeansHelper(unittest.TestCase):
                           shuffle=True,
                           random_state=1
                          )
-        cls.xData = X
+        cls.xDataHelper = DataHelper(data=pd.DataFrame(X), copy=True, deep=True)
 
 
     def setUp(self):
@@ -36,41 +40,40 @@ class TestKMeansHelper(unittest.TestCase):
         it to create a new regression helper.
         """
         self.dataHelper         = TestKMeansHelper.dataHelper.Copy(deep=True)
-        self.kMeansHelper       = KMeansHelper(self.dataHelper)
+        self.kMeansHelper       = KMeansHelper(self.dataHelper, ["PROBLEM_TYPE"], copyMethod="exclude")
+        self.kMeansHelper.ScaleData(method="standardscaler")
 
-        scaler                  = StandardScaler()
-        self.scaledData         = scaler.fit_transform(self.dataHelper.data.iloc[:,1:])
+        self.xDataHelper        = TestKMeansHelper.xDataHelper.Copy(deep=True)
+        self.xKMeansHelper       = KMeansHelper(self.xDataHelper, [], copyMethod="exclude")
+        self.xKMeansHelper.ScaleData(method="zscore")
 
 
     def testElbowPlot(self):
-        self.kMeansHelper.CreateElbowPlot(self.scaledData, range(2, 10))
-        self.kMeansHelper.CreateElbowPlot2(self.scaledData, (2, 10))
+        self.kMeansHelper.CreateElbowPlot(range(2, 10))
+        self.kMeansHelper.CreateElbowPlot2((2, 10))
 
 
     def testSilhouetteGraphicalAnalysis(self):
-        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(TestKMeansHelper.xData, range(3, 6))
-
-        scaledData = self.dataHelper.data.iloc[:,2:5].apply(zscore).to_numpy()
-        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(scaledData, range(3, 6))
+        data = self.xKMeansHelper.scaledData
+        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
+        data = self.kMeansHelper.scaledData[:, 2:4]
+        self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
 
 
     def testCreateSilhouetteAnalysisPlots(self):
-        self.kMeansHelper.CreateSilhouetteAnalysisPlots(TestKMeansHelper.xData, range(3, 6))
+        self.kMeansHelper.CreateSilhouetteAnalysisPlots(range(3, 6))
 
 
     def testSilhouetteScores(self):
         print()
-        self.kMeansHelper.DisplaySilhouetteAnalysScores(TestKMeansHelper.xData, range(2, 10))
+        self.kMeansHelper.DisplaySilhouetteAnalysScores(range(2, 10))
 
 
     def testBoxPlots(self):
-        self.kMeansHelper.DisplaySilhouetteAnalysScores(self.scaledData, range(2, 10))
-        self.kMeansHelper.LabelData(np.arange(1, 8), 9)
-
-        data = self.dataHelper.data.copy(deep=True)
-        data.drop("PROBLEM_TYPE", axis=1, inplace=True)
-        data.drop(self.kMeansHelper.labelColumn, axis=1, inplace=True)
-        self.kMeansHelper.CreateBoxPlotForClusters(data, self.dataHelper.data[self.kMeansHelper.labelColumn], 9)
+        self.kMeansHelper.DisplaySilhouetteAnalysScores(range(2, 10))
+        self.kMeansHelper.CreateModel(6)
+        self.kMeansHelper.FitPredict()
+        self.kMeansHelper.CreateBoxPlotForClusters()
 
 
 if __name__ == "__main__":
