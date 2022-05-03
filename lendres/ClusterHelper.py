@@ -50,12 +50,38 @@ class ClusterHelper(SubsetHelper):
         self.dataHelper.data[self.labelColumn] = self.model.labels_
 
 
+    def GetLabelSeries(self):
+        self.dataHelper.data[self.labelColumn]
+
+
     def GetGroupMeans(self):
         return self.dataHelper.data.groupby([self.labelColumn]).mean()
 
 
     def GetGroupCounts(self):
         return self.dataHelper.data.groupby([self.labelColumn]).sum()
+
+    def DisplayValueCountsByCluster(self, column):
+        """
+        Displays the value counts for the specified column as they are grouped the clusterer.
+
+        Parameters
+        ----------
+        column : string
+            Column to display the value counts for.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfClusters = self.model.n_clusters
+
+        for i in range(numberOfClusters):
+
+            result = self.dataHelper.data[self.dataHelper.data[self.labelColumn] == i][column].value_counts()
+
+            self.dataHelper.consoleHelper.PrintTitle("Cluster " + str(i))
+            self.dataHelper.consoleHelper.Print(result)
 
 
     def CreateBoxPlotForClusters(self):

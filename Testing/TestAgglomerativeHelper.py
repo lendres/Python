@@ -40,8 +40,9 @@ class TestAgglomerativeHelper(unittest.TestCase):
 
 
     def testGroupStats(self):
-        self.agglomerativeHelper.CreateModel(3)
+        self.agglomerativeHelper.CreateModel(2)
         self.agglomerativeHelper.FitPredict()
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintTitle("Group Means", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetGroupMeans(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
@@ -52,7 +53,15 @@ class TestAgglomerativeHelper(unittest.TestCase):
 
     def testDendrogramPlot(self):
         self.agglomerativeHelper.CreateDendrogramPlot()
-        self.agglomerativeHelper.CreateDendrogramPlot(method="complete", xLabelScale=0.75)
+        #self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="complete", xLabelScale=0.75)
+        self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="euclidean", linkageMethod="ward", xLabelScale=0.75)
+
+
+    def testCophenetCorrelationScores(self):
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        result = self.agglomerativeHelper.GetCophenetCorrelationScores()
+        print(result)
 
 
 if __name__ == "__main__":

@@ -7,12 +7,6 @@ from   matplotlib                       import pyplot                     as plt
 import seaborn                          as sns
 
 from   sklearn.decomposition            import PCA
-from   scipy.cluster.hierarchy          import cophenet
-from   scipy.cluster.hierarchy          import dendrogram
-from   scipy.cluster.hierarchy          import linkage
-
-# Pairwise distribution between data points.f
-from   scipy.spatial.distance          import pdist
 
 #from lendres.ConsoleHelper            import ConsoleHelper
 from   lendres.PlotHelper               import PlotHelper
@@ -65,6 +59,14 @@ class PrincipleComponentAnalysisHelper(SubsetHelper):
         plt.gca().set(title="Variation Explained by Eigenvalue", xlabel="Eigenvalue", ylabel="Variation Explained")
         plt.show()
 
-        plt.step(xlabels, np.cumsum(values), where="pre")
-        plt.gca().set(title="Cumlative Sum of Variation Explained", xlabel="Eigenvalue", ylabel="Variation Explained")
+        # Prepend (1, 0) to the front of the cumlative sum to make the plot look correct (start at 0).
+        x = np.insert(np.arange(1, len(values)+1), 0, 1, axis=0)
+        y = np.insert(np.cumsum(values), 0, 0, axis=0)
+
+        plt.step(x=x, y=y, where="post")
+        axis = plt.gca()
+        axis.set(title="Cumlative Sum of Variation Explained", xlabel="Eigenvalue", ylabel="Variation Explained")
+
+        # Set the x-ticks so they are only whole numbers at the eigenvalues (nothing in between, no decimal places).
+        axis.set_xticks(np.arange(1, len(values)+1))
         plt.show()
