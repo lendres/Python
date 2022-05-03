@@ -46,7 +46,7 @@ class TestKMeansHelper(unittest.TestCase):
         self.kMeansHelper.ScaleData(method="standardscaler")
 
         self.xDataHelper        = TestKMeansHelper.xDataHelper.Copy(deep=True)
-        self.xKMeansHelper       = KMeansHelper(self.xDataHelper, [], copyMethod="exclude")
+        self.xKMeansHelper      = KMeansHelper(self.xDataHelper, [], copyMethod="exclude")
         self.xKMeansHelper.ScaleData(method="zscore")
 
 

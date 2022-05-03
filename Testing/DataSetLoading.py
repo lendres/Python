@@ -2,10 +2,11 @@
 Created on March 6, 2022
 @author: Lance
 """
+import numpy                          as np
 import os
 
-from lendres.ConsoleHelper        import ConsoleHelper
-from lendres.DataHelper           import DataHelper
+from lendres.ConsoleHelper            import ConsoleHelper
+from lendres.DataHelper               import DataHelper
 
 def MakeDataHelper(inputFile, verboseLevel):
     inputFile          = os.path.join("Data", inputFile)
@@ -145,5 +146,21 @@ def GetCustomerSpendData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     dependentVariable       = None
 
     dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    return dataHelper, dependentVariable
+
+
+def GetCarMpgData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "car-mpg.csv"
+    dependentVariable       = "mpg"
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
+
+    dataHelper.data         = dataHelper.data.replace("?", np.nan)
+    dataHelper.data["hp"]   = dataHelper.data["hp"].astype("float64")
+
+    dataHelper.data["hp"]   = dataHelper.data["hp"].fillna(dataHelper.data["hp"].median())
+
+
 
     return dataHelper, dependentVariable

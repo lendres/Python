@@ -38,7 +38,7 @@ class AgglomerativeHelper(ClusterHelper):
 
 
     def CreateModel(self, clusters):
-        self.model = AgglomerativeClustering(n_clusters=clusters, affinity='euclidean', linkage='average')
+        self.model = AgglomerativeClustering(n_clusters=clusters, affinity="euclidean", linkage="average")
 
 
     def CreateDendrogramPlot(self, metric="euclidean", method="average", xLabelScale=1.0):
