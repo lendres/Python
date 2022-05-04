@@ -6,10 +6,8 @@ import numpy                            as np
 from   matplotlib                       import pyplot                     as plt
 import matplotlib.cm                    as cm
 import matplotlib.ticker                as ticker
-import seaborn                          as sns
 
 from   sklearn.cluster                  import KMeans
-from   scipy.stats                      import zscore
 from   scipy.spatial.distance           import cdist
 
 from   sklearn.metrics                  import silhouette_samples
@@ -87,10 +85,11 @@ class KMeansHelper(ClusterHelper):
         PlotHelper.FormatPlot()
 
         self.model = KMeans(random_state=1)
-        visualizer = KElbowVisualizer(self.model,
-                                      k=clusters,
-                                      metric="silhouette",
-                                      timings=False
+        visualizer = KElbowVisualizer(
+            self.model,
+            k=clusters,
+            metric="silhouette",
+            timings=False
         )
 
         visualizer.fit(self.scaledData)

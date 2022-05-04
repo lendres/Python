@@ -2,15 +2,15 @@
 Created on April 27, 2022
 @author: Lance
 """
-import numpy                            as np
-from   matplotlib                       import pyplot                     as plt
-import seaborn                          as sns
+import numpy                                     as np
+from   matplotlib                                import pyplot                     as plt
+import seaborn                                   as sns
 
-from   sklearn.decomposition            import PCA
+from   sklearn.decomposition                     import PCA
 
-#from lendres.ConsoleHelper            import ConsoleHelper
-from   lendres.PlotHelper               import PlotHelper
-from   lendres.SubsetHelper             import SubsetHelper
+#from lendres.ConsoleHelper                       import ConsoleHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.SubsetHelper                      import SubsetHelper
 
 
 class PrincipleComponentAnalysisHelper(SubsetHelper):

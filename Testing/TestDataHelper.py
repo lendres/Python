@@ -60,8 +60,12 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testDisplaying(self):
+        self.loanData.consoleHelper.PrintNewLine()
         self.loanData.DisplayAllCategoriesValueCounts()
+        self.loanData.consoleHelper.PrintNewLine()
         self.loanData.DisplayUniqueValues(["Online", "CreditCard"])
+        self.loanData.consoleHelper.PrintNewLine()
+        self.loanData.PrintFinalDataSummary()
 
 
     def testStringExtraction(self):

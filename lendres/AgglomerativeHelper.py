@@ -3,9 +3,7 @@ Created on April 27, 2022
 @author: Lance
 """
 import pandas                           as pd
-import numpy                            as np
 from   matplotlib                       import pyplot                     as plt
-import seaborn                          as sns
 
 from   sklearn.cluster                  import AgglomerativeClustering
 from   scipy.cluster.hierarchy          import cophenet
@@ -13,7 +11,7 @@ from   scipy.cluster.hierarchy          import dendrogram
 from   scipy.cluster.hierarchy          import linkage
 
 # Pairwise distribution between data points.
-from   scipy.spatial.distance          import pdist
+from   scipy.spatial.distance           import pdist
 
 #from lendres.ConsoleHelper            import ConsoleHelper
 from   lendres.PlotHelper               import PlotHelper

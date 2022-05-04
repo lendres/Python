@@ -161,6 +161,12 @@ def GetCarMpgData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
 
     dataHelper.data["hp"]   = dataHelper.data["hp"].fillna(dataHelper.data["hp"].median())
 
+    return dataHelper, dependentVariable
 
+def GetCreditCardCustomerData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    inputFile               = "Credit Card Customer Data.csv"
+    dependentVariable       = None
+
+    dataHelper              = MakeDataHelper(inputFile, verboseLevel)
 
     return dataHelper, dependentVariable
