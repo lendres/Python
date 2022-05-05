@@ -21,7 +21,7 @@ from   yellowbrick.cluster              import SilhouetteVisualizer
 from   lendres.PlotHelper               import PlotHelper
 from   lendres.ClusterHelper            import ClusterHelper
 
-
+from   sklearn.cluster                  import AgglomerativeClustering
 class KMeansHelper(ClusterHelper):
 
     def __init__(self, dataHelper, columns, copyMethod="include"):
@@ -100,7 +100,8 @@ class KMeansHelper(ClusterHelper):
         for clusters in rangeOfClusters:
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            clusterer     = KMeans(n_clusters=clusters, random_state=1)
+            #clusterer     = KMeans(n_clusters=clusters, random_state=1)
+            clusterer = AgglomerativeClustering(n_clusters=clusters, affinity="euclidean", linkage="average")
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.

@@ -202,10 +202,9 @@ class DataHelper():
         self.consoleHelper.PrintTitle("Continuous Data", ConsoleHelper.VERBOSEREQUESTED)
         self.consoleHelper.Display(self.data.describe().T, ConsoleHelper.VERBOSEREQUESTED)
 
-        categoricalDataFrame = self.data.describe(include=["category"])
-        if categoricalDataFrame.shape[1] > 0:
+        if self.data.select_dtypes(include=['category']).shape[1] > 0:
             self.consoleHelper.PrintTitle("Categorical", ConsoleHelper.VERBOSEREQUESTED)
-            self.consoleHelper.Display(categoricalDataFrame.T, ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.Display(self.data.describe(include=["category"]).T, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def PrintNotAvailableCounts(self):

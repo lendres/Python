@@ -88,5 +88,11 @@ class TestDataHelper(unittest.TestCase):
         self.insuranceDataHelper.ConvertCategoryToNumeric("smoker", "yes")
 
 
+    def testPrintFinal(self):
+        dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        dataHelper.consoleHelper.PrintNewLine()
+        dataHelper.PrintFinalDataSummary()
+
+
 if __name__ == "__main__":
     unittest.main()

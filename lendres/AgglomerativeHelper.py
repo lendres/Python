@@ -69,6 +69,7 @@ class AgglomerativeHelper(ClusterHelper):
         # List of linkage methods.
         linkageMethods = ["single", "complete", "average", "weighted"]
 
+        # Create a DataFrame to store the results.
         columnsLabels = ["Distance Metric", "Linkage Method", "Cophenet Correlation"]
         comparisonFrame = pd.DataFrame(columns=columnsLabels)
         #print("Comparison frame")
@@ -80,7 +81,7 @@ class AgglomerativeHelper(ClusterHelper):
                 self.AppendCophenetScore(comparisonFrame, i, distanceMetric, linkageMethod)
                 i += 1
 
-        # The ward linkage can only use the Euclidean distance.
+        # The centroid and ward linkage can only use the Euclidean distance.
         self.AppendCophenetScore(comparisonFrame, i, "euclidean", "centroid")
         i += 1
         self.AppendCophenetScore(comparisonFrame, i, "euclidean", "ward")
@@ -89,6 +90,7 @@ class AgglomerativeHelper(ClusterHelper):
         comparisonFrame["Cophenet Correlation"] = comparisonFrame["Cophenet Correlation"].astype(float)
         indexOfMax                              = comparisonFrame["Cophenet Correlation"].idxmax()
 
+        # Add the maximum value as the last entry.
         comparisonFrame.loc["Highest", "Distance Metric"]       = comparisonFrame.loc[indexOfMax, "Distance Metric"]
         comparisonFrame.loc["Highest", "Linkage Method"]        = comparisonFrame.loc[indexOfMax, "Linkage Method"]
         comparisonFrame.loc["Highest", "Cophenet Correlation"]  = comparisonFrame.loc[indexOfMax, "Cophenet Correlation"]
