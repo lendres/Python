@@ -100,8 +100,7 @@ class KMeansHelper(ClusterHelper):
         for clusters in rangeOfClusters:
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            #clusterer     = KMeans(n_clusters=clusters, random_state=1)
-            clusterer = AgglomerativeClustering(n_clusters=clusters, affinity="euclidean", linkage="average")
+            clusterer     = KMeans(n_clusters=clusters, random_state=1)
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
@@ -133,6 +132,11 @@ class KMeansHelper(ClusterHelper):
             visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1))
             visualizer.fit(self.scaledData)
 
+            # Finalize on the visualizer to do most of the formatting.  Then call our version
+            # of finalize to make selected formatting changes.  Finally, call show.  We cannot
+            # call the model.show() version because that will call plt.show() and the axis and
+            # figure will no longer be available for formatting.
+            visualizer.finalize()
             self.SihlouettePlotFinalize(visualizer)
             plt.show()
 
@@ -172,6 +176,7 @@ class KMeansHelper(ClusterHelper):
             visualizer.fit(X)
 
             # Axis must be set to square after call finalize.
+            visualizer.finalize()
             self.SihlouettePlotFinalize(visualizer, setTitle=False, xLabelIncrement=0.2)
             PlotHelper.SetAxisToSquare(leftAxis)
 
@@ -202,8 +207,6 @@ class KMeansHelper(ClusterHelper):
 
     def SihlouettePlotFinalize(self, visualizer, setTitle=True, title=None, xLabelIncrement=0.1):
         """
-        This is taken from:
-            yellowbrick/yellowbrick/cluster/silhouette.py
         Prepare the figure for rendering by setting the title and adjusting the limits on the axes, adding labels and a legend.
         """
         # Set the title.
@@ -212,30 +215,12 @@ class KMeansHelper(ClusterHelper):
                 visualizer.set_title(("Silhouette Plot of {} Clustering with {} Centers").format(visualizer.name, visualizer.n_clusters_))
             else:
                 visualizer.set_title(title)
-
-        # Set the X and Y limits
-        # The silhouette coefficient can range from -1, 1;
-        # but here we scale the plot according to our visualizations
-
-        # l_xlim and u_xlim are lower and upper limits of the x-axis,
-        # set according to our calculated max and min score with necessary padding
-        l_xlim = max(-1, min(-0.1, round(min(visualizer.silhouette_samples_) - 0.1, 1)))
-        u_xlim = min(1, round(max(visualizer.silhouette_samples_) + 0.1, 1))
-        visualizer.ax.set_xlim([l_xlim, u_xlim])
-
-        # The (n_clusters_+1)*10 is for inserting blank space between
-        # silhouette plots of individual clusters, to demarcate them clearly.
-        visualizer.ax.set_ylim([0, visualizer.n_samples_ + (visualizer.n_clusters_ + 1) * 10])
+        else:
+            visualizer.set_title("")
 
         # Set the x and y labels
         visualizer.ax.set_xlabel("Silhouette Coefficient Values")
         visualizer.ax.set_ylabel("Cluster Label")
 
-        # Set the ticks on the axis object.
-        visualizer.ax.set_yticks(visualizer.y_tick_pos_)
-        visualizer.ax.set_yticklabels(str(idx) for idx in range(visualizer.n_clusters_))
-        # Set the ticks at multiples of 0.1
+        # Set the ticks multiples.
         visualizer.ax.xaxis.set_major_locator(ticker.MultipleLocator(xLabelIncrement))
-
-        # Show legend (Average Silhouette Score axis)
-        visualizer.ax.legend(loc="best")
