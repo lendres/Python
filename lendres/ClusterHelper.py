@@ -53,6 +53,7 @@ class ClusterHelper(SubsetHelper):
     def GetGroupCounts(self):
         return self.dataHelper.data.groupby([self.labelColumn]).sum()
 
+
     def DisplayValueCountsByCluster(self, column):
         """
         Displays the value counts for the specified column as they are grouped the clusterer.
@@ -92,5 +93,6 @@ class ClusterHelper(SubsetHelper):
         PlotHelper.FormatPlot()
 
         for column in self.columns:
-            sns.boxplot(x=self.dataHelper.data[self.labelColumn], y=self.dataHelper.data[column])
-            plt.show()
+            if column != self.labelColumn:
+                sns.boxplot(x=self.dataHelper.data[self.labelColumn], y=self.dataHelper.data[column])
+                plt.show()
