@@ -18,6 +18,8 @@ from   IPython.display                  import display
 
 import unittest
 
+skipTests = 0
+
 class TestKMeansHelper(unittest.TestCase):
 
     @classmethod
@@ -52,9 +54,10 @@ class TestKMeansHelper(unittest.TestCase):
 
     def testElbowPlot(self):
         self.kMeansHelper.CreateElbowPlot(range(2, 10))
-        self.kMeansHelper.CreateElbowPlot2((2, 10))
+        self.kMeansHelper.CreateVisualizerPlot((2, 10))
 
 
+    @unittest.skipIf(skipTests, "Skipped silhouette graphical analysis test.")
     def testSilhouetteGraphicalAnalysis(self):
         data = self.xKMeansHelper.scaledData
         self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
@@ -62,22 +65,26 @@ class TestKMeansHelper(unittest.TestCase):
         self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
 
 
+    @unittest.skipIf(skipTests, "Skipped silhouette analysis plots test.")
     def testCreateSilhouetteAnalysisPlots(self):
         self.kMeansHelper.CreateSilhouetteAnalysisPlots(range(3, 6))
 
 
     def testSilhouetteScores(self):
         print()
-        self.kMeansHelper.DisplaySilhouetteAnalysScores(range(2, 10))
+        result = self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10))
+        display(result)
 
 
+    @unittest.skipIf(skipTests, "Skipped box plot test.")
     def testBoxPlots(self):
-        self.kMeansHelper.DisplaySilhouetteAnalysScores(range(2, 10))
+        display(self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10)))
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()
         self.kMeansHelper.CreateBoxPlotForClusters()
 
 
+    @unittest.skipIf(skipTests, "Skipped group stats test.")
     def testGroupStats(self):
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()

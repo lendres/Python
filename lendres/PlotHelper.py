@@ -111,7 +111,8 @@ class PlotHelper():
             "axes.linewidth"         : 0.75*cls.scale,              # Axis border.
             "axes.edgecolor"         : "black",                     # Axis border.
             "patch.linewidth"        : 1.5*cls.scale,               # Legend border.
-            "lines.linewidth"        : 3*cls.scale
+            "lines.linewidth"        : 3*cls.scale,
+            "lines.markersize"       : 10*cls.scale
         }
 
         # Parameters to create a legend with a border and transparent background.

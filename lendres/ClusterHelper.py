@@ -8,15 +8,7 @@ import matplotlib.cm                  as cm
 import matplotlib.ticker              as ticker
 import seaborn                        as sns
 
-from   sklearn.preprocessing          import StandardScaler
-from   scipy.stats                    import zscore
 from   scipy.spatial.distance         import cdist
-
-from   sklearn.metrics                import silhouette_samples
-from   sklearn.metrics                import silhouette_score
-
-# To visualize the elbow curve and silhouette scores.
-from   yellowbrick.cluster            import SilhouetteVisualizer
 
 #from   lendres.ConsoleHelper          import ConsoleHelper
 from   lendres.PlotHelper             import PlotHelper
@@ -86,7 +78,7 @@ class ClusterHelper(SubsetHelper):
 
     def CreateBoxPlotForClusters(self):
         """
-        Constructor.
+        Creates a box plot for each cluster.
 
         Parameters
         ----------

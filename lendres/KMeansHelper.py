@@ -2,7 +2,9 @@
 Created on April 27, 2022
 @author: Lance
 """
+import pandas                           as pd
 import numpy                            as np
+import matplotlib
 from   matplotlib                       import pyplot                     as plt
 import matplotlib.cm                    as cm
 import matplotlib.ticker                as ticker
@@ -21,7 +23,6 @@ from   yellowbrick.cluster              import SilhouetteVisualizer
 from   lendres.PlotHelper               import PlotHelper
 from   lendres.ClusterHelper            import ClusterHelper
 
-from   sklearn.cluster                  import AgglomerativeClustering
 class KMeansHelper(ClusterHelper):
 
     def __init__(self, dataHelper, columns, copyMethod="include"):
@@ -70,7 +71,7 @@ class KMeansHelper(ClusterHelper):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
-        plt.plot(clusters, meanDistortions, "b-", marker="o", markerfacecolor="blue", markersize=12)
+        plt.plot(clusters, meanDistortions, "b-", marker="o", markerfacecolor="blue")
         plt.gca().set(title="Selecting the K Value (Number of Clusters) with the Elbow Method", xlabel="K Value", ylabel="Average Distortion")
 
         figure = plt.gcf()
@@ -80,7 +81,7 @@ class KMeansHelper(ClusterHelper):
         return figure
 
 
-    def CreateElbowPlot2(self, clusters):
+    def CreateVisualizerPlot(self, clusters, metric="silhouette"):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
@@ -88,25 +89,54 @@ class KMeansHelper(ClusterHelper):
         visualizer = KElbowVisualizer(
             self.model,
             k=clusters,
-            metric="silhouette",
+            metric=metric,
             timings=False
         )
-
+        parameters = {
+            "lines.markersize"       : 8*PlotHelper.scale
+        }
+        plt.rcParams.update(parameters)
         visualizer.fit(self.scaledData)
-        visualizer.show()
+        visualizer.ax.set_title("Silhouette Score for K Means Clustering")
+        visualizer.ax.set_xlabel("K Value")
+        visualizer.ax.set_ylabel(metric.title() + " Score")
+        visualizer.ax.legend(loc="best", frameon=True)
+        plt.show()
 
 
-    def DisplaySilhouetteAnalysScores(self, rangeOfClusters):
+    def GetSilhouetteAnalysScores(self, rangeOfClusters):
+        """
+        Gets a DataFrame of the average silhouette score for the range of clusters.
+
+        Parameters
+        ----------
+        rangeOfClusters : Range
+            Range of clusters to get the silhouette scores for.
+
+        Returns
+        -------
+        comparisonFrame : pandas.Dataframe
+            A DataFrame that has the average silhouette scores.
+        """
+        columnsLabels   = ["Clusters", "Average Silhouette Score"]
+        comparisonFrame = pd.DataFrame(columns=columnsLabels)
+
         for clusters in rangeOfClusters:
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            clusterer     = KMeans(n_clusters=clusters, random_state=1)
+            clusterer         = KMeans(n_clusters=clusters, random_state=1)
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
-            clusterLabels = clusterer.fit_predict(self.scaledData)
+            clusterLabels     = clusterer.fit_predict(self.scaledData)
             silhouetteAverage = silhouette_score(self.scaledData, clusterLabels)
-            print("For %d clusters" % clusters, "the average silhouette score is:", silhouetteAverage)
+
+            row = pd.DataFrame([[clusters, silhouetteAverage]], columns=columnsLabels)
+            comparisonFrame   = pd.concat([comparisonFrame, row], ignore_index=True)
+
+        comparisonFrame["Clusters"] = comparisonFrame["Clusters"].astype("int32")
+        comparisonFrame.set_index("Clusters", inplace=True)
+        return comparisonFrame
 
 
     def CreateSilhouetteAnalysisPlots(self, rangeOfClusters):

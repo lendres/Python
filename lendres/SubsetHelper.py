@@ -5,8 +5,6 @@ Created on April 27, 2022
 from   sklearn.preprocessing                     import StandardScaler
 from   scipy.stats                               import zscore
 
-
-
 class SubsetHelper():
 
     def __init__(self, dataHelper, columns, copyMethod="include"):
