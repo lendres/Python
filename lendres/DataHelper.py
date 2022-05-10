@@ -365,6 +365,19 @@ class DataHelper():
         self.ChangeToCategoryType(columnNames)
 
 
+    def GetDuplicates(self, column):
+        # Returns a list that has True/False values at the duplicate entries.
+        duplicates         = self.dataHelper.data.duplicated(subset=[column], keep=False)
+
+        # Gets the indices of just the "True" (duplicate) entries.
+        indices            = duplicates[duplicates == True].index
+
+        # Extract the duplicate entries from the main DataFrame and sort them by the
+        # column of interest.
+        duplicateDataFrame = self.dataHelper.data.iloc[indices, :].sort_values(by=[column])
+        return duplicateDataFrame
+
+
     def ConvertCategoryToNumeric(self, column, trueValue):
         """
         Takes a column that has a categorical type with the categories represented
