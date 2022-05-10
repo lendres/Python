@@ -45,42 +45,6 @@ class KMeansHelper(ClusterHelper):
         self.model = KMeans(n_clusters=clusters, random_state=1)
 
 
-    def CreateElbowPlot(self, clusters):
-        """
-        Constructor.
-
-        Parameters
-        ----------
-        clusters : list of ints
-            The clusters to calculate the distortions for.
-
-        Returns
-        -------
-        figure : matplotlib.figure.Figure
-            The newly created figure.
-        """
-        dataLength      = self.scaledData.shape[0]
-        meanDistortions = []
-
-        for k in clusters:
-            self.model = KMeans(n_clusters=k, random_state=1)
-            self.FitPredict()
-
-            meanDistortions.append(sum(np.min(cdist(self.scaledData, self.model.cluster_centers_, "euclidean"), axis=1)) / dataLength)
-
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
-
-        plt.plot(clusters, meanDistortions, "b-", marker="o", markerfacecolor="blue")
-        plt.gca().set(title="Selecting the K Value (Number of Clusters) with the Elbow Method", xlabel="K Value", ylabel="Average Distortion")
-
-        figure = plt.gcf()
-
-        plt.show()
-
-        return figure
-
-
     def CreateVisualizerPlot(self, clusters, metric="silhouette"):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
@@ -92,16 +56,26 @@ class KMeansHelper(ClusterHelper):
             metric=metric,
             timings=False
         )
-        parameters = {
-            "lines.markersize"       : 8*PlotHelper.scale
-        }
-        plt.rcParams.update(parameters)
+
+        # Fix marker size.  Needs to be done before the call to "fit."
+        plt.rcParams.update({"lines.markersize" : 8*PlotHelper.scale})
+
+        # Creates the plot.
         visualizer.fit(self.scaledData)
-        visualizer.ax.set_title("Silhouette Score for K Means Clustering")
+
+        # Final formating.
+        visualizer.ax.set_title(metric.title() + " Score for K Means Clustering")
         visualizer.ax.set_xlabel("K Value")
         visualizer.ax.set_ylabel(metric.title() + " Score")
         visualizer.ax.legend(loc="best", frameon=True)
+
+        # Figure must be saved before calling show.
+        figure = plt.gcf()
+
+        # Don't call visualizer.show() or it will overwrite the formatting.
         plt.show()
+
+        return figure
 
 
     def GetSilhouetteAnalysScores(self, rangeOfClusters):

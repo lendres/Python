@@ -23,6 +23,7 @@ class TestAgglomerativeHelper(unittest.TestCase):
         # Used to display all the columns in the output.
         pd.set_option("display.max_columns", None)
 
+
     def setUp(self):
         """
         Set up function that runs before each test.  Creates a new copy of the data and uses
@@ -36,7 +37,9 @@ class TestAgglomerativeHelper(unittest.TestCase):
     def testBoxPlots(self):
         self.agglomerativeHelper.CreateModel(3)
         self.agglomerativeHelper.FitPredict()
-        self.agglomerativeHelper.CreateBoxPlotForClusters()
+        self.agglomerativeHelper.CreateBoxPlotsOfClusters("original")
+        self.agglomerativeHelper.CreateBoxPlotsOfClusters("scaled")
+        self.agglomerativeHelper.CreateBoxPlotsOfClusters("scaled", subPlotColumns=5)
 
 
     def testGroupStats(self):
@@ -45,16 +48,22 @@ class TestAgglomerativeHelper(unittest.TestCase):
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintTitle("Group Means", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetGroupMeans(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintTitle("Group Counts", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetGroupCounts(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.PrintTitle("Cluster Counts", verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(self.agglomerativeHelper.GetClusterCounts(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+
 
     def testDendrogramPlot(self):
         self.agglomerativeHelper.CreateDendrogramPlot()
-        #self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="complete", xLabelScale=0.75)
-        self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="euclidean", linkageMethod="ward", xLabelScale=0.75)
+        self.agglomerativeHelper.CreateDendrogramPlot(linkageMethod="complete", xLabelScale=0.75)
+        self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="euclidean", linkageMethod="ward", cutDistance=4)
+        self.agglomerativeHelper.CreateDendrogramPlot(distanceMetric="euclidean", linkageMethod="ward", cutDistance=4, drawCutLine=True)
 
 
     def testCophenetCorrelationScores(self):
@@ -62,6 +71,16 @@ class TestAgglomerativeHelper(unittest.TestCase):
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         result = self.agglomerativeHelper.GetCophenetCorrelationScores()
         print(result)
+
+
+    def testCreateBarPlotsOfMeanByCluster(self):
+        self.agglomerativeHelper.CreateModel(3)
+        self.agglomerativeHelper.FitPredict()
+
+        columns = self.agglomerativeHelper.columns
+        columns.remove("Avg_Mthly_Spend")
+        self.agglomerativeHelper.CreateBarPlotsOfMeanByCluster(columns)
+        self.agglomerativeHelper.CreateBarPlotsOfMeanByCluster("Avg_Mthly_Spend")
 
 
 if __name__ == "__main__":

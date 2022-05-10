@@ -30,13 +30,14 @@ def GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=True):
 
 
 def FixCreditData(dataHelper, dropFirst):
-    replaceStruct = {"checking_balance"    : {"< 0 DM" : 1, "1 - 200 DM" : 2,"> 200 DM" : 3, "unknown" : -1},
-                     "credit_history"      : {"critical" : 1, "poor" : 2, "good" : 3, "very good" : 4, "perfect" : 5},
-                     "savings_balance"     : {"< 100 DM" : 1, "100 - 500 DM" : 2, "500 - 1000 DM" : 3, "> 1000 DM" : 4, "unknown" : -1},
-                     "employment_duration" : {"unemployed" : 1, "< 1 year" : 2, "1 - 4 years" : 3, "4 - 7 years" : 4, "> 7 years" : 5},
-                     "phone"               : {"no" : 1, "yes" : 2 },
-                     "default"             : {"no" : 0, "yes" : 1 }
-                     }
+    replaceStruct = {
+        "checking_balance"    : {"< 0 DM" : 1, "1 - 200 DM" : 2,"> 200 DM" : 3, "unknown" : -1},
+        "credit_history"      : {"critical" : 1, "poor" : 2, "good" : 3, "very good" : 4, "perfect" : 5},
+        "savings_balance"     : {"< 100 DM" : 1, "100 - 500 DM" : 2, "500 - 1000 DM" : 3, "> 1000 DM" : 4, "unknown" : -1},
+        "employment_duration" : {"unemployed" : 1, "< 1 year" : 2, "1 - 4 years" : 3, "4 - 7 years" : 4, "> 7 years" : 5},
+        "phone"               : {"no" : 1, "yes" : 2 },
+        "default"             : {"no" : 0, "yes" : 1 }
+    }
     oneHotCols = ["purpose", "housing", "other_credit", "job"]
 
     dataHelper.ChangeAllObjectColumnsToCategories()

@@ -53,15 +53,15 @@ class TestKMeansHelper(unittest.TestCase):
 
 
     def testElbowPlot(self):
-        self.kMeansHelper.CreateElbowPlot(range(2, 10))
+        self.kMeansHelper.CreateVisualizerPlot(range(2, 10), metric="distortion")
         self.kMeansHelper.CreateVisualizerPlot((2, 10))
 
 
     @unittest.skipIf(skipTests, "Skipped silhouette graphical analysis test.")
     def testSilhouetteGraphicalAnalysis(self):
-        data = self.xKMeansHelper.scaledData
+        data = self.xKMeansHelper.scaledData.to_numpy()
         self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
-        data = self.kMeansHelper.scaledData[:, 2:4]
+        data = self.kMeansHelper.scaledData.iloc[:, 2:4].to_numpy()
         self.kMeansHelper.CreateTwoColumnSilhouetteVisualizationPlots(data, range(3, 6))
 
 
@@ -81,7 +81,8 @@ class TestKMeansHelper(unittest.TestCase):
         display(self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10)))
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()
-        self.kMeansHelper.CreateBoxPlotForClusters()
+        self.kMeansHelper.CreateBoxPlotsOfClusters("original")
+        self.kMeansHelper.CreateBoxPlotsOfClusters("scaled", subPlotColumns=5)
 
 
     @unittest.skipIf(skipTests, "Skipped group stats test.")

@@ -2,6 +2,7 @@
 Created on April 27, 2022
 @author: Lance
 """
+import pandas                                    as pd
 from   sklearn.preprocessing                     import StandardScaler
 from   scipy.stats                               import zscore
 
@@ -35,8 +36,6 @@ class SubsetHelper():
         else:
             raise Exception("The copy method specified is invalid.")
 
-        self.scaledData = self.dataHelper.data[self.columns].copy(deep=True)
-
 
     def ScaleData(self, method="standardscaler"):
         """
@@ -53,10 +52,12 @@ class SubsetHelper():
         -------
         None.
         """
+        self.scaledData = self.dataHelper.data[self.columns].copy(deep=True)
+
         if method == "standardscaler":
             scaler                  = StandardScaler()
-            self.scaledData         = scaler.fit_transform(self.scaledData)
+            self.scaledData         = pd.DataFrame(scaler.fit_transform(self.scaledData), columns=self.columns)
         elif method == "zscore":
-            self.scaledData         = self.scaledData.apply(zscore).to_numpy()
+            self.scaledData         = self.scaledData.apply(zscore)
         else:
             raise Exception("The specified scaling method is invalid.")

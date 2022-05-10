@@ -2,11 +2,13 @@
 Created on April 27, 2022
 @author: Lance
 """
+import pandas                         as pd
 import numpy                          as np
 from   matplotlib                     import pyplot                     as plt
 import matplotlib.cm                  as cm
 import matplotlib.ticker              as ticker
 import seaborn                        as sns
+import math
 
 from   scipy.spatial.distance         import cdist
 
@@ -42,12 +44,28 @@ class ClusterHelper(SubsetHelper):
         self.dataHelper.data[self.labelColumn] = self.model.labels_
 
 
-    def GetLabelSeries(self):
+    def GetClusterLabelsAsSeries(self):
         self.dataHelper.data[self.labelColumn]
 
 
+    def GetClusterCounts(self):
+        valueCounts = self.dataHelper.data[self.labelColumn].value_counts()
+        valueCounts.sort_index(ascending=True, inplace=True)
+        valueCounts.rename("Sample Count", inplace=True)
+
+        countDataFrame            = pd.DataFrame(valueCounts)
+        countDataFrame.index.name = "Cluster"
+        return countDataFrame
+
+
     def GetGroupMeans(self):
-        return self.dataHelper.data.groupby([self.labelColumn]).mean()
+        dataFrameOfMeans                 = self.dataHelper.data.groupby([self.labelColumn]).mean()
+        dataFrameOfMeans["Sample Count"] = self.dataHelper.data[self.labelColumn].value_counts()
+        return dataFrameOfMeans
+
+
+    def GetGroupedByCluster(self):
+        return self.dataHelper.data.groupby([self.labelColumn])
 
 
     def GetGroupCounts(self):
@@ -77,22 +95,63 @@ class ClusterHelper(SubsetHelper):
             self.dataHelper.consoleHelper.Print(result)
 
 
-    def CreateBoxPlotForClusters(self):
+    def CreateBoxPlotsOfClusters(self, whichData, subPlotColumns=3):
         """
         Creates a box plot for each cluster.
 
         Parameters
         ----------
-        None.
+        whichData : string
+        subPlotColumns : integer
 
         Returns
         -------
         None.
         """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        if whichData == "original":
+            data = self.dataHelper.data
+        elif whichData == "scaled":
+            data = self.scaledData
+        else:
+            raise Exception("The specified data type is invalided.")
 
+        numberOfRows = math.ceil(len(self.columns) / subPlotColumns)
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot(width=25, height=6*numberOfRows)
+
+        figure, axes = plt.subplots(numberOfRows, subPlotColumns)
+        figure.suptitle("Box Plot of Clusters for " + whichData.title() + " Data")
+
+        # Flatten the array (if it is two dimensional) to make it easier to work with and so we
+        # don't have to check if it is a one dimensionas (single row of axes) or two dimensional array.
+        axes = np.ravel(axes, order="C")
+
+        i = 0
         for column in self.columns:
             if column != self.labelColumn:
-                sns.boxplot(x=self.dataHelper.data[self.labelColumn], y=self.dataHelper.data[column])
-                plt.show()
+                sns.boxplot(ax=axes[i], x=self.dataHelper.data[self.labelColumn], y=data[column])
+                i += 1
+
+        # If not all the axes are used, remove the unused.  There will only be empty axis
+        # in the last row.
+        numberToRemove = subPlotColumns*numberOfRows - len(self.columns)
+        j = numberOfRows*subPlotColumns - 1
+        for i in range(numberToRemove):
+            figure.delaxes(axes[j-i])
+
+        figure.tight_layout()
+        plt.show()
+
+
+    def CreateBarPlotsOfMeanByCluster(self, columns):
+        PlotHelper.FormatPlot()
+
+        if type(columns) != list:
+            columns = [columns]
+
+        if not self.labelColumn in columns:
+            columns.append(self.labelColumn)
+
+        self.dataHelper.data[columns].groupby(self.labelColumn).mean().plot.bar()
+        plt.gca().set_title("Feature Mean by Cluster")
+        plt.show()
