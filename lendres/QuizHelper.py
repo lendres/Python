@@ -47,9 +47,9 @@ def model_performance_classification_sklearn(model, predictors, target):
     # creating a dataframe of metrics
     df_perf = pd.DataFrame(
         {
-            "Accuracy": accuracy,
-            "Recall": recall,
-            "Precision": precision,
+            "Accuracy"  : accuracy,
+            "Recall"    : recall,
+            "Precision" : precision,
             "F1": f1,
         },
         index=[0],
