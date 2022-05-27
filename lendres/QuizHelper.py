@@ -56,6 +56,33 @@ def model_performance_classification_sklearn(model, predictors, target):
     )
 
     return df_perf
+    
+    
+def model_performance_classification(trueValues, predictedValues):
+    """
+    Function to compute different metrics to check classification model performance.  Uses
+    the true (specified) and predicted values as input.
+
+    trueValues: independent variable true values
+    predictedValues: independent variable predicted values
+    """
+    accuracy     = accuracy_score(trueValues, predictedValues)
+    recall       = recall_score(trueValues, predictedValues)
+    precision    = precision_score(trueValues, predictedValues)
+    f1           = f1_score(trueValues, predictedValues)
+
+    # creating a dataframe of metrics
+    performanceDataFrame = pd.DataFrame(
+        {
+            "Accuracy"  : accuracy,
+            "Recall"    : recall,
+            "Precision" : precision,
+            "F1"        : f1,
+        },
+        index=[0],
+    )
+
+    return performanceDataFrame
 
 
 def confusion_matrix_sklearn(model, predictors, target, titlePrefix=None):
