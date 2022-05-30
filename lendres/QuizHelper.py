@@ -50,14 +50,14 @@ def model_performance_classification_sklearn(model, predictors, target):
             "Accuracy"  : accuracy,
             "Recall"    : recall,
             "Precision" : precision,
-            "F1": f1,
+            "F1"        : f1,
         },
         index=[0],
     )
 
     return df_perf
-    
-    
+
+
 def model_performance_classification(trueValues, predictedValues):
     """
     Function to compute different metrics to check classification model performance.  Uses

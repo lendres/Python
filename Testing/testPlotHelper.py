@@ -12,7 +12,7 @@ from lendres.PlotHelper        import PlotHelper
 
 import unittest
 
-class TestPlotting(unittest.TestCase):
+class TestPlotHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -59,7 +59,7 @@ class TestPlotting(unittest.TestCase):
         PlotHelper.scale = scale
         PlotHelper.FormatPlot(width=width, height=height)
         axis = plt.gca()
-        sns.histplot(TestPlotting.data["bmi"], kde=True, ax=axis, palette="winter")
+        sns.histplot(TestPlotHelper.data["bmi"], kde=True, ax=axis, palette="winter")
         PlotHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabel="Count", titlePrefix=titlePrefix)
 
         # Reset the scale to the default for the next plot.

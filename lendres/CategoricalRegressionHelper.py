@@ -13,6 +13,7 @@ from sklearn                    import metrics
 from lendres.ConsoleHelper      import ConsoleHelper
 from lendres.ModelHelper        import ModelHelper
 from lendres.PlotHelper         import PlotHelper
+from lendres.PlotMaker          import PlotMaker
 
 class CategoricalRegressionHelper(ModelHelper):
 
@@ -106,32 +107,7 @@ class CategoricalRegressionHelper(ModelHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        # The numpy array has to be set as an object type.  If set (or allowed to assume) a
-        # type of "str" the entry is created only large enough for the initial string (a character
-        # type is used).  It is not possible to append to it.
-        labels = np.asarray(
-            [
-                ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / confusionMatrix.flatten().sum())]
-                for item in confusionMatrix.flatten()
-            ]
-        ).astype("object").reshape(2, 2)
-
-        # Tack on the type labels to the numerical information.
-        labels[0, 0] += "\nTN"
-        labels[1, 0] += "\nFN\nType 2"
-        labels[0, 1] += "\nFP\nType 1"
-        labels[1, 1] += "\nTP"
-
-        # Must be run before creating figure or plotting data.
-        # The standard scale for this plot will be a little higher than the normal scale.
-        # Not much is shown, so we can shrink the figure size.
-        PlotHelper.FormatPlot(width=5.35, height=4)
-
-        # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
-        PlotHelper.Label(axis, title=dataSet.title()+" Data", xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
-
-        plt.show()
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix)
 
         return confusionMatrix
 
