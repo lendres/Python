@@ -159,7 +159,7 @@ class PlotHelper():
         if titlePrefix != None:
             title = titlePrefix + "\n" + title
 
-        instance.set(title=title, ylabel=yLabel, xlabel=xLabel)
+        instance.set(title=title, xlabel=xLabel, ylabel=yLabel)
 
 
     @classmethod

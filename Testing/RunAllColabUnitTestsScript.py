@@ -6,5 +6,5 @@ Created on May 27, 2022
 from Testing.RunAllUnitTests import RunAllTests
 
 # Default for running from the hard drive.
-startDirectory = ".\\"
+startDirectory = ".\\Colab"
 RunAllTests(startDirectory)

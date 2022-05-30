@@ -5,13 +5,16 @@ Created on May 30, 2022
 import pandas                  as pd
 import numpy                   as np
 
+import keras
+from   tensorflow.keras.utils  import to_categorical
+
 import os
 
 from lendres.PlotMaker         import PlotMaker
 
 import unittest
 
-class TestPlotMaker(unittest.TestCase):
+class TestTensorFlowHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
