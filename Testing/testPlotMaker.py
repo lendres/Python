@@ -15,8 +15,8 @@ class TestPlotMaker(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        inputFile = "insurance.csv"
-        inputFile = os.path.join("Data", inputFile)
+        inputFile  = "insurance.csv"
+        inputFile  = os.path.join("Data", inputFile)
         cls.data   = pd.read_csv(inputFile)
 
         cls.confusionMatrix3x3 = np.array(
@@ -28,6 +28,9 @@ class TestPlotMaker(unittest.TestCase):
 
     def testConfusionMatrix(self):
         PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix")
+        PlotMaker.colorMap = "Blues"
+        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix")
+        PlotMaker.colorMap = None
 
 
 if __name__ == "__main__":

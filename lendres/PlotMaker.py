@@ -14,6 +14,9 @@ from lendres.PlotHelper         import PlotHelper
 class PlotMaker():
     # Class level variables.
 
+    # Color map to use for plots.
+    colorMap      = None
+
     @classmethod
     def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None):
         """
@@ -60,7 +63,7 @@ class PlotMaker():
         PlotHelper.FormatPlot(width=5.35, height=4)
 
         # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
+        axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
         PlotHelper.Label(axis, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
         plt.show()
