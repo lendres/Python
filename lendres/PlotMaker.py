@@ -158,3 +158,24 @@ class PlotMaker():
 
 
         plt.plot(falsePositiveRates, truePositiveRates, label=which.title()+" (area = %0.2f)"%aucScore, color=color)
+
+        # Calculate the geometric mean for each threshold.
+        #
+        # The true positive rate is called the Sensitivity. The inverse of the false-positive rate is called the Specificity.
+        # Sensitivity = True Positive / (True Positive + False Negative)
+        # Specificity = True Negative / (False Positive + True Negative)
+        # Where:
+        #     Sensitivity = True Positive Rate
+        #     Specificity = 1 – False Positive Rate
+        #
+        # The geometric mean is a metric for imbalanced classification that, if optimized, will seek a balance between the
+        # sensitivity and the specificity.
+
+        # geometric mean = sqrt(Sensitivity * Specificity)
+        gmeans = np.sqrt(truePositiveRates * (1-falsePositiveRates))
+
+        # Locate the index of the largest geometric mean.
+        index = np.argmax(gmeans)
+        print('Best Threshold=%f, Geometric Mean=%.3f' % (thresholds[index], gmeans[index]))
+
+        plt.scatter(falsePositiveRates[index], truePositiveRates[index], marker="o", color=color, label=which.title()+" Best Threshold %0.3f"%thresholds[index])
