@@ -16,7 +16,7 @@ class TensorFlowHelper():
 
 
     @classmethod
-    def CreateTrainingAndValidationHistoryPlot(history, parameter):
+    def CreateTrainingAndValidationHistoryPlot(cls, history, parameter):
         """
         Plots the confusion matrix for the model output.
 
@@ -37,7 +37,7 @@ class TensorFlowHelper():
         plt.plot(history.history["val_"+parameter])
 
         # Create titles and set legend.
-        plt.gca.set(title="Model "+parameter.title(), xlabel="Epoch", ylabel=parameter.title())
+        plt.gca().set(title="Model "+parameter.title(), xlabel="Epoch", ylabel=parameter.title())
         plt.legend(["Training", "Validation"], loc="best")
 
         figure = plt.gcf()
