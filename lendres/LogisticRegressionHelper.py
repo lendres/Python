@@ -10,6 +10,7 @@ from sklearn                                import metrics
 from sklearn.linear_model                   import LogisticRegression
 
 from lendres.PlotHelper                     import PlotHelper
+from lendres.PlotMaker                      import PlotMaker
 from lendres.CategoricalRegressionHelper    import CategoricalRegressionHelper
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
@@ -158,68 +159,16 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         axis : matplotlib.pyplot.axis
             The axis of the plot.
         """
-
         self.PredictProbabilities()
 
-        # Must be run before creating figure or plotting data.
-        # The standard scale for this plot will be a little higher than the normal scale.
-        #scale *= 1.5
-        PlotHelper.FormatPlot(**kwargs)
-
         # Plot the ROC curve(s).
-        if dataSet == "both":
-            self.PlotRocCurve("training")
-            self.PlotRocCurve("testing")
-        else:
-            self.PlotRocCurve(dataSet)
+        plottingData = {}
+        if dataSet == "training" or dataSet == "both":
+            plottingData["training"] = [self.dataHelper.yTrainingData, self.yTrainingPredicted]
 
-        # Plot the diagonal line, the wrost fit possible line.
-        plt.plot([0, 1], [0, 1], "r--")
+        if dataSet == "testing" or dataSet == "both":
+            plottingData["testing"] = [self.dataHelper.yTestingData, self.yTestingPredicted]
 
-        # Formatting the axis.
-        axis  = plt.gca()
-        title = "Logistic Regression\nReceiver Operating Characteristic"
-        axis.set(title=title, ylabel="True Positive Rate", xlabel="False Positive Rate")
-        axis.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
-
-        plt.legend(loc="lower right")
-        plt.show()
-
-        figure = plt.gcf()
+        figure, axis = PlotMaker.CreateRocCurvePlot(plottingData, "Logistic Regression")
 
         return figure, axis
-
-
-    def PlotRocCurve(self, dataSet="training", scale=1.0):
-        """
-        Plots the receiver operatoring characteristic curve.
-
-        Parameters
-        ----------
-        dataSet : string
-            Which data set(s) to plot.
-            training - Plots the results from the training data.
-            testing  - Plots the results from the test data.
-        scale : double
-            Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
-
-        Returns
-        -------
-        None.
-        """
-
-        # Get the confusion matrix for the correct data set.
-        if dataSet == "training":
-            rocScore                                          = metrics.roc_auc_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)
-            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.dataHelper.yTrainingData, self.yTrainingPredicted)
-            color                                             = "#1f77b4"
-
-        elif dataSet == "testing":
-            rocScore                                          = metrics.roc_auc_score(self.dataHelper.yTestingData, self.yTestingPredicted)
-            falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(self.dataHelper.yTestingData, self.yTestingPredicted)
-            color                                             = "#ff7f0e"
-
-        else:
-            raise Exception("Invalid data set specified.")
-
-        plt.plot(falsePositiveRates, truePositiveRates, label=dataSet.title()+ " Data (area = %0.2f)" % rocScore, color=color)

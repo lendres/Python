@@ -2,14 +2,16 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import numpy                    as np
-import matplotlib.pyplot        as plt
+import numpy                                as np
+import matplotlib.pyplot                    as plt
 
-import seaborn                  as sns
+import seaborn                              as sns
 sns.set(color_codes=True)
 
+from sklearn                                import metrics
 
-from lendres.PlotHelper         import PlotHelper
+
+from lendres.PlotHelper                     import PlotHelper
 
 class PlotMaker():
     # Class level variables.
@@ -69,3 +71,90 @@ class PlotMaker():
         plt.show()
 
         return confusionMatrix
+
+
+    @classmethod
+    def CreateRocCurvePlot(self, dataSets, titlePrefix, **kwargs):
+        """
+        Creates a plot of the receiver operatoring characteristic curve(s).
+
+        Parameters
+        ----------
+        dataSets : dictionary
+            Data set(s) to plot.
+            The key is one of:
+                training - Labels and colors the data as training data.
+                validation - Labels and colors the data as validation data.
+                testing  - Labels and colors the data as testing data.
+            The values are of the form [trueValue, predictedValues]
+        **kwargs :  keyword arguments
+            keyword arguments pass on to the plot formating function.
+
+        Returns
+        -------
+        figure : matplotlib.pyplot.figure
+            The newly created figure.
+        axis : matplotlib.pyplot.axis
+            The axis of the plot.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot(**kwargs)
+
+        # Plot the ROC curve(s).
+        for key, value in dataSets.items():
+            PlotMaker.PlotRocCurve(value[0], value[1], key)
+
+        # Plot the diagonal line, the wrost fit possible line.
+        plt.plot([0, 1], [0, 1], "r--")
+
+        # Formatting the axis.
+        figure = plt.gcf()
+        axis   = plt.gca()
+        title  = "Receiver Operating Characteristic"
+
+        PlotHelper.Label(axis, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
+        axis.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
+
+        plt.legend(loc="lower right")
+        plt.show()
+
+        return figure, axis
+
+
+    @classmethod
+    def PlotRocCurve(cls, y, yPredicted, which):
+        """
+        Plots the receiver operatoring characteristic curve.
+
+        Parameters
+        ----------
+        y : array
+            True values.
+        yPredicted : array
+            Predicted values.
+        which : string
+            Which data set is being plotted.
+            training - Labels and colors the data as training data.
+            validation - Labels and colors the data as validation data.
+            testing  - Labels and colors the data as testing data.
+
+        Returns
+        -------
+        None.
+        """
+        color = None
+        if which == "training":
+            color = "#1f77b4"
+        elif which == "validation":
+            color = "#a55af4"
+        elif which == "testing":
+            color = "#ff7f0e"
+        else:
+            raise Exception("Invalid data set specified for the which parameter.")
+
+        # Get the area under the curve score.
+        aucScore                                          = metrics.roc_auc_score(y, yPredicted)
+        falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(y, yPredicted)
+
+
+        plt.plot(falsePositiveRates, truePositiveRates, label=which.title()+" (area = %0.2f)"%aucScore, color=color)
