@@ -3,22 +3,22 @@ Created on December 27, 2021
 @author: Lance
 """
 import numpy as np
-from IPython.display                    import display
-from sklearn                            import metrics
+from   IPython.display                    import display
+from   sklearn                            import metrics
 
-from sklearn.tree                       import DecisionTreeClassifier
-from sklearn.ensemble                   import AdaBoostClassifier
+from   sklearn.tree                       import DecisionTreeClassifier
+from   sklearn.ensemble                   import AdaBoostClassifier
 
 import DataSetLoading
-from lendres.ConsoleHelper              import ConsoleHelper
-from lendres.ModelHelper                import ModelHelper
-from lendres.DecisionTreeHelper         import DecisionTreeHelper
-from lendres.BaggingHelper              import BaggingHelper
-from lendres.RandomForestHelper         import RandomForestHelper
-from lendres.AdaBoostHelper             import AdaBoostHelper
-from lendres.GradientBoostingHelper     import GradientBoostingHelper
-from lendres.XGradientBoostingHelper    import XGradientBoostingHelper
-from lendres.HyperparameterHelper       import HyperparameterHelper
+from   lendres.ConsoleHelper              import ConsoleHelper
+from   lendres.ModelHelper                import ModelHelper
+from   lendres.DecisionTreeHelper         import DecisionTreeHelper
+from   lendres.BaggingHelper              import BaggingHelper
+from   lendres.RandomForestHelper         import RandomForestHelper
+from   lendres.AdaBoostHelper             import AdaBoostHelper
+from   lendres.GradientBoostingHelper     import GradientBoostingHelper
+from   lendres.XGradientBoostingHelper    import XGradientBoostingHelper
+from   lendres.HyperparameterHelper       import HyperparameterHelper
 
 import unittest
 

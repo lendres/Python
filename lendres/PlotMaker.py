@@ -34,17 +34,16 @@ class PlotMaker():
 
         Returns
         -------
-        confusionMatrix : ndarray of shape (n_classes, n_classes)
-            The confusion matrix for the data.
+        figure : Figure
+            The newly created figure.
         """
         numberOfCategories = confusionMatrix.shape[0]
 
         if numberOfCategories != confusionMatrix.shape[1]:
             raise Exception("The confusion matrix supplied is not square.")
 
-        # The numpy array has to be set as an object type.  If set (or allowed to assume) a
-        # type of "str" the entry is created only large enough for the initial string (a character
-        # type is used).  It is not possible to append to it.
+        # The numpy array has to be set as an object type.  If set (or allowed to assume) a type of "str" the entry is created
+        # only large enough for the initial string (a character type is used).  It is not possible to append to it.
         labels = np.asarray(
             [
                 ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / confusionMatrix.flatten().sum())]
@@ -68,9 +67,10 @@ class PlotMaker():
         axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
         PlotHelper.Label(axis, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
+        figure = plt.gcf()
         plt.show()
 
-        return confusionMatrix
+        return figure
 
 
     @classmethod

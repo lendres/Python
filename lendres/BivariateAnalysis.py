@@ -107,6 +107,8 @@ class BivariateAnalysis():
     def PlotComparisonByCategory(cls, data, xColumn, yColumn, sortColumn, title):
         """
         Creates a scatter plot of a column sorted by another column.
+        Good for plotting continuous data verses continuous data and sorted by a column that is categorical.  Uses the
+        hue to separate out the categories in the "sortColumn."
 
         Parameters
         ----------
@@ -198,7 +200,6 @@ class BivariateAnalysis():
         data : Pandas DataFrame
             The data.
 
-
         Returns
         -------
         extractedProportions : Pandas DataFrame
@@ -222,3 +223,71 @@ class BivariateAnalysis():
         extractedProportions[primaryCategoryName] = extractedProportions[primaryCategoryName].cat.remove_unused_categories()
 
         return extractedProportions
+
+    @classmethod
+    def GetCrossTabulatedValueCounts(cls, data, independentColumn, sortColumn):
+        """
+        Creates a DataFrame that is a matrix of the counts of categories of "independentColumn" verus "sortColumn."
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        independentColumn : string
+            Column name in the DataFrame to plot on the X axis.
+        sortColumn : string
+            Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
+            variable of the data.  Ploted as different hues in the Y axis.
+
+        Returns
+        -------
+        dataFrame : pandas.DataFrame
+            A DataFrame containing a matrix of the value counts.
+        """
+        sorter = data[sortColumn].value_counts().index[-1]
+
+        # The "margins" adds row/columns subtotals.
+        dataFrame = pd.crosstab(data[independentColumn], data[sortColumn], margins=True).sort_values(by=sorter, ascending=False)
+
+        return dataFrame
+
+
+    @classmethod
+    def CreateStackedPercentageBarPlot(cls, data, independentColumn, sortColumn, titlePrefix=None):
+        """
+        Creates a stacked bar chart that plots the "independentColumn" in seperate hues based on the percentages sorted by the "sortColumn."
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        independentColumn : string
+            Column name in the DataFrame to plot on the X axis.
+        sortColumn : string
+            Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
+            variable of the data.  Ploted as different hues in the Y axis.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
+
+        sorter = data[sortColumn].value_counts().index[-1]
+
+        # The "normalize" normalizes the values to sum to 1.
+        dataFrame = pd.crosstab(data[independentColumn], data[sortColumn], normalize="index").sort_values(by=sorter, ascending=False)
+
+        axis = dataFrame.plot(kind="bar", stacked=True)
+        plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+        title = independentColumn.title() + " as Fraction of " + sortColumn.title()
+        PlotHelper.Label(axis, title=title, xLabel=independentColumn.title(), yLabel="Fraction of "+sortColumn.title(), titlePrefix=titlePrefix)
+
+        figure = plt.gcf()
+        plt.show()
+
+        return figure
