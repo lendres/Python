@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Created on December 29, 2021
+@author: Lance A. Endres
 """
 import pandas                as pd
 import matplotlib.pyplot     as plt
@@ -288,6 +286,108 @@ class BivariateAnalysis():
         PlotHelper.Label(axis, title=title, xLabel=independentColumn.title(), yLabel="Fraction of "+sortColumn.title(), titlePrefix=titlePrefix)
 
         figure = plt.gcf()
+        plt.show()
+
+        return figure
+
+
+    @classmethod
+    def CreateDistributionByTargetPlot(cls, data, independentColumn, sortColumn, titlePrefix=None):
+        """
+        Creates histograms of the "independentColumn" sorted by the "sortColumn."
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        independentColumn : string
+            Column name in the DataFrame to plot on the X axis.
+        sortColumn : string
+            Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
+            variable of the data.  Ploted as different hues in the Y axis.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Unique values in sorting column.  Sort them so they are presented correctly (in order) and
+        # so the colors match those used in CreateBoxPlotByTarget.
+        uniqueSortValues = data[sortColumn].unique()
+        uniqueSortValues.sort()
+
+
+        # Number of unique values.
+        numberOfUniqueValues = uniqueSortValues.size
+
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot(width=6*numberOfUniqueValues, height=6)
+
+        # Create figure and a row of axes.
+        figure, axes = plt.subplots(1, numberOfUniqueValues)
+
+        for i in range(numberOfUniqueValues):
+            sns.histplot(
+                data=data[data[sortColumn] == uniqueSortValues[i]],
+                x=independentColumn,
+                kde=True,
+                ax=axes[i],
+                color=sns.color_palette()[i]
+            )
+            title = "Distribution for " + sortColumn.title() + " = " + str(uniqueSortValues[i])
+            axes[i].set(title=title, xlabel=independentColumn.title())
+
+        figure.suptitle(independentColumn.title() + " Separated by " + sortColumn.title())
+
+        plt.tight_layout()
+        plt.show()
+
+        return figure
+
+
+    @classmethod
+    def CreateBoxPlotByTarget(cls, data, independentColumn, sortColumn, titlePrefix=None):
+        """
+        Creates histograms and bar plots of the "independentColumn" sorted by the "sortColumn."
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        independentColumn : string
+            Column name in the DataFrame to plot on the X axis.
+        sortColumn : string
+            Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
+            variable of the data.  Ploted as different hues in the Y axis.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot(width=12, height=6)
+
+        # Create figure and a 2x2 grid of axes.
+        figure, axes = plt.subplots(1, 2)
+
+        # Box plot with outliers.
+        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[0])
+        title = "Boxplot with Outliers"
+        axes[0].set(title=title, xlabel=sortColumn.title(), ylabel=independentColumn.title())
+
+        # Box plot without outliers.
+        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[1], showfliers=False)
+        title = "Boxplot without Outliers"
+        axes[1].set(title=title, xlabel=sortColumn.title(), ylabel=independentColumn.title())
+
+        figure.suptitle(independentColumn.title() + " Separated by " + sortColumn.title())
+
+        plt.tight_layout()
         plt.show()
 
         return figure

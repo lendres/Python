@@ -71,6 +71,14 @@ class TestBivariateAnalysis(unittest.TestCase):
         TestBivariateAnalysis.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
         self.assertEqual(result.loc["TM195", "Female"], 40)
 
+    def testPlottingByTarget(self):
+        # Test where sort value is text.
+        BivariateAnalysis.CreateDistributionByTargetPlot(self.insuranceDataHelper.data, "bmi", "sex")
+        BivariateAnalysis.CreateBoxPlotByTarget(self.insuranceDataHelper.data, "bmi", "sex")
+
+        # Test where sort value is numerical.  Also tests where sort value has more than two categories.
+        BivariateAnalysis.CreateDistributionByTargetPlot(self.insuranceDataHelper.data, "bmi", "children")
+        BivariateAnalysis.CreateBoxPlotByTarget(self.insuranceDataHelper.data, "bmi", "children")
 
 if __name__ == "__main__":
     unittest.main()
