@@ -55,7 +55,7 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testPlotComparisonByCategory(self):
-        BivariateAnalysis.PlotComparisonByCategory(self.insuranceDataHelper.data, "age", "charges", "sex", "Sorted by Sex")
+        BivariateAnalysis.CreateScatterPlotComparisonByCategory(self.insuranceDataHelper.data, "age", "charges", "sex")
 
 
     def testProportionalData(self):

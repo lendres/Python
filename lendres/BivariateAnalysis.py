@@ -102,7 +102,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def PlotComparisonByCategory(cls, data, xColumn, yColumn, sortColumn, title):
+    def CreateScatterPlotComparisonByCategory(cls, data, xColumn, yColumn, sortColumn, title=None):
         """
         Creates a scatter plot of a column sorted by another column.
         Good for plotting continuous data verses continuous data and sorted by a column that is categorical.  Uses the
@@ -128,12 +128,15 @@ class BivariateAnalysis():
         axis : matplotlib.pyplot.axis
             The axis of the plot.
         """
+        if title == None:
+            title = "Sorted by " + "\"" + sortColumn + "\""
+
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
         axis = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
-        axis.set(title=title, xlabel=xColumn.title(), ylabel=yColumn.title())
-        axis.get_legend().set_title(sortColumn.title())
+        axis.set(title=title, xlabel=xColumn, ylabel=yColumn)
+        axis.get_legend().set_title(sortColumn)
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
@@ -179,8 +182,8 @@ class BivariateAnalysis():
         # Label the individual columns with a percentage, then add the titles to the plot.
         #LabelPercentagesOnCountPlot(axis, proportionData, category, scale)
 
-        title = "\"" + subCategoryName.title() + "\"" + " Category"
-        axis.set(title=title, xlabel=primaryCategoryName.title(), ylabel="Proportion")
+        title = "\"" + subCategoryName + "\"" + " Category"
+        axis.set(title=title, xlabel=primaryCategoryName, ylabel="Proportion")
 
         # Make sure the plot is shown.
         plt.show()
@@ -282,8 +285,8 @@ class BivariateAnalysis():
 
         axis = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
-        title = independentColumn.title() + " as Fraction of " + sortColumn.title()
-        PlotHelper.Label(axis, title=title, xLabel=independentColumn.title(), yLabel="Fraction of "+sortColumn.title(), titlePrefix=titlePrefix)
+        title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
+        PlotHelper.Label(axis, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
 
         figure = plt.gcf()
         plt.show()
@@ -336,10 +339,10 @@ class BivariateAnalysis():
                 ax=axes[i],
                 color=sns.color_palette()[i]
             )
-            title = "Distribution for " + sortColumn.title() + " = " + str(uniqueSortValues[i])
-            axes[i].set(title=title, xlabel=independentColumn.title())
+            title = "Distribution for " + "\""+ sortColumn + "\"" + " = " + str(uniqueSortValues[i])
+            axes[i].set(title=title, xlabel=independentColumn)
 
-        figure.suptitle(independentColumn.title() + " Separated by " + sortColumn.title())
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"")
 
         plt.tight_layout()
         plt.show()
@@ -378,14 +381,14 @@ class BivariateAnalysis():
         # Box plot with outliers.
         sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[0])
         title = "Boxplot with Outliers"
-        axes[0].set(title=title, xlabel=sortColumn.title(), ylabel=independentColumn.title())
+        axes[0].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
         # Box plot without outliers.
         sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[1], showfliers=False)
         title = "Boxplot without Outliers"
-        axes[1].set(title=title, xlabel=sortColumn.title(), ylabel=independentColumn.title())
+        axes[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
-        figure.suptitle(independentColumn.title() + " Separated by " + sortColumn.title())
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"")
 
         plt.tight_layout()
         plt.show()
