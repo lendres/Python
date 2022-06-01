@@ -163,14 +163,14 @@ class PlotHelper():
 
 
     @classmethod
-    def NewTopAndBottomAxisFigure(cls, column, topPercent=0.25):
+    def NewTopAndBottomAxisFigure(cls, title, topPercent=0.25):
         """
         Creates a new figure that has two axes, one above another.
 
         Parameters
         ----------
-        column : string
-            Category name in the DataFrame.
+        title : string
+            Figure title.
 
         Returns
         -------
@@ -188,7 +188,7 @@ class PlotHelper():
 
         figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (topPercent, 1-topPercent)})
 
-        figure.suptitle("\"" + column.title() + "\"" + " Category")
+        figure.suptitle(title)
 
         return (figure, (boxAxis, histogramAxis))
 

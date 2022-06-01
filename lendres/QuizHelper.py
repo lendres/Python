@@ -1,8 +1,7 @@
 """
 Created on April 9, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-
 # To help with reading and manipulation of data
 import numpy                         as np
 import pandas                        as pd

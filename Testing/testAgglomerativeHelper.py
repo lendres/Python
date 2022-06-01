@@ -1,15 +1,13 @@
 """
 Created on April 27, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-import pandas                           as pd
+import pandas                                    as pd
 
 import DataSetLoading
 
-from   lendres.ConsoleHelper            import ConsoleHelper
-from   lendres.AgglomerativeHelper      import AgglomerativeHelper
-
-from   IPython.display                  import display
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.AgglomerativeHelper               import AgglomerativeHelper
 
 import unittest
 

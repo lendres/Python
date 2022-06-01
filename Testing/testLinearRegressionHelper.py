@@ -1,14 +1,12 @@
 """
 Created on January 26, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-
 import DataSetLoading
 from lendres.DataHelper                import DataHelper
 from lendres.LinearRegressionHelper    import LinearRegressionHelper
 
 import unittest
-
 
 class TestregressionHelper(unittest.TestCase):
 

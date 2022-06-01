@@ -1,11 +1,11 @@
 """
 Created on December 27, 2021
-@author: Lance
+@author: Lance A. Endres
 """
 import DataSetLoading
 
-from   lendres.ConsoleHelper           import ConsoleHelper
-from   lendres.BivariateAnalysis       import BivariateAnalysis
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.BivariateAnalysis                 import BivariateAnalysis
 
 import unittest
 

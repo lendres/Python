@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
-Created on Sat Dec  4 18:49:50 2021
-
+Created on December 4, 2021
 @author: Lance A. Endres
 """
-
 import IPython
 import os
 

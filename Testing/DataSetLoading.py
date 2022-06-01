@@ -1,6 +1,6 @@
 """
 Created on March 6, 2022
-@author: Lance
+@author: Lance A. Endres
 """
 import numpy                          as np
 import os

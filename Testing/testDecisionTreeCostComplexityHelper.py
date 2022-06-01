@@ -1,12 +1,10 @@
 """
 Created on December 27, 2021
-@author: Lance
+@author: Lance A. Endres
 """
-#from   IPython.display                             import display
-
 import DataSetLoading
-from   lendres.DecisionTreeHelper                   import DecisionTreeHelper
-from   lendres.DecisionTreeCostComplexityHelper     import DecisionTreeCostComplexityHelper
+from   lendres.DecisionTreeHelper                import DecisionTreeHelper
+from   lendres.DecisionTreeCostComplexityHelper  import DecisionTreeCostComplexityHelper
 
 import unittest
 

@@ -1,6 +1,6 @@
 """
 Created on April 27, 2022
-@author: Lance
+@author: Lance A. Endres
 """
 import DataSetLoading
 from   lendres.KMeansHelper             import KMeansHelper

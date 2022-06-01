@@ -1,6 +1,6 @@
 """
 Created on December 27, 2021
-@author: Lance
+@author: Lance A. Endres
 """
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -37,8 +37,8 @@ class UnivariateAnalysis():
         axis = plt.gca()
         cls.PlotBoxPlot(axis, data, column)
 
-        title = "\"" + column.title() + "\"" + " Category"
-        axis.set(title=title, xlabel=column.title(), ylabel="Count")
+        title = "Column " + "\"" + column + "\""
+        axis.set(title=title, xlabel=column, ylabel="Count")
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
@@ -73,7 +73,7 @@ class UnivariateAnalysis():
         sns.boxplot(x=data[column], ax=axis, showmeans=True, color="cyan")
 
         if autoLabelX:
-            axis.set(xlabel=column.title())
+            axis.set(xlabel=column)
         else:
             axis.set(xlabel=None)
 
@@ -108,7 +108,7 @@ class UnivariateAnalysis():
 
         # Label the axis.
         if autoLabelX:
-            axis.set(xlabel=column.title())
+            axis.set(xlabel=column)
         else:
             axis.set(xlabel=None)
 
@@ -132,7 +132,7 @@ class UnivariateAnalysis():
         figure : matplotlib.figure.Figure
             The newly created figure.
         """
-        figure, (boxAxis, histogramAxis) = PlotHelper.NewTopAndBottomAxisFigure(column)
+        figure, (boxAxis, histogramAxis) = PlotHelper.NewTopAndBottomAxisFigure("Column " + "\"" + column + "\"")
 
         cls.PlotBoxPlot(boxAxis, data, column, autoLabelX=False)
         cls.PlotHistogram(histogramAxis, data, column)
@@ -204,8 +204,8 @@ class UnivariateAnalysis():
         # Label the individual columns with a percentage, then add the titles to the plot.
         cls.LabelPercentagesOnCountPlot(axis, data, column)
 
-        title = "\"" + column.title() + "\"" + " Category"
-        axis.set(title=title, xlabel=column.title(), ylabel="Count")
+        title = "Column " + "\"" + column + "\""
+        axis.set(title=title, xlabel=column, ylabel="Count")
 
         # Make sure the plot is shown.
         plt.show()

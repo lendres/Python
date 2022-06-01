@@ -1,6 +1,6 @@
 """
 Created on April 27, 2022
-@author: Lance
+@author: Lance A. Endres
 """
 import pandas                                    as pd
 from   sklearn.preprocessing                     import StandardScaler
@@ -39,7 +39,7 @@ class SubsetHelper():
 
     def ScaleData(self, method="standardscaler"):
         """
-        Constructor.
+        Scale data.
 
         Parameters
         ----------

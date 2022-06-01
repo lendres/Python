@@ -1,6 +1,6 @@
 """
 Created on January 19, 2022
-@author: Lance
+@author: Lance A. Endres
 """
 import pandas                             as pd
 import matplotlib.pyplot                  as plt

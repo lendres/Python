@@ -1,6 +1,6 @@
 """
-Created on Mon December 27, 2021
-@author: Lance
+Created on December 27, 2021
+@author: Lance A. Endres
 """
 from IPython.display                 import display
 

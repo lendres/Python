@@ -1,6 +1,6 @@
 """
 Created on March 9, 2022
-@author: Lance
+@author: Lance A. Endres
 """
 from sklearn.ensemble                     import StackingClassifier
 

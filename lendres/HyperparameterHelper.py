@@ -1,9 +1,7 @@
 """
 Created on January 19, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-#from IPython.display import display
-
 from sklearn                                 import metrics
 from sklearn.model_selection                 import GridSearchCV
 from sklearn.model_selection                 import RandomizedSearchCV

@@ -1,19 +1,21 @@
 """
 Created on December 27, 2021
-hor: Lance
+@author: Lance A. Endres
 """
-from   matplotlib                     import pyplot                     as plt
-import pandas                         as pd
-import numpy                          as np
-import scipy.stats                    as stats
+from   matplotlib                                import pyplot                     as plt
+import pandas                                    as pd
+import numpy                                     as np
+import scipy.stats                               as stats
 
-from   sklearn.model_selection        import train_test_split
+from   sklearn.model_selection                   import train_test_split
+from   sklearn.preprocessing                     import StandardScaler
+from   scipy.stats                               import zscore
 
 import os
 import io
 
 import lendres
-from   lendres.ConsoleHelper          import ConsoleHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
 
 class DataHelper():
 
@@ -999,6 +1001,32 @@ class DataHelper():
             else:
                 stratifyInput = None
             self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
+
+
+    def ScaleData(self, columns, method="standardscaler"):
+        """
+        Scale data.
+
+        Parameters
+        ----------
+        method : string
+            Method used to normalized the data.
+            standardscaler : Uses the StandardScaler class.
+            zscore : Uses the zscore.
+
+        Returns
+        -------
+        None.
+        """
+        scaledData = self.data[columns].copy(deep=True)
+
+        if method == "standardscaler":
+            scaler               = StandardScaler()
+            self.data[columns]   = pd.DataFrame(scaler.fit_transform(scaledData), columns=columns)
+        elif method == "zscore":
+            self.data[columns]   = scaledData.apply(zscore)
+        else:
+            raise Exception("The specified scaling method is invalid.")
 
 
     def GetSplitComparisons(self):

@@ -1,9 +1,9 @@
 """
 Created on December 27, 2021
-@author: Lance
+@author: Lance A. Endres
 """
 import DataSetLoading
-from lendres.AdaBoostHelper import AdaBoostHelper
+from   lendres.AdaBoostHelper                    import AdaBoostHelper
 
 import unittest
 

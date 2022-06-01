@@ -1,15 +1,14 @@
 """
 Created on Febuary 16, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-import numpy as np
+import numpy                                     as np
 
-from lendres.Algorithms import BoundingBinarySearch
+from   lendres.Algorithms                        import BoundingBinarySearch
 import unittest
 
 # More information at:
 # https://docs.python.org/3/library/unittest.html
-
 
 class TestBoundingBinarySearch(unittest.TestCase):
 

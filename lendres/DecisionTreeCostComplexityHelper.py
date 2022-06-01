@@ -1,8 +1,7 @@
 """
-Created on Wed January 19, 2022
-@author: Lance
+Created on January 19, 2022
+@author: Lance A. Endres
 """
-
 import numpy                      as np
 import matplotlib.pyplot          as plt
 
