@@ -1018,15 +1018,41 @@ class DataHelper():
         -------
         None.
         """
-        scaledData = self.data[columns].copy(deep=True)
+        if len(self.xTrainingData) == 0:
+            raise Exception("Data has not been split.")
+
+        self._ScaleData(self.xTrainingData, columns, method)
+        self._ScaleData(self.xTestingData, columns, method)
+
+        if len(self.xValidationData) != 0:
+            self._ScaleData(self.xValidationData, columns, method)
+
+
+    def _ScaleData(self, data, columns, method):
+        """
+        Scale data.
+
+        Parameters
+        ----------
+        method : string
+            Method used to normalized the data.
+            standardscaler : Uses the StandardScaler class.
+            zscore : Uses the zscore.
+
+        Returns
+        -------
+        None.
+        """
+        scaledData = data[columns].copy(deep=True)
 
         if method == "standardscaler":
             scaler               = StandardScaler()
-            self.data[columns]   = pd.DataFrame(scaler.fit_transform(scaledData), columns=columns)
+            data[columns]   = pd.DataFrame(scaler.fit_transform(scaledData), columns=columns)
         elif method == "zscore":
-            self.data[columns]   = scaledData.apply(zscore)
+            data[columns]   = scaledData.apply(zscore)
         else:
             raise Exception("The specified scaling method is invalid.")
+
 
 
     def GetSplitComparisons(self):
