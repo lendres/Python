@@ -11,7 +11,8 @@ sns.set(color_codes=True)
 from sklearn                                import metrics
 
 
-from lendres.PlotHelper                     import PlotHelper
+from   lendres.PlotHelper                   import PlotHelper
+from   lendres.LogisticRegressionTools      import LogisticRegressionTools
 
 class PlotMaker():
     # Class level variables.
@@ -74,7 +75,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateRocCurvePlot(self, dataSets, titlePrefix, **kwargs):
+    def CreateRocCurvePlot(self, dataSets, titlePrefix=None, **kwargs):
         """
         Creates a plot of the receiver operatoring characteristic curve(s).
 
@@ -152,30 +153,13 @@ class PlotMaker():
         else:
             raise Exception("Invalid data set specified for the which parameter.")
 
-        # Get the area under the curve score.
-        aucScore                                          = metrics.roc_auc_score(y, yPredicted)
-        falsePositiveRates, truePositiveRates, thresholds = metrics.roc_curve(y, yPredicted)
+        # Get values for plotting the curve and the scores associated with the curve.
+        falsePositiveRates, truePositiveRates, scores = LogisticRegressionTools.GetRocCurveAndScores(y, yPredicted)
+
+        label = which.title()+" (area = %0.2f)" % scores["Area Under Curve"]
+        plt.plot(falsePositiveRates, truePositiveRates, label=label, color=color)
 
 
-        plt.plot(falsePositiveRates, truePositiveRates, label=which.title()+" (area = %0.2f)"%aucScore, color=color)
-
-        # Calculate the geometric mean for each threshold.
-        #
-        # The true positive rate is called the Sensitivity. The inverse of the false-positive rate is called the Specificity.
-        # Sensitivity = True Positive / (True Positive + False Negative)
-        # Specificity = True Negative / (False Positive + True Negative)
-        # Where:
-        #     Sensitivity = True Positive Rate
-        #     Specificity = 1 – False Positive Rate
-        #
-        # The geometric mean is a metric for imbalanced classification that, if optimized, will seek a balance between the
-        # sensitivity and the specificity.
-
-        # geometric mean = sqrt(Sensitivity * Specificity)
-        gmeans = np.sqrt(truePositiveRates * (1-falsePositiveRates))
-
-        # Locate the index of the largest geometric mean.
-        index = np.argmax(gmeans)
-        print('Best Threshold=%f, Geometric Mean=%.3f' % (thresholds[index], gmeans[index]))
-
-        plt.scatter(falsePositiveRates[index], truePositiveRates[index], marker="o", color=color, label=which.title()+" Best Threshold %0.3f"%thresholds[index])
+        index = scores["Index of Best Threshold"]
+        label = which.title() + " Best Threshold %0.3f" % scores["Best Threshold"]
+        plt.scatter(falsePositiveRates[index], truePositiveRates[index], marker="o", color=color, label=label)

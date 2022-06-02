@@ -157,17 +157,20 @@ class DataHelper():
         self.consoleHelper.PrintTitle("Input File: " + inputFile)
         self.data = pd.read_csv(inputFile)
 
+        # Data size and shape.
         self.consoleHelper.PrintTitle("Data Size")
         self.consoleHelper.Display(self.data.shape)
 
-
+        # The first few records.
         self.consoleHelper.PrintTitle("First Few Records")
         self.consoleHelper.Display(self.data.head())
 
+        # Random records.
         np.random.seed(1)
         self.consoleHelper.PrintTitle("Random Sampling")
         self.consoleHelper.Display(self.data.sample(n=10))
 
+        # Data summary (mean, min, max, et cetera.
         self.consoleHelper.PrintTitle("Data Summary")
         self.consoleHelper.Display(self.data.describe())
 
@@ -246,7 +249,7 @@ class DataHelper():
         None.
         """
         notAvailableCounts = self.data.isna().sum()
-        totalNotAvailable = sum(notAvailableCounts)
+        totalNotAvailable  = sum(notAvailableCounts)
         return notAvailableCounts, totalNotAvailable
 
 
@@ -365,6 +368,23 @@ class DataHelper():
         """
         columnNames = self.data.dtypes[self.data.dtypes == "object"].index
         self.ChangeToCategoryType(columnNames)
+
+
+    def ChangeAllCategoryColumnsToIntegers(self):
+        """
+        Changes all the columns with the "category" data type to the "integer" data type.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        """
+        columnNames = self.data.dtypes[self.data.dtypes == "category"].index
+        self.data[columnNames] = self.data[columnNames].astype("int")
 
 
     def GetDuplicates(self, column):
@@ -1003,9 +1023,11 @@ class DataHelper():
             self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
 
 
-    def ScaleData(self, columns, method="standardscaler"):
+    def ScaleData(self, columns, method="zscore"):
         """
         Scale data.
+
+        There seems to be a bug in the "StandardScaler," it is recommened to use the "zscore" method.
 
         Parameters
         ----------
@@ -1046,7 +1068,7 @@ class DataHelper():
         scaledData = data[columns].copy(deep=True)
 
         if method == "standardscaler":
-            scaler               = StandardScaler()
+            scaler          = StandardScaler()
             data[columns]   = pd.DataFrame(scaler.fit_transform(scaledData), columns=columns)
         elif method == "zscore":
             data[columns]   = scaledData.apply(zscore)

@@ -4,12 +4,9 @@ Created on January 19, 2022
 """
 import pandas                               as pd
 import numpy                                as np
-import matplotlib.pyplot                    as plt
 
-from sklearn                                import metrics
 from sklearn.linear_model                   import LogisticRegression
 
-from lendres.PlotHelper                     import PlotHelper
 from lendres.PlotMaker                      import PlotMaker
 from lendres.CategoricalRegressionHelper    import CategoricalRegressionHelper
 
