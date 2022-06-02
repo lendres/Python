@@ -74,7 +74,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateRocCurvePlot(self, dataSets, titlePrefix, **kwargs):
+    def CreateRocCurvePlot(self, dataSets, titlePrefix=None, **kwargs):
         """
         Creates a plot of the receiver operatoring characteristic curve(s).
 
