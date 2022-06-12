@@ -9,6 +9,7 @@ import seaborn               as sns
 from lendres.PlotHelper      import PlotHelper
 
 class BivariateAnalysis():
+    supFigureYAdjustment = 1.0
 
     @classmethod
     def CreateBivariateHeatMap(cls, data, columns=None):
@@ -94,7 +95,7 @@ class BivariateAnalysis():
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
-        figure.suptitle("Pair Plot for Continuous Data", y=1.01)
+        figure.suptitle("Pair Plot for Continuous Data", y=1.015*BivariateAnalysis.supFigureYAdjustment)
 
         plt.show()
 
@@ -342,7 +343,7 @@ class BivariateAnalysis():
             title = "Distribution for " + "\""+ sortColumn + "\"" + " = " + str(uniqueSortValues[i])
             axes[i].set(title=title, xlabel=independentColumn)
 
-        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"")
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
 
         plt.tight_layout()
         plt.show()
@@ -388,7 +389,7 @@ class BivariateAnalysis():
         title = "Boxplot without Outliers"
         axes[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
-        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"")
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
 
         plt.tight_layout()
         plt.show()
