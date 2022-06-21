@@ -62,10 +62,11 @@ class PlotMaker():
         # Must be run before creating figure or plotting data.
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
-        PlotHelper.FormatPlot(width=5.35, height=4)
+        categorySizeAdjustment = 0.65*(numberOfCategories-2)
+        PlotHelper.FormatPlot(width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
 
         # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
+        axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
         PlotHelper.Label(axis, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
         figure = plt.gcf()
