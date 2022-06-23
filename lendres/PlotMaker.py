@@ -21,7 +21,7 @@ class PlotMaker():
     colorMap      = None
 
     @classmethod
-    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None):
+    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None, axisLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -68,6 +68,10 @@ class PlotMaker():
         # Create plot and set the titles.
         axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
         PlotHelper.Label(axis, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
+
+        if axisLabels is not None:
+            axis.xaxis.set_ticklabels(axisLabels, rotation=90)
+            axis.yaxis.set_ticklabels(axisLabels, rotation=0)
 
         figure = plt.gcf()
         plt.show()
