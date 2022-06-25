@@ -19,8 +19,8 @@ class TestImageHelper(unittest.TestCase):
         imagesInputFile = "plant-species-images-reduced.npy"
         labelsFile      = "plant-species-labels-reduced.csv"
 
-        imagesInputFile = os.path.join("Data", imagesInputFile)
-        labelsFile      = os.path.join("Data", labelsFile)
+        imagesInputFile = os.path.join("../Data", imagesInputFile)
+        labelsFile      = os.path.join("../Data", labelsFile)
 
         consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSEALL, useMarkDown=False)
         cls.imageHelper = ImageHelper(consoleHelper=consoleHelper)
