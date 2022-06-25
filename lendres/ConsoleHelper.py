@@ -237,7 +237,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        self.Print("\n", verboseLevel)
+        self.Print("", verboseLevel)
 
 
     def PrintTitle(self, title, verboseLevel=None):

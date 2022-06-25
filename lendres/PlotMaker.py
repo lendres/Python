@@ -2,17 +2,16 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import numpy                                as np
-import matplotlib.pyplot                    as plt
+import numpy                                     as np
+import matplotlib.pyplot                         as plt
 
-import seaborn                              as sns
+import seaborn                                   as sns
 sns.set(color_codes=True)
 
-from sklearn                                import metrics
+from sklearn                                     import metrics
 
-
-from   lendres.PlotHelper                   import PlotHelper
-from   lendres.LogisticRegressionTools      import LogisticRegressionTools
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.LogisticRegressionTools           import LogisticRegressionTools
 
 class PlotMaker():
     # Class level variables.
@@ -47,7 +46,7 @@ class PlotMaker():
         # only large enough for the initial string (a character type is used).  It is not possible to append to it.
         labels = np.asarray(
             [
-                ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / confusionMatrix.flatten().sum())]
+                ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item/confusionMatrix.flatten().sum())]
                 for item in confusionMatrix.flatten()
             ]
         ).astype("object").reshape(numberOfCategories, numberOfCategories)

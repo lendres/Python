@@ -2,7 +2,6 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   matplotlib                                import pyplot                     as plt
 import pandas                                    as pd
 import numpy                                     as np
 import scipy.stats                               as stats
