@@ -36,7 +36,7 @@ class TestImageHelper(unittest.TestCase):
         self.imageHelper = TestImageHelper.imageHelper.Copy()
 
 
-    def testConfusionMatrix(self):
+    def testDisplayData(self):
         self.imageHelper.DisplayDataShapes()
 
 
