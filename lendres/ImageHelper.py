@@ -5,7 +5,7 @@ Created on June 24, 2022
 from   matplotlib                                import pyplot                     as plt
 import pandas                                    as pd
 import numpy                                     as np
-#import tensorflow                                as tf
+import tensorflow                                as tf
 
 from   sklearn.model_selection                   import train_test_split
 
@@ -53,8 +53,8 @@ class ImageHelper():
         # Initialize the variable.  Helpful to know if something goes wrong.
         self.data            = None
         self.labels          = None
-        self.labelNumbers    = None
         self.encodedLabels   = None
+        self.labelCategories = None
 
 
     def Copy(self):
@@ -106,7 +106,7 @@ class ImageHelper():
         self.data = np.load(inputFile)
 
 
-    def LoadLabelsFromCsv(self, inputFile, labelsAreText=False):
+    def LoadLabelsFromCsv(self, inputFile):
         """
         Loads the labels from a CSV file.
 
@@ -122,26 +122,40 @@ class ImageHelper():
         self.labels = pd.read_csv(inputFile)
         self.labels.rename(columns={self.labels.columns[0] : "Labels"}, inplace=True)
 
-        if labelsAreText:
-            self.labels["Labels"] = self.labels["Labels"].astype("category")
-            self.labelNumbers     = self.labels["Labels"].cat.codes
-        else:
-            self.labelNumbers     = self.labels
+        self.labels["Labels"]   = self.labels["Labels"].astype("category")
+        self.labels["Numbers"]  = self.labels["Labels"].cat.codes
+
+        self.labelCategories    = self.labels["Labels"].unique()
 
 
-    def Labels(self):
+    def LoadLabelNumbersFromCsv(self, inputFile, labelCategories):
         """
-        Returns the labels.
+        Loads the labels from a CSV file.
 
         Parameters
         ----------
-        None.
+        inputFile : string
+            Path and name of the file to load.
 
         Returns
         -------
         None.
         """
-        return self.labels["Labels"].unique()
+        self.labelCategories = labelCategories
+
+        self.labels = pd.read_csv(inputFile)
+        self.labels.rename(columns={self.labels.columns[0] : "Numbers"}, inplace=True)
+
+        # Initialize label list.
+        numberOfLabels = self.labels.shape[0]
+        labels = [""] * numberOfLabels
+
+        # Populate labels from selecting them out of the label categories.
+        for i in range(numberOfLabels):
+            labels[i] = labelCategories[self.labelNumbers[i]]
+
+        self.labels["Labels"] = labels
+        self.labels["Labels"] = self.labels["Labels"].astype("category")
 
 
     def EncodeCategoricalColumns(self):
@@ -160,7 +174,7 @@ class ImageHelper():
         -------
         None.
         """
-        #self.encodedLabels = tf.keras.utils.to_categorical(self.labelNumbers)
+        self.encodedLabels = tf.keras.utils.to_categorical(self.labels["Numbers"])
 
 
     def SplitData(self, testSize, validationSize=None, stratify=False):
@@ -240,21 +254,75 @@ class ImageHelper():
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
 
 
-    def PlotImages(self, rows=4, columns=4, random=False):
+    def PlotImage(self, index=0, random=False):
+        """
+        Print example images.
 
-        # Defining the figure size to 10x8.
-        PlotHelper.FormatPlot(width=10, height=6)
-        fig = plt.figure(figsize=(10, 8))
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
+        #PlotHelper.scale = 0.65
+        PlotHelper.FormatPlot(width=6, height=6)
+        figure = plt.figure()
+
+        # Generating random indices from the data and plotting the images.
+        if random:
+            index = np.random.randint(0, self.labels.shape[0])
+
+        # Adding subplots with 3 rows and 4 columns.
+        axis = plt.gca()
+
+        # Plotting the image using cmap=gray.
+        #xis.imshow(self.data[index, :], cmap=plt.get_cmap("gray"))
+        axis.imshow(self.data[index, :])
+        axis.set_title(self.labels["Labels"].loc[index])
+
+        plt.show()
+        PlotHelper.scale = 1.0
+
+
+    def PlotImages(self, rows=4, columns=4, random=False):
+        """
+        Print example images.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
+        PlotHelper.scale = 0.55
+        PlotHelper.FormatPlot(width=columns*2.5+2, height=rows*2.5+2)
+        figure = plt.figure()
+
+        numberOfImages = self.labels.shape[0]
+        index = -1
 
         for i in range(columns):
             for j in range(rows):
                 # Generating random indices from the data and plotting the images.
-                randomIndex = np.random.randint(0, len(self.yTrainingData))
+                if random:
+                    index = np.random.randint(0, numberOfImages)
+                else:
+                    index = index + 1
 
                 # Adding subplots with 3 rows and 4 columns.
-                axis = fig.add_subplot(rows, columns, i*rows+j+1)
+                axis = figure.add_subplot(rows, columns, i*rows+j+1)
 
                 # Plotting the image using cmap=gray.
-                axis.imshow(self.xTrainingData[randomIndex, :], cmap=plt.get_cmap("gray"))
-                axis.set_title(class_names[self.yTrainingData[randomIndex]])
+                #xis.imshow(self.data[index, :], cmap=plt.get_cmap("gray"))
+                axis.imshow(self.data[index, :])
+                axis.set_title(self.labels["Labels"].loc[index], y=0.9)
+
+        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
         plt.show()
+        PlotHelper.scale = 1.0
