@@ -68,3 +68,43 @@ def BoundingBinarySearch(item, points, returnedUnits="indices"):
         return [first, last]
     else:
         return [points[first], points[last]]
+
+
+def FindIndicesByValues(data, searchValue, maxCount=None):
+    """
+    Searches an array like object to find the indices of entries that match a specified value.
+
+    Parameters
+    ----------
+    data : array like
+        Data to search through.
+    searchValue : string, numeric
+        Value to match in the data.  Indices of entries that match this value are returned.
+    maxCount : integer
+        The maximum number of entries to returned.  If maxCount is reached before the end of the data,
+        the function exits and returns the found values.  This allows returning 10 items even though 100
+        are in the data, for example.
+    Returns
+    -------
+    indices : list of integers
+        The indices of all matched values.
+    """
+    # If no maximum was provided, we can return up to the total number.  We do it this way so we do not
+    # have to check every time in the loop if maxCount is none and then check the value of maxCount if
+    # it is not none.
+    if maxCount == None:
+        maxCount = len(data)
+
+    foundCount  = 0
+    indices     = []
+
+    for i, value in enumerate(data):
+        if value == searchValue:
+            indices.append(i)
+            foundCount += 1
+
+            # If we reach the maximum number of entries, exit loop and return.
+            if foundCount == maxCount:
+                break
+
+    return indices

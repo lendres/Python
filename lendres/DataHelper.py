@@ -36,11 +36,7 @@ class DataHelper():
             Specifies if a deep copy should be done. The default is False.  Only valid if
             the "data" parameter is specified.
         consoleHelper : ConsoleHelper
-            Class the prints messages.  The following verbose levels are used.
-            Specified how much output should be written. The default is 2.
-            0 : None.  Use with caution.
-            1 : Erors and warnings are output.
-            2 : All messages are output.
+            Class the prints messages.
 
         Returns
         -------

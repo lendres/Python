@@ -5,6 +5,7 @@ Created on Febuary 16, 2022
 import numpy                                     as np
 
 from   lendres.Algorithms                        import BoundingBinarySearch
+from   lendres.Algorithms                        import FindIndicesByValues
 import unittest
 
 # More information at:
@@ -50,6 +51,34 @@ class TestBoundingBinarySearch(unittest.TestCase):
         result = BoundingBinarySearch(10000, TestBoundingBinarySearch.points, returnedUnits="values")
         self.assertTrue(result[0] is np.nan)
         self.assertTrue(result[1] is np.nan)
+
+
+
+class TestFindIndicesByValues(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        #                0    1    2    3    4    5    6    7    8    9   10   11   12
+        cls.numbers = [  1,   3,  11,  11,   5,   8,   5,  11,  14,  18,  22,   3,   3]
+        cls.strings = ["a", "b", "c", "b", "b", "d", "d", "e", "a", "a", "b", "b", "b"]
+
+
+    def testFindNumbers(self):
+        result = FindIndicesByValues(TestFindIndicesByValues.numbers, 3)
+        self.assertEqual(result[0], 1)
+        self.assertEqual(len(result), 3)
+
+
+    def testFindStrings(self):
+        result = FindIndicesByValues(TestFindIndicesByValues.strings, "b")
+        self.assertEqual(result[5], 12)
+        self.assertEqual(len(result), 6)
+
+
+    def testFindMaxCount(self):
+        result = FindIndicesByValues(TestFindIndicesByValues.strings, "b", maxCount=4)
+        self.assertEqual(result[3], 10)
+        self.assertEqual(len(result), 4)
 
 
 if __name__ == "__main__":
