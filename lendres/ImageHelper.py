@@ -3,20 +3,24 @@ Created on June 24, 2022
 @author: Lance A. Endres
 """
 from   matplotlib                                import pyplot                     as plt
+import seaborn                                   as sns
 import pandas                                    as pd
 import numpy                                     as np
 import tensorflow                                as tf
+import cv2
+
+import random
 
 from   sklearn.model_selection                   import train_test_split
-
-import os
-import io
 
 import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.PlotHelper                        import PlotHelper
+from   lendres.UnivariateAnalysis                import UnivariateAnalysis
+from   lendres.Algorithms                        import FindIndicesByValues
 
 class ImageHelper():
+    arrayImageSize = 2.5
 
     def __init__(self, consoleHelper=None):
         """
@@ -25,11 +29,7 @@ class ImageHelper():
         Parameters
         ----------
         consoleHelper : ConsoleHelper
-            Class the prints messages.  The following verbose levels are used.
-            Specified how much output should be written. The default is 2.
-            0 : None.  Use with caution.
-            1 : Erors and warnings are output.
-            2 : All messages are output.
+            Class the prints messages.
 
         Returns
         -------
@@ -51,10 +51,12 @@ class ImageHelper():
             self.consoleHelper = consoleHelper
 
         # Initialize the variable.  Helpful to know if something goes wrong.
-        self.data            = None
-        self.labels          = None
-        self.encodedLabels   = None
-        self.labelCategories = None
+        self.data                    = []
+        self.labels                  = []
+        self.encodedLabels           = []
+        self.labelCategories         = []
+        self.numberOfLabelCategories = 0
+        self.colorConversion         = None
 
 
     def Copy(self):
@@ -70,22 +72,25 @@ class ImageHelper():
         -------
         None.
         """
-        imageHelper                = ImageHelper()
-        imageHelper.data           = self.data.copy()
-        imageHelper.labels         = self.labels.copy(deep=True)
-        imageHelper.consoleHelper  = self.consoleHelper
+        imageHelper                         = ImageHelper()
+        imageHelper.data                    = self.data.copy()
+        imageHelper.labels                  = self.labels.copy(deep=True)
+        imageHelper.consoleHelper           = self.consoleHelper
 
-        if len(self.xTrainingData) != 0:
-            imageHelper.xTrainingData             = self.xTrainingData.copy()
-            imageHelper.yTrainingData             = self.yTrainingData.copy()
+        imageHelper.xTrainingData           = self.xTrainingData.copy()
+        imageHelper.yTrainingData           = self.yTrainingData.copy()
 
-        if len(self.xValidationData) != 0:
-            imageHelper.xValidationData           = self.xValidationData.copy()
-            imageHelper.yValidationData           = self.yValidationData.copy()
+        imageHelper.xValidationData         = self.xValidationData.copy()
+        imageHelper.yValidationData         = self.yValidationData.copy()
 
-        if len(self.xTestingData) != 0:
-            imageHelper.xTestingData              = self.xTestingData.copy()
-            imageHelper.yTestingData              = self.yTestingData.copy()
+        imageHelper.xTestingData            = self.xTestingData.copy()
+        imageHelper.yTestingData            = self.yTestingData.copy()
+
+        imageHelper.encodedLabels           = self.encodedLabels.copy()
+        imageHelper.labelCategories         = self.labelCategories.copy()
+        imageHelper.numberOfLabelCategories = self.numberOfLabelCategories
+
+        imageHelper.colorConversion         = self.colorConversion
 
         return imageHelper
 
@@ -120,12 +125,13 @@ class ImageHelper():
         None.
         """
         self.labels = pd.read_csv(inputFile)
-        self.labels.rename(columns={self.labels.columns[0] : "Labels"}, inplace=True)
+        self.labels.rename(columns={self.labels.columns[0] : "Names"}, inplace=True)
 
-        self.labels["Labels"]   = self.labels["Labels"].astype("category")
-        self.labels["Numbers"]  = self.labels["Labels"].cat.codes
+        self.labels["Names"]   = self.labels["Names"].astype("category")
+        self.labels["Numbers"] = self.labels["Names"].cat.codes
 
-        self.labelCategories    = self.labels["Labels"].unique()
+        uniqueLabels = self.labels["Names"].unique().categories.tolist()
+        self.SetLabelCategories(uniqueLabels)
 
 
     def LoadLabelNumbersFromCsv(self, inputFile, labelCategories):
@@ -141,7 +147,7 @@ class ImageHelper():
         -------
         None.
         """
-        self.labelCategories = labelCategories
+        self.SetLabelCategories(labelCategories)
 
         self.labels = pd.read_csv(inputFile)
         self.labels.rename(columns={self.labels.columns[0] : "Numbers"}, inplace=True)
@@ -154,8 +160,60 @@ class ImageHelper():
         for i in range(numberOfLabels):
             labels[i] = labelCategories[self.labelNumbers[i]]
 
-        self.labels["Labels"] = labels
-        self.labels["Labels"] = self.labels["Labels"].astype("category")
+        self.labels["Names"] = labels
+        self.labels["Names"] = self.labels["Names"].astype("category")
+
+
+    def SetLabelCategories(self, labelCategories):
+        """
+        Sets the category labels.  These are the unique text labels of the dependent variable.  That is, while
+        the text labels and numerical labels for the dependent variable are the length of the number of data samples,
+        this is only a few text labels as only one of each category is present.
+
+        The labels should be in the same order as the numerical labels such that a numerical label of i returns the correct
+        text name of the category by using self.labelCategories[i].
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.labelCategories         = labelCategories
+        self.numberOfLabelCategories = len(labelCategories)
+
+
+    def DisplayLabelCategories(self):
+        """
+        Neatly displays the label categories.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        labelsDataFrame = pd.DataFrame(self.labelCategories, index=range(0, self.numberOfLabelCategories), columns=["Labels"])
+        self.consoleHelper.Display(labelsDataFrame)
+
+
+    def NormalizePixelValues(self):
+        """
+        Normalizes all the pixel valus.  Call before splitting the data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.data = self.data / 255
 
 
     def EncodeCategoricalColumns(self):
@@ -175,6 +233,40 @@ class ImageHelper():
         None.
         """
         self.encodedLabels = tf.keras.utils.to_categorical(self.labels["Numbers"])
+
+
+    def DisplayEncodingResults(self, numberOfEntries, randomEntries=False):
+        """
+        Prints a summary of the encoding processes.
+
+        Parameters
+        ----------
+        numberOfEntries : int
+            The number of entries to display.
+        randomEntries : bool
+            If true, random entries are chosen, otherwise, the first few entries are displayed.
+
+        Returns
+        -------
+        None.
+        """
+        indices = []
+        if randomEntries:
+            numberOfImages = self.labels.shape[0]
+            indices = random.sample(range(0, numberOfImages), numberOfEntries)
+        else:
+            indices = list(range(numberOfEntries))
+
+        self.consoleHelper.PrintTitle("Dependent Variable Numerical Labels")
+        self.consoleHelper.Display(pd.DataFrame(self.labels["Numbers"].loc[indices]));
+
+        self.consoleHelper.PrintNewLine()
+        self.consoleHelper.PrintTitle("Dependent Variable Text Labels")
+        self.consoleHelper.Display(pd.DataFrame(self.labels["Names"].loc[indices]));
+
+        self.consoleHelper.PrintNewLine()
+        self.consoleHelper.PrintTitle("Dependent Variable Encoded Labels")
+        self.consoleHelper.Display(pd.DataFrame(self.encodedLabels[indices]));
 
 
     def SplitData(self, testSize, validationSize=None, stratify=False):
@@ -197,10 +289,10 @@ class ImageHelper():
         data : pandas.DataFrame
             Data in a pandas.DataFrame
         """
-        if self.data == None:
+        if len(self.data) == 0:
             raise Exception("Data has not been loaded.")
 
-        if self.encodedLabels == None:
+        if len(self.encodedLabels) == 0:
             raise Exception("Dependent variable not encoded.")
 
         x = self.data
@@ -220,6 +312,70 @@ class ImageHelper():
             else:
                 stratifyInput = None
             self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
+
+    def GetSplitComparisons(self):
+        """
+        Returns the value counts and percentages of the dependant variable for the
+        original, training (if available), and testing (if available) data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        comparisonFrame : pandas.DataFrame
+            DataFrame with the counts and percentages.
+        """
+        # Get results for original data.
+        dataFrame = self.GetCountAndPrecentStrings(self.encodedLabels ,"Original")
+
+        # If the data has been split, we will add the split information as well.
+        if len(self.yTrainingData) != 0:
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training")], axis=1)
+
+            if len(self.yValidationData) != 0:
+                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation")], axis=1)
+
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing")], axis=1)
+
+        return dataFrame
+
+
+    def GetCountAndPrecentStrings(self, dataSet, dataSetName):
+        """
+        Gets a string that is the value count of "classValue" and the percentage of the total
+        that the "classValue" accounts for in the column.
+
+        Parameters
+        ----------
+        dataSet : string
+            Which data set(s) to plot.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfCategories = len(self.labelCategories)
+        valueCounts        = [""] * numberOfCategories
+        totalCount         = dataSet.shape[0]
+
+        # This counts all the ones for each column.
+        searchList         = [1] * numberOfCategories
+        classValueCount    = sum(dataSet == searchList)
+
+        # Turn the numbers into formated strings.
+        for i in range(numberOfCategories):
+            valueCounts[i] = "{0} ({1:0.2f}%)".format(classValueCount[i], classValueCount[i]/totalCount*100)
+
+        # Create the data frame.
+        comparisonFrame = pd.DataFrame(
+            valueCounts,
+            columns=[dataSetName],
+            index=self.labelCategories
+        )
+
+        return comparisonFrame
 
 
     def DisplayDataShapes(self):
@@ -254,7 +410,7 @@ class ImageHelper():
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
 
 
-    def PlotImage(self, index=0, random=False):
+    def PlotImage(self, index=0, random=False, size=6):
         """
         Print example images.
 
@@ -268,8 +424,7 @@ class ImageHelper():
         """
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
         #PlotHelper.scale = 0.65
-        PlotHelper.FormatPlot(width=6, height=6)
-        figure = plt.figure()
+        PlotHelper.FormatPlot(width=size, height=size)
 
         # Generating random indices from the data and plotting the images.
         if random:
@@ -278,18 +433,149 @@ class ImageHelper():
         # Adding subplots with 3 rows and 4 columns.
         axis = plt.gca()
 
-        # Plotting the image using cmap=gray.
-        #xis.imshow(self.data[index, :], cmap=plt.get_cmap("gray"))
-        axis.imshow(self.data[index, :])
-        axis.set_title(self.labels["Labels"].loc[index])
+        # Plotting the image.
+        image = self.data[index]
+        if self.colorConversion != None:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        axis.imshow(image)
+
+        axis.set_title(self.labels["Names"].loc[index])
+
+        # Turn off white grid lines.
+        plt.grid(False)
 
         plt.show()
         PlotHelper.scale = 1.0
 
 
-    def PlotImages(self, rows=4, columns=4, random=False):
+    def PlotImages(self, rows=4, columns=4, random=False, indices=None):
         """
-        Print example images.
+        Plot example images.
+
+        Parameters
+        ----------
+        rows : integer
+            The number of rows to plot.
+        columns : integer
+            The number of columns to plot.
+        random : boolean
+            If true, random images are selected and plotted.  This overrides the value of indices.  That is,
+            if true, random images will plot regardless of the value of indices (None or provided).
+        indices : list of integers
+            If provided, these images are plotted.  If not provided, the first rows*columns are plotted.  Note,
+            this argument only has an effect if random=False.
+
+        Returns
+        -------
+        None.
+        """
+        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
+        PlotHelper.scale = 0.55
+        PlotHelper.FormatPlot(width=columns*ImageHelper.arrayImageSize+2, height=rows*ImageHelper.arrayImageSize+2)
+        figure = plt.figure()
+
+        numberOfImages = self.labels.shape[0]
+
+        # If no indices are provided, we are going to print out the start of the data.
+        if indices == None:
+            indices = range(rows*columns)
+
+        # Position in the index array/range.
+        k = -1
+
+        for i in range(columns):
+            for j in range(rows):
+                # Generating random indices from the data and plotting the images.
+                if random:
+                    index = np.random.randint(0, numberOfImages)
+                else:
+                    k += 1
+                    index = indices[k]
+
+                # Adding subplots with 3 rows and 4 columns.
+                axis = figure.add_subplot(rows, columns, i*rows+j+1)
+
+                # Plotting the image using cmap=gray.
+                image = self.data[index]
+                if self.colorConversion != None:
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                axis.imshow(image)
+
+                # Turn off white grid lines.
+                axis.grid(False)
+
+                axis.set_title(self.labels["Names"].loc[index], y=0.9)
+
+        # Adjust spacing so titles don't run together.
+        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+
+        plt.show()
+        PlotHelper.scale = 1.0
+
+
+    def PlotImageExamplesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None):
+        """
+        Plots example images of the specified category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of the category to plot.
+        categoryName : string
+            The name of the category to plot examples of.  Provide the name or the number, but not both.
+        categoryNumber : integory
+            The number of the category to plot examples of.  Provide the name or the number, but not both.
+
+        Returns
+        -------
+        None.
+        """
+        # If a name was provided, convert it to a number.  Searching by number is faster.
+        if categoryName != None:
+            categoryNumber = FindIndicesByValues(self.labelCategories, searchValue=categoryName, maxCount=1)
+            # The find indices function returns an array, we only want one entry.
+            categoryNumber = categoryNumber[0]
+
+        # If neither name nor number is provided, it is an error.
+        if categoryNumber == None:
+            raise Exception("A valid category name or a valid category number must be provided.")
+
+        indices = FindIndicesByValues(self.labels["Numbers"], categoryNumber, numberOfExamples)
+
+        if len(indices) == 0:
+            categoryName = self.labelCategories[categoryNumber]
+            raise Exception("No examples of the category were found.\nCategory Number: "+str(categoryNumber)+"\nCategory Name: "+categoryName)
+
+        self.PlotImages(1, numberOfExamples, indices=indices)
+
+
+    def PlotImageExamplesForAllCategories(self, numberOfExamples):
+        """
+        Plots example images of each category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of each category to plot.
+
+        Returns
+        -------
+        None.
+        """
+        # Note, the below assumes all categories are numbered in sequence from 0 to numberOfLabelCategories.  That is, the
+        # categories cannot be arbitrarily numbered.
+        for i in range(self.numberOfLabelCategories):
+            # For subsequent sections, add space after the preceeding.
+            if i > 0:
+                self.consoleHelper.PrintNewLine()
+
+            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.PlotImageExamplesByCategory(numberOfExamples, categoryNumber=i)
+
+
+    def CreateCountPlot(self):
+        """
+        Creates a count plot of the image categories.
 
         Parameters
         ----------
@@ -299,30 +585,21 @@ class ImageHelper():
         -------
         None.
         """
-        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        PlotHelper.scale = 0.55
-        PlotHelper.FormatPlot(width=columns*2.5+2, height=rows*2.5+2)
-        figure = plt.figure()
+        PlotHelper.FormatPlot()
+        axis = sns.countplot(x=self.labels["Names"], palette=sns.color_palette("mako"))
+        axis.set(title="Category Count Plot", xlabel="Category", ylabel="Count")
+        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
 
-        numberOfImages = self.labels.shape[0]
-        index = -1
-
-        for i in range(columns):
-            for j in range(rows):
-                # Generating random indices from the data and plotting the images.
-                if random:
-                    index = np.random.randint(0, numberOfImages)
-                else:
-                    index = index + 1
-
-                # Adding subplots with 3 rows and 4 columns.
-                axis = figure.add_subplot(rows, columns, i*rows+j+1)
-
-                # Plotting the image using cmap=gray.
-                #xis.imshow(self.data[index, :], cmap=plt.get_cmap("gray"))
-                axis.imshow(self.data[index, :])
-                axis.set_title(self.labels["Labels"].loc[index], y=0.9)
-
-        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+        # The categories are labeled by name (text) so rotate the text so it does not run together.
+        axis.set_xticklabels(axis.get_xticklabels(), rotation=45, ha="right")
         plt.show()
-        PlotHelper.scale = 1.0
+
+    def ApplyGaussianBlur(self, **kwargs):
+        newImages = []
+
+        print(self.data.shape[0])
+
+        for i in range(self.data.shape[0]):
+            newImages.append(cv2.GaussianBlur(self.data[i], **kwargs))
+
+        self.data = newImages

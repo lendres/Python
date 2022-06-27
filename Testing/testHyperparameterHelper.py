@@ -24,10 +24,11 @@ import unittest
 
 # Some of these tests take a long time to run.  Use this to skip some.  Useful for testing
 # new unit tests so you don't have to run them all to see if the new one works.
-skipTests = 0
+skipTests = 1
 if skipTests:
     #skippedTests = ["Decision Tree", "Bagging", "Random Forest", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
-    skippedTests = ["AdaBoost", "X Gradient Boosting"]
+    #skippedTests = ["AdaBoost", "X Gradient Boosting"]
+    skippedTests = ["X Gradient Boosting"]
 else:
     skippedTests = []
 
@@ -59,10 +60,12 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("Decision Tree" in skippedTests, "Skipped decision tree unit test.")
     def testDecisionTreeClassifier(self):
-        parameters = {"max_depth"             : np.arange(1, 3),
-                      "min_samples_leaf"      : [2, 5, 7],
-                      "max_leaf_nodes"        : [2, 5, 10],
-                      "criterion"             : ["entropy", "gini"]}
+        parameters = {
+            "max_depth"             : np.arange(1, 3),
+            "min_samples_leaf"      : [2, 5, 7],
+            "max_leaf_nodes"        : [2, 5, 10],
+            "criterion"             : ["entropy", "gini"]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = DecisionTreeHelper(self.dataHelper)
@@ -74,9 +77,11 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("Bagging" in skippedTests, "Skipped bagging unit test.")
     def testBaggingClassifier(self):
-        parameters = {"max_samples"  : [0.7, 0.8],
-                      "max_features" : [0.7, 0.9],
-                      "n_estimators" : [10,  20]}
+        parameters = {
+            "max_samples"  : [0.7, 0.8],
+            "max_features" : [0.7, 0.9],
+            "n_estimators" : [10,  20]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = BaggingHelper(self.dataHelper)
@@ -87,10 +92,12 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("Random Forest" in skippedTests, "Skipped random forest unit test.")
     def testRandomForestClassifier(self):
-        parameters = {"n_estimators"     : [10, 20],
-                      "min_samples_leaf" : [5, 8],
-                      "max_features"     : [0.2, 0.7],
-                      "max_samples"      : [0.3, 0.7]}
+        parameters = {
+            "n_estimators"     : [10, 20],
+            "min_samples_leaf" : [5, 8],
+            "max_features"     : [0.2, 0.7],
+            "max_samples"      : [0.3, 0.7]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = RandomForestHelper(self.dataHelper)
@@ -101,10 +108,12 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("AdaBoost" in skippedTests, "Skipped adaboost unit test.")
     def testAdaBoostClassifier(self):
-        parameters = {"base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
-                                          DecisionTreeClassifier(max_depth=2, random_state=1)],
-                      "n_estimators"   : [10, 25],
-                      "learning_rate"  : [0.1, 0.5]}
+        parameters = {
+            "base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
+                                DecisionTreeClassifier(max_depth=2, random_state=1)],
+            "n_estimators"   : [10, 25],
+            "learning_rate"  : [0.1, 0.5]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = AdaBoostHelper(self.dataHelper)
@@ -115,9 +124,11 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("Gradient Boosting" in skippedTests, "Skipped gradient boosting unit test.")
     def testGradientBoostingClassifier(self):
-        parameters = {"n_estimators" : [50, 100],
-                      "subsample"    : [0.8, 0.9],
-                      "max_features" : [0.7, 0.8]}
+        parameters = {
+            "n_estimators" : [50, 100],
+            "subsample"    : [0.8, 0.9],
+            "max_features" : [0.7, 0.8]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = GradientBoostingHelper(self.dataHelper)
@@ -128,13 +139,15 @@ class TestHyperparameterHelper(unittest.TestCase):
 
     @unittest.skipIf("X Gradient Boosting" in skippedTests, "Skipped extreme gradient boosting unit test.")
     def testXGradientBoostingClassifier(self):
-        parameters = {"n_estimators": np.arange(10, 20, 5),
-                      "scale_pos_weight"  : [5],
-                      "subsample"         : [0.5, 0.9],
-                      "learning_rate"     : [0.2, 0.05],
-                      "gamma"             : [0, 3],
-                      "colsample_bytree"  : [0.5],
-                      "colsample_bylevel" : [0.5]}
+        parameters = {
+            "n_estimators"      : np.arange(10, 20, 5),
+            "scale_pos_weight"  : [5],
+            "subsample"         : [0.5, 0.9],
+            "learning_rate"     : [0.2, 0.05],
+            "gamma"             : [0, 3],
+            "colsample_bytree"  : [0.5],
+            "colsample_bylevel" : [0.5]
+        }
 
         self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = XGradientBoostingHelper(self.dataHelper)

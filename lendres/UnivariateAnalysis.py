@@ -143,7 +143,7 @@ class UnivariateAnalysis():
 
 
     @classmethod
-    def LabelPercentagesOnCountPlot(cls, axis, data, column):
+    def LabelPercentagesOnCountPlot(cls, axis):
         """
         Plot the percentages of each entry of a column.
 
@@ -151,17 +151,17 @@ class UnivariateAnalysis():
         ----------
         axis : axis
             Matplotlib axis to plot on.
-        data : pandas.DataFrame
-            The data.
-        column : string
-            Category name in the DataFrame.
 
         Returns
         -------
         None.
         """
-        # Number of entries in the column.
-        total = len(data[column])
+        # Number of entries.
+        total = 0
+
+        # Find the total count first.
+        for patch in axis.patches:
+            total += patch.get_height()
 
         for patch in axis.patches:
             # Percentage of the column.
@@ -202,7 +202,7 @@ class UnivariateAnalysis():
         figure = plt.gcf()
 
         # Label the individual columns with a percentage, then add the titles to the plot.
-        cls.LabelPercentagesOnCountPlot(axis, data, column)
+        cls.LabelPercentagesOnCountPlot(axis)
 
         title = "Column " + "\"" + column + "\""
         axis.set(title=title, xlabel=column, ylabel="Count")

@@ -1077,6 +1077,10 @@ class DataHelper():
         Returns the value counts and percentages of the dependant variable for the
         original, training (if available), and testing (if available) data.
 
+        Parameters
+        ----------
+        None.
+
         Returns
         -------
         comparisonFrame : pandas.DataFrame
@@ -1104,9 +1108,9 @@ class DataHelper():
 
         # Create the data frame.
         comparisonFrame = pd.DataFrame(
-                    {"False" : false,
-                     "True"  : true},
-                     index=index)
+            {"False" : false, "True"  : true},
+            index=index
+        )
 
         return comparisonFrame
 
@@ -1121,7 +1125,7 @@ class DataHelper():
         classValue : int or string
             The value to count and calculate the percentage for.
         dataSet : string
-            Which data set(s) to plot.
+            Which data set to use for the calculation.
             original - Gets the results from the original data.
             training - Gets the results from the training data.
             testing  - v the results from the test data.
@@ -1131,8 +1135,11 @@ class DataHelper():
 
         Returns
         -------
-        None.
+        string : string
+            The count and percentage of the total as a string.
         """
+        # 1) It seems this could be simplified by just passing the data set from GetSplitComparisons and not using all the if, elif below.
+        # 2) Why do we pass "column"?  Where is this used?  Is it a required feature or a one off from something?  Can it be removed?
         classValueCount = 0
         totalCount      = 0
 
@@ -1157,7 +1164,7 @@ class DataHelper():
         else:
             raise Exception("Invalid data set specified.")
 
-        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount * 100)
+        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount*100)
         return string
 
 

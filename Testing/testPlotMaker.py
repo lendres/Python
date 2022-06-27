@@ -34,6 +34,8 @@ class TestPlotMaker(unittest.TestCase):
         labels = ["car", "boat", "train"]
         PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix", axisLabels=labels)
 
+        print(list(range(5)))
+
 
 if __name__ == "__main__":
     unittest.main()
