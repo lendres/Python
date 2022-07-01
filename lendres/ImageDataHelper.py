@@ -1,0 +1,764 @@
+"""
+Created on June 30, 2022
+@author: Lance A. Endres
+"""
+from   matplotlib                                import pyplot                     as plt
+import seaborn                                   as sns
+import pandas                                    as pd
+import numpy                                     as np
+import tensorflow                                as tf
+import cv2
+
+import random
+
+from   sklearn.model_selection                   import train_test_split
+
+import lendres
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.UnivariateAnalysis                import UnivariateAnalysis
+from   lendres.Algorithms                        import FindIndicesByValues
+
+class ImageDataHelper():
+
+    def __init__(self, consoleHelper=None):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        consoleHelper : ConsoleHelper
+            Class the prints messages.
+
+        Returns
+        -------
+        None.
+        """
+        self.xTrainingData             = []
+        self.xTestingData              = []
+        self.xValidationData           = []
+
+        self.yTrainingData             = []
+        self.yValidationData           = []
+        self.yTestingData              = []
+
+        # Save the console helper first so it can be used while processing things.
+        self.consoleHelper  = None
+        if consoleHelper == None:
+            self.consoleHelper = ConsoleHelper()
+        else:
+            self.consoleHelper = consoleHelper
+
+        # Initialize the variable.  Helpful to know if something goes wrong.
+        self.data                    = []
+        self.labels                  = []
+        self.yTrainingEncoded        = []
+        self.yValidationEncoded      = []
+        self.yTestingEncoded         = []
+        self.labelCategories         = []
+        self.numberOfLabelCategories = 0
+        self.colorConversion         = None
+
+
+    def Copy(self):
+        """
+        Creates a copy (copy constructor).
+
+        Parameters
+        ----------
+        deep : bool, optional
+            Specifies if a deep copy should be done. The default is False.
+
+        Returns
+        -------
+        None.
+        """
+        imageDataHelper                         = ImageDataHelper()
+        imageDataHelper.data                    = self.data.copy()
+        imageDataHelper.labels                  = self.labels.copy(deep=True)
+        imageDataHelper.consoleHelper           = self.consoleHelper
+
+        imageDataHelper.xTrainingData           = self.xTrainingData.copy()
+        imageDataHelper.yTrainingData           = self.yTrainingData.copy()
+
+        imageDataHelper.xValidationData         = self.xValidationData.copy()
+        imageDataHelper.yValidationData         = self.yValidationData.copy()
+
+        imageDataHelper.xTestingData            = self.xTestingData.copy()
+        imageDataHelper.yTestingData            = self.yTestingData.copy()
+
+        imageDataHelper.yTrainingEncoded        = self.yTrainingEncoded.copy()
+        imageDataHelper.yValidationEncoded      = self.yValidationEncoded.copy()
+        imageDataHelper.yTestingEncoded         = self.yTestingEncoded.copy()
+
+        imageDataHelper.labelCategories         = self.labelCategories.copy()
+        imageDataHelper.numberOfLabelCategories = self.numberOfLabelCategories
+
+        imageDataHelper.colorConversion         = self.colorConversion
+
+        return imageDataHelper
+
+
+    def LoadImagesFromNumpyArray(self, inputFile):
+        """
+        Loads a data file of images stored as a numpy array.
+
+        Parameters
+        ----------
+        inputFile : string
+            Path and name of the file to load.
+
+        Returns
+        -------
+        None.
+        """
+        self.data = np.load(inputFile)
+
+
+    def LoadLabelsFromCsv(self, inputFile):
+        """
+        Loads the labels from a CSV file.
+
+        Parameters
+        ----------
+        inputFile : string
+            Path and name of the file to load.
+
+        Returns
+        -------
+        None.
+        """
+        self.labels = pd.read_csv(inputFile)
+        self.labels.rename(columns={self.labels.columns[0] : "Names"}, inplace=True)
+
+        self.labels["Names"]   = self.labels["Names"].astype("category")
+        self.labels["Numbers"] = self.labels["Names"].cat.codes
+
+        uniqueLabels = self.labels["Names"].unique().categories.tolist()
+        self.SetLabelCategories(uniqueLabels)
+
+
+    def LoadLabelNumbersFromCsv(self, inputFile, labelCategories):
+        """
+        Loads the labels from a CSV file.
+
+        Parameters
+        ----------
+        inputFile : string
+            Path and name of the file to load.
+
+        Returns
+        -------
+        None.
+        """
+        self.SetLabelCategories(labelCategories)
+
+        self.labels = pd.read_csv(inputFile)
+        self.labels.rename(columns={self.labels.columns[0] : "Numbers"}, inplace=True)
+
+        labels = [self.labelCategories[i] for i in self.labels["Numbers"]]
+
+        self.labels["Names"] = labels
+        self.labels["Names"] = self.labels["Names"].astype("category")
+
+
+    def SetLabelCategories(self, labelCategories):
+        """
+        Sets the category labels.  These are the unique text labels of the dependent variable.  That is, while
+        the text labels and numerical labels for the dependent variable are the length of the number of data samples,
+        this is only a few text labels as only one of each category is present.
+
+        The labels should be in the same order as the numerical labels such that a numerical label of i returns the correct
+        text name of the category by using self.labelCategories[i].
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.labelCategories         = labelCategories
+        self.numberOfLabelCategories = len(labelCategories)
+
+
+    def DisplayLabelCategories(self):
+        """
+        Neatly displays the label categories.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        labelsDataFrame = pd.DataFrame(self.labelCategories, index=range(0, self.numberOfLabelCategories), columns=["Labels"])
+        self.consoleHelper.Display(labelsDataFrame)
+
+
+    def GetImageShape(self):
+        """
+        Gets the size of the images.  Can be used as the "input_shape" to a neural network.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        return self.data[0].shape
+
+
+    def DisplayDataShapes(self):
+        """
+        Print out the shape of all the data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.consoleHelper.PrintTitle("Data Sizes")
+        self.consoleHelper.Display("Data shape:    {0}".format(self.data.shape))
+        self.consoleHelper.Display("Labels length: {0}".format(len(self.data)))
+
+        if len(self.xTrainingData) != 0:
+            self.consoleHelper.PrintNewLine()
+            self.consoleHelper.Display("Training images shape:  {0}".format(self.xTrainingData.shape))
+            self.consoleHelper.Display("Training labels length: {0}".format(len(self.yTrainingData)))
+
+        if len(self.xValidationData) != 0:
+            self.consoleHelper.PrintNewLine()
+            self.consoleHelper.Display("Validation images shape:  {0}".format(self.xValidationData.shape))
+            self.consoleHelper.Display("Validation labels length: {0}".format(len(self.yValidationData)))
+
+        if len(self.xTestingData) != 0:
+            self.consoleHelper.PrintNewLine()
+            self.consoleHelper.Display("Testing images shape:  {0}".format(self.xTestingData.shape))
+            self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
+
+
+    def PlotImage(self, index=0, random=False, size=6):
+        """
+        Print example images.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
+        #PlotHelper.scale = 0.65
+        PlotHelper.FormatPlot(width=size, height=size)
+
+        # Generating random indices from the data and plotting the images.
+        if random:
+            index = np.random.randint(0, self.labels.shape[0])
+
+        # Adding subplots with 3 rows and 4 columns.
+        axis = plt.gca()
+
+        # Plotting the image.
+        image = self.data[index]
+        if self.colorConversion != None:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        axis.imshow(image)
+
+        axis.set_title(self.labels["Names"].loc[index])
+
+        # Turn off white grid lines.
+        plt.grid(False)
+
+        plt.show()
+        PlotHelper.scale = 1.0
+
+
+    def PlotImages(self, rows=4, columns=4, random=False, indices=None):
+        """
+        Plot example images.
+
+        Parameters
+        ----------
+        rows : integer
+            The number of rows to plot.
+        columns : integer
+            The number of columns to plot.
+        random : boolean
+            If true, random images are selected and plotted.  This overrides the value of indices.  That is,
+            if true, random images will plot regardless of the value of indices (None or provided).
+        indices : list of integers
+            If provided, these images are plotted.  If not provided, the first rows*columns are plotted.  Note,
+            this argument only has an effect if random=False.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfImages = self.labels.shape[0]
+        images = []
+        labels = []
+
+        # If no indices are provided, we are going to print out the start of the data.
+        if indices == None:
+            indices = range(rows*columns)
+
+        for k in range(rows*columns):
+            # Generating random indices from the data and plotting the images.
+            if random:
+                index = np.random.randint(0, numberOfImages)
+            else:
+                index = indices[k]
+
+            # Plotting the image using cmap=gray.
+            images.append(self.data[index])
+            labels.append(self.labels["Names"].loc[index])
+
+        ImageHelper.CreateImageArrayPlot(images, labels, columns, self.colorConversion)
+
+
+    def GetIndicesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None):
+        """
+        Gets the indices of images that fall into the specified category.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of the category to plot.
+        categoryName : string
+            The name of the category to plot examples of.  Provide the name or the number, but not both.
+        categoryNumber : integory
+            The number of the category to plot examples of.  Provide the name or the number, but not both.
+
+        Returns
+        -------
+        indices : array of int
+            The indices of images in the specified category.
+        """
+        # If a name was provided, convert it to a number.  Searching by number is faster.
+        if categoryName != None:
+            categoryNumber = FindIndicesByValues(self.labelCategories, searchValue=categoryName, maxCount=1)
+            # The find indices function returns an array, we only want one entry.
+            categoryNumber = categoryNumber[0]
+
+        # If neither name nor number is provided, it is an error.
+        if categoryNumber == None:
+            raise Exception("A valid category name or a valid category number must be provided.")
+
+        indices = FindIndicesByValues(self.labels["Numbers"], categoryNumber, numberOfExamples)
+
+        if len(indices) == 0:
+            categoryName = self.labelCategories[categoryNumber]
+            raise Exception("No examples of the category were found.\nCategory Number: "+str(categoryNumber)+"\nCategory Name: "+categoryName)
+
+        return indices
+
+
+    def PlotImageExamplesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None):
+        """
+        Plots example images of the specified category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of the category to plot.
+        categoryName : string
+            The name of the category to plot examples of.  Provide the name or the number, but not both.
+        categoryNumber : integory
+            The number of the category to plot examples of.  Provide the name or the number, but not both.
+
+        Returns
+        -------
+        None.
+        """
+        indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber)
+
+        self.PlotImages(1, numberOfExamples, indices=indices)
+
+
+    def PlotImageExamplesForAllCategories(self, numberOfExamples):
+        """
+        Plots example images of each category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of each category to plot.
+
+        Returns
+        -------
+        None.
+        """
+        # Note, the below assumes all categories are numbered in sequence from 0 to numberOfLabelCategories.  That is, the
+        # categories cannot be arbitrarily numbered.
+        for i in range(self.numberOfLabelCategories):
+            # For subsequent sections, add space after the preceeding.
+            if i > 0:
+                self.consoleHelper.PrintNewLine()
+
+            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.PlotImageExamplesByCategory(numberOfExamples, categoryNumber=i)
+
+
+    def PlotColorChannels(self, indices):
+        for index in indices:
+            ImageHelper.DisplayColorChannels(self.data[index], self.colorConversion)
+
+
+    def PlotColorChannelsByCategory(self, numberOfExamples=1, categoryName=None, categoryNumber=None):
+        """
+        Plots images along with it's separated color channels for an image in the specified category.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of the category to plot.
+        categoryName : string
+            The name of the category to plot examples of.  Provide the name or the number, but not both.
+        categoryNumber : integory
+            The number of the category to plot examples of.  Provide the name or the number, but not both.
+
+        Returns
+        -------
+        None.
+        """
+        indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber)
+
+        self.PlotColorChannels(indices)
+
+
+    def PlotColorChannelsForAllCategories(self, numberOfExamples=1):
+        """
+        Plots example images of each category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of each category to plot.
+
+        Returns
+        -------
+        None.
+        """
+        # Note, the below assumes all categories are numbered in sequence from 0 to numberOfLabelCategories.  That is, the
+        # categories cannot be arbitrarily numbered.
+        for i in range(self.numberOfLabelCategories):
+            # For subsequent sections, add space after the preceeding.
+            if i > 0:
+                self.consoleHelper.PrintNewLine()
+
+            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.PlotColorChannelsByCategory(numberOfExamples, categoryNumber=i)
+
+
+    def PlotChromaKeyedImages(self, indices, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv"):
+        """
+        Plots chroma keyed images for the specified indices.
+        """
+        for index in indices:
+            ImageHelper.DisplayChromaKey(self.data[index], lowerBounds, upperBounds, maskBlurSize, colorConversion=self.colorConversion, inputBoundsFormat=inputBoundsFormat)
+
+
+    def PlotChromaKeyedImagesByCategory(self, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", categoryName=None, categoryNumber=None, numberOfExamples=1):
+        """
+        Plots images along with it's separated color channels for an image in the specified category.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of the category to plot.
+        categoryName : string
+            The name of the category to plot examples of.  Provide the name or the number, but not both.
+        categoryNumber : integory
+            The number of the category to plot examples of.  Provide the name or the number, but not both.
+
+        Returns
+        -------
+        None.
+        """
+        indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber)
+
+        self.PlotChromaKeyedImages(indices, lowerBounds, upperBounds, maskBlurSize=maskBlurSize, inputBoundsFormat=inputBoundsFormat)
+
+
+    def PlotChromaKeyedImagesForAllCategories(self, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", numberOfExamples=1):
+        """
+        Plots example images of each category type.
+
+        Parameters
+        ----------
+        numberOfExamples : integer
+            The number of examples of each category to plot.
+
+        Returns
+        -------
+        None.
+        """
+        # Note, the below assumes all categories are numbered in sequence from 0 to numberOfLabelCategories.  That is, the
+        # categories cannot be arbitrarily numbered.
+        for i in range(self.numberOfLabelCategories):
+            # For subsequent sections, add space after the preceeding.
+            if i > 0:
+                self.consoleHelper.PrintNewLine()
+
+            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.PlotChromaKeyedImagesByCategory(lowerBounds, upperBounds, maskBlurSize=maskBlurSize, inputBoundsFormat=inputBoundsFormat, categoryNumber=i, numberOfExamples=numberOfExamples)
+
+
+    def CreateCountPlot(self):
+        """
+        Creates a count plot of the image categories.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        PlotHelper.FormatPlot()
+        axis = sns.countplot(x=self.labels["Names"], palette=sns.color_palette("mako"))
+        axis.set(title="Category Count Plot", xlabel="Category", ylabel="Count")
+        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
+
+        # The categories are labeled by name (text) so rotate the text so it does not run together.
+        axis.set_xticklabels(axis.get_xticklabels(), rotation=45, ha="right")
+        plt.show()
+
+
+    def ApplyGaussianBlur(self, **kwargs):
+        """
+        Applies a chroma key to the images to extract portions of them.  This should be done before splitting.  The original
+        data is overwritten.
+
+        Parameters
+        ----------
+        **kwargs : keyword arguments
+            Arguments passed to the Gaussian filter.  For example, "ksize=(5,5), sigmaX=0"
+
+        Returns
+        -------
+        None.
+        """
+        newImages = []
+
+        for i in range(self.data.shape[0]):
+            newImages.append(cv2.GaussianBlur(self.data[i], **kwargs))
+
+        self.data = newImages
+
+
+    def ApplyChromaKey(self, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="image"):
+        """
+        Applies a Gaussian blur to the images.  This should be done before splitting.  The original data is overwritten.
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        None.
+        """
+        keepIndex = 0
+        if keep == "image":
+            keepIndex = 0
+        elif keep == "remainder":
+            keepIndex = 1
+        elif keep == "mask":
+            keepIndex = 2
+
+        newImages = []
+
+        for i in range(self.data.shape[0]):
+            imageArray = ImageHelper.ChromaKey(self.data[i], lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+            newImages.append(imageArray[keepIndex])
+
+        self.data = newImages
+
+
+    def NormalizePixelValues(self):
+        """
+        Normalizes all the pixel valus.  Call before splitting the data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        self.data = self.data / 255
+
+
+    def SplitData(self, testSize, validationSize=None, stratify=False):
+        """
+        Creates a linear regression model.  Splits the data and creates the model.
+
+        Parameters
+        ----------
+        dependentVariable : string
+            Name of the column that has the dependant data.
+        testSize : double
+            Fraction of the data to use as test data.  Must be in the range of 0-1.
+        validationSize : double
+            Fraction of the non-test data to use as validation data.  Must be in the range of 0-1.
+        stratify : bool
+            If true, the approximate ratio of value in the dependent variable is maintained.
+
+        Returns
+        -------
+        data : pandas.DataFrame
+            Data in a pandas.DataFrame
+        """
+        if len(self.data) == 0:
+            raise Exception("Data has not been loaded.")
+
+        x = self.data
+        y = self.labels["Numbers"]
+
+        if stratify:
+            stratifyInput = y
+        else:
+            stratifyInput = None
+
+        # Split the data.
+        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratifyInput)
+
+        if validationSize != None:
+            if stratify:
+                stratifyInput = self.yTrainingData
+            else:
+                stratifyInput = None
+            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
+
+
+    def GetSplitComparisons(self):
+        """
+        Returns the value counts and percentages of the dependant variable for the
+        original, training (if available), and testing (if available) data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        comparisonFrame : pandas.DataFrame
+            DataFrame with the counts and percentages.
+        """
+        # Get results for original data.
+        dataFrame = self.GetCountAndPrecentStrings(self.labels["Numbers"] ,"Original")
+
+        # If the data has been split, we will add the split information as well.
+        if len(self.yTrainingData) != 0:
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training")], axis=1)
+
+            if len(self.yValidationData) != 0:
+                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation")], axis=1)
+
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing")], axis=1)
+
+        return dataFrame
+
+
+    def GetCountAndPrecentStrings(self, dataSet, dataSetName):
+        """
+        Gets a string that is the value count of "classValue" and the percentage of the total
+        that the "classValue" accounts for in the column.
+
+        Parameters
+        ----------
+        dataSet : string
+            Which data set(s) to plot.
+
+        Returns
+        -------
+        None.
+        """
+        valueCounts        = [""] * self.numberOfLabelCategories
+        totalCount         = len(dataSet)
+
+        # Turn the numbers into formated strings.
+        for i in range(self.numberOfLabelCategories):
+            classValueCount = sum(dataSet == i)
+            valueCounts[i] = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount*100)
+
+        # Create the data frame.
+        comparisonFrame = pd.DataFrame(
+            valueCounts,
+            columns=[dataSetName],
+            index=self.labelCategories
+        )
+
+        return comparisonFrame
+
+
+    def EncodeCategoricalColumns(self):
+        """
+        Converts the categorical columns ("category" data type) to encoded values.
+        Prepares categorical columns for use in a model.
+
+        Parameters
+        ----------
+        columns : list of strings
+            The names of the columns to encode.
+        dropFirst : bool
+            If true, the first category is dropped for the encoding.
+
+        Returns
+        -------
+        None.
+        """
+        self.yTrainingEncoded   = tf.keras.utils.to_categorical(self.yTrainingData)
+        if len(self.yValidationData) != 0:
+            self.yValidationEncoded = tf.keras.utils.to_categorical(self.yValidationData)
+        self.yTestingEncoded    = tf.keras.utils.to_categorical(self.yTestingData)
+
+
+    def DisplayEncodingResults(self, numberOfEntries, randomEntries=False):
+        """
+        Prints a summary of the encoding processes.
+
+        Parameters
+        ----------
+        numberOfEntries : int
+            The number of entries to display.
+        randomEntries : bool
+            If true, random entries are chosen, otherwise, the first few entries are displayed.
+
+        Returns
+        -------
+        None.
+        """
+        indices = []
+        if randomEntries:
+            numberOfImages = len(self.yTrainingEncoded)
+            indices = random.sample(range(0, numberOfImages), numberOfEntries)
+        else:
+            indices = list(range(numberOfEntries))
+
+        self.consoleHelper.PrintTitle("Dependent Variable Numerical Labels")
+        yNumbers = self.yTrainingData.iloc[indices]
+        self.consoleHelper.Display(pd.DataFrame(yNumbers))
+
+        self.consoleHelper.PrintNewLine()
+        self.consoleHelper.PrintTitle("Dependent Variable Text Labels")
+        labels = [self.labelCategories[i] for i in yNumbers]
+        self.consoleHelper.Display(pd.DataFrame(labels, columns=["Labels"], index=yNumbers.index))
+
+        self.consoleHelper.PrintNewLine()
+        self.consoleHelper.PrintTitle("Dependent Variable Encoded Labels")
+        self.consoleHelper.Display(pd.DataFrame(self.yTrainingEncoded[indices], index=yNumbers.index))

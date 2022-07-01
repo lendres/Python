@@ -54,7 +54,7 @@ class LinearRegressionHelper(ModelHelper):
         return LinearRegression(**kwargs)
 
 
-    def GetModelPerformanceScores(self):
+    def GetModelPerformanceScores(self, final=False):
         """
         Calculates the model's scores for the split data (training and testing).
 
@@ -66,6 +66,8 @@ class LinearRegressionHelper(ModelHelper):
         -------
         DataFrame that contains various performance scores for the training and test data.
         """
+		# NOTE, need to implement the final argument.
+		
         # Make sure the model has been initiated and of the correct type.
         if not isinstance(self.model, LinearRegression):
             raise Exception("The regression model has not be initiated.")

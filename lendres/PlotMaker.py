@@ -8,8 +8,6 @@ import matplotlib.pyplot                         as plt
 import seaborn                                   as sns
 sns.set(color_codes=True)
 
-from sklearn                                     import metrics
-
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.LogisticRegressionTools           import LogisticRegressionTools
 
@@ -31,6 +29,8 @@ class PlotMaker():
             Main title for the data.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
+        axisLabels : array like of strings
+            Labels to use on the predicted and actual axes.
 
         Returns
         -------

@@ -39,11 +39,11 @@ class TestStackingHelper(unittest.TestCase):
         estimator2.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
         estimator2.Fit()
 
-        finalEstimator   = XGradientBoostingHelper(self.dataHelper)
+        finalEstimator   = GradientBoostingHelper(self.dataHelper)
         finalEstimator.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
         finalEstimator.Fit()
 
-        estimators       = [('AdaBoost', estimator1.model), ('Gradient Boost', estimator2.model)]
+        estimators       = [("AdaBoost", estimator1.model), ("Gradient Boost", estimator2.model)]
         final_estimator  = finalEstimator.model
 
         self.regressionHelper   = StackingHelper(self.dataHelper, StackingClassifier(estimators=estimators, final_estimator=final_estimator))

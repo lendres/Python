@@ -2,18 +2,24 @@
 Created on January 19, 2022.
 @author: Lance A. Endres
 """
-import pandas                           as pd
-import numpy                            as np
-import seaborn                          as sns
+import pandas                                    as pd
+import numpy                                     as np
+import seaborn                                   as sns
+from   sklearn                                   import metrics
 
-from   matplotlib                       import pyplot                     as plt
+from   matplotlib                                import pyplot                     as plt
 
-from   lendres.ConsoleHelper            import ConsoleHelper
-from   lendres.PlotHelper               import PlotHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.PlotHelper                        import PlotHelper
+
 
 class ModelHelper:
 
     savedModelHelpers         = {}
+
+    # Used to alter how the recall score is calculated for model comparisons.  If doing a
+    # non-binary classification change to "micro," for example.
+    recallAverage             = "binary"
 
 
     def __init__(self, dataHelper, model, description=""):
@@ -151,7 +157,7 @@ class ModelHelper:
         modelHelpers : list or dictionary
             List of ModelHelpers to compare.  If none is supplied, the list is taken from those stored in
             the ModelHelper.
-        score : string or list of strings
+        scores : string or list of strings
             Score to extract from the list of performance scores.  This must be a column in the DataFrame
             returned by the "GetModelPerformanceScores" function.
 
@@ -201,7 +207,7 @@ class ModelHelper:
 
 
     @classmethod
-    def PrintModelComparisons(cls, scores, modelHelpers=None):
+    def DisplayModelComparisons(cls, scores, modelHelpers=None):
         """
         Prints the model comparisons.
 
@@ -210,8 +216,7 @@ class ModelHelper:
         scores : string or list of strings.
             The score or scores to print out.
         modelHelpers : list of ModelHelpers
-            A list of ModelHelpers to get and print the scores of.  If none is supplied, the saved list
-            of MOdelHelpers is used.
+            A list of ModelHelpers to get and print the scores of.  If None, the saved list of ModelHelpers is used.
 
         Returns
         -------
@@ -230,6 +235,20 @@ class ModelHelper:
 
     @classmethod
     def CreateScorePlotForAllModels(cls, score, width=20):
+        """
+        Creates a bar plot of a score for all saved models.
+
+        Parameters
+        ----------
+        score : string
+            The scoring metric to plot.
+        width : int
+            The plot width.
+
+        Returns
+        -------
+        None.
+        """
         dataFrame = ModelHelper.GetModelComparisons(score)
 
         # Prepare the DataFrame for plotting.  This transforms the DataFrame
@@ -375,3 +394,86 @@ class ModelHelper:
                                  index=self.dataHelper.xTrainingData.columns.tolist()+["Intercept"],
                                  columns=["Coefficients"])
         return dataFrame
+
+
+    def GetModelPerformanceScores(self, final=False):
+        """
+        Calculate performance metrics.  Threshold for a positive result can be specified.
+
+        Parameters
+        ----------
+        threshold : float
+            Threshold for classifying the observation success.
+
+        Returns
+        -------
+        dataFrame : DataFrame
+            DataFrame that contains various performance scores for the training and test data.
+        """
+        # Make sure the model has been initiated and of the correct type.
+        if self.model == None:
+            raise Exception("The regression model has not be initiated.")
+
+        if len(self.yTrainingPredicted) == 0:
+            raise Exception("The predicted values have not been calculated.")
+
+        # Calculate scores.
+        # TRAINING.
+        # Accuracy.
+        accuracyScores   = [metrics.accuracy_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
+        # Recall.
+        recallScores     = [metrics.recall_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.recallAverage)]
+        # Precision.
+        precisionScores  = [metrics.precision_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, zero_division=0, average=ModelHelper.recallAverage)]
+        # F1.
+        f1Scores         = [metrics.f1_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.recallAverage)]
+        # Index.
+        index            = ["Training"]
+
+        # VALIDATION.
+        if len(self.dataHelper.yValidationData) != 0:
+           # Accuracy.
+            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yValidationData, self.yValidationPredicted))
+            # Recall.
+            recallScores.append(metrics.recall_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.recallAverage))
+            # Precision.
+            precisionScores.append(metrics.precision_score(self.dataHelper.yValidationData, self.yValidationPredicted, zero_division=0, average=ModelHelper.recallAverage))
+            # F1.
+            f1Scores.append(metrics.f1_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.recallAverage))
+            # Index.
+            index.append("Validation")
+
+        if final:
+            # TESTING.
+            # Accuracy.
+            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
+            # Recall.
+            recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.recallAverage))
+            # Precision.
+            precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0, average=ModelHelper.recallAverage))
+            # F1.
+            f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.recallAverage))
+            # Index.
+            index.append("Testing")
+
+        # Create a DataFrame for returning the values.
+        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
+                                  "Recall"    : recallScores,
+                                  "Precision" : precisionScores,
+                                  "F1"        : f1Scores},
+                                 index=index)
+
+        return dataFrame
+
+
+    def DisplayModelPerformanceScores(self, final=False):
+        """
+        Displays the model performance scores based on the settings in the ConsuleHelper.
+
+        Returns
+        -------
+        None.
+        """
+        scores = self.GetModelPerformanceScores(final)
+        self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)

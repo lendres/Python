@@ -29,14 +29,14 @@ class TestXGradientBoostingHelper(unittest.TestCase):
         self.regressionHelper   = XGradientBoostingHelper(self.dataHelper)
 
 
-    def testResults(self):
-        self.regressionHelper.FitPredict()
-        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
-        result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
-        self.assertAlmostEqual(result[1, 1], 48)
-        result = self.regressionHelper.GetModelPerformanceScores(final=True)
-        #display(result)
-        self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.5333, places=3)
+    # def testResults(self):
+    #     self.regressionHelper.FitPredict()
+    #     self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
+    #     result = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
+    #     self.assertAlmostEqual(result[1, 1], 48)
+    #     result = self.regressionHelper.GetModelPerformanceScores(final=True)
+    #     #display(result)
+    #     self.assertAlmostEqual(result.loc["Testing", "Recall"], 0.5333, places=3)
 
 
 if __name__ == "__main__":

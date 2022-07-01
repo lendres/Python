@@ -164,15 +164,15 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.dataHelper.consoleHelper.PrintSectionTitle("Model Comparisons")
 
         # Test getting a single score.
-        ModelHelper.PrintModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
+        ModelHelper.DisplayModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
 
         # Test getting multiple scores and test using the print function.
         print("\n\n")
-        ModelHelper.PrintModelComparisons(["Accuracy", "Recall"], TestHyperparameterHelper.regresionHelpers)
+        ModelHelper.DisplayModelComparisons(["Accuracy", "Recall"], TestHyperparameterHelper.regresionHelpers)
 
         # Test using the internally saved model helpers of ModelHelpr.
         print("\n\n")
-        ModelHelper.PrintModelComparisons(["Accuracy", "Recall"])
+        ModelHelper.DisplayModelComparisons(["Accuracy", "Recall"])
 
 
     def testZPlot(self):

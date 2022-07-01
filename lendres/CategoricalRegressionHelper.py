@@ -2,18 +2,14 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas                   as pd
-import numpy                    as np
+import pandas                                    as pd
+import matplotlib.pyplot                         as plt
+from   sklearn                                   import metrics
 
-import matplotlib.pyplot        as plt
-import seaborn                  as sns
-
-from sklearn                    import metrics
-
-from lendres.ConsoleHelper      import ConsoleHelper
-from lendres.ModelHelper        import ModelHelper
-from lendres.PlotHelper         import PlotHelper
-from lendres.PlotMaker          import PlotMaker
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.ModelHelper                       import ModelHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.PlotMaker                         import PlotMaker
 
 class CategoricalRegressionHelper(ModelHelper):
 
@@ -154,86 +150,3 @@ class CategoricalRegressionHelper(ModelHelper):
             raise Exception("Invalid data set specified.")
 
         return confusionMatrix
-
-
-    def DisplayModelPerformanceScores(self, final=False):
-        """
-        Displays the model performance scores based on the settings in the ConsuleHelper.
-
-        Returns
-        -------
-        None.
-        """
-        scores = self.GetModelPerformanceScores(final)
-        self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
-        self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)
-
-
-    def GetModelPerformanceScores(self, final=False):
-        """
-        Calculate performance metrics.  Threshold for a positive result can be specified.
-
-        Parameters
-        ----------
-        threshold : float
-            Threshold for classifying the observation success.
-
-        Returns
-        -------
-        dataFrame : DataFrame
-            DataFrame that contains various performance scores for the training and test data.
-        """
-        # Make sure the model has been initiated and of the correct type.
-        if self.model == None:
-            raise Exception("The regression model has not be initiated.")
-
-        if len(self.yTrainingPredicted) == 0:
-            raise Exception("The predicted values have not been calculated.")
-
-        # Calculate scores.
-        # TRAINING.
-        # Accuracy.
-        accuracyScores   = [metrics.accuracy_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
-        # Recall.
-        recallScores     = [metrics.recall_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
-        # Precision.
-        precisionScores  = [metrics.precision_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, zero_division=0)]
-        # F1.
-        f1Scores         = [metrics.f1_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
-        # Index.
-        index            = ["Training"]
-
-        # VALIDATION.
-        if len(self.dataHelper.yValidationData) != 0:
-           # Accuracy.
-            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yValidationData, self.yValidationPredicted))
-            # Recall.
-            recallScores.append(metrics.recall_score(self.dataHelper.yValidationData, self.yValidationPredicted))
-            # Precision.
-            precisionScores.append(metrics.precision_score(self.dataHelper.yValidationData, self.yValidationPredicted, zero_division=0))
-            # F1.
-            f1Scores.append(metrics.f1_score(self.dataHelper.yValidationData, self.yValidationPredicted))
-            # Index.
-            index.append("Validation")
-
-        if final:
-            # TESTING.
-            # Accuracy.
-            accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-            # Recall.
-            recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-            # Precision.
-            precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0))
-            # F1.
-            f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted))
-            # Index.
-            index.append("Testing")
-
-        # Create a DataFrame for returning the values.
-        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
-                                  "Recall"    : recallScores,
-                                  "Precision" : precisionScores,
-                                  "F1"        : f1Scores},
-                                 index=index)
-
-        return dataFrame
