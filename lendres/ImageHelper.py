@@ -11,6 +11,49 @@ from   lendres.PlotHelper                        import PlotHelper
 class ImageHelper():
     arrayImageSize = 2.5
 
+
+    @classmethod
+    def PlotImage(cls, image, title=None, size=6, colorConversion=None):
+        """
+        Plot example image.
+
+        Parameters
+        ----------
+        image : image
+            Image to plot.
+        title : string
+            Title of the figure.
+        size : float
+            Size (width and height) of figure.
+        colorConversion : OpenCV color conversion enumeration.
+            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+
+        Returns
+        -------
+        None.
+        """
+        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
+        #PlotHelper.scale = 0.65
+        PlotHelper.FormatPlot(width=size, height=size)
+
+        # Adding subplots with 3 rows and 4 columns.
+        axis = plt.gca()
+
+        # Plotting the image.
+        if colorConversion != None:
+            image = cv2.cvtColor(image, colorConversion)
+        axis.imshow(image)
+
+        if title != None:
+            axis.set_title(title)
+
+        # Turn off white grid lines.
+        plt.grid(False)
+
+        plt.show()
+        PlotHelper.scale = 1.0
+
     @classmethod
     def CreateImageArrayPlot(cls, images, labels, columns=4, colorConversion=None):
         """
@@ -24,6 +67,10 @@ class ImageHelper():
             Set of labels to use for the individual images.
         columns : integer
             The number of columns to plot.
+        colorConversion : OpenCV color conversion enumeration.
+            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+
 
         Returns
         -------

@@ -18,6 +18,7 @@ from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
+from   lendres.ImageHelper                       import ImageHelper
 
 class ImageDataHelper():
 
@@ -246,42 +247,32 @@ class ImageDataHelper():
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
 
 
-    def PlotImage(self, index=0, random=False, size=6):
+    def PlotImage(self, index=None, random=False, size=6):
         """
-        Print example images.
+        Plot example image.
 
         Parameters
         ----------
-        None.
+        index : index value
+            Index value of image to plot.
+        random : boolean
+            If true, a random image is selected.
+        size : float
+            Size (width and height) of figure.
 
         Returns
         -------
         None.
         """
-        # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        #PlotHelper.scale = 0.65
-        PlotHelper.FormatPlot(width=size, height=size)
-
         # Generating random indices from the data and plotting the images.
         if random:
             index = np.random.randint(0, self.labels.shape[0])
 
-        # Adding subplots with 3 rows and 4 columns.
-        axis = plt.gca()
-
-        # Plotting the image.
+        # Get the image.
         image = self.data[index]
-        if self.colorConversion != None:
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        axis.imshow(image)
 
-        axis.set_title(self.labels["Names"].loc[index])
-
-        # Turn off white grid lines.
-        plt.grid(False)
-
-        plt.show()
-        PlotHelper.scale = 1.0
+        title = self.labels["Names"].loc[index]
+        ImageHelper.PlotImage(image, title=title, size=size, colorConversion=self.colorConversion)
 
 
     def PlotImages(self, rows=4, columns=4, random=False, indices=None):
@@ -382,7 +373,6 @@ class ImageDataHelper():
         None.
         """
         indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber)
-
         self.PlotImages(1, numberOfExamples, indices=indices)
 
 
@@ -411,13 +401,25 @@ class ImageDataHelper():
 
 
     def PlotColorChannels(self, indices):
+        """
+        Plots images along with its separated color channels.
+
+        Parameters
+        ----------
+        indices : list of index values
+            The indices of the images to plot.
+
+        Returns
+        -------
+        None.
+        """
         for index in indices:
             ImageHelper.DisplayColorChannels(self.data[index], self.colorConversion)
 
 
     def PlotColorChannelsByCategory(self, numberOfExamples=1, categoryName=None, categoryNumber=None):
         """
-        Plots images along with it's separated color channels for an image in the specified category.
+        Plots images along with its separated color channels for an image in the specified category.
 
         Parameters
         ----------
