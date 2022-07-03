@@ -168,6 +168,31 @@ class ImageHelper():
 
 
     @classmethod
+    def ApplyGaussianBlur(self, images, **kwargs):
+        """
+        Applies a gaussian blur to the images.
+
+        Parameters
+        ----------
+        images : array like set of images
+            Images in an array.
+        **kwargs : keyword arguments
+            Arguments passed to the Gaussian filter.  For example, "ksize=(5,5), sigmaX=0"
+
+        Returns
+        -------
+        newImages : array like set of images
+            The new images with the blur applied.
+        """
+        newImages = []
+
+        for i in range(len(images)):
+            newImages.append(cv2.GaussianBlur(images[i], **kwargs))
+
+        self.data = newImages
+
+
+    @classmethod
     def ChromaKey(cls, image, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv"):
         """
         Splits the image into two components based on chroma keying.
@@ -203,6 +228,56 @@ class ImageHelper():
             raise Exception("Input bounds format argument not valid.")
 
         return imageArray
+
+
+    @classmethod
+    def GetChromaKeyPart(self, images, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="bounded"):
+        """
+        Applies a chroma key filter to the images and returns the portion of interest.
+
+        The ChromaKey functions splits an image into 3 parts, the bounded part, the remained, and the mask.  This function
+        goes through an array of images and returns just one of those parts for all images.
+
+        Parameters
+        ----------
+        images : array like set of images
+            Images in an array.
+        lowerBounds : numpy array of 3 values.
+            Lower bounds of mask.
+        upperBounds : numpy array of 3 values.
+            Upper bounds of mask.
+        maskBlurSize : int
+            Size of the blur to apply to the mask.  Must be an odd number.
+        inputBoundsFormat : string
+            Format of lowerBounds and upperBounds.
+        keep : string
+            Part of the split image to keep.
+            bounded : The original image that is bounded by the input.
+            remainder : The original image that is outside of the input bounds.
+            mask : The mask used to separate the image.
+
+        Returns
+        -------
+        newImages : array like set of images
+            An array of images that contains the specified part of the split image.
+        """
+        keepIndex = 0
+        if keep == "bounded":
+            keepIndex = 0
+        elif keep == "remainder":
+            keepIndex = 1
+        elif keep == "mask":
+            keepIndex = 2
+        else:
+            raise Exception("The input argument \"keep\" contains an invalid value.")
+
+        newImages = []
+
+        for i in range(len(images)):
+            imageArray = ImageHelper.ChromaKey(images[i], lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+            newImages.append(imageArray[keepIndex])
+
+        return newImages
 
 
     @classmethod

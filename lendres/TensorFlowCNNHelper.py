@@ -171,6 +171,7 @@ class TensorFlowCNNHelper(TensorFlowHelper):
             location  = np.random.randint(0, len(actualData))
             index     = actualData.index[location]
 
+        # Predicted data doesn't have an index, we need to use its location.
         predictedName = self.dataHelper.labelCategories[predictedData[location]]
         actualName    = self.dataHelper.labels["Names"].loc[index]
 

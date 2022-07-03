@@ -175,3 +175,66 @@ class TensorFlowHelper(ModelHelper):
         """
         confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTestingData, self.yTestingPredicted)
         return PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, "Confusion Matrix", titlePrefix=titlePrefix, axisLabels=axisLabels)
+
+
+    def GetDataSets(self, dataSet="testing"):
+        """
+        Gets the data sets based on the input argument.
+
+        Parameters
+        ----------
+        dataSet : string
+            Data set to select the image prediction from.  It can be either training, validation, or testing.
+
+        Returns
+        -------
+        actualData : array like
+            Data set of actual values.
+        predictedData : array like
+            Data set of predicted values.
+        """
+        actualData    = None
+        predictedData = None
+        if dataSet == "training":
+            actualData    = self.dataHelper.yTrainingData
+            predictedData = self.yTrainingPredicted
+        elif dataSet == "validation":
+            actualData    = self.dataHelper.yValidationData
+            predictedData = self.yValidationPredicted
+        elif dataSet == "testing":
+            actualData    = self.dataHelper.yTestingData
+            predictedData = self.yTestingPredicted
+        else:
+            raise Exception("The \"dataSet\" argument is invalid.")
+
+        return actualData, predictedData
+
+
+    def GetPredictions(self, dataSet="testing", criteria="wrong"):
+        """
+        Plot example image.
+
+        Parameters
+        ----------
+        dataSet : string
+            Data set to select the image prediction from.  It can be either training, validation, or testing.
+        criteria : string
+            Prediction criteria that is one of:
+            correct : Returns the entries that were correctly predicted.
+            wrong : Returns the entries that were incorrectly predicted.
+
+        Returns
+        -------
+        None.
+        """
+        actualData, predictedData = self.GetDataSets(dataSet)
+
+        wrongPredictions = None
+        if criteria == "correct":
+            wrongPredictions = actualData[actualData == predictedData]
+        elif criteria == "wrong":
+            wrongPredictions = actualData[actualData != predictedData]
+        else:
+            raise Exception("Incorrect value provided for the \"criteria\" argument")
+
+        return wrongPredictions

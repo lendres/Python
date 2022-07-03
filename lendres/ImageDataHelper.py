@@ -21,6 +21,16 @@ from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper
 
 class ImageDataHelper():
+    """
+    Class for storing and manipulating images for use in a machine learning model.
+
+    General Notes
+        - Split the data before preprocessing the images.
+            - The class is set up so the original data is preserved in the self.data variable and
+              the processed data is in the split variables (xTrainingData, xValidationData, xTestingdata).
+              This allows the images to be plotted after processing.  For example, while demonstrating/comparing
+              predictions.
+    """
 
     def __init__(self, consoleHelper=None):
         """
@@ -541,7 +551,7 @@ class ImageDataHelper():
 
     def ApplyGaussianBlur(self, **kwargs):
         """
-        Applies a chroma key to the images to extract portions of them.  This should be done before splitting.  The original
+        Applies a Gaussian blur to the images.  This should be done after splitting.  The original
         data is overwritten.
 
         Parameters
@@ -553,46 +563,45 @@ class ImageDataHelper():
         -------
         None.
         """
-        newImages = []
-
-        for i in range(self.data.shape[0]):
-            newImages.append(cv2.GaussianBlur(self.data[i], **kwargs))
-
-        self.data = newImages
+        self.xTrainingData = ImageHelper.ApplyGaussianBlur(self.xTrainingData, **kwargs)
+        if len(self.xValidationData) != 0:
+            self.xValidationData = ImageHelper.ApplyGaussianBlur(self.xValidationData, **kwargs)
+        self.xTestingData  = ImageHelper.ApplyGaussianBlur(self.xTestingData, **kwargs)
 
 
-    def ApplyChromaKey(self, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="image"):
+    def ApplyChromaKey(self, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="bounded"):
         """
-        Applies a Gaussian blur to the images.  This should be done before splitting.  The original data is overwritten.
+        Applies a chroma key filter to the images.  This should be done after splitting.  The original data is overwritten.
 
         Parameters
         ----------
-
+        lowerBounds : numpy array of 3 values.
+            Lower bounds of mask.
+        upperBounds : numpy array of 3 values.
+            Upper bounds of mask.
+        maskBlurSize : int
+            Size of the blur to apply to the mask.  Must be an odd number.
+        inputBoundsFormat : string
+            Format of lowerBounds and upperBounds.
+        keep : string
+            Part of the split image to keep.
+            bounded : The original image that is bounded by the input.
+            remainder : The original image that is outside of the input bounds.
+            mask : The mask used to separate the image.
 
         Returns
         -------
         None.
         """
-        keepIndex = 0
-        if keep == "image":
-            keepIndex = 0
-        elif keep == "remainder":
-            keepIndex = 1
-        elif keep == "mask":
-            keepIndex = 2
-
-        newImages = []
-
-        for i in range(self.data.shape[0]):
-            imageArray = ImageHelper.ChromaKey(self.data[i], lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
-            newImages.append(imageArray[keepIndex])
-
-        self.data = newImages
+        self.xTrainingData = ImageHelper.GetChromaKeyPart(self.xTrainingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+        if len(self.xValidationData) != 0:
+            self.xValidationData = ImageHelper.GetChromaKeyPart(self.xValidationData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+        self.xTestingData  = ImageHelper.GetChromaKeyPart(self.xTestingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
 
 
     def NormalizePixelValues(self):
         """
-        Normalizes all the pixel valus.  Call before splitting the data.
+        Normalizes all the pixel valus.  Call after splitting the data.
 
         Parameters
         ----------
@@ -602,7 +611,10 @@ class ImageDataHelper():
         -------
         None.
         """
-        self.data = self.data / 255
+        self.xTrainingData = self.xTrainingData / 255
+        if len(self.xValidationData) != 0:
+            self.xValidationData = self.xValidationData / 255
+        self.xTestingData  = self.xTestingData / 255
 
 
     def SplitData(self, testSize, validationSize=None, stratify=False):
