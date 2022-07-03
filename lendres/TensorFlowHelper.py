@@ -69,9 +69,6 @@ class TensorFlowHelper(ModelHelper):
         cls.reportColumnLabels.append("Accuracy")
         cls.reportColumnLabels.append("Error Rate")
 
-        # Initialize the storage DataFrame.
-        #cls.modelResults = pd.DataFrame(columns=cls.reportColumnLabels)
-
 
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
         """
@@ -89,8 +86,8 @@ class TensorFlowHelper(ModelHelper):
         # Must be called first.
         PlotHelper.FormatPlot()
 
-        plt.plot(self.history.history[parameter])
-        plt.plot(self.history.history["val_"+parameter])
+        plt.plot(self.history[parameter])
+        plt.plot(self.history["val_"+parameter])
 
         # Create titles and set legend.
         plt.gca().set(title="Model "+parameter.title(), xlabel="Epoch", ylabel=parameter.title())
@@ -178,111 +175,3 @@ class TensorFlowHelper(ModelHelper):
         """
         confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTestingData, self.yTestingPredicted)
         return PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, "Confusion Matrix", titlePrefix=titlePrefix, axisLabels=axisLabels)
-
-
-class TensorFlowCNNHelper(TensorFlowHelper):
-    def __init__(self, imageHelper, model, description=""):
-        """
-        Constructor.
-
-        Parameters
-        ----------
-        imageHelper : ImageHelper
-            ImageHelper that has the input images.
-        model : Model
-            A TensorFlow model.
-        description : string
-            A description of the model.
-
-        Returns
-        -------
-        None.
-        """
-        super().__init__(imageHelper, model, description)
-
-
-    def Fit(self, **kwargs):
-        """
-        Fits the model.
-
-        Parameters
-        ----------
-        **kwargs : keyword arguments
-            These arguments are passed on to the model's fit function.
-
-        Returns
-        -------
-        None.
-        """
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        if self.model == None:
-            raise Exception("The model has not been created.")
-
-        self.history = self.model.fit(
-            self.dataHelper.xTrainingData,
-            self.dataHelper.yTrainingEncoded,
-            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationEncoded),
-            **kwargs
-        )
-
-
-    def DisplayModelEvaluation(self):
-        """
-        Displays the evalution of the model after it has run (summary of time and scores).
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        results = self.model.evaluate(self.dataHelper.xTestingData, self.dataHelper.yTestingEncoded)
-        self.dataHelper.consoleHelper.Display(results)
-
-
-    def Predict(self):
-        """
-        Predicts classification based on the maximum probabilities.
-        Used for non-binary classification problems.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        self.yTrainingPredicted        = self.GetPredictedClassification(self.dataHelper.xTrainingData)
-        self.yTestingPredicted         = self.GetPredictedClassification(self.dataHelper.xTestingData)
-
-        if len(self.dataHelper.yValidationData) != 0:
-            self.yValidationPredicted  = self.GetPredictedClassification(self.dataHelper.xValidationData)
-
-
-    def GetPredictedClassification(self, xData):
-        """
-        Gets the predicted classification based on the maximum probabilities.
-        Used for non-binary classification problems.
-
-        Parameters
-        ----------
-        xData : array like
-            Independent variables.
-
-        Returns
-        -------
-        yPredictedData : array like
-            Predictions of the dependent variable.
-        """
-        yPerdicted = self.model.predict(xData)
-        yPerdictedClass = []
-
-        for i in yPerdicted:
-            yPerdictedClass.append(np.argmax(i))
-
-        return yPerdictedClass
