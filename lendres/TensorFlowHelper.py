@@ -10,11 +10,13 @@ sns.set(color_codes=True)
 
 from   sklearn                                   import metrics
 
+import os
+
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.ModelHelper                       import ModelHelper
 from   lendres.PlotMaker                         import PlotMaker
 
-class TensorFlowHelper(ModelHelper):
+class TensorFloclass TensorFlowHelper(ModelHelper):
     # Class level variables.
     reportColumnLabels   = []
     modelResults         = {}
@@ -70,6 +72,54 @@ class TensorFlowHelper(ModelHelper):
         cls.reportColumnLabels.append("Error Rate")
 
 
+    def Fit(self, appendHistory=True, **kwargs):
+        """
+        Fits the model.
+
+        Parameters
+        ----------
+        appendHistory : boolean
+            If true, the history is appended to the previous, otherwise it overwrites any existing.
+        **kwargs : keyword arguments
+            These arguments are passed on to the model's fit function.
+
+        Returns
+        -------
+        None.
+        """
+        if len(self.dataHelper.xTrainingData) == 0:
+            raise Exception("The data has not been split.")
+
+        if self.model == None:
+            raise Exception("The model has not been created.")
+
+        history = self.model.fit(
+            self.dataHelper.xTrainingData,
+            self.dataHelper.yTrainingEncoded,
+            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationEncoded),
+            **kwargs
+        )
+
+        self.SetHistory(history, appendHistory)
+
+
+    def SetHistory(self, tensorFlowHistory, appendHistory=True):
+        history = pd.DataFrame.from_dict(tensorFlowHistory.history)
+        if appendHistory and self.history is not None:
+            self.history = pd.concat([self.history, history], axis=0)
+        else:
+            self.history = history
+
+
+    def SaveHistory(self, path):
+        self.history.to_csv(path, index=False)
+
+
+    def LoadHistory(self, inputFile):
+        if os.path.exists(inputFile):
+            self.history = pd.read_csv(inputFile)
+
+
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
         """
         Plots the confusion matrix for the model output.
@@ -86,8 +136,10 @@ class TensorFlowHelper(ModelHelper):
         # Must be called first.
         PlotHelper.FormatPlot()
 
-        plt.plot(self.history[parameter])
-        plt.plot(self.history["val_"+parameter])
+        # Create x-values so that the first epoch is at 1 and not 0, the default plot start.
+        xValues = range(1, len(self.history)+1)
+        plt.plot(xValues, self.history[parameter])
+        plt.plot(xValues, self.history["val_"+parameter])
 
         # Create titles and set legend.
         plt.gca().set(title="Model "+parameter.title(), xlabel="Epoch", ylabel=parameter.title())
@@ -175,66 +227,3 @@ class TensorFlowHelper(ModelHelper):
         """
         confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTestingData, self.yTestingPredicted)
         return PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, "Confusion Matrix", titlePrefix=titlePrefix, axisLabels=axisLabels)
-
-
-    def GetDataSets(self, dataSet="testing"):
-        """
-        Gets the data sets based on the input argument.
-
-        Parameters
-        ----------
-        dataSet : string
-            Data set to select the image prediction from.  It can be either training, validation, or testing.
-
-        Returns
-        -------
-        actualData : array like
-            Data set of actual values.
-        predictedData : array like
-            Data set of predicted values.
-        """
-        actualData    = None
-        predictedData = None
-        if dataSet == "training":
-            actualData    = self.dataHelper.yTrainingData
-            predictedData = self.yTrainingPredicted
-        elif dataSet == "validation":
-            actualData    = self.dataHelper.yValidationData
-            predictedData = self.yValidationPredicted
-        elif dataSet == "testing":
-            actualData    = self.dataHelper.yTestingData
-            predictedData = self.yTestingPredicted
-        else:
-            raise Exception("The \"dataSet\" argument is invalid.")
-
-        return actualData, predictedData
-
-
-    def GetPredictions(self, dataSet="testing", criteria="wrong"):
-        """
-        Plot example image.
-
-        Parameters
-        ----------
-        dataSet : string
-            Data set to select the image prediction from.  It can be either training, validation, or testing.
-        criteria : string
-            Prediction criteria that is one of:
-            correct : Returns the entries that were correctly predicted.
-            wrong : Returns the entries that were incorrectly predicted.
-
-        Returns
-        -------
-        None.
-        """
-        actualData, predictedData = self.GetDataSets(dataSet)
-
-        wrongPredictions = None
-        if criteria == "correct":
-            wrongPredictions = actualData[actualData == predictedData]
-        elif criteria == "wrong":
-            wrongPredictions = actualData[actualData != predictedData]
-        else:
-            raise Exception("Incorrect value provided for the \"criteria\" argument")
-
-        return wrongPredictions

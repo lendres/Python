@@ -402,8 +402,8 @@ class ModelHelper:
 
         Parameters
         ----------
-        threshold : float
-            Threshold for classifying the observation success.
+        final : boolean
+            If true, the testing scores are included.
 
         Returns
         -------
@@ -466,14 +466,28 @@ class ModelHelper:
         return dataFrame
 
 
-    def DisplayModelPerformanceScores(self, final=False):
+    def DisplayModelPerformanceScores(self, scores=None, final=False):
         """
-        Displays the model performance scores based on the settings in the ConsuleHelper.
+        Displays the model performance scores based on the settings in the ConsoleHelper.
+
+        Parameters
+        ----------
+        scores : string or list of strings
+            Score to extract from the list of performance scores.  This must be a column in the DataFrame
+            returned by the "GetModelPerformanceScores" function.
+        final : boolean
+            If true, the testing scores are included.
 
         Returns
         -------
         None.
         """
-        scores = self.GetModelPerformanceScores(final)
+        scoresDataFrame = self.GetModelPerformanceScores(final)
+        if scores != None:
+            # Ensure scores is a list.
+            if type(scores) != list:
+                scores = [scores]
+            scoresDataFrame = scoresDataFrame[scores]
+
         self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
-        self.dataHelper.consoleHelper.Display(scores, ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(scoresDataFrame, ConsoleHelper.VERBOSEREQUESTED)

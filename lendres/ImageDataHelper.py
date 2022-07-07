@@ -30,6 +30,9 @@ class ImageDataHelper():
               the processed data is in the split variables (xTrainingData, xValidationData, xTestingdata).
               This allows the images to be plotted after processing.  For example, while demonstrating/comparing
               predictions.
+
+    To Do
+        Update to use LabelEncoder().
     """
 
     def __init__(self, consoleHelper=None):
@@ -597,6 +600,48 @@ class ImageDataHelper():
         if len(self.xValidationData) != 0:
             self.xValidationData = ImageHelper.GetChromaKeyPart(self.xValidationData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
         self.xTestingData  = ImageHelper.GetChromaKeyPart(self.xTestingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+
+
+    def ApplyColorConversion(self, colorConversion=None):
+        """
+        Applies color conversion to all images.
+
+        Parameters
+        ----------
+        colorConversion : OpenCV color conversion enumeration.
+            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+
+        Returns
+        -------
+        None.
+        """
+        if colorConversion is None:
+            colorConversion = self.colorConversion
+
+        for i in range(self.data.shape[0]):
+            self.data[i] = cv2.cvtColor(self.data[i], colorConversion)
+
+
+    def ApplyMonoChromeToColorConversion(self, colorConversion=None):
+        """
+        Applies color conversion to all images.
+
+        Parameters
+        ----------
+        colorConversion : OpenCV color conversion enumeration.
+            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+
+        Returns
+        -------
+        None.
+        """
+        if colorConversion is None:
+            colorConversion = self.colorConversion
+
+        for i in range(self.data.shape[0]):
+            self.data[i] = cv2.cvtColor(self.data[i], colorConversion)
 
 
     def NormalizePixelValues(self):
