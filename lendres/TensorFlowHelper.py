@@ -16,7 +16,7 @@ from   lendres.PlotHelper                        import PlotHelper
 from   lendres.ModelHelper                       import ModelHelper
 from   lendres.PlotMaker                         import PlotMaker
 
-class TensorFloclass TensorFlowHelper(ModelHelper):
+class TensorFlowHelper(ModelHelper):
     # Class level variables.
     reportColumnLabels   = []
     modelResults         = {}
@@ -104,6 +104,20 @@ class TensorFloclass TensorFlowHelper(ModelHelper):
 
 
     def SetHistory(self, tensorFlowHistory, appendHistory=True):
+        """
+        Sets the history.  Appends it to the current history if specified.
+
+        Parameters
+        ----------
+        tensorFlowHistory : tensor flow history
+            Tensor flow history to set.
+        appendHistory : boolean
+            If true, the history is appended to the current history.
+
+        Returns
+        -------
+        None.
+        """
         history = pd.DataFrame.from_dict(tensorFlowHistory.history)
         if appendHistory and self.history is not None:
             self.history = pd.concat([self.history, history], axis=0)
@@ -112,12 +126,36 @@ class TensorFloclass TensorFlowHelper(ModelHelper):
 
 
     def SaveHistory(self, path):
+        """
+        Saves the hisory to the specified path.
+
+        Parameters
+        ----------
+        path : string
+            Path to save the history to.
+
+        Returns
+        -------
+        None.
+        """
         self.history.to_csv(path, index=False)
 
 
-    def LoadHistory(self, inputFile):
-        if os.path.exists(inputFile):
-            self.history = pd.read_csv(inputFile)
+    def LoadHistory(self, path):
+        """
+        Loads the hisory from the specified path.
+
+        Parameters
+        ----------
+        path : string
+            Path to load the history from.
+
+        Returns
+        -------
+        None.
+        """
+        if os.path.exists(path):
+            self.history = pd.read_csv(path)
 
 
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
@@ -207,23 +245,3 @@ class TensorFloclass TensorFlowHelper(ModelHelper):
         None.
         """
         self.dataHelper.consoleHelper.Print(metrics.classification_report(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0))
-
-
-    def CreateConfusionMatrixPlot(self, titlePrefix=None, axisLabels=None):
-        """
-        Plots the confusion matrix for the model output.
-
-        Parameters
-        ----------
-        titlePrefix : string or None, optional
-            If supplied, the string is prepended to the title.
-        axisLabels : array like of strings
-            Labels to use on the predicted and actual axes.
-
-        Returns
-        -------
-        figure : Figure
-            The newly created figure.
-        """
-        confusionMatrix = metrics.confusion_matrix(self.dataHelper.yTestingData, self.yTestingPredicted)
-        return PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, "Confusion Matrix", titlePrefix=titlePrefix, axisLabels=axisLabels)
