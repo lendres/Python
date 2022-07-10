@@ -33,7 +33,7 @@ class CategoricalHelper(ModelHelper):
         super().__init__(dataHelper, model, description)
 
 
-    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None):
+    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None, axisLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -41,10 +41,13 @@ class CategoricalHelper(ModelHelper):
         ----------
         dataSet : string
             Which data set(s) to plot.
-            training - Plots the results from the training data.
-            testing  - Plots the results from the test data.
+            training   - Plots the results from the training data.
+            validation - Plots the result from the validation data.
+            testing    - Plots the results from the test data.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
+        axisLabels : array like of strings
+            Labels to use on the predicted and actual axes.
 
         Returns
         -------
@@ -53,7 +56,7 @@ class CategoricalHelper(ModelHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix)
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix=titlePrefix, axisLabels=axisLabels)
 
         return confusionMatrix
 
@@ -66,9 +69,9 @@ class CategoricalHelper(ModelHelper):
         ----------
         dataSet : string
             Which data set(s) to plot.
-            training - Plots the results from the training data.
+            training   - Plots the results from the training data.
             validation - Plots the result from the validation data.
-            testing  - Plots the results from the testing data.
+            testing    - Plots the results from the testing data.
         scale : double
             Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot.
 

@@ -13,10 +13,12 @@ from   sklearn                                   import metrics
 import os
 
 from   lendres.PlotHelper                        import PlotHelper
-from   lendres.ModelHelper                       import ModelHelper
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.CategoricalHelper                 import CategoricalHelper
 
-class TensorFlowHelper(ModelHelper):
+from   tensorflow.keras.models                   import load_model
+
+
+class TensorFlowHelper(CategoricalHelper):
     # Class level variables.
     reportColumnLabels   = []
     modelResults         = {}
@@ -31,8 +33,8 @@ class TensorFlowHelper(ModelHelper):
         ----------
         dataHelper : DataHelper
             DataHelper that contains the data.
-        model : Model
-            A TensorFlow model.
+        model : TensorFlow Model or string
+            A TensorFlow model or string that is the path to load the model from.
         numberOfOutputNodes : int
         description : string
             A description of the model.
@@ -41,6 +43,9 @@ class TensorFlowHelper(ModelHelper):
         -------
         None.
         """
+        if type(model) == str:
+            model = load_model(model)
+
         super().__init__(dataHelper, model, description)
 
         self.history = None
@@ -141,7 +146,7 @@ class TensorFlowHelper(ModelHelper):
         self.history.to_csv(path, index=False)
 
 
-    def LoadHistory(self, path):
+    def LoadHistory(self, path, raiseErrors=True):
         """
         Loads the hisory from the specified path.
 
@@ -154,8 +159,12 @@ class TensorFlowHelper(ModelHelper):
         -------
         None.
         """
-        if os.path.exists(path):
-            self.history = pd.read_csv(path)
+        if not os.path.exists(path) and raiseErrors:
+            raise Exception("The specified path does not exist.\nPath: " + path)
+
+        self.dataHelper.consoleHelper.Print("Loading history from: " + path)
+        self.history = pd.read_csv(path)
+        self.dataHelper.consoleHelper.Print("History length: " + str(len(self.history)))
 
 
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
