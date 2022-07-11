@@ -35,7 +35,6 @@ class TensorFlowHelper(CategoricalHelper):
             DataHelper that contains the data.
         model : TensorFlow Model or string
             A TensorFlow model or string that is the path to load the model from.
-        numberOfOutputNodes : int
         description : string
             A description of the model.
 
@@ -48,7 +47,8 @@ class TensorFlowHelper(CategoricalHelper):
 
         super().__init__(dataHelper, model, description)
 
-        self.history = None
+        self.history     = None
+        self.historyPath = ""
 
         TensorFlowHelper.SetNumberOfOutputNodes(model.layers[-1].output_shape[1])
 
@@ -77,14 +77,14 @@ class TensorFlowHelper(CategoricalHelper):
         cls.reportColumnLabels.append("Error Rate")
 
 
-    def Fit(self, appendHistory=True, **kwargs):
+    def Fit(self, saveHistory=False, **kwargs):
         """
         Fits the model.
 
         Parameters
         ----------
-        appendHistory : boolean
-            If true, the history is appended to the previous, otherwise it overwrites any existing.
+        saveHistory : boolean
+            If true, the history is appended to the previous, otherwise the history is ignored.
         **kwargs : keyword arguments
             These arguments are passed on to the model's fit function.
 
@@ -105,7 +105,25 @@ class TensorFlowHelper(CategoricalHelper):
             **kwargs
         )
 
-        self.SetHistory(history, appendHistory)
+        if saveHistory:
+            self.SetHistory(history, True)
+
+    def UseHistorySaving(self, pathAndFileName):
+        """
+        Specifies that the history should be saved.  This will automatically try
+        to load any existing history.
+
+        Parameters
+        ----------
+        pathAndFileName : string
+            Path to save and load the history from.
+
+        Returns
+        -------
+        None.
+        """
+        self.historyPath = pathAndFileName
+        self._LoadHistory(False)
 
 
     def SetHistory(self, tensorFlowHistory, appendHistory=True):
@@ -130,23 +148,22 @@ class TensorFlowHelper(CategoricalHelper):
             self.history = history
 
 
-    def SaveHistory(self, path):
+    def SaveHistory(self):
         """
         Saves the hisory to the specified path.
 
         Parameters
         ----------
-        path : string
-            Path to save the history to.
+        None.
 
         Returns
         -------
         None.
         """
-        self.history.to_csv(path, index=False)
+        self.history.to_csv(self.historyPath, index=False)
 
 
-    def LoadHistory(self, path, raiseErrors=True):
+    def _LoadHistory(self, raiseErrors=True):
         """
         Loads the hisory from the specified path.
 
@@ -159,12 +176,12 @@ class TensorFlowHelper(CategoricalHelper):
         -------
         None.
         """
-        if not os.path.exists(path) and raiseErrors:
-            raise Exception("The specified path does not exist.\nPath: " + path)
-
-        self.dataHelper.consoleHelper.Print("Loading history from: " + path)
-        self.history = pd.read_csv(path)
-        self.dataHelper.consoleHelper.Print("History length: " + str(len(self.history)))
+        if os.path.exists(self.historyPath):
+            self.dataHelper.consoleHelper.Print("Loading history from: " + self.historyPath)
+            self.history = pd.read_csv(self.historyPath)
+            self.dataHelper.consoleHelper.Print("History length: " + str(len(self.history)))
+        elif raiseErrors:
+            raise Exception("The specified path does not exist.\nPath: " + self.historyPath)
 
 
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
