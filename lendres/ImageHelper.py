@@ -8,6 +8,7 @@ import cv2
 
 from   lendres.PlotHelper                        import PlotHelper
 
+
 class ImageHelper():
     arrayImageSize = 2.5
 
@@ -168,7 +169,7 @@ class ImageHelper():
 
 
     @classmethod
-    def ApplyGaussianBlur(self, images, **kwargs):
+    def ApplyGaussianBlur(cls, images, **kwargs):
         """
         Applies a gaussian blur to the images.
 
@@ -189,7 +190,7 @@ class ImageHelper():
         for i in range(len(images)):
             newImages.append(cv2.GaussianBlur(images[i], **kwargs))
 
-        self.data = newImages
+        return newImages
 
 
     @classmethod
@@ -231,7 +232,7 @@ class ImageHelper():
 
 
     @classmethod
-    def GetChromaKeyPart(self, images, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="bounded"):
+    def GetChromaKeyPart(cls, images, lowerBounds, upperBounds, maskBlurSize=3, inputBoundsFormat="hsv", keep="bounded"):
         """
         Applies a chroma key filter to the images and returns the portion of interest.
 

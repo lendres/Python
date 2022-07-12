@@ -20,6 +20,7 @@ from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper
 
+
 class ImageDataHelper():
     """
     Class for storing and manipulating images for use in a machine learning model.
@@ -260,6 +261,28 @@ class ImageDataHelper():
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
 
 
+    def GetDataSet(self, dataSet="original"):
+        xData = None
+        yData = None
+
+        if dataSet == "original":
+            xData = self.data
+            yData = self.labels["Numbers"]
+        elif dataSet == "training":
+            xData = self.xTrainingData
+            yData = self.yTrainingData
+        elif dataSet == "validation":
+            xData = self.xValidationData
+            yData = self.yValidationData
+        elif dataSet == "testing":
+            xData = self.xTestingData
+            yData = self.yTestingData
+        else:
+            raise Exception("Invalid argument for dat type.")
+
+        return xData, yData
+
+
     def PlotImage(self, index=None, random=False, size=6):
         """
         Plot example image.
@@ -288,7 +311,7 @@ class ImageDataHelper():
         ImageHelper.PlotImage(image, title=title, size=size, colorConversion=self.colorConversion)
 
 
-    def PlotImages(self, rows=4, columns=4, random=False, indices=None):
+    def PlotImages(self, rows=4, columns=4, random=False, indices=None, dataSet="original"):
         """
         Plot example images.
 
@@ -309,7 +332,8 @@ class ImageDataHelper():
         -------
         None.
         """
-        numberOfImages = self.labels.shape[0]
+        xData, yData   = self.GetDataSet(dataSet)
+        numberOfImages = len(xData)
         images = []
         labels = []
 
@@ -325,13 +349,13 @@ class ImageDataHelper():
                 index = indices[k]
 
             # Plotting the image using cmap=gray.
-            images.append(self.data[index])
-            labels.append(self.labels["Names"].loc[index])
+            images.append(xData[index])
+            labels.append(self.labelCategories[yData.iloc[index]])
 
         ImageHelper.CreateImageArrayPlot(images, labels, columns, self.colorConversion)
 
 
-    def GetIndicesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None):
+    def GetIndicesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None, dataSet="original"):
         """
         Gets the indices of images that fall into the specified category.
 
@@ -359,7 +383,8 @@ class ImageDataHelper():
         if categoryNumber == None:
             raise Exception("A valid category name or a valid category number must be provided.")
 
-        indices = FindIndicesByValues(self.labels["Numbers"], categoryNumber, numberOfExamples)
+        xData, yData = self.GetDataSet(dataSet)
+        indices      = FindIndicesByValues(yData, categoryNumber, numberOfExamples)
 
         if len(indices) == 0:
             categoryName = self.labelCategories[categoryNumber]
@@ -368,7 +393,7 @@ class ImageDataHelper():
         return indices
 
 
-    def PlotImageExamplesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None):
+    def PlotImageExamplesByCategory(self, numberOfExamples, categoryName=None, categoryNumber=None, dataSet="original"):
         """
         Plots example images of the specified category type.
 
@@ -385,11 +410,11 @@ class ImageDataHelper():
         -------
         None.
         """
-        indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber)
-        self.PlotImages(1, numberOfExamples, indices=indices)
+        indices = self.GetIndicesByCategory(numberOfExamples, categoryName, categoryNumber, dataSet=dataSet)
+        self.PlotImages(rows=1, columns=numberOfExamples, indices=indices, dataSet=dataSet)
 
 
-    def PlotImageExamplesForAllCategories(self, numberOfExamples):
+    def PlotImageExamplesForAllCategories(self, numberOfExamples, dataSet="original"):
         """
         Plots example images of each category type.
 
@@ -410,7 +435,7 @@ class ImageDataHelper():
                 self.consoleHelper.PrintNewLine()
 
             self.consoleHelper.PrintTitle(self.labelCategories[i])
-            self.PlotImageExamplesByCategory(numberOfExamples, categoryNumber=i)
+            self.PlotImageExamplesByCategory(numberOfExamples, categoryNumber=i, dataSet=dataSet)
 
 
     def PlotColorChannels(self, indices):
@@ -596,10 +621,10 @@ class ImageDataHelper():
         -------
         None.
         """
-        self.xTrainingData = ImageHelper.GetChromaKeyPart(self.xTrainingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+        self.xTrainingData = ImageHelper.GetChromaKeyPart(self.xTrainingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat, keep)
         if len(self.xValidationData) != 0:
-            self.xValidationData = ImageHelper.GetChromaKeyPart(self.xValidationData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
-        self.xTestingData  = ImageHelper.GetChromaKeyPart(self.xTestingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat)
+            self.xValidationData = ImageHelper.GetChromaKeyPart(self.xValidationData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat, keep)
+        self.xTestingData  = ImageHelper.GetChromaKeyPart(self.xTestingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat, keep)
 
 
     def ApplyColorConversion(self, colorConversion=None):
