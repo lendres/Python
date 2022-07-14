@@ -55,6 +55,18 @@ class TensorFlowHelper(CategoricalHelper):
 
     @classmethod
     def SetNumberOfOutputNodes(cls, numberOfNodes):
+        """
+        Uses the number of output nodes to format data storage used for reports.
+
+        Parameters
+        ----------
+        numberOfNodes : int
+            Number of output nodes.
+
+        Returns
+        -------
+        None.
+        """
         cls.numberOfOutputNodes = numberOfNodes
 
         # When there is one output node we get probabilitys for the negative score and positive score.
@@ -71,8 +83,7 @@ class TensorFlowHelper(CategoricalHelper):
             for i in range(numberOfNodeEntries):
                 cls.reportColumnLabels.append(name+str(i))
 
-        # Add the final two categories.  These are overall and don't have individial
-        # entries for each node.
+        # Add the final two categories.  These are overall and don't have individial entries for each node.
         cls.reportColumnLabels.append("Accuracy")
         cls.reportColumnLabels.append("Error Rate")
 
@@ -107,6 +118,7 @@ class TensorFlowHelper(CategoricalHelper):
 
         if saveHistory:
             self.SetHistory(history, True)
+
 
     def UseHistorySaving(self, pathAndFileName):
         """

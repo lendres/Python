@@ -34,6 +34,7 @@ class ImageDataHelper():
 
     To Do
         Update to use LabelEncoder().
+        Add plotting of blurred images that is similar to plotting of chromakey and color separation (before "applying").
     """
 
     def __init__(self, consoleHelper=None):
@@ -577,6 +578,26 @@ class ImageDataHelper():
         plt.show()
 
 
+    def ApplyColorConversion(self, colorConversion=None):
+        """
+        colorConversion : OpenCV color conversion enumeration.
+                    Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+                    image is in BGR cv2.COLOR_BGR2RGB should be passed.  If None, self.colorConversion will be used.
+        """
+        if colorConversion is None:
+            if self.colorConversion is None:
+                raise Exception("No color conversion has been specified.")
+            colorConversion = self.colorConversion
+
+        self.xTrainingData = ImageHelper.ApplyColorConversion(self.xTrainingData, colorConversion)
+        if len(self.xValidationData) != 0:
+            self.xValidationData = ImageHelper.ApplyColorConversion(self.xValidationData, colorConversion)
+        self.xTestingData  = ImageHelper.ApplyColorConversion(self.xTestingData, colorConversion)
+
+        # If there was a color conversion specified, it is no longer needed.
+        self.colorConversion = None
+
+
     def ApplyGaussianBlur(self, **kwargs):
         """
         Applies a Gaussian blur to the images.  This should be done after splitting.  The original
@@ -625,48 +646,6 @@ class ImageDataHelper():
         if len(self.xValidationData) != 0:
             self.xValidationData = ImageHelper.GetChromaKeyPart(self.xValidationData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat, keep)
         self.xTestingData  = ImageHelper.GetChromaKeyPart(self.xTestingData, lowerBounds, upperBounds, maskBlurSize, inputBoundsFormat, keep)
-
-
-    def ApplyColorConversion(self, colorConversion=None):
-        """
-        Applies color conversion to all images.
-
-        Parameters
-        ----------
-        colorConversion : OpenCV color conversion enumeration.
-            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
-            image is in BGR cv2.COLOR_BGR2RGB should be passed.
-
-        Returns
-        -------
-        None.
-        """
-        if colorConversion is None:
-            colorConversion = self.colorConversion
-
-        for i in range(self.data.shape[0]):
-            self.data[i] = cv2.cvtColor(self.data[i], colorConversion)
-
-
-    def ApplyMonoChromeToColorConversion(self, colorConversion=None):
-        """
-        Applies color conversion to all images.
-
-        Parameters
-        ----------
-        colorConversion : OpenCV color conversion enumeration.
-            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
-            image is in BGR cv2.COLOR_BGR2RGB should be passed.
-
-        Returns
-        -------
-        None.
-        """
-        if colorConversion is None:
-            colorConversion = self.colorConversion
-
-        for i in range(self.data.shape[0]):
-            self.data[i] = cv2.cvtColor(self.data[i], colorConversion)
 
 
     def NormalizePixelValues(self):

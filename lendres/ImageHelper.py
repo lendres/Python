@@ -2,6 +2,7 @@
 Created on June 24, 2022
 @author: Lance A. Endres
 """
+import numpy                                     as np
 from   matplotlib                                import pyplot                     as plt
 import math
 import cv2
@@ -55,6 +56,7 @@ class ImageHelper():
         plt.show()
         PlotHelper.scale = 1.0
 
+
     @classmethod
     def CreateImageArrayPlot(cls, images, labels, columns=4, colorConversion=None):
         """
@@ -71,7 +73,6 @@ class ImageHelper():
         colorConversion : OpenCV color conversion enumeration.
             Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
             image is in BGR cv2.COLOR_BGR2RGB should be passed.
-
 
         Returns
         -------
@@ -169,6 +170,37 @@ class ImageHelper():
 
 
     @classmethod
+    def ApplyColorConversion(cls, images, colorConversion):
+        """
+        Applies a color conversion to the images.
+
+        Parameters
+        ----------
+        images : array like set of images
+            Images in an array.
+        colorConversion : OpenCV color conversion enumeration.
+            Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
+            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+
+        Returns
+        -------
+        newImages : array like set of images
+            The new images with the conversion applied.
+        """
+        newImages = np.empty(images.shape, dtype=images.dtype)
+
+        if len(images.shape) < 4:
+            # Only one image provided.  Shape of input is similar to (width, height, color_depth).
+            newImages = cv2.cvtColor(images, colorConversion)
+        else:
+            # More than one image provided.
+            for i in range(len(images)):
+                newImages[i] = cv2.cvtColor(images[i], colorConversion)
+
+        return newImages
+
+
+    @classmethod
     def ApplyGaussianBlur(cls, images, **kwargs):
         """
         Applies a gaussian blur to the images.
@@ -185,10 +217,15 @@ class ImageHelper():
         newImages : array like set of images
             The new images with the blur applied.
         """
-        newImages = []
+        newImages = np.empty(images.shape, dtype=images.dtype)
 
-        for i in range(len(images)):
-            newImages.append(cv2.GaussianBlur(images[i], **kwargs))
+        if len(images.shape) < 4:
+            # Only one image provided.  Shape of input is similar to (width, height, color_depth).
+            newImages = cv2.GaussianBlur(images, **kwargs)
+        else:
+            # More than one image provided.
+            for i in range(len(images)):
+                newImages[i] = cv2.GaussianBlur(images[i], **kwargs)
 
         return newImages
 
@@ -262,6 +299,11 @@ class ImageHelper():
         newImages : array like set of images
             An array of images that contains the specified part of the split image.
         """
+
+        """
+        Should be updated to use np arrays like ApplyGaussianBlur.
+        """
+
         keepIndex = 0
         if keep == "bounded":
             keepIndex = 0
