@@ -7,7 +7,6 @@ import seaborn                                   as sns
 import pandas                                    as pd
 import numpy                                     as np
 import tensorflow                                as tf
-import cv2
 
 import random
 
@@ -708,14 +707,18 @@ class ImageDataHelper():
             self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
 
 
-    def GetSplitComparisons(self):
+    def GetSplitComparisons(self, format="countandpercentstring"):
         """
         Returns the value counts and percentages of the dependant variable for the
         original, training (if available), and testing (if available) data.
 
         Parameters
         ----------
-        None.
+        format : string
+            Format of the returned values.
+            countandpercentstring  : returns a string that contains both the count and percent.
+            numericalcount         : returns the count as a number.
+            numericalpercentage    : returns the percentage as a number.
 
         Returns
         -------
@@ -723,21 +726,21 @@ class ImageDataHelper():
             DataFrame with the counts and percentages.
         """
         # Get results for original data.
-        dataFrame = self.GetCountAndPrecentStrings(self.labels["Numbers"] ,"Original")
+        dataFrame = self.GetCountAndPrecentStrings(self.labels["Numbers"] ,"Original", format=format)
 
         # If the data has been split, we will add the split information as well.
         if len(self.yTrainingData) != 0:
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training")], axis=1)
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
 
             if len(self.yValidationData) != 0:
-                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation")], axis=1)
+                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
 
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing")], axis=1)
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
 
         return dataFrame
 
 
-    def GetCountAndPrecentStrings(self, dataSet, dataSetName):
+    def GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):
         """
         Gets a string that is the value count of "classValue" and the percentage of the total
         that the "classValue" accounts for in the column.
@@ -746,6 +749,13 @@ class ImageDataHelper():
         ----------
         dataSet : string
             Which data set(s) to plot.
+        dataSetName : string
+            Name of the data set to be used as the column header.
+        format : string
+            Format of the returned values.
+            countandpercentstring  : returns a string that contains both the count and percent.
+            numericalcount         : returns the count as a number.
+            numericalpercentage    : returns the percentage as a number.
 
         Returns
         -------
@@ -754,10 +764,20 @@ class ImageDataHelper():
         valueCounts        = [""] * self.numberOfLabelCategories
         totalCount         = len(dataSet)
 
+        formatFunction = None
+        if format == "countandpercentstring":
+            formatFunction = lambda count, percent : "{0} ({1:0.2f}%)".format(count, percent)
+        elif format == "numericalcount":
+            formatFunction = lambda count, percent : count
+        elif format == "numericalpercentage":
+            formatFunction = lambda count, percent : percent
+        else:
+            raise Exception("Invalid format string specified.")
+
         # Turn the numbers into formated strings.
         for i in range(self.numberOfLabelCategories):
             classValueCount = sum(dataSet == i)
-            valueCounts[i] = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount*100)
+            valueCounts[i] = formatFunction(classValueCount, classValueCount/totalCount*100)
 
         # Create the data frame.
         comparisonFrame = pd.DataFrame(
@@ -767,6 +787,33 @@ class ImageDataHelper():
         )
 
         return comparisonFrame
+
+
+    def CreateSplitComparisonPlot(self):
+        """
+        Plots the split comparisons.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        figure : Matplotlib figure
+            The created figure.
+        """
+        splits  = self.GetSplitComparisons(format="numericalpercentage")
+        columns = splits.columns.values
+        splits.reset_index(inplace=True)
+
+        PlotHelper.FormatPlot()
+        axis = splits.plot(x="index", y=columns, kind="bar", color=sns.color_palette())
+        axis.set(title="Split Comparison", xlabel="Category", ylabel="Percentage")
+
+        figure = plt.gcf()
+        plt.show()
+
+        return figure
 
 
     def EncodeCategoricalColumns(self):

@@ -127,4 +127,6 @@ class TensorFlowCNNHelper(TensorFlowHelper):
         self.dataHelper.consoleHelper.PrintBold("Actual:    "+actualName)
         self.dataHelper.consoleHelper.PrintNewLine()
 
-        self.dataHelper.PlotImage(index, size=size)
+        xData, yData = self.dataHelper.GetDataSet(dataSet)
+
+        ImageHelper.PlotImage(xData[location], title=actualName, size=size)

@@ -230,7 +230,9 @@ class ModelHelper:
         else:
             modelHelper = modelHelpers[0]
 
+        pd.set_option("display.float_format",  "{:0.3f}".format)
         modelHelper.dataHelper.consoleHelper.Display(comparisons, ConsoleHelper.VERBOSEREQUESTED)
+        pd.reset_option("display.float_format")
 
 
     @classmethod
@@ -490,4 +492,6 @@ class ModelHelper:
             scoresDataFrame = scoresDataFrame[scores]
 
         self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
+        pd.set_option("display.float_format",  "{:0.3f}".format)
         self.dataHelper.consoleHelper.Display(scoresDataFrame, ConsoleHelper.VERBOSEREQUESTED)
+        pd.reset_option("display.float_format")
