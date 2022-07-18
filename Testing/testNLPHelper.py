@@ -7,7 +7,7 @@ from   IPython.display                           import display
 
 import unittest
 from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.NLPHelper                         import NLPHelper
+from   lendres.LanguageHelper                    import LanguageHelper
 
 class TestNLPHelper(unittest.TestCase):
 
@@ -28,50 +28,49 @@ class TestNLPHelper(unittest.TestCase):
 
 
     def testStopWords(self):
-        nlpHelper = NLPHelper()
-        nlpHelper.RemoveStopWords("no")
-        nlpHelper.RemoveStopWords("not")
-        result    = nlpHelper.FilterOutStopWords(self.testList)
+        LanguageHelper.RemoveStopWords("no")
+        LanguageHelper.RemoveStopWords("not")
+        result    = LanguageHelper.FilterOutStopWords(self.testList)
         self.assertEqual(result, ["The", ",", ",", "stopwords", ",", "computer", "not"])
 
 
     def testStripHtml(self):
-        result = NLPHelper.StripHtmlTags("<html><h2>Some important text</h2></html>")
+        result = LanguageHelper.StripHtmlTags("<html><h2>Some important text</h2></html>")
         self.assertEqual(result, "Some important text")
 
 
     def testRemoveAccentCharacters(self):
-        result = NLPHelper.RemoveAccentedCharacters("Sómě Áccěntěd těxt")
+        result = LanguageHelper.RemoveAccentedCharacters("Sómě Áccěntěd těxt")
         self.assertEqual(result, "Some Accented text")
 
 
     def testTokenize(self):
-        result   = NLPHelper.Tokenize("The , and , if are stopwords, computer is not")
+        result   = LanguageHelper.Tokenize("The , and , if are stopwords, computer is not")
         solution = self.testList
         self.assertEqual(result, solution)
 
 
     def testRemoveSpecialCharacters(self):
-        result = NLPHelper.RemoveSpecialCharacters("Well this was fun! What do you think? 123#@!", True)
+        result = LanguageHelper.RemoveSpecialCharacters("Well this was fun! What do you think? 123#@!", True)
         self.assertEqual(result, "Well this was fun What do you think ")
 
 
     def testSimpleStemmer(self):
-        result = NLPHelper.SimpleStemmer("My system keeps crashing his crashed yesterday, ours crashes daily")
+        result = LanguageHelper.SimpleStemmer("My system keeps crashing his crashed yesterday, ours crashes daily")
         self.assertEqual(result, "my system keep crash hi crash yesterday, our crash daili")
 
 
     def testLemmatize(self):
-        result = NLPHelper.Lemmatize("My system keeps crashing! his crashed yesterday, ours crashes daily")
+        result = LanguageHelper.Lemmatize("My system keeps crashing! his crashed yesterday, ours crashes daily")
         self.assertEqual(result, "my system keep crash ! his crash yesterday , ours crash daily")
 
     def testLowercase(self):
         word = "Title Case String"
-        result = NLPHelper.ToLowerCase(word)
+        result = LanguageHelper.ToLowerCase(word)
         self.assertEqual(result, "title case string")
 
         words = ["Title", "Case", "String"]
-        result = NLPHelper.ToLowerCase(words)
+        result = LanguageHelper.ToLowerCase(words)
         self.assertEqual(result, ["title", "case", "string"])
 
 

@@ -96,6 +96,14 @@ class LanguageHelper():
 
 
     @classmethod
+    def ReplaceContractions(cls, text):
+        """
+        Replace contractions in string of text.
+        """
+        return contractions.fix(text)
+
+
+    @classmethod
     def Lemmatize(cls, text):
         # !pip install spacy
         # !python -m spacy download en_core_web_sm
