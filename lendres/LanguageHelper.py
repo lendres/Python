@@ -20,13 +20,12 @@ import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
 
 
+def Install(cls):
+   nltk.download("stopwords")
+
+
 class LanguageHelper():
     stopWords = nltk.corpus.stopwords.words("english")
-
-
-    @classmethod
-    def Install(cls):
-       nltk.download("stopwords")
 
 
     @classmethod
@@ -43,6 +42,11 @@ class LanguageHelper():
     @classmethod
     def FilterOutStopWords(cls, tokens):
         return [token for token in tokens if token not in cls.stopWords]
+
+
+    @classmethod
+    def GetStopWords(cls, tokens):
+        return [token for token in tokens if token in cls.stopWords]
 
 
     @classmethod
@@ -75,13 +79,6 @@ class LanguageHelper():
 
 
     @classmethod
-    def SimpleStemmer(cls, text):
-        porterStemmer = nltk.porter.PorterStemmer()
-        text          = " ".join([porterStemmer.stem(word) for word in text.split()])
-        return text
-
-
-    @classmethod
     def ToLowerCase(cls, words):
         """
         Convert all characters to lowercase.
@@ -101,6 +98,13 @@ class LanguageHelper():
         Replace contractions in string of text.
         """
         return contractions.fix(text)
+
+
+    @classmethod
+    def SimpleStemmer(cls, text):
+        porterStemmer = nltk.porter.PorterStemmer()
+        text          = " ".join([porterStemmer.stem(word) for word in text.split()])
+        return text
 
 
     @classmethod
