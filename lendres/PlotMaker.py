@@ -17,6 +17,54 @@ class PlotMaker():
     # Color map to use for plots.
     colorMap      = None
 
+
+
+
+    @classmethod
+    def CreateCountPlot(cls, data, primaryColumnName, subColumnName=None, xLabelRotation=None):
+        """
+        Creates a bar chart that plots a primary category and subcategory as the  hue.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        category: string
+            Category name in the DataFrame.
+        xLabelRotation : float
+            Rotation of x labels.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
+
+        # This creates the bar chart.  At the same time, save the figure so we can return it.
+        axis = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
+        figure = plt.gcf()
+
+        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
+        if subColumnName is not None:
+            ncol = data[subColumnName].nunique()
+            plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
+
+        title = "\"" + primaryColumnName + "\"" + " Category"
+        axis.set(title=title, xlabel=subColumnName, ylabel="Count")
+
+        if xLabelRotation is not None:
+            plt.xticks(rotation=xLabelRotation)
+
+        # Make sure the plot is shown.
+        plt.show()
+
+        return figure
+
+
+
+
     @classmethod
     def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None, axisLabels=None):
         """

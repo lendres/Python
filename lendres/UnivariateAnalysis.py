@@ -174,11 +174,11 @@ class UnivariateAnalysis():
             y = patch.get_y() + patch.get_height() + 0.5
 
             # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
-            axis.annotate(percentage, (x, y), size=PlotHelper.annotationScale*PlotHelper.scale*15, fontweight="bold", horizontalalignment="center")
+            axis.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
 
 
     @classmethod
-    def CreatePercentageBarPlot(cls, data, column, xLabelRotation=None):
+    def CreateCountPlotWithPercentageLabels(cls, data, column, xLabelRotation=None):
         """
         Creates a bar chart that shows the percentages of each type of entry of a column.
 
@@ -244,6 +244,22 @@ class UnivariateAnalysis():
 
     @classmethod
     def CreateSideBySideHistogramPlot(cls, leftData, rightData, title, leftTitle, rightTitle, bins=None):
+        """
+        Creates a box plot and displays the min and max values.
+
+        Parameters
+        ----------
+        dataHelper : DataHelper
+            DataHelper that contains the data.
+        columns : list of strings
+            Columns to generate the display for.
+        count : int
+            Number of minimum and maximum values to display.
+
+        Returns
+        -------
+        None.
+        """
         # Create the figure and axes.
         figure, (leftAxis, rightAxis) = PlotHelper.NewSideBySideAxisFigure(title)
 

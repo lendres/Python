@@ -149,44 +149,7 @@ class BivariateAnalysis():
         return figure, axis
 
 
-    @classmethod
-    def CreateCountPlot(cls, data, primaryCategoryColumnName, subCategoryColumnName=None, xLabelRotation=None):
-        """
-        Creates a bar chart that plots a primary category and subcategory as the  hue.
 
-        Parameters
-        ----------
-        data : Pandas DataFrame
-            The data.
-        category: string
-            Category name in the DataFrame.
-
-        Returns
-        -------
-        figure : Figure
-            The newly created figure.
-        """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
-
-        # This creates the bar chart.  At the same time, save the figure so we can return it.
-        axis = sns.countplot(x=primaryCategoryColumnName, data=data, hue=subCategoryColumnName)
-        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
-        if subCategoryColumnName is not None:
-            ncol = data[subCategoryColumnName].nunique()
-            plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
-        figure = plt.gcf()
-
-        title = "\"" + primaryCategoryColumnName + "\"" + " Category"
-        axis.set(title=title, xlabel=subCategoryColumnName, ylabel="Count")
-
-        if xLabelRotation is not None:
-            plt.xticks(rotation=xLabelRotation)
-
-        # Make sure the plot is shown.
-        plt.show()
-
-        return figure
 
 
     @classmethod

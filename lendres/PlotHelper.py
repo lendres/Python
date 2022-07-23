@@ -72,6 +72,23 @@ class PlotHelper():
         """
         return cls.scale*cls.size
 
+
+    @classmethod
+    def GetScaledAnnotationSize(cls):
+        """
+        Gets the annotation font size adjusted with the scaling factor.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        return cls.scale*cls.annotationScale*15
+
+
     @classmethod
     def FormatPlot(cls, width=10, height=6, transparentLegend=False):
         """
@@ -240,6 +257,7 @@ class PlotHelper():
         None.
         """
         axis.set_aspect(1./axis.get_data_ratio())
+
 
     @classmethod
     def CategoryTitle(cls, categoryName):
