@@ -58,6 +58,11 @@ class TestBivariateAnalysis(unittest.TestCase):
         BivariateAnalysis.CreateScatterPlotComparisonByCategory(self.insuranceDataHelper.data, "age", "charges", "sex")
 
 
+    def testCreateBarPlot(self):
+        BivariateAnalysis.CreateCountPlot(self.cardioDataHelper.data, "Product")
+        BivariateAnalysis.CreateCountPlot(self.cardioDataHelper.data, "Product", "Gender")
+
+
     def testProportionalData(self):
         BivariateAnalysis.CreateComparisonPercentageBarPlot(self.cardioDataHelper.data, "Product", ["TM498", "TM798"], "Gender")
 
@@ -70,6 +75,7 @@ class TestBivariateAnalysis(unittest.TestCase):
         result = BivariateAnalysis.GetCrossTabulatedValueCounts(self.cardioDataHelper.data, "Product", "Gender")
         TestBivariateAnalysis.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
         self.assertEqual(result.loc["TM195", "Female"], 40)
+
 
     def testPlottingByTarget(self):
         # Test where sort value is text.

@@ -2,11 +2,13 @@
 Created on December 29, 2021
 @author: Lance A. Endres
 """
-import pandas                as pd
-import matplotlib.pyplot     as plt
-import seaborn               as sns
+import pandas                                    as pd
+import matplotlib.pyplot                         as plt
+import seaborn                                   as sns
 
-from lendres.PlotHelper      import PlotHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.UnivariateAnalysis                import UnivariateAnalysis
+
 
 class BivariateAnalysis():
     supFigureYAdjustment = 1.0
@@ -148,9 +150,9 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def CreateComparisonPercentageBarPlot(cls, data, primaryCategoryName, primaryCategoryEntries, subCategoryName):
+    def CreateCountPlot(cls, data, primaryCategoryColumnName, subCategoryColumnName=None, xLabelRotation=None):
         """
-        Creates a bar chart that shows the percentages of each type of entry of a category.
+        Creates a bar chart that plots a primary category and subcategory as the  hue.
 
         Parameters
         ----------
@@ -164,10 +166,54 @@ class BivariateAnalysis():
         figure : Figure
             The newly created figure.
         """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
+
+        # This creates the bar chart.  At the same time, save the figure so we can return it.
+        axis = sns.countplot(x=primaryCategoryColumnName, data=data, hue=subCategoryColumnName)
+        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
+        if subCategoryColumnName is not None:
+            ncol = data[subCategoryColumnName].nunique()
+            plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
+        figure = plt.gcf()
+
+        title = "\"" + primaryCategoryColumnName + "\"" + " Category"
+        axis.set(title=title, xlabel=subCategoryColumnName, ylabel="Count")
+
+        if xLabelRotation is not None:
+            plt.xticks(rotation=xLabelRotation)
+
+        # Make sure the plot is shown.
+        plt.show()
+
+        return figure
+
+
+    @classmethod
+    def CreateComparisonPercentageBarPlot(cls, data, subCategoryColumnName, subCategoryEntries, primaryCategoryColumnName):
+        """
+        Creates a bar chart that shows the percentages of each type of entry of a category.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        subCategoryColumnName : string
+            Column name in the DataFrame to extract subCategoryEntries from.
+        subCategoryEntries : list of strings
+            Values found in the column subCategoryColumnName.
+        primaryCategoryColumnName : string
+            Column name in the DataFramee.  This will be the x-axis.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
 
         # Create data.
-        data0 = cls.ExtractProportationData(data, primaryCategoryName, primaryCategoryEntries[0], subCategoryName)
-        data1 = cls.ExtractProportationData(data, primaryCategoryName, primaryCategoryEntries[1], subCategoryName)
+        data0 = cls.ExtractProportationData(data, subCategoryColumnName, subCategoryEntries[0], primaryCategoryColumnName)
+        data1 = cls.ExtractProportationData(data, subCategoryColumnName, subCategoryEntries[1], primaryCategoryColumnName)
 
         # Combine the two for plotting.
         proportionData = pd.concat([data0, data1], ignore_index=True)
@@ -177,14 +223,14 @@ class BivariateAnalysis():
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
-        axis   = sns.barplot(x=subCategoryName, y="Proportion", data=proportionData, hue=primaryCategoryName)
+        axis   = sns.barplot(x=primaryCategoryColumnName, y="Proportion", data=proportionData, hue=subCategoryColumnName)
         figure = plt.gcf()
 
         # Label the individual columns with a percentage, then add the titles to the plot.
         #LabelPercentagesOnCountPlot(axis, proportionData, category, scale)
 
-        title = "\"" + subCategoryName + "\"" + " Category"
-        axis.set(title=title, xlabel=primaryCategoryName, ylabel="Proportion")
+        title = "\"" + primaryCategoryColumnName + "\"" + " Category"
+        axis.set(title=title, xlabel=subCategoryColumnName, ylabel="Proportion")
 
         # Make sure the plot is shown.
         plt.show()
@@ -193,7 +239,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def ExtractProportationData(cls, data, primaryCategoryName, primaryCategoryEntry, subCategoryName):
+    def ExtractProportationData(cls, data, subCategoryColumnName, subCategoryEntry, primaryCategoryColumnName):
         """
         Extracts and calculates proportional data.
 
@@ -215,14 +261,14 @@ class BivariateAnalysis():
         1   TM798  Female       0.175
         """
         # Retrieve the primary category and sub-category columns for the rows where the primary category contain
-        # the entries "primaryCategoryEntry."
-        extractedProportions = data[(data[primaryCategoryName] == primaryCategoryEntry)][[primaryCategoryName, subCategoryName]]
+        # the entries "subCategoryEntry."
+        extractedProportions = data[(data[subCategoryColumnName] == subCategoryEntry)][[subCategoryColumnName, primaryCategoryColumnName]]
 
         extractedProportions = extractedProportions.value_counts(normalize=True).reset_index(name="Proportion")
-        extractedProportions.rename({"index" : subCategoryName}, axis="columns", inplace=True)
+        extractedProportions.rename({"index" : primaryCategoryColumnName}, axis="columns", inplace=True)
 
         # Removes any empty categories in the column that were left over from the original data.
-        extractedProportions[primaryCategoryName] = extractedProportions[primaryCategoryName].cat.remove_unused_categories()
+        extractedProportions[subCategoryColumnName] = extractedProportions[subCategoryColumnName].cat.remove_unused_categories()
 
         return extractedProportions
 
@@ -394,4 +440,4 @@ class BivariateAnalysis():
         plt.tight_layout()
         plt.show()
 
-        return figure
+        return figure        return figure

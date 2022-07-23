@@ -174,7 +174,7 @@ class UnivariateAnalysis():
             y = patch.get_y() + patch.get_height() + 0.5
 
             # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
-            axis.annotate(percentage, (x, y), size=PlotHelper.scale*15, fontweight="bold", horizontalalignment="center")
+            axis.annotate(percentage, (x, y), size=PlotHelper.annotationScale*PlotHelper.scale*15, fontweight="bold", horizontalalignment="center")
 
 
     @classmethod
@@ -188,6 +188,8 @@ class UnivariateAnalysis():
             The data.
         column : string
             Category name in the DataFrame.
+        xLabelRotation : float
+            Rotation of x labels.
 
         Returns
         -------

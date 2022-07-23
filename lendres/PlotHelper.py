@@ -22,6 +22,7 @@ class PlotHelper():
 
     # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
     scale                  = 1.0
+    annotationScale        = 1.0
 
     # Standard size.
     size                   = 20
