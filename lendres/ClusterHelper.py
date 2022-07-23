@@ -144,6 +144,18 @@ class ClusterHelper(SubsetHelper):
 
 
     def CreateBarPlotsOfMeanByCluster(self, columns):
+        """
+        Creates a bar plot of the mean for each cluster.
+
+        Parameters
+        ----------
+        columns : list of strings
+            Columns to plot for each cluster.
+
+        Returns
+        -------
+        None.
+        """
         PlotHelper.FormatPlot()
 
         if type(columns) != list:

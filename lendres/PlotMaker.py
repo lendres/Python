@@ -62,7 +62,7 @@ class PlotMaker():
 
         # Option to rotate the x axis labels.
         if xLabelRotation is not None:
-            plt.xticks(rotation=xLabelRotation)
+            plt.xticks(rotation=xLabelRotation, ha="right")
 
         # Make sure the plot is shown.
         plt.show()
