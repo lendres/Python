@@ -440,4 +440,4 @@ class BivariateAnalysis():
         plt.tight_layout()
         plt.show()
 
-        return figure        return figure
+        return figure
