@@ -6,10 +6,10 @@ import DataSetLoading
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.BivariateAnalysis                 import BivariateAnalysis
+from   lendres.PlotMaker                         import PlotMaker
 
 import unittest
 
-#import seaborn as sns
 
 # Some of these tests take a long time to run.  Use this to skip some.  Useful for testing
 # new unit tests so you don't have to run them all to see if the new one works.
@@ -18,6 +18,7 @@ if skipTests:
     skippedTests = ["Pair Plots", "Heat Maps"]
 else:
     skippedTests = []
+
 
 class TestBivariateAnalysis(unittest.TestCase):
 
@@ -59,8 +60,8 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testCreateBarPlot(self):
-        BivariateAnalysis.CreateCountPlot(self.cardioDataHelper.data, "Product")
-        BivariateAnalysis.CreateCountPlot(self.cardioDataHelper.data, "Product", "Gender")
+        PlotMaker.CreateCountPlot(self.cardioDataHelper.data, "Product")
+        PlotMaker.CreateCountPlot(self.cardioDataHelper.data, "Product", "Gender")
 
 
     def testProportionalData(self):
@@ -85,6 +86,7 @@ class TestBivariateAnalysis(unittest.TestCase):
         # Test where sort value is numerical.  Also tests where sort value has more than two categories.
         BivariateAnalysis.CreateDistributionByTargetPlot(self.insuranceDataHelper.data, "bmi", "children")
         BivariateAnalysis.CreateBoxPlotByTarget(self.insuranceDataHelper.data, "bmi", "children")
+
 
 if __name__ == "__main__":
     unittest.main()

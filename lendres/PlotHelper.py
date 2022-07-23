@@ -27,6 +27,7 @@ class PlotHelper():
     # Standard size.
     size                   = 20
 
+
     @classmethod
     def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
         """
@@ -156,6 +157,8 @@ class PlotHelper():
     @classmethod
     def Label(cls, instance, title, xLabel, yLabel="", titlePrefix=None):
         """
+        Add title, x axis label, and y axis label.
+
         Parameters
         ----------
         instance : figure or axis

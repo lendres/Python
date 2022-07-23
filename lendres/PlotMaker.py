@@ -18,10 +18,8 @@ class PlotMaker():
     colorMap      = None
 
 
-
-
     @classmethod
-    def CreateCountPlot(cls, data, primaryColumnName, subColumnName=None, xLabelRotation=None):
+    def CreateCountPlot(cls, data, primaryColumnName, subColumnName=None, titlePrefix=None, xLabelRotation=None):
         """
         Creates a bar chart that plots a primary category and subcategory as the  hue.
 
@@ -29,8 +27,12 @@ class PlotMaker():
         ----------
         data : Pandas DataFrame
             The data.
-        category: string
-            Category name in the DataFrame.
+        primaryColumnName : string
+            Column name in the DataFrame.
+        subColumnName : string
+            If present, the column used as the hue.
+        titlePrefix : string or None, optional
+            If supplied, the string is prepended to the title.
         xLabelRotation : float
             Rotation of x labels.
 
@@ -46,14 +48,19 @@ class PlotMaker():
         axis = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
         figure = plt.gcf()
 
-        UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)
+        # Label the perentages of each column.
+        cls.LabelPercentagesOnCountPlot(axis)
+
+        # If adding a hue, set the legend to run horizontally.
         if subColumnName is not None:
             ncol = data[subColumnName].nunique()
             plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
 
+        # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        axis.set(title=title, xlabel=subColumnName, ylabel="Count")
+        PlotHelper.Label(axis, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
 
+        # Option to rotate the x axis labels.
         if xLabelRotation is not None:
             plt.xticks(rotation=xLabelRotation)
 
@@ -63,6 +70,39 @@ class PlotMaker():
         return figure
 
 
+    @classmethod
+    def LabelPercentagesOnCountPlot(cls, axis):
+        """
+        Plot the percentages of each entry of a column.
+
+        Parameters
+        ----------
+        axis : axis
+            Matplotlib axis to plot on.
+
+        Returns
+        -------
+        None.
+        """
+        # Number of entries.
+        total = 0
+
+        # Find the total count first.
+        for patch in axis.patches:
+            total += patch.get_height()
+
+        for patch in axis.patches:
+            # Percentage of the column.
+            percentage = "{:.1f}%".format(100*patch.get_height()/total)
+
+            # Find the center of the column/patch on the x-axis.
+            x = patch.get_x() + patch.get_width()/2
+
+            # Hieght of the column/patch.  Add a little so it does not touch the top of the column.
+            y = patch.get_y() + patch.get_height() + 0.5
+
+            # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
+            axis.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
 
 
     @classmethod

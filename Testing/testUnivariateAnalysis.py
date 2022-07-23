@@ -4,10 +4,12 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from lendres.PlotHelper import PlotHelper
-from lendres.UnivariateAnalysis import UnivariateAnalysis
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.UnivariateAnalysis                import UnivariateAnalysis
+from   lendres.PlotMaker                         import PlotMaker
 
 import unittest
+
 
 class TestUnivariateAnalysis(unittest.TestCase):
 
@@ -25,9 +27,9 @@ class TestUnivariateAnalysis(unittest.TestCase):
         PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateBoxAndHistogramPlot)
 
 
-    def testCreateCountPlotWithPercentageLabelsPlot(self):
+    def testCreateCountPlot(self):
         categories = ["children", "smoker"]
-        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateCountPlotWithPercentageLabels)
+        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, PlotMaker.CreateCountPlot)
 
 
     def testCreatBoxPlot(self):

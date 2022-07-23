@@ -2,12 +2,13 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-import seaborn as sns
-import matplotlib.pyplot as plt
-import numpy as np
+import seaborn                                   as sns
+import matplotlib.pyplot                         as plt
+import numpy                                     as np
 
-from lendres.PlotHelper       import PlotHelper
-from lendres.ConsoleHelper    import ConsoleHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+
 
 class UnivariateAnalysis():
 
@@ -137,82 +138,6 @@ class UnivariateAnalysis():
         cls.PlotBoxPlot(boxAxis, data, column, autoLabelX=False)
         cls.PlotHistogram(histogramAxis, data, column)
 
-        plt.show()
-
-        return figure
-
-
-    @classmethod
-    def LabelPercentagesOnCountPlot(cls, axis):
-        """
-        Plot the percentages of each entry of a column.
-
-        Parameters
-        ----------
-        axis : axis
-            Matplotlib axis to plot on.
-
-        Returns
-        -------
-        None.
-        """
-        # Number of entries.
-        total = 0
-
-        # Find the total count first.
-        for patch in axis.patches:
-            total += patch.get_height()
-
-        for patch in axis.patches:
-            # Percentage of the column.
-            percentage = "{:.1f}%".format(100*patch.get_height()/total)
-
-            # Find the center of the column/patch on the x-axis.
-            x = patch.get_x() + patch.get_width()/2
-
-            # Hieght of the column/patch.  Add a little so it does not touch the top of the column.
-            y = patch.get_y() + patch.get_height() + 0.5
-
-            # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
-            axis.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
-
-
-    @classmethod
-    def CreateCountPlotWithPercentageLabels(cls, data, column, xLabelRotation=None):
-        """
-        Creates a bar chart that shows the percentages of each type of entry of a column.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            The data.
-        column : string
-            Category name in the DataFrame.
-        xLabelRotation : float
-            Rotation of x labels.
-
-        Returns
-        -------
-        figure : matplotlib.figure.Figure
-            The newly created figure.
-        """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
-
-        # This creates the bar chart.  At the same time, save the figure so we can return it.
-        axis   = sns.countplot(x=data[column], palette='winter')
-        figure = plt.gcf()
-
-        # Label the individual columns with a percentage, then add the titles to the plot.
-        cls.LabelPercentagesOnCountPlot(axis)
-
-        title = "Column " + "\"" + column + "\""
-        axis.set(title=title, xlabel=column, ylabel="Count")
-
-        if xLabelRotation is not None:
-            plt.xticks(rotation=xLabelRotation)
-
-        # Make sure the plot is shown.
         plt.show()
 
         return figure

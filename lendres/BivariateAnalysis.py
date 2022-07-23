@@ -7,11 +7,11 @@ import matplotlib.pyplot                         as plt
 import seaborn                                   as sns
 
 from   lendres.PlotHelper                        import PlotHelper
-from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 
 
 class BivariateAnalysis():
     supFigureYAdjustment = 1.0
+
 
     @classmethod
     def CreateBivariateHeatMap(cls, data, columns=None):
@@ -147,9 +147,6 @@ class BivariateAnalysis():
         plt.show()
 
         return figure, axis
-
-
-
 
 
     @classmethod
