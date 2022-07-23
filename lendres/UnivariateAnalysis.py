@@ -178,7 +178,7 @@ class UnivariateAnalysis():
 
 
     @classmethod
-    def CreatePercentageBarPlot(cls, data, column):
+    def CreatePercentageBarPlot(cls, data, column, xLabelRotation=None):
         """
         Creates a bar chart that shows the percentages of each type of entry of a column.
 
@@ -206,6 +206,9 @@ class UnivariateAnalysis():
 
         title = "Column " + "\"" + column + "\""
         axis.set(title=title, xlabel=column, ylabel="Count")
+
+        if xLabelRotation is not None:
+            plt.xticks(rotation=xLabelRotation)
 
         # Make sure the plot is shown.
         plt.show()
