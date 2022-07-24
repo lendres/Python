@@ -2,6 +2,7 @@
 Created on July 16, 2022
 @author: Lance A. Endres
 """
+import pandas                                    as pd
 import numpy                                     as np
 from   IPython.display                           import display
 
@@ -13,7 +14,7 @@ class TestNLPHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.regresionHelpers = []
+        cls.tweets = pd.read_csv("./Data/Tweets.csv")
 
         #VERBOSETESTING
         #VERBOSEREQUESTED
@@ -25,6 +26,7 @@ class TestNLPHelper(unittest.TestCase):
         Set up function that runs before each test.
         """
         self.testList = ["The", ",", "and", ",", "if", "are", "stopwords", ",", "computer", "is", "not"]
+        self.tweets   = TestNLPHelper.tweets.copy(deep=True)
 
 
     def testStopWords(self):
@@ -64,6 +66,7 @@ class TestNLPHelper(unittest.TestCase):
         result = LanguageHelper.Lemmatize("My system keeps crashing! his crashed yesterday, ours crashes daily")
         self.assertEqual(result, "my system keep crash ! his crash yesterday , ours crash daily")
 
+
     def testLowercase(self):
         word = "Title Case String"
         result = LanguageHelper.ToLowerCase(word)
@@ -72,6 +75,22 @@ class TestNLPHelper(unittest.TestCase):
         words = ["Title", "Case", "String"]
         result = LanguageHelper.ToLowerCase(words)
         self.assertEqual(result, ["title", "case", "string"])
+
+
+    def testStripHandles(self):
+        # Test on a Pandas.Series.
+        result = LanguageHelper.StripHandles(self.tweets["text"])
+        self.assertEqual(result.loc[0].strip(), "What said.")
+
+        # Test on a string.
+        result = LanguageHelper.StripHandles(self.tweets["text"].loc[0])
+        self.assertEqual(result.strip(), "What said.")
+
+        # Test on a list.
+        inputList = [self.tweets["text"].loc[0], self.tweets["text"].loc[1]]
+        result = LanguageHelper.StripHandles(inputList)
+        self.assertEqual(result[0].strip(), "What said.")
+
 
 
 if __name__ == "__main__":

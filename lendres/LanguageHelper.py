@@ -3,6 +3,7 @@ Created on July 16, 2022
 @author: Lance A. Endres
 """
 
+import pandas                                    as pd
 import unicodedata
 from   bs4                                       import BeautifulSoup
 
@@ -10,6 +11,7 @@ from   bs4                                       import BeautifulSoup
 import nltk
 from   nltk.tokenize.toktok                      import ToktokTokenizer
 import contractions
+import wordcloud
 
 import re
 import spacy
@@ -57,6 +59,9 @@ class LanguageHelper():
 
     @classmethod
     def RemoveAccentedCharacters(cls, text):
+        """
+        Return the normal form form for the Unicode string.  Removes any accent characters.
+        """
         text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
         return text
 
@@ -70,26 +75,85 @@ class LanguageHelper():
 
     @classmethod
     def RemoveSpecialCharacters(cls, text, removeDigits=False):
+        """
+        Removes special characters.
+        """
         pattern = r"[^a-zA-z\s]" if removeDigits else  r"[^a-zA-z0-9\s]"
-        return re.sub(pattern, "", text)
+        return LanguageHelper.ApplyRegularExpression(text, pattern)
 
 
     def RemovePunctuation(cls, text):
-        return re.sub(r"[^\w\s]", "", text)
+        """
+        Removes punctuation.
+        """
+        pattern = r"[^\w\s]"
+        return LanguageHelper.ApplyRegularExpression(text, pattern)
 
 
     @classmethod
-    def ToLowerCase(cls, words):
+    def StripHandles(cls, text):
+        """
+        Removes Twitter handles.
+        """
+        # @(\w{1,15})
+        # Matches the @ followed by characters.
+        # \b matches if the handle is followed by puncuation instead of space.
+        # (^|[^@\w])
+        # Removes extraneous spaces from around the match.
+        pattern = r"(^|[^@\w])@(\w{1,15})\b"
+        return LanguageHelper.ApplyRegularExpression(text, pattern)
+
+
+    @classmethod
+    def ApplyRegularExpression(cls, text, pattern, replaceString=""):
+        """
+        Applies a regular expression patttern to text.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+        pattern : string
+            regular expression to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        result  = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : re.sub(pattern, replaceString, entry))
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                result.append(re.sub(pattern, replaceString, text[i]))
+        elif type(text) == str:
+            result = re.sub(pattern, replaceString, text)
+
+        return result
+
+
+    @classmethod
+    def ToLowerCase(cls, text):
         """
         Convert all characters to lowercase.
         If the input is a list, the operation is performed in place.
         """
-        if type(words) == list:
-            for i in range(len(words)):
-                words[i] = words[i].lower()
-        else:
-            words = words.lower()
-        return words
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : entry.lower())
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                result.append(text[i].lower())
+        elif type(text) == str:
+            result = text.lower()
+
+        return result
 
 
     @classmethod
