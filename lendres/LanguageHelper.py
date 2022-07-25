@@ -99,10 +99,24 @@ class LanguageHelper():
 
     @classmethod
     def RemoveStopWords(cls, text):
+        """
+        Removes stop words.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
         result  = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : cls.RemoveStopWordsFromString(entry))
+            result = text.apply(lambda entry : cls.RemoveStopWords(entry))
         elif type(text) == list:
             result = [token for token in text if token not in cls.stopWords]
         elif type(text) == str:
@@ -197,6 +211,26 @@ class LanguageHelper():
 
 
     @classmethod
+    def RemoveNumbers(cls, text):
+        """
+        Removes special characters.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        pattern = r"\d+"
+        return LanguageHelper.ApplyRegularExpression(text, pattern)
+
+
+    @classmethod
     def RemovePunctuation(cls, text):
         """
         Removes punctuation.  This function automatically operates
@@ -206,8 +240,6 @@ class LanguageHelper():
         ----------
         text : Pandas DataFrame, list, or string
             The text to operate on.
-        pattern : string
-            regular expression to operate on.
 
         Returns
         -------
@@ -228,8 +260,6 @@ class LanguageHelper():
         ----------
         text : Pandas DataFrame, list, or string
             The text to operate on.
-        pattern : string
-            regular expression to operate on.
 
         Returns
         -------
@@ -307,11 +337,13 @@ class LanguageHelper():
         result  = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : re.sub(pattern, replaceString, entry).strip())
+            result = text.apply(lambda entry : cls.ApplyRegularExpression(entry, pattern, replaceString))
         elif type(text) == list:
             result = []
             for i in range(len(text)):
-                result.append(re.sub(pattern, replaceString, text[i]).strip())
+                newString = re.sub(pattern, replaceString, text[i]).strip()
+                if newString != "":
+                    result.append(newString)
         elif type(text) == str:
             result = re.sub(pattern, replaceString, text).strip()
 
@@ -319,7 +351,7 @@ class LanguageHelper():
 
 
     @classmethod
-    def ToLowerCase(cls, text):
+    def ToLowercase(cls, text):
         """
         Convert all characters to lowercase.  This function automatically operates
         on the text in the correct way for different types of data structions.
@@ -328,8 +360,6 @@ class LanguageHelper():
         ----------
         text : Pandas DataFrame, list, or string
             The text to operate on.
-        pattern : string
-            regular expression to operate on.
 
         Returns
         -------
@@ -339,7 +369,7 @@ class LanguageHelper():
         result = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : entry.lower())
+            result = text.apply(lambda entry : cls.ToLowercase(entry))
         elif type(text) == list:
             result = []
             for i in range(len(text)):
@@ -354,8 +384,29 @@ class LanguageHelper():
     def ReplaceContractions(cls, text):
         """
         Replace contractions in string of text.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
         """
-        return contractions.fix(text)
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : cls.ReplaceContractions(entry))
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                result.append(contractions.fix(text[i]))
+        elif type(text) == str:
+            result = contractions.fix(text)
+
+        return result
 
 
     @classmethod

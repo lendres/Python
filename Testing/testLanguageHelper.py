@@ -31,7 +31,7 @@ class TestLanguageHelper(unittest.TestCase):
         self.tweets   = TestLanguageHelper.tweets.copy(deep=True)
 
 
-    def testStopWords(self):
+    def testStopWordsOnList(self):
         LanguageHelper.ResetStopWordsList()
         result    = LanguageHelper.RemoveStopWords(self.testList)
         self.assertEqual(result, ["The", ",", "stopwords", "computer"])
@@ -47,6 +47,12 @@ class TestLanguageHelper(unittest.TestCase):
 
         result    = LanguageHelper.RemoveStopWords("The, and if are stopwords computer is not")
         self.assertEqual(result, "The, stopwords not")
+
+
+    def testRemoveNumbers(self):
+        result   = LanguageHelper.RemoveNumbers("Test099 on some 0.88 numbers9xx.")
+        solution = "Test on some . numbersxx."
+        self.assertEqual(result, solution)
 
 
     def testStripHtml(self):
@@ -82,7 +88,7 @@ class TestLanguageHelper(unittest.TestCase):
 
     def testLowercase(self):
         word = "Title Case String"
-        result = LanguageHelper.ToLowerCase(word)
+        result = LanguageHelper.ToLowercase(word)
         self.assertEqual(result, "title case string")
 
         words = ["Title", "Case", "String"]
