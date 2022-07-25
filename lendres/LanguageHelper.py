@@ -253,6 +253,28 @@ class LanguageHelper():
 
 
     @classmethod
+    def RemoveMultipleSpaces(cls, text):
+        """
+        Removes special characters.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+        pattern : string
+            regular expression to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        pattern = r"  +"
+        return LanguageHelper.ApplyRegularExpression(text, pattern, " ")
+
+
+    @classmethod
     def RemoveSpecialCases(cls, text):
         """
         Removes special characters.  This function automatically operates
@@ -270,10 +292,14 @@ class LanguageHelper():
         text : Pandas DataFrame, list, or string
             The processed text.
         """
-        # Remove 3 periods used as ellipses without spaces on either side.
-        # Example: "one...two"  =>  "one two"
-        pattern = r"(\S)(\.{3,})(\S)"
-        return LanguageHelper.ApplyRegularExpression(text, pattern, r"\1 \3")
+        # Remove text style "emojis" character groups that contain letters.
+        # The punctuation would be caught be remove special characters or remove punctuation,
+        # however, those would leave random individual characters.
+
+        # Captures:
+        # :-p  :-P  ;-p  ;-P  :-D  ;-D
+        pattern = r"((:|;)-?([pP]|D))"
+        return LanguageHelper.ApplyRegularExpression(text, pattern, " ")
 
 
     @classmethod
@@ -335,7 +361,7 @@ class LanguageHelper():
             The processed text.
         """
         pattern = r"[^\w\s]"
-        return LanguageHelper.ApplyRegularExpression(text, pattern)
+        return LanguageHelper.ApplyRegularExpression(text, pattern, " ")
 
 
     @classmethod

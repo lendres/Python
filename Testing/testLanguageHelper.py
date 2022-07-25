@@ -64,30 +64,11 @@ class TestLanguageHelper(unittest.TestCase):
 
 
     def testRemoveSpecialCases(self):
-        text     = "Well, I didn't…but now I do."
+        text     = "XX  :-p  :-P  ;-p  ;-P  :P  ;P  :-D  ;-D  :D  ;D  XX"
         result   = LanguageHelper.RemoveSpecialCases(text)
-        print("\n\n", text)
-        print(result)
-        solution = "Well, I didn't but now I do."
-
-        text     = "Well, I didn't…but...now I do."
-        result   = LanguageHelper.RemoveSpecialCharacters(text)
-        print("\n\n", text)
-        print(result)
-        solution = "Well, I didn't but now I do."
-
-
-        text     = "Well, I didn't but...now I do."
-        result   = LanguageHelper.RemoveSpecialCases(text)
-        print("\n\n", text)
-        print(result)
-        solution = "Well, I didn't but now I do."
-        #self.assertEqual(result, solution)
-
-        text     = "Well, I didn't… but... now I do."
-        result   = LanguageHelper.RemoveSpecialCases(text)
-        print("\n\n", text)
-        print(result)
+        result   = LanguageHelper.RemoveMultipleSpaces(result)
+        solution = "XX XX"
+        self.assertEqual(result, solution)
 
 
     def testRemoveAccentCharacters(self):
@@ -103,7 +84,7 @@ class TestLanguageHelper(unittest.TestCase):
 
     def testRemoveSpecialCharacters(self):
         result = LanguageHelper.RemoveSpecialCharacters("Well this was fun! What do you think? 123#@!", True)
-        self.assertEqual(result, "Well this was fun What do you think")
+        self.assertEqual(result, "Well this was fun  What do you think")
 
 
     def testSimpleStemmer(self):
