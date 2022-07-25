@@ -82,8 +82,16 @@ class TestLanguageHelper(unittest.TestCase):
 
 
     def testLemmatize(self):
-        result = LanguageHelper.Lemmatize("My system keeps crashing! his crashed yesterday, ours crashes daily")
-        self.assertEqual(result, "my system keep crash ! his crash yesterday , ours crash daily")
+        text     = "My system keeps crashing! his crashed yesterday, ours crashes daily"
+
+        result   = LanguageHelper.Lemmatize(text)
+        solution = "my system keep crash ! his crash yesterday , ours crash daily"
+        self.assertEqual(result, solution)
+
+        testList = text.split()
+        result   = LanguageHelper.Lemmatize(testList)
+        solution = ["my", "system", "keep", "crash !", "his", "crash", "yesterday ,", "ours", "crash", "daily"]
+        self.assertEqual(result, solution)
 
 
     def testLowercase(self):
@@ -92,7 +100,7 @@ class TestLanguageHelper(unittest.TestCase):
         self.assertEqual(result, "title case string")
 
         words = ["Title", "Case", "String"]
-        result = LanguageHelper.ToLowerCase(words)
+        result = LanguageHelper.ToLowercase(words)
         self.assertEqual(result, ["title", "case", "string"])
 
 

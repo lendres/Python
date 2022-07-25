@@ -285,7 +285,7 @@ class LanguageHelper():
     def CreateWordCloud(cls, text, width=800, height=600, removeStopWords=False):
         text = LanguageHelper.RemoveInternetHandles(text)
         text = LanguageHelper.RemoveWebAddresses(text)
-        text = LanguageHelper.ToLowerCase(text)
+        text = LanguageHelper.ToLowercase(text)
 
         if removeStopWords:
             text = LanguageHelper.RemoveStopWords(text)
@@ -383,7 +383,8 @@ class LanguageHelper():
     @classmethod
     def ReplaceContractions(cls, text):
         """
-        Replace contractions in string of text.
+        Replace contractions in string of text.  This function automatically operates
+        on the text in the correct way for different types of data structions.
 
         Parameters
         ----------
@@ -421,11 +422,37 @@ class LanguageHelper():
 
     @classmethod
     def Lemmatize(cls, text):
+        """
+        Lemmatize the text.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
         # !pip install spacy
         # !python -m spacy download en_core_web_sm
         # Install language packages using Anaconda environments.
-        nlp  = spacy.load("en_core_web_sm")
-        text = nlp(text)
-        #text = " ".join([word.lemma_ if word.lemma_ != "-PRON-" else word.text for word in text])
-        text = " ".join([word.text if word.lemma_ == "-PRON-" else word.lemma_ for word in text])
-        return text
+        nlp    = spacy.load("en_core_web_sm")
+
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : cls.Lemmatize(entry))
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                newText = nlp(text[i])
+                newText = " ".join([word.text if word.lemma_ == "-PRON-" else word.lemma_ for word in newText])
+                result.append(newText)
+        elif type(text) == str:
+            result = nlp(text)
+            result = " ".join([word.text if word.lemma_ == "-PRON-" else word.lemma_ for word in result])
+
+        return result
