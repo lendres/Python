@@ -12,6 +12,9 @@ from   lendres.LanguageHelper                    import LanguageHelper
 
 import warnings
 
+
+skipTests = True
+
 class TestLanguageHelper(unittest.TestCase):
 
     @classmethod
@@ -58,6 +61,33 @@ class TestLanguageHelper(unittest.TestCase):
     def testStripHtml(self):
         result = LanguageHelper.StripHtmlTags("<html><h2>Some important text</h2></html>")
         self.assertEqual(result, "Some important text")
+
+
+    def testRemoveSpecialCases(self):
+        text     = "Well, I didn't…but now I do."
+        result   = LanguageHelper.RemoveSpecialCases(text)
+        print("\n\n", text)
+        print(result)
+        solution = "Well, I didn't but now I do."
+
+        text     = "Well, I didn't…but...now I do."
+        result   = LanguageHelper.RemoveSpecialCharacters(text)
+        print("\n\n", text)
+        print(result)
+        solution = "Well, I didn't but now I do."
+
+
+        text     = "Well, I didn't but...now I do."
+        result   = LanguageHelper.RemoveSpecialCases(text)
+        print("\n\n", text)
+        print(result)
+        solution = "Well, I didn't but now I do."
+        #self.assertEqual(result, solution)
+
+        text     = "Well, I didn't… but... now I do."
+        result   = LanguageHelper.RemoveSpecialCases(text)
+        print("\n\n", text)
+        print(result)
 
 
     def testRemoveAccentCharacters(self):
@@ -136,6 +166,7 @@ class TestLanguageHelper(unittest.TestCase):
         self.assertEqual(result, solution)
 
 
+    @unittest.skipIf(skipTests, "Skipped word cloud test.")
     def testWordCloud(self):
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message="The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.")

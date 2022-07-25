@@ -127,6 +127,19 @@ class LanguageHelper():
 
     @classmethod
     def RemoveStopWordsFromString(cls, text):
+        """
+        Removes stop words from a single string of text.
+
+        Parameters
+        ----------
+        text : string
+            The text to operate on.
+
+        Returns
+        -------
+        text : string
+            The processed text.
+        """
         result = text
 
         for word in cls.stopWords:
@@ -144,10 +157,24 @@ class LanguageHelper():
 
     @classmethod
     def StripHtmlTags(cls, text):
+        """
+        Removes HTML tags.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
         result = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : BeautifulSoup(entry, "html.parser").get_text())
+            result = text.apply(lambda entry : cls.StripHtmlTags(entry))
         elif type(text) == list:
             result = []
             for i in range(len(text)):
@@ -162,6 +189,45 @@ class LanguageHelper():
     def RemoveAccentedCharacters(cls, text):
         """
         Return the normal form form for the Unicode string.  Removes any accent characters.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : cls.RemoveAccentedCharacters(entry))
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                result.append(cls.RemoveAccentedCharactersFromString(text[i]))
+        elif type(text) == str:
+            result = cls.RemoveAccentedCharactersFromString(text)
+
+        return result
+
+
+    @classmethod
+    def RemoveAccentedCharactersFromString(cls, text):
+        """
+        Return the normal form form for the Unicode string.  Removes any accent characters.
+
+        Parameters
+        ----------
+        text : string
+            The text to operate on.
+
+        Returns
+        -------
+        text : string
+            The processed text.
         """
         text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
         return text
@@ -170,12 +236,10 @@ class LanguageHelper():
     @classmethod
     def Tokenize(cls, text):
         tokenizer = ToktokTokenizer()
-
-        result  = None
+        result    = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : tokenizer.tokenize(entry))
-            result = result.apply(lambda tokens : [token.strip() for token in tokens])
+            result = text.apply(lambda entry : cls.Tokenize(entry))
         elif type(text) == list:
             result = []
             for i in range(len(text)):
@@ -186,6 +250,30 @@ class LanguageHelper():
             result = [token.strip() for token in tokens]
 
         return result
+
+
+    @classmethod
+    def RemoveSpecialCases(cls, text):
+        """
+        Removes special characters.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+        pattern : string
+            regular expression to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        # Remove 3 periods used as ellipses without spaces on either side.
+        # Example: "one...two"  =>  "one two"
+        pattern = r"(\S)(\.{3,})(\S)"
+        return LanguageHelper.ApplyRegularExpression(text, pattern, r"\1 \3")
 
 
     @classmethod
@@ -207,7 +295,7 @@ class LanguageHelper():
             The processed text.
         """
         pattern = r"[^a-zA-z\s]" if removeDigits else  r"[^a-zA-z0-9\s]"
-        return LanguageHelper.ApplyRegularExpression(text, pattern)
+        return LanguageHelper.ApplyRegularExpression(text, pattern, " ")
 
 
     @classmethod
@@ -454,5 +542,31 @@ class LanguageHelper():
         elif type(text) == str:
             result = nlp(text)
             result = " ".join([word.text if word.lemma_ == "-PRON-" else word.lemma_ for word in result])
+
+        return result
+
+
+    @classmethod
+    def JoinTokens(cls, text):
+        """
+        Joins the text.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : cls.JoinTokens(entry))
+        elif type(text) == list:
+            result = " ".join(text)
 
         return result
