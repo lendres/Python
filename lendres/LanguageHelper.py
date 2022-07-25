@@ -130,8 +130,18 @@ class LanguageHelper():
 
     @classmethod
     def StripHtmlTags(cls, text):
-        beautifulSoup = BeautifulSoup(text, "html.parser")
-        return beautifulSoup.get_text()
+        result = None
+
+        if type(text) == pd.core.series.Series:
+            result = text.apply(lambda entry : BeautifulSoup(entry, "html.parser").get_text())
+        elif type(text) == list:
+            result = []
+            for i in range(len(text)):
+                result.append(BeautifulSoup(text[i], "html.parser").get_text())
+        elif type(text) == str:
+            result = BeautifulSoup(text, "html.parser").get_text()
+
+        return result
 
 
     @classmethod
@@ -252,7 +262,7 @@ class LanguageHelper():
 
         #text = LanguageHelper.RemovePunctuation(text)
         #text = LanguageHelper.RemoveSpecialCharacters(text)
-        #text = LanguageHelper.StripHtmlTags(text)
+        text = LanguageHelper.StripHtmlTags(text)
 
         if type(text) != list:
             text = text.tolist()
@@ -269,6 +279,8 @@ class LanguageHelper():
         ).generate(text)
 
         # Plot the wordcloud object.
+        pixelsPerInch = 50
+        plt.figure(figsize=(width/pixelsPerInch,height/pixelsPerInch))
         plt.imshow(wordcloud, interpolation="bilInear")
         plt.axis("off")
         plt.show()
@@ -295,13 +307,13 @@ class LanguageHelper():
         result  = None
 
         if type(text) == pd.core.series.Series:
-            result = text.apply(lambda entry : re.sub(pattern, replaceString, entry))
+            result = text.apply(lambda entry : re.sub(pattern, replaceString, entry).strip())
         elif type(text) == list:
             result = []
             for i in range(len(text)):
-                result.append(re.sub(pattern, replaceString, text[i]))
+                result.append(re.sub(pattern, replaceString, text[i]).strip())
         elif type(text) == str:
-            result = re.sub(pattern, replaceString, text)
+            result = re.sub(pattern, replaceString, text).strip()
 
         return result
 

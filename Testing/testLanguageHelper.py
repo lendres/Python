@@ -10,7 +10,9 @@ import unittest
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.LanguageHelper                    import LanguageHelper
 
-class TestNLPHelper(unittest.TestCase):
+import warnings
+
+class TestLanguageHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -26,7 +28,7 @@ class TestNLPHelper(unittest.TestCase):
         Set up function that runs before each test.
         """
         self.testList = ["The", ",", "and", "if", "are", "stopwords", "computer", "is", "not"]
-        self.tweets   = TestNLPHelper.tweets.copy(deep=True)
+        self.tweets   = TestLanguageHelper.tweets.copy(deep=True)
 
 
     def testStopWords(self):
@@ -47,7 +49,6 @@ class TestNLPHelper(unittest.TestCase):
         self.assertEqual(result, "The, stopwords not")
 
 
-
     def testStripHtml(self):
         result = LanguageHelper.StripHtmlTags("<html><h2>Some important text</h2></html>")
         self.assertEqual(result, "Some important text")
@@ -66,7 +67,7 @@ class TestNLPHelper(unittest.TestCase):
 
     def testRemoveSpecialCharacters(self):
         result = LanguageHelper.RemoveSpecialCharacters("Well this was fun! What do you think? 123#@!", True)
-        self.assertEqual(result, "Well this was fun What do you think ")
+        self.assertEqual(result, "Well this was fun What do you think")
 
 
     def testSimpleStemmer(self):
@@ -105,28 +106,31 @@ class TestNLPHelper(unittest.TestCase):
 
 
     def testRemoveWebsiteAddresses(self):
-        text = self.tweets["text"].loc[21]
-        result = LanguageHelper.RemoveWebAddresses(text)
-        print("\n\n\n", text)
-        print("\n", result)
+        text     = self.tweets["text"].loc[21]
+        result   = LanguageHelper.RemoveWebAddresses(text)
+        solution = "Nice RT @VirginAmerica: Vibe with the moodlight from takeoff to touchdown. #MoodlitMonday #ScienceBehindTheExperience"
+        self.assertEqual(result, solution)
 
         text = self.tweets["text"].loc[32]
         result = LanguageHelper.RemoveWebAddresses(text)
-        print("\n\n\n", text)
-        print("\n", result)
+        solution = "@VirginAmerica  DREAM"
+        self.assertEqual(result, solution)
 
         text = self.tweets["text"].loc[59]
         result = LanguageHelper.RemoveWebAddresses(text)
-        print("\n\n\n", text)
-        print("\n", result)
+        solution = "@VirginAmerica has getaway deals through May, from $59 one-way. Lots of cool cities  #CheapFlights #FareCompare"
+        self.assertEqual(result, solution)
 
 
     def testWordCloud(self):
-        LanguageHelper.ResetStopWordsList()
-        LanguageHelper.CreateWordCloud(self.tweets["text"])
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message="The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.")
 
-        LanguageHelper.AppendToStopWordsList(["thank", "thanks", "plane", "flight", "flights", "im", "u"])
-        LanguageHelper.CreateWordCloud(self.tweets["text"], removeStopWords=True)
+            LanguageHelper.ResetStopWordsList()
+            LanguageHelper.CreateWordCloud(self.tweets["text"], width=2000, height=1600)
+
+            LanguageHelper.AppendToStopWordsList(["thank", "thanks", "plane", "flight", "flights", "im", "u"])
+            LanguageHelper.CreateWordCloud(self.tweets["text"], removeStopWords=True)
 
 
 if __name__ == "__main__":
