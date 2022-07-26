@@ -82,6 +82,22 @@ class TestLanguageHelper(unittest.TestCase):
         self.assertEqual(result, solution)
 
 
+    def testJoinTokens(self):
+        text     = "The , and if are stopwords computer is not"
+        result   = LanguageHelper.Tokenize(text)
+        result   = LanguageHelper.JoinTokens(result)
+        self.assertEqual(result, text)
+
+        print("Type:", type(self.tweets["text"].loc[0]))
+        print("Single line join:", LanguageHelper.JoinTokens(self.tweets["text"].loc[0]))
+        text     = LanguageHelper.RemoveSpecialCharacters(self.tweets["text"], removeDigits=True)
+        text     = LanguageHelper.RemoveMultipleSpaces(text)
+        result   = LanguageHelper.Tokenize(text)
+        result   = LanguageHelper.JoinTokens(result)
+        print(text.loc[0])
+        self.assertEqual(result[0], text.loc[0])
+
+
     def testRemoveSpecialCharacters(self):
         result = LanguageHelper.RemoveSpecialCharacters("Well this was fun! What do you think? 123#@!", True)
         self.assertEqual(result, "Well this was fun  What do you think")
