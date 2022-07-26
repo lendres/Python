@@ -12,7 +12,9 @@ from   lendres.CategoricalHelper                 import CategoricalHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.PlotMaker                         import PlotMaker
 
+
 class CategoricalRegressionHelper(CategoricalHelper):
+
 
     def __init__(self, dataHelper, model, description=""):
         """

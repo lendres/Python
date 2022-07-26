@@ -11,7 +11,9 @@ from   lendres.ModelHelper                       import ModelHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.PlotMaker                         import PlotMaker
 
+
 class CategoricalHelper(ModelHelper):
+
 
     def __init__(self, dataHelper, model, description=""):
         """
