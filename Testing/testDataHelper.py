@@ -4,24 +4,25 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from lendres.ConsoleHelper                       import ConsoleHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
 
 import unittest
 
 class TestDataHelper(unittest.TestCase):
+    verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    #verboseLevel = ConsoleHelper.VERBOSETESTING
 
     @classmethod
     def setUpClass(cls):
-        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
 
-        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=verboseLevel, encode=False)
+        cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=cls.verboseLevel, encode=False)
 
-        cls.loanData, cls.loanDependentVariable = DataSetLoading.GetLoanModellingData(verboseLevel=verboseLevel, dropExtra=False)
+        cls.loanData, cls.loanDependentVariable = DataSetLoading.GetLoanModellingData(verboseLevel=cls.verboseLevel, dropExtra=False)
         cls.loanData.ChangeToCategoryType(["CreditCard", "Online"])
 
-        cls.dataWithErrors, dependentVariable   = DataSetLoading.GetDataWithErrors(verboseLevel=verboseLevel)
+        cls.dataWithErrors, dependentVariable   = DataSetLoading.GetDataWithErrors(verboseLevel=cls.verboseLevel)
 
-        cls.usedCarData, dependentVariable      = DataSetLoading.GetUsedCarsData(verboseLevel=verboseLevel)
+        cls.usedCarData, dependentVariable      = DataSetLoading.GetUsedCarsData(verboseLevel=cls.verboseLevel)
 
         cls.boundaries      = [0,     90000,   91000,   92000,   93000,   94000,   95000,   96000,   99999]
         cls.labels          = ["Os", "90000", "91000", "92000", "93000", "94000", "95000", "96000", "99999"]
@@ -60,12 +61,18 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testDisplaying(self):
-        self.loanData.consoleHelper.PrintNewLine()
+        self.loanData.consoleHelper.PrintNewLine(2)
         self.loanData.DisplayAllCategoriesValueCounts()
-        self.loanData.consoleHelper.PrintNewLine()
+        self.loanData.consoleHelper.PrintNewLine(2)
         self.loanData.DisplayUniqueValues(["Online", "CreditCard"])
-        self.loanData.consoleHelper.PrintNewLine()
-        self.loanData.PrintFinalDataSummary()
+
+
+    def testSplitComparisons(self):
+        self.loanData.SplitData(TestDataHelper.loanDependentVariable, 0.3, stratify=False)
+
+        result = self.loanData.GetSplitComparisons()
+        self.loanData.consoleHelper.PrintNewLine(2)
+        self.loanData.consoleHelper.Print(result)
 
 
     def testStringExtraction(self):
@@ -76,8 +83,9 @@ class TestDataHelper(unittest.TestCase):
         result = self.usedCarData.ExtractLastStringTokens(columns)
         result = result.nunique()
 
-        self.usedCarData.consoleHelper.PrintTitle("Extracted String Token Counts", ConsoleHelper.VERBOSEREQUESTED)
-        self.usedCarData.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
+        self.loanData.consoleHelper.PrintNewLine(2)
+        self.usedCarData.consoleHelper.PrintTitle("Extracted String Token Counts")
+        self.usedCarData.consoleHelper.Display(result)
 
         self.assertEqual(result.loc["Mileage"], 2)
         self.assertEqual(result.loc["Engine"], 1)
@@ -89,8 +97,8 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testPrintFinal(self):
-        dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
-        dataHelper.consoleHelper.PrintNewLine()
+        dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=TestDataHelper.verboseLevel)
+        dataHelper.consoleHelper.PrintNewLine(2)
         dataHelper.PrintFinalDataSummary()
 
 

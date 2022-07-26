@@ -224,12 +224,14 @@ class ConsoleHelper():
         self.PrintBold("WARNING: " + message, ConsoleHelper.VERBOSEWARNING)
 
 
-    def PrintNewLine(self, verboseLevel=None):
+    def PrintNewLine(self, count=1, verboseLevel=None):
         """
         Displays a line return.
 
         Parameters
         ----------
+        count : int, optional
+            The number of new lines to print.  Default is one.
         verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
 
@@ -237,7 +239,8 @@ class ConsoleHelper():
         -------
         None.
         """
-        self.Print("", verboseLevel)
+        for i in range(count):
+            self.Print("", verboseLevel)
 
 
     def PrintTitle(self, title, verboseLevel=None):
@@ -257,7 +260,7 @@ class ConsoleHelper():
         None.
         """
         if not self.useMarkDown:
-            self.PrintNewLine()
+            self.PrintNewLine(2, verboseLevel)
 
         self.PrintBold(title, verboseLevel)
 

@@ -149,35 +149,32 @@ class DataHelper():
 
 
         # Read the file in.
-        self.consoleHelper.PrintTitle("Input File: " + inputFile)
+        self.consoleHelper.PrintTitle("Input File: " + inputFile, ConsoleHelper.VERBOSEREQUESTED)
         self.data = pd.read_csv(inputFile)
 
         # Data size and shape.
-        self.consoleHelper.PrintTitle("Data Size")
-        self.consoleHelper.Display(self.data.shape)
+        self.consoleHelper.PrintTitle("Data Size", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.shape, ConsoleHelper.VERBOSEREQUESTED)
 
         # The first few records.
-        self.consoleHelper.PrintTitle("First Few Records")
-        self.consoleHelper.Display(self.data.head())
+        self.consoleHelper.PrintTitle("First Few Records", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.head(), ConsoleHelper.VERBOSEREQUESTED)
 
         # Random records.
         np.random.seed(1)
-        self.consoleHelper.PrintTitle("Random Sampling")
-        self.consoleHelper.Display(self.data.sample(n=10))
+        self.consoleHelper.PrintTitle("Random Sampling", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.sample(n=10), ConsoleHelper.VERBOSEREQUESTED)
 
         # Data summary (mean, min, max, et cetera.
-        self.consoleHelper.PrintTitle("Data Summary")
-        self.consoleHelper.Display(self.data.describe())
+        self.consoleHelper.PrintTitle("Data Summary", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.describe(), ConsoleHelper.VERBOSEREQUESTED)
 
         # Check data types.
-        buffer = io.StringIO()
-        self.data.info(buf=buffer)
-        self.consoleHelper.PrintTitle("Data Types")
-        self.consoleHelper.Print(buffer.getvalue())
+        self.PrintDataTypes()
 
         # Check unique value counts.
-        self.consoleHelper.PrintTitle("Unique Counts")
-        self.consoleHelper.Display(self.data.nunique())
+        self.consoleHelper.PrintTitle("Unique Counts", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(self.data.nunique(), ConsoleHelper.VERBOSEREQUESTED)
 
         # See if there are any missing entries, if so they will have to be cleaned.
         self.PrintNotAvailableCounts()
@@ -189,6 +186,10 @@ class DataHelper():
         """
         Prints a final data summary.
 
+        Parameters
+        ----------
+        None.
+
         Returns
         -------
         None.
@@ -196,8 +197,7 @@ class DataHelper():
         self.consoleHelper.PrintTitle("Data Size", ConsoleHelper.VERBOSEREQUESTED)
         self.consoleHelper.Display(self.data.shape, ConsoleHelper.VERBOSEREQUESTED)
 
-        self.consoleHelper.PrintTitle("Data Types", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.info(), ConsoleHelper.VERBOSEREQUESTED)
+        self.PrintDataTypes()
 
         self.consoleHelper.PrintTitle("Continuous Data", ConsoleHelper.VERBOSEREQUESTED)
         self.consoleHelper.Display(self.data.describe().T, ConsoleHelper.VERBOSEREQUESTED)
@@ -205,6 +205,27 @@ class DataHelper():
         if self.data.select_dtypes(include=['category']).shape[1] > 0:
             self.consoleHelper.PrintTitle("Categorical", ConsoleHelper.VERBOSEREQUESTED)
             self.consoleHelper.Display(self.data.describe(include=["category"]).T, ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def PrintDataTypes(self):
+        """
+        Prints the data types.
+        For some reasone, trying to directly print using "self.data.info()" results in the data always being displayed.  The
+        printing seems to come from some other location (inside "info" itself, perhaps).  This is a work around to retrieve
+        the information in a buffer and then print the data in the buffer  according to the standard operations of the ConsoleHelper.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        buffer = io.StringIO()
+        self.data.info(buf=buffer)
+        self.consoleHelper.PrintTitle("Data Types", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Print(buffer.getvalue(), ConsoleHelper.VERBOSEREQUESTED)
 
 
     def PrintNotAvailableCounts(self):
@@ -221,14 +242,14 @@ class DataHelper():
         """
         notAvailableCounts, totalNotAvailable = self.GetNotAvailableCounts()
 
-        self.consoleHelper.PrintTitle("Missing Entry Counts")
-        self.consoleHelper.Display(notAvailableCounts)
+        self.consoleHelper.PrintTitle("Missing Entry Counts", ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.Display(notAvailableCounts, ConsoleHelper.VERBOSEREQUESTED)
 
         if totalNotAvailable:
             self.consoleHelper.PrintWarning("Some data entries are missing.")
-            self.consoleHelper.Print("Total missing: "+str(totalNotAvailable))
+            self.consoleHelper.Print("Total missing: "+str(totalNotAvailable), ConsoleHelper.VERBOSEREQUESTED)
         else:
-            self.consoleHelper.Print("No entries are missing.")
+            self.consoleHelper.Print("No entries are missing.", ConsoleHelper.VERBOSEREQUESTED)
 
 
     def GetNotAvailableCounts(self):

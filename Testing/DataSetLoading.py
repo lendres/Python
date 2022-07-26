@@ -164,6 +164,7 @@ def GetCarMpgData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
 
     return dataHelper, dependentVariable
 
+
 def GetCreditCardCustomerData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
     inputFile               = "Credit Card Customer Data.csv"
     dependentVariable       = None
