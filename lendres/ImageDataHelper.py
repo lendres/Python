@@ -721,10 +721,9 @@ class ImageDataHelper(DataHelperBase):
         -------
         None.
         """
-        numberOfCategories = self.numberOfLabelCategories
         categories         = self.labelCategories
 
-        valueCounts        = [""] * numberOfCategories
+        valueCounts        = []
         totalCount         = len(dataSet)
 
         formatFunction = None
@@ -738,9 +737,9 @@ class ImageDataHelper(DataHelperBase):
             raise Exception("Invalid format string specified.")
 
         # Turn the numbers into formated strings.
-        for i in categories:
-            classValueCount = sum(dataSet == i)
-            valueCounts[i] = formatFunction(classValueCount, classValueCount/totalCount*100)
+        for category in categories:
+            classValueCount = sum(dataSet == category)
+            valueCounts.append(formatFunction(classValueCount, classValueCount/totalCount*100))
 
         # Create the data frame.
         comparisonFrame = pd.DataFrame(

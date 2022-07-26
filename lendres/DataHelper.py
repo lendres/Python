@@ -17,7 +17,9 @@ import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.DataHelperBase                    import DataHelperBase
 
+
 class DataHelper(DataHelperBase):
+
 
     def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
         """
@@ -1055,50 +1057,6 @@ class DataHelper(DataHelperBase):
             raise Exception("The specified scaling method is invalid.")
 
 
-
-    def GetSplitComparisonsOld(self):
-        """
-        Returns the value counts and percentages of the dependant variable for the
-        original, training (if available), and testing (if available) data.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        dataFrame : pandas.DataFrame
-            DataFrame with the counts and percentages.
-        """
-        # Get results for original data.
-        false = [self.GetCountAndPrecentString(0, "original")]
-        true  = [self.GetCountAndPrecentString(1, "original")]
-        index = ["Original"]
-
-        # If the data has been split, we will add the split information as well.
-        if len(self.xTrainingData) != 0:
-            false.append(self.GetCountAndPrecentString(0, "training"))
-            true.append(self.GetCountAndPrecentString(1, "training"))
-            index.append("Training")
-
-            if len(self.xValidationData) != 0:
-                false.append(self.GetCountAndPrecentString(0, "validation"))
-                true.append(self.GetCountAndPrecentString(1, "validation"))
-                index.append("Validation")
-
-            false.append(self.GetCountAndPrecentString(0, "testing"))
-            true.append(self.GetCountAndPrecentString(1, "testing"))
-            index.append("Testing")
-
-        # Create the data frame.
-        comparisonFrame = pd.DataFrame(
-            {"False" : false, "True"  : true},
-            index=index
-        )
-
-        return comparisonFrame
-
-
     def GetSplitComparisons(self, format="countandpercentstring"):
         """
         Returns the value counts and percentages of the dependant variable for the
@@ -1159,11 +1117,9 @@ class DataHelper(DataHelperBase):
         string : string
             The count and percentage of the total as a string.
         """
-        dependentColumn    = self.GetDependentVariableName()
-        numberOfCategories = self.data[dependentColumn].nunique()
-        categories         = self.data[dependentColumn].unique()
+        categories         = self.data[self.GetDependentVariableName()].unique()
 
-        valueCounts        = [""] * numberOfCategories
+        valueCounts        = []
         totalCount         = len(dataSet)
 
         formatFunction = None
@@ -1177,9 +1133,9 @@ class DataHelper(DataHelperBase):
             raise Exception("Invalid format string specified.")
 
         # Turn the numbers into formated strings.
-        for i in categories:
-            classValueCount = sum(dataSet == i)
-            valueCounts[i] = formatFunction(classValueCount, classValueCount/totalCount*100)
+        for category in categories:
+            classValueCount = sum(dataSet == category)
+            valueCounts.append(formatFunction(classValueCount, classValueCount/totalCount*100))
 
         # Create the data frame.
         comparisonFrame = pd.DataFrame(
