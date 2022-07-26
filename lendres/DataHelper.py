@@ -15,8 +15,9 @@ import io
 
 import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.DataHelperBase                    import DataHelperBase
 
-class DataHelper():
+class DataHelper(DataHelperBase):
 
     def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
         """
@@ -42,23 +43,7 @@ class DataHelper():
         -------
         None.
         """
-        self.xTrainingData             = []
-        self.xTestingData              = []
-        self.xValidationData           = []
-
-        self.yTrainingData             = []
-        self.yValidationData           = []
-        self.yTestingData              = []
-
-        # Save the console helper first so it can be used while processing things.
-        self.consoleHelper  = None
-        if consoleHelper == None:
-            self.consoleHelper = ConsoleHelper()
-        else:
-            self.consoleHelper = consoleHelper
-
-        # Initialize the variable.  Helpful to know if something goes wrong.
-        self.data = None
+        super().__init__(consoleHelper)
 
         # Either load the data from file or the supplied existing data, but not both.
         if fileName is not None:
@@ -69,28 +54,6 @@ class DataHelper():
                 self.data = data.copy(deep)
             else:
                 self.data = data
-
-
-    @classmethod
-    def CopyFrom(cls, original, deep=False):
-        """
-        Creates a copy from another DataHelper (copy constructor).
-
-        Parameters
-        ----------
-        original : DataHelper
-            The source of the data.
-        deep : bool, optional
-            Specifies if a deep copy should be done. The default is False.
-
-        Returns
-        -------
-        None.
-        """
-        dataHelper                = DataHelper()
-        dataHelper.data           = original.data.copy(deep)
-        dataHelper.consoleHelper  = original.consoleHelper
-        return dataHelper
 
 
     def Copy(self, deep=False):
@@ -125,7 +88,7 @@ class DataHelper():
         return dataHelper
 
 
-    def LoadAndInspectData(self, inputFile):
+    def LoadAndInspectData(self, inputFile, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
         """
         Loads a data file and performs some initial inspections and reports results.
 
@@ -149,35 +112,35 @@ class DataHelper():
 
 
         # Read the file in.
-        self.consoleHelper.PrintTitle("Input File: " + inputFile, ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Input File: " + inputFile, )
         self.data = pd.read_csv(inputFile)
 
         # Data size and shape.
-        self.consoleHelper.PrintTitle("Data Size", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.shape, ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Data Size", verboseLevel)
+        self.consoleHelper.Display(self.data.shape, verboseLevel)
 
         # The first few records.
-        self.consoleHelper.PrintTitle("First Few Records", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.head(), ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("First Few Records", verboseLevel)
+        self.consoleHelper.Display(self.data.head(), verboseLevel)
 
         # Random records.
         np.random.seed(1)
-        self.consoleHelper.PrintTitle("Random Sampling", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.sample(n=10), ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Random Sampling", verboseLevel)
+        self.consoleHelper.Display(self.data.sample(n=10), verboseLevel)
 
         # Data summary (mean, min, max, et cetera.
-        self.consoleHelper.PrintTitle("Data Summary", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.describe(), ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Data Summary", verboseLevel)
+        self.consoleHelper.Display(self.data.describe(), verboseLevel)
 
         # Check data types.
-        self.PrintDataTypes()
+        self.PrintDataTypes(verboseLevel)
 
         # Check unique value counts.
-        self.consoleHelper.PrintTitle("Unique Counts", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(self.data.nunique(), ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Unique Counts", verboseLevel)
+        self.consoleHelper.Display(self.data.nunique(), verboseLevel)
 
         # See if there are any missing entries, if so they will have to be cleaned.
-        self.PrintNotAvailableCounts()
+        self.PrintNotAvailableCounts(verboseLevel)
 
         return self.data
 
@@ -207,7 +170,7 @@ class DataHelper():
             self.consoleHelper.Display(self.data.describe(include=["category"]).T, ConsoleHelper.VERBOSEREQUESTED)
 
 
-    def PrintDataTypes(self):
+    def PrintDataTypes(self, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
         """
         Prints the data types.
         For some reasone, trying to directly print using "self.data.info()" results in the data always being displayed.  The
@@ -224,11 +187,11 @@ class DataHelper():
         """
         buffer = io.StringIO()
         self.data.info(buf=buffer)
-        self.consoleHelper.PrintTitle("Data Types", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Print(buffer.getvalue(), ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Data Types", verboseLevel)
+        self.consoleHelper.Print(buffer.getvalue(), verboseLevel)
 
 
-    def PrintNotAvailableCounts(self):
+    def PrintNotAvailableCounts(self, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
         """
         Prints the counts of any missing (not available) entries.
 
@@ -242,14 +205,14 @@ class DataHelper():
         """
         notAvailableCounts, totalNotAvailable = self.GetNotAvailableCounts()
 
-        self.consoleHelper.PrintTitle("Missing Entry Counts", ConsoleHelper.VERBOSEREQUESTED)
-        self.consoleHelper.Display(notAvailableCounts, ConsoleHelper.VERBOSEREQUESTED)
+        self.consoleHelper.PrintTitle("Missing Entry Counts", verboseLevel)
+        self.consoleHelper.Display(notAvailableCounts, verboseLevel)
 
         if totalNotAvailable:
             self.consoleHelper.PrintWarning("Some data entries are missing.")
-            self.consoleHelper.Print("Total missing: "+str(totalNotAvailable), ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.Print("Total missing: "+str(totalNotAvailable), verboseLevel)
         else:
-            self.consoleHelper.Print("No entries are missing.", ConsoleHelper.VERBOSEREQUESTED)
+            self.consoleHelper.Print("No entries are missing.", verboseLevel)
 
 
     def GetNotAvailableCounts(self):

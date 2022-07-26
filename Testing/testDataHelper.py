@@ -8,9 +8,12 @@ from   lendres.ConsoleHelper                     import ConsoleHelper
 
 import unittest
 
+
+skipTests = False
+
 class TestDataHelper(unittest.TestCase):
-    #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
-    verboseLevel = ConsoleHelper.VERBOSETESTING
+    verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    #verboseLevel = ConsoleHelper.VERBOSETESTING
 
     @classmethod
     def setUpClass(cls):
@@ -60,6 +63,7 @@ class TestDataHelper(unittest.TestCase):
         self.assertAlmostEqual(len(result["Largest"]), solution, 0)
 
 
+    @unittest.skipIf(skipTests, "Skipped displaying test.")
     def testDisplaying(self):
         self.loanData.consoleHelper.PrintNewLine(2)
         self.loanData.DisplayAllCategoriesValueCounts()
@@ -72,9 +76,14 @@ class TestDataHelper(unittest.TestCase):
 
         result = self.loanData.GetSplitComparisons()
         self.loanData.consoleHelper.PrintNewLine(2)
-        self.loanData.consoleHelper.Print(result.T, ConsoleHelper.VERBOSETESTING)
+        self.loanData.consoleHelper.Print(result.T)
+
+        self.loanData.CreateSplitComparisonPlot()
+
+        self.loanData.DisplayDataShapes()
 
 
+    @unittest.skipIf(skipTests, "Skipped string extraction test.")
     def testStringExtraction(self):
         columns = ["Mileage", "Engine", "Power"]
         # For this data, the not available rows need to be removed.
@@ -96,6 +105,7 @@ class TestDataHelper(unittest.TestCase):
         self.insuranceDataHelper.ConvertCategoryToNumeric("smoker", "yes")
 
 
+    @unittest.skipIf(skipTests, "Skipped print final test.")
     def testPrintFinal(self):
         dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=TestDataHelper.verboseLevel)
         dataHelper.consoleHelper.PrintNewLine(2)

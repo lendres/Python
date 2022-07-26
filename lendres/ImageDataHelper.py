@@ -13,14 +13,14 @@ import random
 from   sklearn.model_selection                   import train_test_split
 
 import lendres
-from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.DataHelperBase                    import DataHelperBase
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper
 
 
-class ImageDataHelper():
+class ImageDataHelper(DataHelperBase):
     """
     Class for storing and manipulating images for use in a machine learning model.
 
@@ -49,29 +49,17 @@ class ImageDataHelper():
         -------
         None.
         """
-        self.xTrainingData             = []
-        self.xTestingData              = []
-        self.xValidationData           = []
-
-        self.yTrainingData             = []
-        self.yValidationData           = []
-        self.yTestingData              = []
-
-        # Save the console helper first so it can be used while processing things.
-        self.consoleHelper  = None
-        if consoleHelper == None:
-            self.consoleHelper = ConsoleHelper()
-        else:
-            self.consoleHelper = consoleHelper
+        super().__init__(consoleHelper)
 
         # Initialize the variable.  Helpful to know if something goes wrong.
-        self.data                    = []
         self.labels                  = []
+        self.labelCategories         = []
+        self.numberOfLabelCategories = 0
+
         self.yTrainingEncoded        = []
         self.yValidationEncoded      = []
         self.yTestingEncoded         = []
-        self.labelCategories         = []
-        self.numberOfLabelCategories = 0
+
         self.colorConversion         = None
 
 
@@ -89,8 +77,8 @@ class ImageDataHelper():
         None.
         """
         imageDataHelper                         = ImageDataHelper()
+
         imageDataHelper.data                    = self.data.copy()
-        imageDataHelper.labels                  = self.labels.copy(deep=True)
         imageDataHelper.consoleHelper           = self.consoleHelper
 
         imageDataHelper.xTrainingData           = self.xTrainingData.copy()
@@ -102,12 +90,13 @@ class ImageDataHelper():
         imageDataHelper.xTestingData            = self.xTestingData.copy()
         imageDataHelper.yTestingData            = self.yTestingData.copy()
 
+        imageDataHelper.labels                  = self.labels.copy(deep=True)
+        imageDataHelper.labelCategories         = self.labelCategories.copy()
+        imageDataHelper.numberOfLabelCategories = self.numberOfLabelCategories
+
         imageDataHelper.yTrainingEncoded        = self.yTrainingEncoded.copy()
         imageDataHelper.yValidationEncoded      = self.yValidationEncoded.copy()
         imageDataHelper.yTestingEncoded         = self.yTestingEncoded.copy()
-
-        imageDataHelper.labelCategories         = self.labelCategories.copy()
-        imageDataHelper.numberOfLabelCategories = self.numberOfLabelCategories
 
         imageDataHelper.colorConversion         = self.colorConversion
 
@@ -227,38 +216,6 @@ class ImageDataHelper():
         None.
         """
         return self.data[0].shape
-
-
-    def DisplayDataShapes(self):
-        """
-        Print out the shape of all the data.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        self.consoleHelper.PrintTitle("Data Sizes")
-        self.consoleHelper.Display("Data shape:    {0}".format(self.data.shape))
-        self.consoleHelper.Display("Labels length: {0}".format(len(self.data)))
-
-        if len(self.xTrainingData) != 0:
-            self.consoleHelper.PrintNewLine()
-            self.consoleHelper.Display("Training images shape:  {0}".format(self.xTrainingData.shape))
-            self.consoleHelper.Display("Training labels length: {0}".format(len(self.yTrainingData)))
-
-        if len(self.xValidationData) != 0:
-            self.consoleHelper.PrintNewLine()
-            self.consoleHelper.Display("Validation images shape:  {0}".format(self.xValidationData.shape))
-            self.consoleHelper.Display("Validation labels length: {0}".format(len(self.yValidationData)))
-
-        if len(self.xTestingData) != 0:
-            self.consoleHelper.PrintNewLine()
-            self.consoleHelper.Display("Testing images shape:  {0}".format(self.xTestingData.shape))
-            self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)))
 
 
     def GetDataSet(self, dataSet="original"):
@@ -793,33 +750,6 @@ class ImageDataHelper():
         )
 
         return comparisonFrame
-
-
-    def CreateSplitComparisonPlot(self):
-        """
-        Plots the split comparisons.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        figure : Matplotlib figure
-            The created figure.
-        """
-        splits  = self.GetSplitComparisons(format="numericalpercentage")
-        columns = splits.columns.values
-        splits.reset_index(inplace=True)
-
-        PlotHelper.FormatPlot()
-        axis = splits.plot(x="index", y=columns, kind="bar", color=sns.color_palette())
-        axis.set(title="Split Comparison", xlabel="Category", ylabel="Percentage")
-
-        figure = plt.gcf()
-        plt.show()
-
-        return figure
 
 
     def EncodeCategoricalColumns(self):
