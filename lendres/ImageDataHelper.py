@@ -722,11 +722,14 @@ class ImageDataHelper():
 
         Returns
         -------
-        comparisonFrame : pandas.DataFrame
+        dataFrame : pandas.DataFrame
             DataFrame with the counts and percentages.
         """
+        originalData = self.labels["Numbers"]
+
+
         # Get results for original data.
-        dataFrame = self.GetCountAndPrecentStrings(self.labels["Numbers"] ,"Original", format=format)
+        dataFrame = self.GetCountAndPrecentStrings(originalData,"Original", format=format)
 
         # If the data has been split, we will add the split information as well.
         if len(self.yTrainingData) != 0:
@@ -761,7 +764,10 @@ class ImageDataHelper():
         -------
         None.
         """
-        valueCounts        = [""] * self.numberOfLabelCategories
+        numberOfCategories = self.numberOfLabelCategories
+        categories         = self.labelCategories
+
+        valueCounts        = [""] * numberOfCategories
         totalCount         = len(dataSet)
 
         formatFunction = None
@@ -775,7 +781,7 @@ class ImageDataHelper():
             raise Exception("Invalid format string specified.")
 
         # Turn the numbers into formated strings.
-        for i in range(self.numberOfLabelCategories):
+        for i in categories:
             classValueCount = sum(dataSet == i)
             valueCounts[i] = formatFunction(classValueCount, classValueCount/totalCount*100)
 
@@ -783,7 +789,7 @@ class ImageDataHelper():
         comparisonFrame = pd.DataFrame(
             valueCounts,
             columns=[dataSetName],
-            index=self.labelCategories
+            index=categories
         )
 
         return comparisonFrame

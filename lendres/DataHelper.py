@@ -1093,7 +1093,7 @@ class DataHelper():
 
 
 
-    def GetSplitComparisons(self):
+    def GetSplitComparisonsOld(self):
         """
         Returns the value counts and percentages of the dependant variable for the
         original, training (if available), and testing (if available) data.
@@ -1104,7 +1104,7 @@ class DataHelper():
 
         Returns
         -------
-        comparisonFrame : pandas.DataFrame
+        dataFrame : pandas.DataFrame
             DataFrame with the counts and percentages.
         """
         # Get results for original data.
@@ -1136,7 +1136,44 @@ class DataHelper():
         return comparisonFrame
 
 
-    def GetCountAndPrecentString(self, classValue, dataSet="original", column=None):
+    def GetSplitComparisons(self, format="countandpercentstring"):
+        """
+        Returns the value counts and percentages of the dependant variable for the
+        original, training (if available), and testing (if available) data.
+
+        Parameters
+        ----------
+        format : string
+            Format of the returned values.
+            countandpercentstring  : returns a string that contains both the count and percent.
+            numericalcount         : returns the count as a number.
+            numericalpercentage    : returns the percentage as a number.
+
+        Returns
+        -------
+        dataFrame : pandas.DataFrame
+            DataFrame with the counts and percentages.
+        """
+        dependentColumn  = self.GetDependentVariableName()
+        originalData     = self.data[dependentColumn]
+
+
+        # Get results for original data.
+        dataFrame = self.GetCountAndPrecentStrings(originalData,"Original", format=format)
+
+        # If the data has been split, we will add the split information as well.
+        if len(self.yTrainingData) != 0:
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
+
+            if len(self.yValidationData) != 0:
+                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
+
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
+
+        return dataFrame
+
+
+    def GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):
         """
         Gets a string that is the value count of "classValue" and the percentage of the total
         that the "classValue" accounts for in the column.
@@ -1159,34 +1196,36 @@ class DataHelper():
         string : string
             The count and percentage of the total as a string.
         """
-        # 1) It seems this could be simplified by just passing the data set from GetSplitComparisons and not using all the if, elif below.
-        # 2) Why do we pass "column"?  Where is this used?  Is it a required feature or a one off from something?  Can it be removed?
-        classValueCount = 0
-        totalCount      = 0
+        dependentColumn    = self.GetDependentVariableName()
+        numberOfCategories = self.data[dependentColumn].nunique()
+        categories         = self.data[dependentColumn].unique()
 
-        if dataSet == "original":
-            if column == None:
-                column = self.GetDependentVariableName()
-            classValueCount = sum(self.data[column] == classValue)
-            totalCount      = self.data[column].size
+        valueCounts        = [""] * numberOfCategories
+        totalCount         = len(dataSet)
 
-        elif dataSet == "training":
-            classValueCount = sum(self.yTrainingData == classValue)
-            totalCount      = self.yTrainingData.size
-
-        elif dataSet == "validation":
-            classValueCount = sum(self.yValidationData == classValue)
-            totalCount      = self.yValidationData.size
-
-        elif dataSet == "testing":
-            classValueCount = sum(self.yTestingData == classValue)
-            totalCount      = self.yTestingData.size
-
+        formatFunction = None
+        if format == "countandpercentstring":
+            formatFunction = lambda count, percent : "{0} ({1:0.2f}%)".format(count, percent)
+        elif format == "numericalcount":
+            formatFunction = lambda count, percent : count
+        elif format == "numericalpercentage":
+            formatFunction = lambda count, percent : percent
         else:
-            raise Exception("Invalid data set specified.")
+            raise Exception("Invalid format string specified.")
 
-        string = "{0} ({1:0.2f}%)".format(classValueCount, classValueCount/totalCount*100)
-        return string
+        # Turn the numbers into formated strings.
+        for i in categories:
+            classValueCount = sum(dataSet == i)
+            valueCounts[i] = formatFunction(classValueCount, classValueCount/totalCount*100)
+
+        # Create the data frame.
+        comparisonFrame = pd.DataFrame(
+            valueCounts,
+            columns=[dataSetName],
+            index=categories
+        )
+
+        return comparisonFrame
 
 
     def GetDependentVariableName(self):

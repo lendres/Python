@@ -9,8 +9,8 @@ from   lendres.ConsoleHelper                     import ConsoleHelper
 import unittest
 
 class TestDataHelper(unittest.TestCase):
-    verboseLevel = ConsoleHelper.VERBOSEREQUESTED
-    #verboseLevel = ConsoleHelper.VERBOSETESTING
+    #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    verboseLevel = ConsoleHelper.VERBOSETESTING
 
     @classmethod
     def setUpClass(cls):
@@ -68,11 +68,11 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testSplitComparisons(self):
-        self.loanData.SplitData(TestDataHelper.loanDependentVariable, 0.3, stratify=False)
+        self.loanData.SplitData(TestDataHelper.loanDependentVariable, 0.2, 0.3, stratify=False)
 
         result = self.loanData.GetSplitComparisons()
         self.loanData.consoleHelper.PrintNewLine(2)
-        self.loanData.consoleHelper.Print(result)
+        self.loanData.consoleHelper.Print(result.T, ConsoleHelper.VERBOSETESTING)
 
 
     def testStringExtraction(self):
