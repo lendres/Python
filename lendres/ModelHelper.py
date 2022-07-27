@@ -19,7 +19,7 @@ class ModelHelper:
 
     # Used to alter how the recall score is calculated for model comparisons.  If doing a
     # non-binary classification change to "micro," for example.
-    recallAverage             = "binary"
+    scoringAverage             = "binary"
 
 
     def __init__(self, dataHelper, model, description=""):
@@ -424,11 +424,11 @@ class ModelHelper:
         # Accuracy.
         accuracyScores   = [metrics.accuracy_score(self.dataHelper.yTrainingData, self.yTrainingPredicted)]
         # Recall.
-        recallScores     = [metrics.recall_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.recallAverage)]
+        recallScores     = [metrics.recall_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.scoringAverage)]
         # Precision.
-        precisionScores  = [metrics.precision_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, zero_division=0, average=ModelHelper.recallAverage)]
+        precisionScores  = [metrics.precision_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, zero_division=0, average=ModelHelper.scoringAverage)]
         # F1.
-        f1Scores         = [metrics.f1_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.recallAverage)]
+        f1Scores         = [metrics.f1_score(self.dataHelper.yTrainingData, self.yTrainingPredicted, average=ModelHelper.scoringAverage)]
         # Index.
         index            = ["Training"]
 
@@ -437,11 +437,11 @@ class ModelHelper:
            # Accuracy.
             accuracyScores.append(metrics.accuracy_score(self.dataHelper.yValidationData, self.yValidationPredicted))
             # Recall.
-            recallScores.append(metrics.recall_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.recallAverage))
+            recallScores.append(metrics.recall_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.scoringAverage))
             # Precision.
-            precisionScores.append(metrics.precision_score(self.dataHelper.yValidationData, self.yValidationPredicted, zero_division=0, average=ModelHelper.recallAverage))
+            precisionScores.append(metrics.precision_score(self.dataHelper.yValidationData, self.yValidationPredicted, zero_division=0, average=ModelHelper.scoringAverage))
             # F1.
-            f1Scores.append(metrics.f1_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.recallAverage))
+            f1Scores.append(metrics.f1_score(self.dataHelper.yValidationData, self.yValidationPredicted, average=ModelHelper.scoringAverage))
             # Index.
             index.append("Validation")
 
@@ -450,11 +450,11 @@ class ModelHelper:
             # Accuracy.
             accuracyScores.append(metrics.accuracy_score(self.dataHelper.yTestingData, self.yTestingPredicted))
             # Recall.
-            recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.recallAverage))
+            recallScores.append(metrics.recall_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.scoringAverage))
             # Precision.
-            precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0, average=ModelHelper.recallAverage))
+            precisionScores.append(metrics.precision_score(self.dataHelper.yTestingData, self.yTestingPredicted, zero_division=0, average=ModelHelper.scoringAverage))
             # F1.
-            f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.recallAverage))
+            f1Scores.append(metrics.f1_score(self.dataHelper.yTestingData, self.yTestingPredicted, average=ModelHelper.scoringAverage))
             # Index.
             index.append("Testing")
 
