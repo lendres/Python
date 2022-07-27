@@ -396,17 +396,18 @@ class LanguageHelper():
 
 
     @classmethod
-    def CreateWordCloud(cls, text, width=800, height=600, removeStopWords=False):
-        text = LanguageHelper.RemoveInternetHandles(text)
-        text = LanguageHelper.RemoveWebAddresses(text)
-        text = LanguageHelper.ToLowercase(text)
+    def CreateWordCloud(cls, text, width=800, height=600, preprocess=True, removeStopWords=False):
+        if preprocess:
+            text = LanguageHelper.RemoveInternetHandles(text)
+            text = LanguageHelper.RemoveWebAddresses(text)
+            text = LanguageHelper.ToLowercase(text)
 
-        if removeStopWords:
-            text = LanguageHelper.RemoveStopWords(text)
+            if removeStopWords:
+                text = LanguageHelper.RemoveStopWords(text)
 
-        #text = LanguageHelper.RemovePunctuation(text)
-        #text = LanguageHelper.RemoveSpecialCharacters(text)
-        text = LanguageHelper.StripHtmlTags(text)
+            #text = LanguageHelper.RemovePunctuation(text)
+            #text = LanguageHelper.RemoveSpecialCharacters(text)
+            text = LanguageHelper.StripHtmlTags(text)
 
         if type(text) != list:
             text = text.tolist()
