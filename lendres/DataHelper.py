@@ -72,7 +72,9 @@ class DataHelper(DataHelperBase):
         -------
         None.
         """
-        dataHelper                = DataHelper()
+        # Calls the "__new__" operator to create an instance of this class.  Allows for creating instances
+        # of any subclasses.  Alternate notation would be: (type(self))()
+        dataHelper                = self.__new__(type(self))
         dataHelper.data           = self.data.copy(deep)
         dataHelper.consoleHelper  = self.consoleHelper
 
