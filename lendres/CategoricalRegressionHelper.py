@@ -36,7 +36,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
         super().__init__(dataHelper, model, description)
 
 
-    def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0):
+    def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0, maximumFeatures=None, yAxisLabels=None, width=10, height=6):
         """
         Plots importance factors as a bar plot.
 
@@ -47,6 +47,15 @@ class CategoricalRegressionHelper(CategoricalHelper):
         yFontScale : float
             Scale factor for the y axis labels.  If there are a lot of features, they tend to run together
             and may need to be shrunk.
+        maximumFeatures : int or None, optional
+            The maximum number of features to plot.  If None, all features are returned.
+        yAxisLabels : list of strings, optional
+            A list of names to replace the feature names as labels on the Y axis.  The most important
+            feature (top of the chart) is first in the list.
+        width : float, optional
+            The width of the figure. The default is 10.
+        height : float, optional
+            The height of the figure. The default is 6.
 
         Returns
         -------
@@ -55,19 +64,32 @@ class CategoricalRegressionHelper(CategoricalHelper):
         # Need the values in the reverse order (smallest to largest) for the bar plot to get the largest value on
         # the top (highest index position).
         importancesDataFrame = self.GetSortedImportance(ascending=True)
-        indices              = range(importancesDataFrame.shape[0])
+
+        # We cannot pass the maximuFeatures to GetSortedImportance because we are plotting in reverse.  That is, we want
+        # the biggest values on the bottom of the DataFrame so we need to get the tail, not the head.
+        if maximumFeatures is not None:
+            importancesDataFrame = importancesDataFrame.tail(maximumFeatures)
+
+        # We will start by just numbering the indices for the Y axis.  We will then rename and rescale them in a separate operation.
+        indices = range(importancesDataFrame.shape[0])
+
+        # Allow the features to be renamed.  List must be reversed because the plot is reversed.
+        yLabels = importancesDataFrame.index
+        if yAxisLabels is not None:
+            yLabels = yAxisLabels.copy()
+            yLabels.reverse()
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.FormatPlot(width=width, height=height)
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
-        plt.yticks(indices, importancesDataFrame.index, fontsize=12*PlotHelper.scale*yFontScale)
+        plt.yticks(indices, yLabels, fontsize=12*PlotHelper.scale*yFontScale)
         PlotHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
 
         plt.show()
 
 
-    def GetSortedImportance(self, ascending=False):
+    def GetSortedImportance(self, ascending=False, maximumFeatures=None):
         """
         Sorts the importance factors and returns them in a Pandas DataFrame.
 
@@ -75,18 +97,29 @@ class CategoricalRegressionHelper(CategoricalHelper):
         ----------
         ascending : bool
             Specifies if the values should be sorted as ascending or descending.
+        maximumFeatures : int or None, optional
+            The maximum number of features to return.  If None, all features are returned.
 
         Returns
         -------
-        : pandas.DataFrame
+        importances : pandas.DataFrame
             DataFrame of the sorted importance values.
         """
-        return pd.DataFrame(self.model.feature_importances_,
+        index = None
+        if type(self.dataHelper.xTrainingData) == pd.core.frame.DataFrame:
+            index = self.dataHelper.xTrainingData.columns
+
+        importances =  pd.DataFrame(self.model.feature_importances_,
                             columns=["Importance"],
-                            index=self.dataHelper.xTrainingData.columns).sort_values(by="Importance", ascending=ascending)
+                            index=index).sort_values(by="Importance", ascending=ascending)
+
+        if maximumFeatures is not None:
+            importances = importances.head(maximumFeatures)
+
+        return importances
 
 
-    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None):
+    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None, axisLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -98,6 +131,8 @@ class CategoricalRegressionHelper(CategoricalHelper):
             testing  - Plots the results from the test data.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
+        axisLabels : array like of strings
+            Labels to use on the predicted and actual axes.
 
         Returns
         -------
@@ -106,7 +141,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix)
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix, axisLabels)
 
         return confusionMatrix
 

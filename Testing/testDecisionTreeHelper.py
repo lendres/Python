@@ -30,10 +30,17 @@ class TestDecisionTreeHelper(unittest.TestCase):
         self.regressionHelper   = DecisionTreeHelper(self.dataHelper, DecisionTreeHelper.CreateDefaultModel())
 
 
-    def testStandardPlots(self):
+    def testDecisionTreePlot(self):
         self.regressionHelper.FitPredict()
         self.regressionHelper.CreateDecisionTreePlot()
-        self.regressionHelper.CreateFeatureImportancePlot()
+
+
+    def testFeatureImportancePlot(self):
+        self.regressionHelper.FitPredict()
+        self.regressionHelper.CreateFeatureImportancePlot(height=10)
+        self.regressionHelper.CreateFeatureImportancePlot(yFontScale=2.0, maximumFeatures=5)
+        yLabels = ["Top 1", "Top 2", "Top 3", "Top 4", "Top 5"]
+        self.regressionHelper.CreateFeatureImportancePlot(yFontScale=2.0, maximumFeatures=5, yAxisLabels=yLabels)
 
 
     def testGetDependentVariableName(self):
