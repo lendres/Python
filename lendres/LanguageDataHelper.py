@@ -78,3 +78,34 @@ class LanguageDataHelper(DataHelper):
 
         if len(self.xValidationData) != 0:
             self.xValidationData = self.vectorizer.transform(self.xValidationData[sourceColumn]).toarray()
+
+
+    def ConvertFeaturesToWords(self, features, maximumToReturn=None):
+        """
+        Converts features used by a model (indices of vectorized values) to the words they were vectorized from.
+
+        Parameters
+        ----------
+        features : list or pandas.Series
+            Indices of features to retrieve the words for.
+        maximumToReturn : int or None, optional
+            The maximum number of words to return.  If None, all features are converted to words.
+
+        Returns
+        -------
+        words : List of strings
+            The words that correspond to the features indices.
+        """
+        if maximumToReturn is None:
+            maximumToReturn = len(features)
+        elif maximumToReturn > len(features):
+            # Fail safe check to make sure we don't try to access more features than exist.
+            maximumToReturn = len(features)
+
+        featureNames = self.vectorizer.get_feature_names_out()
+        words        = []
+
+        for feature in features[0:maximumToReturn]:
+            words.append(featureNames[feature])
+
+        return words
