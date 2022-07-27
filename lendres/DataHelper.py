@@ -9,6 +9,7 @@ import scipy.stats                               as stats
 from   sklearn.model_selection                   import train_test_split
 from   sklearn.preprocessing                     import StandardScaler
 from   scipy.stats                               import zscore
+from   sklearn.preprocessing                     import LabelEncoder
 
 import os
 import io
@@ -963,9 +964,52 @@ class DataHelper(DataHelperBase):
         self.data = pd.get_dummies(self.data, columns=columns, drop_first=dropFirst)
 
 
+    def LabelEncodeColumns(self, columns):
+        """
+        Converts columns into numerically encoded values.
+
+        Parameters
+        ----------
+        columns : list of strings
+            The names of the columns to encode.
+
+        Returns
+        -------
+        None.
+        """
+        self.labelEncoders = {}
+
+        if type(columns) != list:
+            columns = [columns]
+
+        for column in columns:
+            labelEncoder = LabelEncoder()
+            labelEncoder.fit(self.data[column])
+
+            self.data[column]          = labelEncoder.transform(self.data[column])
+            self.data[column]          = self.data[column].astype("int")
+            self.labelEncoders[column] = labelEncoder
+
+
+    def GetLabelsFromCodes(self, column):
+        """
+        Returns the text/numerical values from an encoded column.
+
+        Parameters
+        ----------
+        columns : string
+            The names of the column to decode.
+
+        Returns
+        -------
+        None.
+        """
+        return self.labelEncoders[column].inverse_transform(self.data[column])
+
+
     def SplitData(self, dependentVariable, testSize, validationSize=None, stratify=False):
         """
-        Creates a linear regression model.  Splits the data and creates the model.
+        Splits the data.
 
         Parameters
         ----------
