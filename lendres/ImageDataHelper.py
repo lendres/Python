@@ -69,8 +69,7 @@ class ImageDataHelper(DataHelperBase):
 
         Parameters
         ----------
-        deep : bool, optional
-            Specifies if a deep copy should be done. The default is False.
+        None.
 
         Returns
         -------
@@ -79,6 +78,8 @@ class ImageDataHelper(DataHelperBase):
         imageDataHelper                         = ImageDataHelper()
 
         imageDataHelper.data                    = self.data.copy()
+        imageDataHelper.labelEncoders           = self.labelEncoders.copy()
+
         imageDataHelper.consoleHelper           = self.consoleHelper
 
         imageDataHelper.xTrainingData           = self.xTrainingData.copy()

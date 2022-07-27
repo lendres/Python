@@ -27,14 +27,16 @@ class DataHelperBase():
         """
         # Initialize the variables.  Helpful to know if something goes wrong.
         self.xTrainingData             = []
-        self.xTestingData              = []
         self.xValidationData           = []
+        self.xTestingData              = []
 
         self.yTrainingData             = []
         self.yValidationData           = []
         self.yTestingData              = []
 
         self.data                      = []
+
+        self.labelEncoders             = {}
 
         # Save the console helper first so it can be used while processing things.
         self.consoleHelper  = None

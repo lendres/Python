@@ -72,11 +72,13 @@ class DataHelper(DataHelperBase):
         -------
         None.
         """
-        # Calls the "__new__" operator to create an instance of this class.  Allows for creating instances
-        # of any subclasses.  Alternate notation would be: (type(self))()
-        dataHelper                = self.__new__(type(self))
-        dataHelper.data           = self.data.copy(deep)
+        # Creates an instance of the class by calling any subclasses's constructor.
+        dataHelper                = (type(self))()
         dataHelper.consoleHelper  = self.consoleHelper
+        dataHelper.labelEncoders  = self.labelEncoders.copy()
+
+        if len(self.data) != 0:
+            dataHelper.data                      = self.data.copy(deep)
 
         if len(self.xTrainingData) != 0:
             dataHelper.xTrainingData             = self.xTrainingData.copy(deep=deep)
@@ -979,8 +981,6 @@ class DataHelper(DataHelperBase):
         -------
         None.
         """
-        self.labelEncoders = {}
-
         if type(columns) != list:
             columns = [columns]
 
@@ -993,7 +993,7 @@ class DataHelper(DataHelperBase):
             self.labelEncoders[column] = labelEncoder
 
 
-    def GetLabelsFromCodes(self, column):
+    def GetLabelsFromCodesInColumn(self, column):
         """
         Returns the text/numerical values from an encoded column.
 
@@ -1007,6 +1007,24 @@ class DataHelper(DataHelperBase):
         None.
         """
         return self.labelEncoders[column].inverse_transform(self.data[column])
+
+
+    def GetLabelsFromCodes(self, column, values):
+        """
+        Returns the text/numerical values from an encoded list.
+
+        Parameters
+        ----------
+        columns : string
+            The names of the column that was originally encoded.
+        values : list, ndarray
+            The values to decode.
+
+        Returns
+        -------
+        None.
+        """
+        return self.labelEncoders[column].inverse_transform(values)
 
 
     def SplitData(self, dependentVariable, testSize, validationSize=None, stratify=False):
