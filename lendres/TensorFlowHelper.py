@@ -288,6 +288,7 @@ class TensorFlowHelper(CategoricalHelper):
     def GetDataSets(self, dataSet="testing"):
         """
         Gets the data sets based on the input argument.
+
         Parameters
         ----------
         dataSet : string
@@ -318,7 +319,8 @@ class TensorFlowHelper(CategoricalHelper):
 
     def GetPredictions(self, dataSet="testing", criteria="wrong"):
         """
-        Plot example image.
+        Gets a list of correct or wrong predictions.
+
         Parameters
         ----------
         dataSet : string
