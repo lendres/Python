@@ -2,24 +2,25 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from sklearn                                 import metrics
-from sklearn.model_selection                 import GridSearchCV
-from sklearn.model_selection                 import RandomizedSearchCV
+from   sklearn                                   import metrics
+from   sklearn.model_selection                   import GridSearchCV
+from   sklearn.model_selection                   import RandomizedSearchCV
 
-from lendres.ConsoleHelper                   import ConsoleHelper
-from lendres.ModelHelper                     import ModelHelper
-#from lendres.CategoricalRegressionHelper     import CategoricalRegressionHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.ModelHelper                       import ModelHelper
+
 
 class HyperparameterHelper():
 
-    def __init__(self, categoricalHelper, scoringFunction, searchType="random", testing=False):
+
+    def __init__(self, modelHelper, scoringFunction, searchType="random", testing=False):
         """
         Constructor.
 
         Parameters
         ----------
-        categoricalHelper : CategoricalHelper
-            CategoricalHelper used in the grid search.
+        modelHelper : CategoricalHelper
+            CategoricalHelper used in the search.
         scoringFunction : function
             Method use to calculate a score for the model.
         searchType : string
@@ -33,7 +34,7 @@ class HyperparameterHelper():
         -------
         None.
         """
-        self.categoricalHelper      = categoricalHelper
+        self.modelHelper            = modelHelper
         self.scorer                 = metrics.make_scorer(scoringFunction)
         self.searchType             = searchType
         self.searcher               = None
@@ -79,26 +80,26 @@ class HyperparameterHelper():
         None.
         """
         # Make sure there is data to operate on.
-        if len(self.categoricalHelper.dataHelper.xTrainingData) == 0:
+        if len(self.modelHelper.dataHelper.xTrainingData) == 0:
             raise Exception("The data has not been split.")
 
         # Run the grid search.
         if self.searchType == "grid":
-            self.searcher = GridSearchCV(self.categoricalHelper.model, parameters, scoring=self.scorer, **kwargs)
+            self.searcher = GridSearchCV(self.modelHelper.model, parameters, scoring=self.scorer, **kwargs)
         elif self.searchType == "random":
-            self.searcher = RandomizedSearchCV(self.categoricalHelper.model, parameters, scoring=self.scorer, **kwargs)
+            self.searcher = RandomizedSearchCV(self.modelHelper.model, parameters, scoring=self.scorer, **kwargs)
 
-        self.searcher = self.searcher.fit(self.categoricalHelper.dataHelper.xTrainingData, self.categoricalHelper.dataHelper.yTrainingData)
+        self.searcher = self.searcher.fit(self.modelHelper.dataHelper.xTrainingData, self.modelHelper.dataHelper.yTrainingData)
 
-        # Set the model (categoricalHelper) to the best combination of parameters.
-        self.categoricalHelper.model = self.searcher.best_estimator_
+        # Set the model (modelHelper) to the best combination of parameters.
+        self.modelHelper.model = self.searcher.best_estimator_
 
         # Fit the best algorithm to the data.
-        self.categoricalHelper.Fit()
+        self.modelHelper.Fit()
 
 
     def Predict(self):
-        self.categoricalHelper.Predict()
+        self.modelHelper.Predict()
 
 
     def DisplayChosenParameters(self):
@@ -114,8 +115,8 @@ class HyperparameterHelper():
         -------
         None.
         """
-        self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters", ConsoleHelper.VERBOSEREQUESTED)
-        self.categoricalHelper.dataHelper.consoleHelper.Display(self.searcher.best_params_, ConsoleHelper.VERBOSEREQUESTED)
+        self.modelHelper.dataHelper.consoleHelper.PrintBold("Chosen Model Parameters", ConsoleHelper.VERBOSEREQUESTED)
+        self.modelHelper.dataHelper.consoleHelper.Display(self.searcher.best_params_, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def RunHypertuning(self, parameters, saveModel=True, **kwargs):
@@ -137,23 +138,19 @@ class HyperparameterHelper():
         """
         # Store to use for comparison.
         if saveModel:
-            ModelHelper.SaveModelHelper(self.categoricalHelper)
+            ModelHelper.SaveModelHelper(self.modelHelper)
 
         # Set up the hyperparameter helper and run the grid search.
         self.FitPredict(parameters, **kwargs)
 
         if self.testing:
-            self.categoricalHelper.dataHelper.consoleHelper.PrintNewLine(ConsoleHelper.VERBOSETESTING)
-            self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Last Parameters", ConsoleHelper.VERBOSETESTING)
-            self.categoricalHelper.dataHelper.consoleHelper.Print(self.lastParameters, ConsoleHelper.VERBOSETESTING)
-            self.categoricalHelper.dataHelper.consoleHelper.PrintNewLine(ConsoleHelper.VERBOSETESTING)
-            self.categoricalHelper.dataHelper.consoleHelper.PrintBold("Last Scores", ConsoleHelper.VERBOSETESTING)
-            self.categoricalHelper.dataHelper.consoleHelper.Print(self.lastScores, ConsoleHelper.VERBOSETESTING)
-
-        self.DisplayChosenParameters()
-
-        self.categoricalHelper.CreateConfusionMatrixPlot(dataSet="testing")
-        self.categoricalHelper.DisplayModelPerformanceScores()
+            if self.lastParameters != "":
+                self.modelHelper.dataHelper.consoleHelper.PrintNewLine(2, verboseLevel=ConsoleHelper.VERBOSETESTING)
+                self.modelHelper.dataHelper.consoleHelper.PrintBold("Last Parameters", ConsoleHelper.VERBOSETESTING)
+                self.modelHelper.dataHelper.consoleHelper.Print(self.lastParameters, ConsoleHelper.VERBOSETESTING)
+                self.modelHelper.dataHelper.consoleHelper.PrintNewLine(2, verboseLevel=ConsoleHelper.VERBOSETESTING)
+                self.modelHelper.dataHelper.consoleHelper.PrintBold("Last Scores", ConsoleHelper.VERBOSETESTING)
+                self.modelHelper.dataHelper.consoleHelper.Print(self.lastScores, ConsoleHelper.VERBOSETESTING)
 
         self.lastParameters = self.searcher.best_params_
-        self.lastScores     = self.categoricalHelper.GetModelPerformanceScores()
+        self.lastScores     = self.modelHelper.GetModelPerformanceScores()

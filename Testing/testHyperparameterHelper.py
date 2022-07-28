@@ -26,9 +26,9 @@ import unittest
 # new unit tests so you don't have to run them all to see if the new one works.
 skipTests = 1
 if skipTests:
-    #skippedTests = ["Decision Tree", "Bagging", "Random Forest", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
-    #skippedTests = ["AdaBoost", "X Gradient Boosting"]
-    skippedTests = ["X Gradient Boosting"]
+    skippedTests = ["Bagging", "AdaBoost", "Gradient Boosting", "X Gradient Boosting"]
+    #skippedTests = ["Decision Tree", "AdaBoost", "Random Forest", "X Gradient Boosting"]
+    #skippedTests = ["X Gradient Boosting"]
 else:
     skippedTests = []
 
@@ -183,6 +183,8 @@ class TestHyperparameterHelper(unittest.TestCase):
 
 
     def testZZAdditionalOutput(self):
+        # Tests printing of a previous runs scores and parameters.
+        # This functionality is used for testing and searching for good parameters.
         parameters = {"base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
                                           DecisionTreeClassifier(max_depth=2, random_state=1)],
                       "n_estimators"   : [10, 25],
@@ -192,7 +194,11 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper             = AdaBoostHelper(self.dataHelper)
         self.regressionHelper.description = "Adaboost"
 
-        self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper, metrics.recall_score, "grid", True)
+        self.hyperparameterHelper         = HyperparameterHelper(self.regressionHelper, metrics.recall_score, "grid", True)
+
+        # Testing needs to be true for the output to occur.
+        # We need to run it twice to get the output as it outputs the previous runs values.
+        self.hyperparameterHelper.testing = True
         self.hyperparameterHelper.RunHypertuning(parameters, saveModel=False)
         self.hyperparameterHelper.RunHypertuning(parameters, saveModel=False)
 
@@ -202,17 +208,14 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.PrintClassName()
 
         self.hyperparameterHelper   = HyperparameterHelper(self.regressionHelper, metrics.recall_score, "grid", testingOutput)
-        self.hyperparameterHelper.RunHypertuning(parameters, saveModel=saveToModelHelper)
+        self.hyperparameterHelper.RunHypertuning(parameters, saveModel=True)
 
         scores = self.regressionHelper.GetModelPerformanceScores(final=True)
 
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titlePrefix=self.regressionHelper.description)
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
-        if saveToModelHelper:
-            ModelHelper.SaveModelHelper(self.regressionHelper)
-        else:
-            TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
+        TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
 
         return scores, confusionMatrix
 
