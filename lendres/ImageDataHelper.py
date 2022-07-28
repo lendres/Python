@@ -7,10 +7,7 @@ import seaborn                                   as sns
 import pandas                                    as pd
 import numpy                                     as np
 import tensorflow                                as tf
-
 import random
-
-from   sklearn.model_selection                   import train_test_split
 
 import lendres
 from   lendres.DataHelperBase                    import DataHelperBase
@@ -640,29 +637,12 @@ class ImageDataHelper(DataHelperBase):
 
         Returns
         -------
-        data : pandas.DataFrame
-            Data in a pandas.DataFrame
+        None.
         """
-        if len(self.data) == 0:
-            raise Exception("Data has not been loaded.")
-
         x = self.data
         y = self.labels["Numbers"]
 
-        if stratify:
-            stratifyInput = y
-        else:
-            stratifyInput = None
-
-        # Split the data.
-        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratifyInput)
-
-        if validationSize != None:
-            if stratify:
-                stratifyInput = self.yTrainingData
-            else:
-                stratifyInput = None
-            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
+        self._SplitData(x, y, testSize, validationSize, stratify
 
 
     def GetSplitComparisons(self, format="countandpercentstring"):

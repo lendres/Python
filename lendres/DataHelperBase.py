@@ -2,8 +2,10 @@
 Created on July 26, 2022
 @author: Lance A. Endres
 """
+import pandas                                    as pd
 from   matplotlib                                import pyplot                     as plt
 import seaborn                                   as sns
+from   sklearn.model_selection                   import train_test_split
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.PlotHelper                        import PlotHelper
@@ -44,6 +46,46 @@ class DataHelperBase():
             self.consoleHelper = ConsoleHelper()
         else:
             self.consoleHelper = consoleHelper
+
+
+    def _SplitData(self, x, y, testSize, validationSize=None, stratify=False):
+        """
+        Splits the data.
+
+        Parameters
+        ----------
+        x : array like
+            Independent data.
+        y : array like
+            Dependent data.
+        testSize : double
+            Fraction of the data to use as test data.  Must be in the range of 0-1.
+        validationSize : double
+            Fraction of the non-test data to use as validation data.  Must be in the range of 0-1.
+        stratify : bool
+            If true, the approximate ratio of value in the dependent variable is maintained.
+
+        Returns
+        -------
+        None.
+        """
+        if len(self.data) == 0:
+            raise Exception("Data has not been loaded.")
+
+        if stratify:
+            stratifyInput = y
+        else:
+            stratifyInput = None
+
+        # Split the data.
+        self.xTrainingData, self.xTestingData, self.yTrainingData, self.yTestingData = train_test_split(x, y, test_size=testSize, random_state=1, stratify=stratifyInput)
+
+        if validationSize != None:
+            if stratify:
+                stratifyInput = self.yTrainingData
+            else:
+                stratifyInput = None
+            self.xTrainingData, self.xValidationData, self.yTrainingData, self.yValidationData = train_test_split(self.xTrainingData, self.yTrainingData, test_size=validationSize, random_state=1, stratify=stratifyInput)
 
 
     def _GetSplitComparisons(self, originalData, format="countandpercentstring"):
