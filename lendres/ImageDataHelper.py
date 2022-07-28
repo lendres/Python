@@ -685,20 +685,7 @@ class ImageDataHelper(DataHelperBase):
         """
         originalData = self.labels["Numbers"]
 
-
-        # Get results for original data.
-        dataFrame = self.GetCountAndPrecentStrings(originalData,"Original", format=format)
-
-        # If the data has been split, we will add the split information as well.
-        if len(self.yTrainingData) != 0:
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
-
-            if len(self.yValidationData) != 0:
-                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
-
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
-
-        return dataFrame
+        return self._GetSplitComparisons(originalData, format=format)
 
 
     def GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):

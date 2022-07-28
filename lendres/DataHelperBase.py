@@ -46,6 +46,42 @@ class DataHelperBase():
             self.consoleHelper = consoleHelper
 
 
+    def _GetSplitComparisons(self, originalData, format="countandpercentstring"):
+        """
+        Returns the value counts and percentages of the dependant variable for the
+        original, training (if available), and testing (if available) data.
+
+        Parameters
+        ----------
+        originalData : array like
+            The source data passed from the subclass.
+        format : string
+            Format of the returned values.
+            countandpercentstring  : returns a string that contains both the count and percent.
+            numericalcount         : returns the count as a number.
+            numericalpercentage    : returns the percentage as a number.
+
+        Returns
+        -------
+        dataFrame : pandas.DataFrame
+            DataFrame with the counts and percentages.
+        """
+        # Get results for original data.
+        dataFrame = self.GetCountAndPrecentStrings(originalData,"Original", format=format)
+
+        # If the data has been split, we will add the split information as well.
+        if len(self.yTrainingData) != 0:
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
+
+            if len(self.yValidationData) != 0:
+                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
+
+            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
+
+        return dataFrame
+
+
+
     def CreateSplitComparisonPlot(self):
         """
         Plots the split comparisons.
@@ -103,3 +139,25 @@ class DataHelperBase():
             self.consoleHelper.PrintNewLine(ConsoleHelper.VERBOSEREQUESTED)
             self.consoleHelper.Display("Testing images shape:  {0}".format(self.xTestingData.shape), ConsoleHelper.VERBOSEREQUESTED)
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)), ConsoleHelper.VERBOSEREQUESTED)
+
+
+    def EncodeDependentVariableForAI(self):
+        """
+        Converts the categorical columns ("category" data type) to encoded values.
+        Prepares categorical columns for use in a model.
+
+        Parameters
+        ----------
+        columns : list of strings
+            The names of the columns to encode.
+        dropFirst : bool
+            If true, the first category is dropped for the encoding.
+
+        Returns
+        -------
+        None.
+        """
+        self.yTrainingEncoded   = tf.keras.utils.to_categorical(self.yTrainingData)
+        if len(self.yValidationData) != 0:
+            self.yValidationEncoded = tf.keras.utils.to_categorical(self.yValidationData)
+        self.yTestingEncoded    = tf.keras.utils.to_categorical(self.yTestingData)
