@@ -36,7 +36,13 @@ class CrossValidationHelper():
         else:
             self.kFold = KFold(n_splits=splits, random_state=1, shuffle=True)
 
-        self.results = cross_val_score(self.modelHelper.model, self.modelHelper.xTrainingData, self.modelHelper.yTrainingData, cv=self.kFold, scoring=score)
+        self.results = cross_val_score(
+			self.modelHelper.model,
+			self.modelHelper.dataHelper.xTrainingData,
+			self.modelHelper.dataHelper.yTrainingData,
+			cv=self.kFold,
+			scoring=score
+		)
 
 
     def PrintResults(self):
