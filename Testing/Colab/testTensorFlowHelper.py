@@ -1,43 +1,73 @@
 """
 Created on May 30, 2022
-@author: Lance
+@author: Lance A. Endres
 """
-import pandas                  as pd
-import numpy                   as np
+import pandas                                    as pd
+import numpy                                     as np
+
+from   sklearn.model_selection                   import train_test_split
 
 import keras
-from   tensorflow.keras.utils  import to_categorical
-from   tensorflow.keras        import losses
-from   tensorflow.keras        import optimizers
-from   tensorflow.keras        import Sequential
-from   tensorflow.keras.layers import Dense
+from   tensorflow.keras.utils                    import to_categorical
+from   tensorflow.keras                          import losses
+from   tensorflow.keras                          import optimizers
+from   tensorflow.keras                          import Sequential
+from   tensorflow.keras.layers                   import Dense
 
-from   keras.datasets          import mnist
+from   keras.datasets                            import mnist
 
-from lendres.PlotMaker         import PlotMaker
-from lendres.TensorFlowHelper  import TensorFlowHelper
+from   lendres.PlotMaker                         import PlotMaker
+from   lendres.DataHelper                        import DataHelper
+from   lendres.ImageDataHelper                   import ImageDataHelper
+from   lendres.TensorFlowHelper                  import TensorFlowHelper
+from   lendres.TensorFlowCNNHelper               import TensorFlowCNNHelper
 
 import unittest
 
+
 class TestTensorFlowHelper(unittest.TestCase):
+
 
     @classmethod
     def setUpClass(cls):
-        (cls.x_train, cls.y_train), (cls.x_test, cls.y_test) = mnist.load_data()
+        cls.verboseLevel = 1
 
-        # Flatten the images
+        # Get mist data.
+        print("\n\nDownloading data...")
+        (xTrainingData, yTrainingData), (xTestingData, yTestingData) = mnist.load_data()
+        print("\nX training shape:", xTrainingData.shape)
+        print("\nY training shape:", yTrainingData.shape)
+
+        # Flatten the images.
+        print("Flatten images...")
         image_vector_size = 28*28
-        cls.x_train = cls.x_train.reshape(cls.x_train.shape[0], image_vector_size)
-        cls.x_test  = cls.x_test.reshape(cls.x_test.shape[0],   image_vector_size)
+        xTrainingData = xTrainingData.reshape(xTrainingData.shape[0], image_vector_size)
+        xTestingData  = xTestingData.reshape(xTestingData.shape[0],   image_vector_size)
+        print("\nX training shape:", xTrainingData.shape)
 
-        # # normalize inputs from 0-255 to 0-1
-        cls.x_train = cls.x_train / 255.0
-        cls.x_test  = cls.x_test  / 255.0
+        # Normalize inputs from 0-255 to 0-1.
+        print("Normalize inputs...")
+        xTrainingData = xTrainingData / 255.0
+        xTestingData  = xTestingData  / 255.0
+        print("\nX training shape:", xTrainingData.shape)
+
+        xTrainingData, xValidationData, yTrainingData, yValidationData = train_test_split(xTrainingData, yTrainingData, test_size=0.2, random_state=1, stratify=yTrainingData)
 
         # Convert to "one-hot" vectors using the to_categorical function
         cls.num_classes  = 10
-        cls.y_train      = to_categorical(cls.y_train, cls.num_classes)
-        cls.y_test_cat   = to_categorical(cls.y_test,  cls.num_classes)
+        yTrainingData    = to_categorical(yTrainingData,   cls.num_classes)
+        yValidationData  = to_categorical(yValidationData, cls.num_classes)
+        yTestingData     = to_categorical(yTestingData,    cls.num_classes)
+
+        cls.imageDataHelper                 = ImageDataHelper()
+        cls.imageDataHelper.xTrainingData   = xTrainingData
+        cls.imageDataHelper.xValidationData = xValidationData
+        cls.imageDataHelper.xTestingData    = xTestingData
+
+        cls.imageDataHelper.yTrainingData   = yTrainingData
+        cls.imageDataHelper.yValidationData = yValidationData
+        cls.imageDataHelper.yTestingData    = yTestingData
+
 
     def setUp(self):
         """
@@ -51,15 +81,14 @@ class TestTensorFlowHelper(unittest.TestCase):
 
         # Multiple Dense units with Relu activation.
         self.model.add(Dense(128, activation='relu', kernel_initializer='he_uniform', input_shape=(image_size,)))
-        self.model.add(Dense(64, activation='relu',  kernel_initializer='he_uniform'))
-        #self.model.add(Dense(64, activation='relu',  kernel_initializer='he_uniform'))
-        self.model.add(Dense(32, activation='relu',  kernel_initializer='he_uniform'))
+        self.model.add(Dense(64,  activation='relu', kernel_initializer='he_uniform'))
+        self.model.add(Dense(32,  activation='relu', kernel_initializer='he_uniform'))
 
         # For multiclass classification Softmax is used.
         self.model.add(Dense(TestTensorFlowHelper.num_classes, activation='softmax'))
 
         # Optimizer.
-        adam = optimizers.Adam(lr=1e-3)
+        adam = optimizers.Adam(learning_rate=1e-3)
 
         # Loss function = categorical cross entropy.
         self.model.compile(loss=losses.categorical_crossentropy, optimizer=adam, metrics=['accuracy'])
@@ -69,15 +98,18 @@ class TestTensorFlowHelper(unittest.TestCase):
 
 
     def testCreateTrainingAndValidationHistoryPlot(self):
-        history = self.model.fit(
-            TestTensorFlowHelper.x_train,
-            TestTensorFlowHelper.y_train,
-            validation_split=0.2,
-            epochs=8,
-            batch_size=128,
-            verbose=2
+        tensorFlowHelper = TensorFlowCNNHelper(TestTensorFlowHelper.imageDataHelper, self.model)
+
+        tensorFlowHelper.Fit(
+            saveHistory=True,
+            epochs=6,
+            verbose=TestTensorFlowHelper.verboseLevel
         )
-        TensorFlowHelper.CreateTrainingAndValidationHistoryPlot(history, "loss")
+
+        tensorFlowHelper.Predict()
+
+        tensorFlowHelper.CreateTrainingAndValidationHistoryPlot("loss");
+        tensorFlowHelper.CreateTrainingAndValidationHistoryPlot("accuracy");
 
 
 if __name__ == "__main__":

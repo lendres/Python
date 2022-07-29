@@ -111,8 +111,8 @@ class TensorFlowHelper(CategoricalHelper):
 
         history = self.model.fit(
             self.dataHelper.xTrainingData,
-            self.dataHelper.yTrainingEncoded,
-            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationEncoded),
+            self.dataHelper.yTrainingData,
+            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationData),
             **kwargs
         )
 

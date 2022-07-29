@@ -9,10 +9,11 @@ import os
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.ImageHelper                       import ImageHelper
+from   lendres.ImageDataHelper                   import ImageDataHelper
 
 import unittest
 
-class TestImageHelper(unittest.TestCase):
+class TestImageDataHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -23,9 +24,9 @@ class TestImageHelper(unittest.TestCase):
         labelsFile      = os.path.join("../Data", labelsFile)
 
         consoleHelper   = ConsoleHelper(verboseLevel=ConsoleHelper.VERBOSEALL, useMarkDown=False)
-        cls.imageHelper = ImageHelper(consoleHelper=consoleHelper)
+        cls.imageHelper = ImageDataHelper(consoleHelper=consoleHelper)
         cls.imageHelper.LoadImagesFromNumpyArray(imagesInputFile);
-        cls.imageHelper.LoadLabelsFromCsv(labelsFile, labelsAreText=True);
+        cls.imageHelper.LoadLabelsFromCsv(labelsFile);
 
 
     def setUp(self):
@@ -33,11 +34,11 @@ class TestImageHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.imageHelper = TestImageHelper.imageHelper.Copy()
+        self.imageDataHelper = TestImageDataHelper.imageHelper.Copy()
 
 
     def testDisplayData(self):
-        self.imageHelper.DisplayDataShapes()
+        self.imageDataHelper.DisplayDataShapes()
 
 
 if __name__ == "__main__":
