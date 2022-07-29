@@ -5,20 +5,20 @@ Created on June 27, 2022
 import numpy                                     as np
 
 from   lendres.ImageHelper                       import ImageHelper
-from   lendres.TensorFlowHelper                  import TensorFlowHelper
+from   lendres.TensorFlowMultiClassHelper        import TensorFlowMultiClassHelper
 
 
-class TensorFlowCNNHelper(TensorFlowHelper):
+class TensorFlowCNNHelper(TensorFlowMultiClassHelper):
 
 
-    def __init__(self, imageHelper, model, description=""):
+    def __init__(self, imageDataHelper, model, description=""):
         """
         Constructor.
 
         Parameters
         ----------
-        imageHelper : ImageHelper
-            ImageHelper that has the input images.
+        imageDataHelper : ImageDataHelper
+            ImageDataHelper that has the input images.
         model : Model
             A TensorFlow model.
         description : string
@@ -28,51 +28,7 @@ class TensorFlowCNNHelper(TensorFlowHelper):
         -------
         None.
         """
-        super().__init__(imageHelper, model, description)
-
-
-    def Predict(self):
-        """
-        Predicts classification based on the maximum probabilities.
-        Used for non-binary classification problems.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        self.yTrainingPredicted        = self.GetPredictedClassification(self.dataHelper.xTrainingData)
-        self.yTestingPredicted         = self.GetPredictedClassification(self.dataHelper.xTestingData)
-
-        if len(self.dataHelper.yValidationData) != 0:
-            self.yValidationPredicted  = self.GetPredictedClassification(self.dataHelper.xValidationData)
-
-
-    def GetPredictedClassification(self, xData):
-        """
-        Gets the predicted classification based on the maximum probabilities.
-        Used for non-binary classification problems.
-
-        Parameters
-        ----------
-        xData : array like
-            Independent variables.
-
-        Returns
-        -------
-        yPredictedData : array like
-            Predictions of the dependent variable.
-        """
-        yPerdicted = self.model.predict(xData)
-        yPerdictedClass = []
-
-        for i in yPerdicted:
-            yPerdictedClass.append(np.argmax(i))
-
-        return yPerdictedClass
+        super().__init__(imageDataHelper, model, description)
 
 
     def ComparePredictedToActual(self, dataSet="testing", index=None, location=None, random=False, size=6):

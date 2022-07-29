@@ -9,6 +9,7 @@ import numpy                                     as np
 import tensorflow                                as tf
 
 import lendres
+from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
@@ -185,7 +186,7 @@ class ImageDataHelper(TensorFlowDataHelper):
         None.
         """
         labelsDataFrame = pd.DataFrame(self.labelCategories, index=range(0, self.numberOfLabelCategories), columns=["Labels"])
-        self.consoleHelper.Display(labelsDataFrame)
+        self.consoleHelper.Display(labelsDataFrame, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
 
     def GetImageShape(self):
@@ -374,9 +375,9 @@ class ImageDataHelper(TensorFlowDataHelper):
         for i in range(self.numberOfLabelCategories):
             # For subsequent sections, add space after the preceeding.
             if i > 0:
-                self.consoleHelper.PrintNewLine()
+                self.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
-            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.consoleHelper.PrintTitle(self.labelCategories[i], ConsoleHelper.VERBOSEREQUESTED)
             self.PlotImageExamplesByCategory(numberOfExamples, categoryNumber=i, dataSet=dataSet)
 
 
@@ -437,9 +438,9 @@ class ImageDataHelper(TensorFlowDataHelper):
         for i in range(self.numberOfLabelCategories):
             # For subsequent sections, add space after the preceeding.
             if i > 0:
-                self.consoleHelper.PrintNewLine()
+                self.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
-            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.consoleHelper.PrintTitle(self.labelCategories[i], verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
             self.PlotColorChannelsByCategory(numberOfExamples, categoryNumber=i)
 
 
@@ -491,9 +492,9 @@ class ImageDataHelper(TensorFlowDataHelper):
         for i in range(self.numberOfLabelCategories):
             # For subsequent sections, add space after the preceeding.
             if i > 0:
-                self.consoleHelper.PrintNewLine()
+                self.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
-            self.consoleHelper.PrintTitle(self.labelCategories[i])
+            self.consoleHelper.PrintTitle(self.labelCategories[i], verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
             self.PlotChromaKeyedImagesByCategory(lowerBounds, upperBounds, maskBlurSize=maskBlurSize, inputBoundsFormat=inputBoundsFormat, categoryNumber=i, numberOfExamples=numberOfExamples)
 
 

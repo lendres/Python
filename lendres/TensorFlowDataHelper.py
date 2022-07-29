@@ -86,7 +86,14 @@ class TensorFlowDataHelper(DataHelperBase):
         # The length function is used because both numpy arrays and pandas.Series have unique functions, but
         # numpy arrays do not have an nunique function.  This way lets us operate on both without having to check
         # the data type.
-        numberOfUniqueCategories = len(self.yTrainingData.unique())
+        numberOfUniqueCategories = 0
+        yDataType                = type(self.yTrainingData)
+        if yDataType == np.ndarray:
+            numberOfUniqueCategories = len(np.unique(self.yTrainingData))
+        elif yDataType == pd.core.series.Series:
+            numberOfUniqueCategories = self.yTrainingData.nunique()
+        else:
+            raise Exception("Data type is unknown.")
 
         # For binary classification, we don't want to change the data.  We already have 1 column of 0/1s.
         # For multiclass classification we need an array of 0s and 1s, one for each potential class.
