@@ -19,7 +19,13 @@ from   lendres.DataHelperBase                    import DataHelperBase
 
 
 class DataHelper(DataHelperBase):
+    """
+    Class for holding and processing data.
 
+    To Do
+        Can the common functionality (copy of original, training, validation, and testing data) of DataHelper.CopyFrom
+        and ImageDataHelper.CopyFrom be combined?
+    """
 
 
     def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
@@ -59,40 +65,35 @@ class DataHelper(DataHelperBase):
                 self.data = data
 
 
-    def Copy(self, deep=False):
+    def CopyFrom(self, dataHelper):
         """
-        Creates a copy (copy constructor).
+        Copies the data of the DataHelper supplied as input to this DataHelper.
 
         Parameters
         ----------
-        deep : bool, optional
-            Specifies if a deep copy should be done. The default is False.
+        dataHelper : DataHelperBase subclass.
+            DataHelper to copy data from.
 
         Returns
         -------
         None.
         """
-        # Creates an instance of the class by calling any subclasses's constructor.
-        dataHelper                = (type(self))()
-        dataHelper.consoleHelper  = self.consoleHelper
-        dataHelper.labelEncoders  = self.labelEncoders.copy()
+        super().CopyFrom(dataHelper)
 
-        if len(self.data) != 0:
-            dataHelper.data                      = self.data.copy(deep)
+        if len(dataHelper.data) != 0:
+            self.data                      = dataHelper.data.copy(deep=True)
 
-        if len(self.xTrainingData) != 0:
-            dataHelper.xTrainingData             = self.xTrainingData.copy(deep=deep)
-            dataHelper.yTrainingData             = self.yTrainingData.copy(deep=deep)
+        if len(dataHelper.xTrainingData) != 0:
+            self.xTrainingData             = dataHelper.xTrainingData.copy(deep=True)
+            self.yTrainingData             = dataHelper.yTrainingData.copy(deep=True)
 
-        if len(self.xValidationData) != 0:
-            dataHelper.xValidationData           = self.xValidationData.copy(deep=deep)
-            dataHelper.yValidationData           = self.yValidationData.copy(deep=deep)
+        if len(dataHelper.xValidationData) != 0:
+            self.xValidationData           = dataHelper.xValidationData.copy(deep=True)
+            self.yValidationData           = dataHelper.yValidationData.copy(deep=True)
 
-        if len(self.xTestingData) != 0:
-            dataHelper.xTestingData              = self.xTestingData.copy(deep=deep)
-            dataHelper.yTestingData              = self.yTestingData.copy(deep=deep)
-
-        return dataHelper
+        if len(dataHelper.xTestingData) != 0:
+            self.xTestingData              = dataHelper.xTestingData.copy(deep=True)
+            self.yTestingData              = dataHelper.yTestingData.copy(deep=True)
 
 
     def LoadAndInspectData(self, inputFile, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):

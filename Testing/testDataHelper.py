@@ -34,10 +34,10 @@ class TestDataHelper(unittest.TestCase):
 
 
     def setUp(self):
-        self.insuranceDataHelper = TestDataHelper.insuranceDataHelper.Copy(deep=True)
-        self.loanData            = TestDataHelper.loanData.Copy(deep=True)
-        self.dataWithErrors      = TestDataHelper.dataWithErrors.Copy(deep=True)
-        self.usedCarData         = TestDataHelper.usedCarData.Copy(deep=True)
+        self.insuranceDataHelper = TestDataHelper.insuranceDataHelper.Copy()
+        self.loanData            = TestDataHelper.loanData.Copy()
+        self.dataWithErrors      = TestDataHelper.dataWithErrors.Copy()
+        self.usedCarData         = TestDataHelper.usedCarData.Copy()
 
 
     def testValueCounts(self):

@@ -52,6 +52,42 @@ class DataHelperBase():
             self.consoleHelper = consoleHelper
 
 
+    def Copy(self):
+        """
+        Creates a copy (copy constructor).
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        dataHelper : DataHelperBase subclass
+            New DataHelperBase subclass instance with the data of this one copied to it.
+        """
+        # Creates an instance of the class by calling any subclasses's constructor.
+        dataHelper = (type(self))()
+        dataHelper.CopyFrom(self)
+        return dataHelper
+
+
+    def CopyFrom(self, dataHelper):
+        """
+        Copies the data of the DataHelper supplied as input to this DataHelper.
+
+        Parameters
+        ----------
+        dataHelper : DataHelperBase subclass.
+            DataHelper to copy data from.
+
+        Returns
+        -------
+        None.
+        """
+        self.consoleHelper  = dataHelper.consoleHelper
+        self.labelEncoders  = dataHelper.labelEncoders.copy()
+
+
     def _SplitData(self, x, y, testSize, validationSize=None, stratify=False):
         """
         Splits the data.

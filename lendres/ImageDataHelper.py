@@ -7,17 +7,16 @@ import seaborn                                   as sns
 import pandas                                    as pd
 import numpy                                     as np
 import tensorflow                                as tf
-import random
 
 import lendres
-from   lendres.DataHelperBase                    import DataHelperBase
+from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper
 
 
-class ImageDataHelper(DataHelperBase):
+class ImageDataHelper(TensorFlowDataHelper):
     """
     Class for storing and manipulating images for use in a machine learning model.
 
@@ -56,45 +55,37 @@ class ImageDataHelper(DataHelperBase):
         self.colorConversion         = None
 
 
-    def Copy(self):
+    def CopyFrom(self, dataHelper):
         """
-        Creates a copy (copy constructor).
+        Copies the data of the DataHelper supplied as input to this DataHelper.
 
         Parameters
         ----------
-        None.
+        dataHelper : DataHelperBase subclass.
+            DataHelper to copy data from.
 
         Returns
         -------
         None.
         """
-        imageDataHelper                         = ImageDataHelper()
+        super().CopyFrom(dataHelper)
 
-        imageDataHelper.data                    = self.data.copy()
-        imageDataHelper.labelEncoders           = self.labelEncoders.copy()
+        self.data                    = dataHelper.data.copy()
 
-        imageDataHelper.consoleHelper           = self.consoleHelper
+        self.xTrainingData           = dataHelper.xTrainingData.copy()
+        self.yTrainingData           = dataHelper.yTrainingData.copy()
 
-        imageDataHelper.xTrainingData           = self.xTrainingData.copy()
-        imageDataHelper.yTrainingData           = self.yTrainingData.copy()
+        self.xValidationData         = dataHelper.xValidationData.copy()
+        self.yValidationData         = dataHelper.yValidationData.copy()
 
-        imageDataHelper.xValidationData         = self.xValidationData.copy()
-        imageDataHelper.yValidationData         = self.yValidationData.copy()
+        self.xTestingData            = dataHelper.xTestingData.copy()
+        self.yTestingData            = dataHelper.yTestingData.copy()
 
-        imageDataHelper.xTestingData            = self.xTestingData.copy()
-        imageDataHelper.yTestingData            = self.yTestingData.copy()
+        self.labels                  = dataHelper.labels.copy(deep=True)
+        self.labelCategories         = dataHelper.labelCategories.copy()
+        self.numberOfLabelCategories = dataHelper.numberOfLabelCategories
 
-        imageDataHelper.labels                  = self.labels.copy(deep=True)
-        imageDataHelper.labelCategories         = self.labelCategories.copy()
-        imageDataHelper.numberOfLabelCategories = self.numberOfLabelCategories
-
-        imageDataHelper.yTrainingEncoded        = self.yTrainingEncoded.copy()
-        imageDataHelper.yValidationEncoded      = self.yValidationEncoded.copy()
-        imageDataHelper.yTestingEncoded         = self.yTestingEncoded.copy()
-
-        imageDataHelper.colorConversion         = self.colorConversion
-
-        return imageDataHelper
+        self.colorConversion         = dataHelper.colorConversion
 
 
     def LoadImagesFromNumpyArray(self, inputFile):
@@ -662,61 +653,3 @@ class ImageDataHelper(DataHelperBase):
         originalData = self.labels["Numbers"]
 
         return self._GetSplitComparisons(originalData, format=format)
-
-
-    def EncodeCategoricalColumns(self):
-        """
-        Converts the categorical columns ("category" data type) to encoded values.
-        Prepares categorical columns for use in a model.
-
-        Parameters
-        ----------
-        columns : list of strings
-            The names of the columns to encode.
-        dropFirst : bool
-            If true, the first category is dropped for the encoding.
-
-        Returns
-        -------
-        None.
-        """
-        self.yTrainingEncoded   = tf.keras.utils.to_categorical(self.yTrainingData)
-        if len(self.yValidationData) != 0:
-            self.yValidationEncoded = tf.keras.utils.to_categorical(self.yValidationData)
-        self.yTestingEncoded    = tf.keras.utils.to_categorical(self.yTestingData)
-
-
-    def DisplayEncodingResults(self, numberOfEntries, randomEntries=False):
-        """
-        Prints a summary of the encoding processes.
-
-        Parameters
-        ----------
-        numberOfEntries : int
-            The number of entries to display.
-        randomEntries : bool
-            If true, random entries are chosen, otherwise, the first few entries are displayed.
-
-        Returns
-        -------
-        None.
-        """
-        indices = []
-        if randomEntries:
-            numberOfImages = len(self.yTrainingEncoded)
-            indices = random.sample(range(0, numberOfImages), numberOfEntries)
-        else:
-            indices = list(range(numberOfEntries))
-
-        self.consoleHelper.PrintTitle("Dependent Variable Numerical Labels")
-        yNumbers = self.yTrainingData.iloc[indices]
-        self.consoleHelper.Display(pd.DataFrame(yNumbers))
-
-        self.consoleHelper.PrintNewLine()
-        self.consoleHelper.PrintTitle("Dependent Variable Text Labels")
-        labels = [self.labelCategories[i] for i in yNumbers]
-        self.consoleHelper.Display(pd.DataFrame(labels, columns=["Labels"], index=yNumbers.index))
-
-        self.consoleHelper.PrintNewLine()
-        self.consoleHelper.PrintTitle("Dependent Variable Encoded Labels")
-        self.consoleHelper.Display(pd.DataFrame(self.yTrainingEncoded[indices], index=yNumbers.index))
