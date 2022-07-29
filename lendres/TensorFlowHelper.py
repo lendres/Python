@@ -12,6 +12,7 @@ from   sklearn                                   import metrics
 
 import os
 
+from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.CategoricalHelper                 import CategoricalHelper
 
@@ -111,8 +112,8 @@ class TensorFlowHelper(CategoricalHelper):
 
         history = self.model.fit(
             self.dataHelper.xTrainingData,
-            self.dataHelper.yTrainingData,
-            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationData),
+            self.dataHelper.yTrainingEncoded,
+            validation_data=(self.dataHelper.xValidationData, self.dataHelper.yValidationEncoded),
             **kwargs
         )
 
@@ -194,6 +195,22 @@ class TensorFlowHelper(CategoricalHelper):
             self.dataHelper.consoleHelper.Print("History length: " + str(len(self.history)))
         elif raiseErrors:
             raise Exception("The specified path does not exist.\nPath: " + self.historyPath)
+
+
+    def DisplayModelEvaluation(self):
+        """
+        Displays the evalution of the model after it has run (summary of time and scores).
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        results = self.model.evaluate(self.dataHelper.xTestingData, self.dataHelper.yTestingEncoded)
+        self.dataHelper.consoleHelper.Display(results)
 
 
     def CreateTrainingAndValidationHistoryPlot(self, parameter):
@@ -331,16 +348,17 @@ class TensorFlowHelper(CategoricalHelper):
             wrong : Returns the entries that were incorrectly predicted.
         Returns
         -------
-        None.
+        predictions : list of bools
+            List indicating where predictions were correct/wrong (depending on input).
         """
         actualData, predictedData = self.GetDataSets(dataSet)
 
-        wrongPredictions = None
+        predictions = None
         if criteria == "correct":
-            wrongPredictions = actualData[actualData == predictedData]
+            predictions = actualData[actualData == predictedData]
         elif criteria == "wrong":
-            wrongPredictions = actualData[actualData != predictedData]
+            predictions = actualData[actualData != predictedData]
         else:
             raise Exception("Incorrect value provided for the \"criteria\" argument")
 
-        return wrongPredictions
+        return predictions

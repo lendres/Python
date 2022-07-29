@@ -31,22 +31,6 @@ class TensorFlowCNNHelper(TensorFlowHelper):
         super().__init__(imageHelper, model, description)
 
 
-    def DisplayModelEvaluation(self):
-        """
-        Displays the evalution of the model after it has run (summary of time and scores).
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        results = self.model.evaluate(self.dataHelper.xTestingData, self.dataHelper.yTestingEncoded)
-        self.dataHelper.consoleHelper.Display(results)
-
-
     def Predict(self):
         """
         Predicts classification based on the maximum probabilities.

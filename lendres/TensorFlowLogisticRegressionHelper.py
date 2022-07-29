@@ -5,6 +5,7 @@ Created on June 27, 2022
 
 from   lendres.TensorFlowHelper                  import TensorFlowHelper
 
+
 class TensorFlowLogisticRegressionHelper(TensorFlowHelper):
     # Class level variables.
 
@@ -26,32 +27,6 @@ class TensorFlowLogisticRegressionHelper(TensorFlowHelper):
         None.
         """
         super().__init__(dataHelper, model, 1, description)
-
-
-    def Fit(self, **kwargs):
-        """
-        Fits the model.
-
-        Parameters
-        ----------
-        **kwargs : keyword arguments
-            These arguments are passed on to the model's fit function.
-
-        Returns
-        -------
-        None.
-        """
-        if len(self.dataHelper.xTrainingData) == 0:
-            raise Exception("The data has not been split.")
-
-        if self.model == None:
-            raise Exception("The model has not been created.")
-
-        self.history = self.model.fit(
-            self.dataHelper.xTrainingData,
-            self.dataHelper.yTrainingData,
-            **kwargs
-        )
 
 
     def Predict(self, threshold=0.5):
@@ -94,8 +69,3 @@ class TensorFlowLogisticRegressionHelper(TensorFlowHelper):
         yPerdictedData = self.model.predict(xData)
         yPerdictedData = (yPerdictedData > threshold)
         return yPerdictedData
-
-
-    def DisplayModelEvaluation(self):
-        results = self.model.evaluate(self.dataHelper.xTestingData, self.dataHelper.yTestingData)
-        self.dataHelper.consoleHelper.Display(results)
