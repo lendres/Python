@@ -4,9 +4,13 @@ Created on June 27, 2022
 """
 import numpy                                     as np
 
+from   lendres.ImageHelper                       import ImageHelper
 from   lendres.TensorFlowHelper                  import TensorFlowHelper
 
+
 class TensorFlowCNNHelper(TensorFlowHelper):
+
+
     def __init__(self, imageHelper, model, description=""):
         """
         Constructor.
