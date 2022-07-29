@@ -459,11 +459,15 @@ class ModelHelper:
             index.append("Testing")
 
         # Create a DataFrame for returning the values.
-        dataFrame = pd.DataFrame({"Accuracy"  : accuracyScores,
-                                  "Recall"    : recallScores,
-                                  "Precision" : precisionScores,
-                                  "F1"        : f1Scores},
-                                 index=index)
+        dataFrame = pd.DataFrame(
+            {
+                "Accuracy"  : accuracyScores,
+                "Recall"    : recallScores,
+                "Precision" : precisionScores,
+                "F1"        : f1Scores
+            },
+            index=index
+        )
 
         return dataFrame
 
