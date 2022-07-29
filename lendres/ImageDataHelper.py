@@ -642,7 +642,7 @@ class ImageDataHelper(DataHelperBase):
         x = self.data
         y = self.labels["Numbers"]
 
-        self._SplitData(x, y, testSize, validationSize, stratify
+        self._SplitData(x, y, testSize, validationSize, stratify)
 
 
     def GetSplitComparisons(self, format="countandpercentstring"):
