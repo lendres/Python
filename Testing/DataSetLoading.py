@@ -13,7 +13,7 @@ def MakeDataHelper(inputFile, verboseLevel):
 
     consoleHelper      = ConsoleHelper(verboseLevel=verboseLevel)
     dataHelper         = DataHelper(consoleHelper=consoleHelper)
-    dataHelper.LoadAndInspectData(inputFile, verboseLevel=ConsoleHelper.VERBOSEIMPORTANT)
+    dataHelper.LoadAndInspectData(inputFile, verboseLevel=ConsoleHelper.VERBOSEALL)
 
     return dataHelper
 

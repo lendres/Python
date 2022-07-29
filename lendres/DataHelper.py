@@ -21,6 +21,7 @@ from   lendres.DataHelperBase                    import DataHelperBase
 class DataHelper(DataHelperBase):
 
 
+
     def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
         """
         Constructor.
@@ -1123,65 +1124,12 @@ class DataHelper(DataHelperBase):
         Returns
         -------
         dataFrame : pandas.DataFrame
-            DataFrame with the counts and percentages.
+            DataFrame with the counts and/or percentages.
         """
         dependentColumn  = self.GetDependentVariableName()
         originalData     = self.data[dependentColumn]
 
         return self._GetSplitComparisons(originalData, format=format)
-
-
-    def GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):
-        """
-        Gets a string that is the value count of "classValue" and the percentage of the total
-        that the "classValue" accounts for in the column.
-
-        Parameters
-        ----------
-        classValue : int or string
-            The value to count and calculate the percentage for.
-        dataSet : string
-            Which data set to use for the calculation.
-            original - Gets the results from the original data.
-            training - Gets the results from the training data.
-            testing  - v the results from the test data.
-        column : string, optional
-            If provided, that column will be used for the calculations.  If no value is provided,
-            the dependant variable is used. The default is None.
-
-        Returns
-        -------
-        string : string
-            The count and percentage of the total as a string.
-        """
-        categories         = self.data[self.GetDependentVariableName()].unique()
-
-        valueCounts        = []
-        totalCount         = len(dataSet)
-
-        formatFunction = None
-        if format == "countandpercentstring":
-            formatFunction = lambda count, percent : "{0} ({1:0.2f}%)".format(count, percent)
-        elif format == "numericalcount":
-            formatFunction = lambda count, percent : count
-        elif format == "numericalpercentage":
-            formatFunction = lambda count, percent : percent
-        else:
-            raise Exception("Invalid format string specified.")
-
-        # Turn the numbers into formated strings.
-        for category in categories:
-            classValueCount = sum(dataSet == category)
-            valueCounts.append(formatFunction(classValueCount, classValueCount/totalCount*100))
-
-        # Create the data frame.
-        comparisonFrame = pd.DataFrame(
-            valueCounts,
-            columns=[dataSetName],
-            index=categories
-        )
-
-        return comparisonFrame
 
 
     def GetDependentVariableName(self):

@@ -12,6 +12,10 @@ from   lendres.PlotHelper                        import PlotHelper
 
 
 class DataHelperBase():
+    """
+    Base class for data helper classes.
+    Abstract class, do not instantiate.
+    """
 
 
     def __init__(self, consoleHelper=None):
@@ -109,19 +113,69 @@ class DataHelperBase():
             DataFrame with the counts and percentages.
         """
         # Get results for original data.
-        dataFrame = self.GetCountAndPrecentStrings(originalData,"Original", format=format)
+        dataFrame = self._GetCountAndPrecentStrings(originalData, "Original", format=format)
 
         # If the data has been split, we will add the split information as well.
         if len(self.yTrainingData) != 0:
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
+            dataFrame = pd.concat([dataFrame, self._GetCountAndPrecentStrings(self.yTrainingData, "Training", format=format)], axis=1)
 
             if len(self.yValidationData) != 0:
-                dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
+                dataFrame = pd.concat([dataFrame, self._GetCountAndPrecentStrings(self.yValidationData, "Validation", format=format)], axis=1)
 
-            dataFrame = pd.concat([dataFrame, self.GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
+            dataFrame = pd.concat([dataFrame, self._GetCountAndPrecentStrings(self.yTestingData, "Testing", format=format)], axis=1)
 
         return dataFrame
 
+
+    def _GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):
+        """
+        Calculates the number of each category is in the data set and returns it.  The return format can
+        be specified.
+
+        Parameters
+        ----------
+        dataSet : array like
+            Data to extract information from.
+        dataSetName : string
+            Name of the data set to be used as the column header.
+        format : string
+            Format of the returned values.
+            countandpercentstring  : returns a string that contains both the count and percent.
+            numericalcount         : returns the count as a number.
+            numericalpercentage    : returns the percentage as a number.
+
+        Returns
+        -------
+        comparisonFrame : pandas.DataFrame
+            DataFrame with the category data.
+        """
+        valueCounts        = []
+        totalCount         = len(dataSet)
+        categories         = dataSet.unique()
+
+        formatFunction = None
+        if format == "countandpercentstring":
+            formatFunction = lambda count, percent : "{0} ({1:0.2f}%)".format(count, percent)
+        elif format == "numericalcount":
+            formatFunction = lambda count, percent : count
+        elif format == "numericalpercentage":
+            formatFunction = lambda count, percent : percent
+        else:
+            raise Exception("Invalid format string specified.")
+
+        # Turn the numbers into formated strings.
+        for category in categories:
+            classValueCount = sum(dataSet == category)
+            valueCounts.append(formatFunction(classValueCount, classValueCount/totalCount*100))
+
+        # Create the data frame.
+        comparisonFrame = pd.DataFrame(
+            valueCounts,
+            columns=[dataSetName],
+            index=categories
+        )
+
+        return comparisonFrame
 
 
     def CreateSplitComparisonPlot(self):
@@ -181,25 +235,3 @@ class DataHelperBase():
             self.consoleHelper.PrintNewLine(ConsoleHelper.VERBOSEREQUESTED)
             self.consoleHelper.Display("Testing images shape:  {0}".format(self.xTestingData.shape), ConsoleHelper.VERBOSEREQUESTED)
             self.consoleHelper.Display("Testing labels length: {0}".format(len(self.yTestingData)), ConsoleHelper.VERBOSEREQUESTED)
-
-
-    def EncodeDependentVariableForAI(self):
-        """
-        Converts the categorical columns ("category" data type) to encoded values.
-        Prepares categorical columns for use in a model.
-
-        Parameters
-        ----------
-        columns : list of strings
-            The names of the columns to encode.
-        dropFirst : bool
-            If true, the first category is dropped for the encoding.
-
-        Returns
-        -------
-        None.
-        """
-        self.yTrainingEncoded   = tf.keras.utils.to_categorical(self.yTrainingData)
-        if len(self.yValidationData) != 0:
-            self.yValidationEncoded = tf.keras.utils.to_categorical(self.yValidationData)
-        self.yTestingEncoded    = tf.keras.utils.to_categorical(self.yTestingData)

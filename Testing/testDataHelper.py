@@ -12,8 +12,10 @@ import unittest
 skipTests = False
 
 class TestDataHelper(unittest.TestCase):
-    verboseLevel = ConsoleHelper.VERBOSEREQUESTED
-    #verboseLevel = ConsoleHelper.VERBOSETESTING
+    #verboseLevel = ConsoleHelper.VERBOSENONE
+    verboseLevel = ConsoleHelper.VERBOSETESTING
+    #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    #verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
 
     @classmethod
     def setUpClass(cls):
@@ -65,9 +67,9 @@ class TestDataHelper(unittest.TestCase):
 
     @unittest.skipIf(skipTests, "Skipped displaying test.")
     def testDisplaying(self):
-        self.loanData.consoleHelper.PrintNewLine(2)
+        self.loanData.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
         self.loanData.DisplayAllCategoriesValueCounts()
-        self.loanData.consoleHelper.PrintNewLine(2)
+        self.loanData.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
         self.loanData.DisplayUniqueValues(["Online", "CreditCard"])
 
 
@@ -75,8 +77,9 @@ class TestDataHelper(unittest.TestCase):
         self.loanData.SplitData(TestDataHelper.loanDependentVariable, 0.2, 0.3, stratify=False)
 
         result = self.loanData.GetSplitComparisons()
-        self.loanData.consoleHelper.PrintNewLine(2)
-        self.loanData.consoleHelper.Print(result.T)
+        self.loanData.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
+        self.loanData.consoleHelper.PrintTitle("Split Comparisons", ConsoleHelper.VERBOSEREQUESTED)
+        self.loanData.consoleHelper.Print(result.T, ConsoleHelper.VERBOSEREQUESTED)
 
         self.loanData.CreateSplitComparisonPlot()
 
@@ -92,9 +95,9 @@ class TestDataHelper(unittest.TestCase):
         result = self.usedCarData.ExtractLastStringTokens(columns)
         result = result.nunique()
 
-        self.loanData.consoleHelper.PrintNewLine(2)
-        self.usedCarData.consoleHelper.PrintTitle("Extracted String Token Counts")
-        self.usedCarData.consoleHelper.Display(result)
+        self.loanData.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
+        self.usedCarData.consoleHelper.PrintTitle("Extracted String Token Counts", ConsoleHelper.VERBOSEREQUESTED)
+        self.usedCarData.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
 
         self.assertEqual(result.loc["Mileage"], 2)
         self.assertEqual(result.loc["Engine"], 1)
@@ -108,7 +111,7 @@ class TestDataHelper(unittest.TestCase):
     @unittest.skipIf(skipTests, "Skipped print final test.")
     def testPrintFinal(self):
         dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=TestDataHelper.verboseLevel)
-        dataHelper.consoleHelper.PrintNewLine(2)
+        dataHelper.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
         dataHelper.PrintFinalDataSummary()
 
 

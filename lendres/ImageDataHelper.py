@@ -53,10 +53,6 @@ class ImageDataHelper(DataHelperBase):
         self.labelCategories         = []
         self.numberOfLabelCategories = 0
 
-        self.yTrainingEncoded        = []
-        self.yValidationEncoded      = []
-        self.yTestingEncoded         = []
-
         self.colorConversion         = None
 
 
@@ -666,57 +662,6 @@ class ImageDataHelper(DataHelperBase):
         originalData = self.labels["Numbers"]
 
         return self._GetSplitComparisons(originalData, format=format)
-
-
-    def GetCountAndPrecentStrings(self, dataSet, dataSetName, format="countandpercentstring"):
-        """
-        Gets a string that is the value count of "classValue" and the percentage of the total
-        that the "classValue" accounts for in the column.
-
-        Parameters
-        ----------
-        dataSet : string
-            Which data set(s) to plot.
-        dataSetName : string
-            Name of the data set to be used as the column header.
-        format : string
-            Format of the returned values.
-            countandpercentstring  : returns a string that contains both the count and percent.
-            numericalcount         : returns the count as a number.
-            numericalpercentage    : returns the percentage as a number.
-
-        Returns
-        -------
-        None.
-        """
-        categories         = self.labelCategories
-
-        valueCounts        = []
-        totalCount         = len(dataSet)
-
-        formatFunction = None
-        if format == "countandpercentstring":
-            formatFunction = lambda count, percent : "{0} ({1:0.2f}%)".format(count, percent)
-        elif format == "numericalcount":
-            formatFunction = lambda count, percent : count
-        elif format == "numericalpercentage":
-            formatFunction = lambda count, percent : percent
-        else:
-            raise Exception("Invalid format string specified.")
-
-        # Turn the numbers into formated strings.
-        for category in categories:
-            classValueCount = sum(dataSet == category)
-            valueCounts.append(formatFunction(classValueCount, classValueCount/totalCount*100))
-
-        # Create the data frame.
-        comparisonFrame = pd.DataFrame(
-            valueCounts,
-            columns=[dataSetName],
-            index=categories
-        )
-
-        return comparisonFrame
 
 
     def EncodeCategoricalColumns(self):
