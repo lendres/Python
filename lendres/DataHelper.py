@@ -715,7 +715,7 @@ class DataHelper(DataHelperBase):
 
     def DropOutliers(self, columns, irqScale=1.5):
         """
-        Drops any rows that are considered outliers by the definition of
+        Drops any rows that are considered outliers by the definition of a scaled interquartile range.
 
         Parameters
         ----------
