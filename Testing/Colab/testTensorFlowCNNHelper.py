@@ -33,6 +33,7 @@ class TestTensorFlowCNNHelper(unittest.TestCase):
     verboseLevel = ConsoleHelper.VERBOSEREQUESTED
     #verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
 
+
     @classmethod
     def setUpClass(cls):
         imagesInputFile = "plant-species-images-reduced.npy"
@@ -98,7 +99,6 @@ class TestTensorFlowCNNHelper(unittest.TestCase):
         tensorFlowHelper = TensorFlowCNNHelper(self.dataHelper, self.model)
 
         tensorFlowHelper.Fit(
-            saveHistory=True,
             epochs=6,
             verbose=TestTensorFlowCNNHelper.verboseLevel
         )

@@ -32,7 +32,7 @@ class TestTensorFlowHelper(unittest.TestCase):
         cls.verboseLevel = 1
 
         # Get mist data.
-        print("\n\nDownloading data...")
+        print("\n\nDownloading MNIST data...")
         (xTrainingData, yTrainingData), (xTestingData, yTestingData) = mnist.load_data()
         print("\nX training shape:", xTrainingData.shape)
         print("\nY training shape:", yTrainingData.shape)
@@ -55,7 +55,7 @@ class TestTensorFlowHelper(unittest.TestCase):
         # Convert to "one-hot" vectors using the to_categorical function
         cls.num_classes  = 10
 
-        cls.dataHelper                 = TensorFlowDataHelper()
+        cls.dataHelper                 = DataHelper()
         cls.dataHelper.xTrainingData   = xTrainingData
         cls.dataHelper.xValidationData = xValidationData
         cls.dataHelper.xTestingData    = xTestingData
@@ -78,8 +78,7 @@ class TestTensorFlowHelper(unittest.TestCase):
         self.model = Sequential()  
 
         # Multiple Dense units with Relu activation.
-        self.model.add(Dense(128, activation='relu', kernel_initializer='he_uniform', input_shape=(image_size,)))
-        self.model.add(Dense(64,  activation='relu', kernel_initializer='he_uniform'))
+        self.model.add(Dense(64, activation='relu', kernel_initializer='he_uniform', input_shape=(image_size,)))
         self.model.add(Dense(32,  activation='relu', kernel_initializer='he_uniform'))
 
         # For multiclass classification Softmax is used.
@@ -99,7 +98,6 @@ class TestTensorFlowHelper(unittest.TestCase):
         tensorFlowHelper = TensorFlowMultiClassHelper(TestTensorFlowHelper.dataHelper, self.model)
 
         tensorFlowHelper.Fit(
-            saveHistory=True,
             epochs=6,
             verbose=TestTensorFlowHelper.verboseLevel
         )

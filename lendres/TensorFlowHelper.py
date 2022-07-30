@@ -89,14 +89,12 @@ class TensorFlowHelper(CategoricalHelper):
         cls.reportColumnLabels.append("Error Rate")
 
 
-    def Fit(self, saveHistory=False, **kwargs):
+    def Fit(self, **kwargs):
         """
         Fits the model.
 
         Parameters
         ----------
-        saveHistory : boolean
-            If true, the history is appended to the previous, otherwise the history is ignored.
         **kwargs : keyword arguments
             These arguments are passed on to the model's fit function.
 
@@ -117,8 +115,7 @@ class TensorFlowHelper(CategoricalHelper):
             **kwargs
         )
 
-        if saveHistory:
-            self.SetHistory(history, True)
+        self.SetHistory(history, True)
 
 
     def UseHistorySaving(self, pathAndFileName):

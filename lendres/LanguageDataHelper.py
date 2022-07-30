@@ -12,7 +12,7 @@ from   lendres.DataHelper                        import DataHelper
 class LanguageDataHelper(DataHelper):
 
 
-    def __init__(self, fileName=None, data=None, copy=False, deep=False, consoleHelper=None):
+    def __init__(self, fileName=None, data=None, consoleHelper=None):
         """
         Constructor.
 
@@ -26,9 +26,6 @@ class LanguageDataHelper(DataHelper):
             data should be loaded in a separate function call, e.g., with "LoadAndInspectData"
             or by providing a fileName to load the data from.  You cannot provide both a file
             and data.
-        deep : bool, optional
-            Specifies if a deep copy should be done. The default is False.  Only valid if
-            the "data" parameter is specified.
         consoleHelper : ConsoleHelper
             Class the prints messages.
 
@@ -36,7 +33,7 @@ class LanguageDataHelper(DataHelper):
         -------
         None.
         """
-        super().__init__(fileName, data, copy, deep, consoleHelper)
+        super().__init__(fileName, data, consoleHelper)
 
         self.vectorizer = None
 

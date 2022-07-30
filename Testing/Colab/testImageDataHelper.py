@@ -14,11 +14,13 @@ from   lendres.ImageDataHelper                   import ImageDataHelper
 
 import unittest
 
+
 class TestImageDataHelper(unittest.TestCase):
     #verboseLevel = ConsoleHelper.VERBOSENONE
     #verboseLevel = ConsoleHelper.VERBOSETESTING
     verboseLevel = ConsoleHelper.VERBOSEREQUESTED
     #verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
+
 
     @classmethod
     def setUpClass(cls):
@@ -48,14 +50,17 @@ class TestImageDataHelper(unittest.TestCase):
         self.imageDataHelper.consoleHelper.PrintTitle("Label Categories", ConsoleHelper.VERBOSEREQUESTED)
         self.imageDataHelper.DisplayLabelCategories()
 
+
     def testColorConversion(self):
         self.imageDataHelper.PlotImage(index=0)
         self.imageDataHelper.colorConversion = cv2.COLOR_BGR2RGB
         print("\n")
         self.imageDataHelper.PlotImage(index=0)
 
+
     def testDisplayCategoryExamples(self):
         self.imageDataHelper.PlotImageExamplesForAllCategories(numberOfExamples=3)
+
 
 if __name__ == "__main__":
     unittest.main()
