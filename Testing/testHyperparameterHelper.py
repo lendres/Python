@@ -55,7 +55,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper             = TestHyperparameterHelper.dataHelper.Copy(deep=True)
+        self.dataHelper             = TestHyperparameterHelper.dataHelper.Copy()
 
 
     @unittest.skipIf("Decision Tree" in skippedTests, "Skipped decision tree unit test.")

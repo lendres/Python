@@ -19,7 +19,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy(deep=True)
+        self.dataHelper       = TestLogisticRegressionHelper.dataHelper.Copy()
         self.dataHelper.SplitData(TestLogisticRegressionHelper.dependentVariable, 0.3, stratify=True)
 
         self.regressionHelper = LogisticRegressionHelper(self.dataHelper, LogisticRegressionHelper.CreateDefaultModel(solver="liblinear"))
@@ -52,7 +52,7 @@ class TestLogisticRegressionHelper(unittest.TestCase):
 
     def testSplitComparisons(self):
         result = self.regressionHelper.dataHelper.GetSplitComparisons()
-        self.assertEqual(result.loc["Original", "True"], "210 (67.74%)")
+        self.assertEqual(result.loc[1, "Original"], "210 (67.74%)")
 
 
 if __name__ == "__main__":

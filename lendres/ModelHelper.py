@@ -67,7 +67,7 @@ class ModelHelper:
         -------
         None.
         """
-        self.dataHelper                = original.dataHelper.Copy(deep=deep)
+        self.dataHelper                = original.dataHelper.Copy()
 
 
     @classmethod

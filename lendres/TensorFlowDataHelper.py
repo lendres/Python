@@ -67,7 +67,7 @@ class TensorFlowDataHelper(DataHelperBase):
         self.yTestingEncoded         = dataHelper.yTestingEncoded.copy()
 
 
-    def EncodeDependentVariable(self):
+    def EncodeDependentVariableForAI(self):
         """
         Converts the categorical columns ("category" data type) to encoded values.
         Prepares categorical columns for use in a model.
@@ -111,7 +111,7 @@ class TensorFlowDataHelper(DataHelperBase):
         self.yTestingEncoded        = processingFunction(self.yTestingData)
 
 
-    def DisplayEncodingResults(self, numberOfEntries, randomEntries=False):
+    def DisplayAIEncodingResults(self, numberOfEntries, randomEntries=False):
         """
         Prints a summary of the encoding processes.
 

@@ -11,10 +11,14 @@ from lendres.CategoricalRegressionHelper         import CategoricalRegressionHel
 import unittest
 
 class TestCategoricalRegressionHelper(unittest.TestCase):
+    #verboseLevel = ConsoleHelper.VERBOSENONE
+    verboseLevel = ConsoleHelper.VERBOSETESTING
+    #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    #verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetBackPainData()
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetBackPainData(verboseLevel=cls.verboseLevel)
 
 
     def setUp(self):
@@ -22,7 +26,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy(deep=True)
+        self.dataHelper       = TestCategoricalRegressionHelper.dataHelper.Copy()
         self.dataHelper.SplitData(TestCategoricalRegressionHelper.dependentVariable, 0.3, stratify=True)
 
         self.regressionHelper = CategoricalRegressionHelper(self.dataHelper, LogisticRegression(solver="liblinear", random_state=1))
@@ -70,7 +74,7 @@ class TestCategoricalRegressionHelper(unittest.TestCase):
         self.regressionHelper.Predict()
         result = self.regressionHelper.dataHelper.GetSplitComparisons()
         self.regressionHelper.dataHelper.consoleHelper.Display(result, ConsoleHelper.VERBOSEREQUESTED)
-        self.assertEqual(result.loc["Testing", "True"], "63 (67.74%)")
+        self.assertEqual(result.loc[1, "Testing"], "63 (67.74%)")
 
 
 if __name__ == "__main__":

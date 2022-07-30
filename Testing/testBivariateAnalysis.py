@@ -29,8 +29,8 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def setUp(self):
-        self.insuranceDataHelper = TestBivariateAnalysis.insuranceDataHelper.Copy(deep=True)
-        self.cardioDataHelper    = TestBivariateAnalysis.cardioDataHelper.Copy(deep=True)
+        self.insuranceDataHelper = TestBivariateAnalysis.insuranceDataHelper.Copy()
+        self.cardioDataHelper    = TestBivariateAnalysis.cardioDataHelper.Copy()
 
 
     @unittest.skipIf("Heat Maps" in skippedTests, "Skipped pair plots unit test.")

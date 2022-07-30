@@ -43,11 +43,11 @@ class TestKMeansHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper         = TestKMeansHelper.dataHelper.Copy(deep=True)
+        self.dataHelper         = TestKMeansHelper.dataHelper.Copy()
         self.kMeansHelper       = KMeansHelper(self.dataHelper, ["PROBLEM_TYPE"], copyMethod="exclude")
         self.kMeansHelper.ScaleData(method="standardscaler")
 
-        self.xDataHelper        = TestKMeansHelper.xDataHelper.Copy(deep=True)
+        self.xDataHelper        = TestKMeansHelper.xDataHelper.Copy()
         self.xKMeansHelper      = KMeansHelper(self.xDataHelper, [], copyMethod="exclude")
         self.xKMeansHelper.ScaleData(method="zscore")
 

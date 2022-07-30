@@ -29,7 +29,7 @@ class TestModelHelper(unittest.TestCase):
 
 
     def testBasicSplit(self):
-        dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
+        dataHelper = TestModelHelper.dataHelper.Copy()
 
         modelHelper = ModelHelper(dataHelper, BaggingHelper(dataHelper))
         modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=False)
@@ -47,7 +47,7 @@ class TestModelHelper(unittest.TestCase):
 
 
     def testValidationSplit(self):
-        dataHelper = DataHelper.Copy(TestModelHelper.dataHelper, deep=True)
+        dataHelper = TestModelHelper.dataHelper.Copy()
 
         modelHelper = ModelHelper(dataHelper,  BaggingHelper(dataHelper))
         dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)

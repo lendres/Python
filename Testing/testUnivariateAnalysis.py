@@ -19,7 +19,7 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
 
     def setUp(self):
-        self.dataHelper = TestUnivariateAnalysis.dataHelper.Copy(deep=True)
+        self.dataHelper = TestUnivariateAnalysis.dataHelper.Copy()
 
 
     def testBoxAndHistorgramPlot(self):
