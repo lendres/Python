@@ -49,7 +49,7 @@ class TestTensorFlowCNNHelper(unittest.TestCase):
         cls.dataHelper.SplitData(testSize=0.2, validationSize=0.25, stratify=True)
         cls.dataHelper.NormalizePixelValues()
 
-        cls.dataHelper.EncodeDependentVariable()
+        cls.dataHelper.EncodeDependentVariableForAI()
 
         cls.inputShape  = cls.dataHelper.GetImageShape()
         cls.numberOfOutputCategories = cls.dataHelper.numberOfLabelCategories

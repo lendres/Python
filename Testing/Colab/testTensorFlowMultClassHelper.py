@@ -64,7 +64,7 @@ class TestTensorFlowHelper(unittest.TestCase):
         cls.dataHelper.yValidationData = yValidationData
         cls.dataHelper.yTestingData    = yTestingData
 
-        cls.dataHelper.EncodeDependentVariable()
+        cls.dataHelper.EncodeDependentVariableForAI()
 
 
     def setUp(self):
