@@ -43,14 +43,14 @@ class SaveHistoryCallback(Callback):
         -------
         None.
         """
-        if self.tensorFlowHelper.history is not None:
+        if self.tensorFlowHelper.history is None:
+            # No history exists, so establish a new one.
+            self.tensorFlowHelper.history = pd.DataFrame(logs, index=[0])
+        else:
             # If history already exists, we need to append to it.
             newIndex     = self.tensorFlowHelper.history.index[-1] + 1
             logDataFrame = pd.DataFrame(logs, index=[newIndex])
             self.tensorFlowHelper.history = pd.concat([self.tensorFlowHelper.history, logDataFrame], axis=0)
-        else:
-            # No history exists, so establish a new one.
-            self.tensorFlowHelper.history = pd.DataFrame(logs, index=[0])
 
         # Write the data to the disk.
         self.tensorFlowHelper.SaveHistory()

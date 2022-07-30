@@ -3,8 +3,8 @@ Created on May 27, 2022
 @author: Lance A. Endres
 """
 
-from Testing.RunAllUnitTests                     import RunAllTests
+from Testing.UnitTestHelper                      import UnitTestHelper
 
 # Default for running from the hard drive.
 startDirectory = ".\\"
-RunAllTests(startDirectory)
+UnitTestHelper.DiscoverAndRunTests(startDirectory)
