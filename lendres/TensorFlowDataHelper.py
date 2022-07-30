@@ -115,7 +115,7 @@ class TensorFlowDataHelper(DataHelperBase):
 
         Returns
         -------
-        : int
+        numberOfUniqueCategories : int
             Number of nodes in the ouput.  This is the same as the number of classes in a classification problem.
         """
         # The length function is used because both numpy arrays and pandas.Series have unique functions, but
