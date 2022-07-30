@@ -71,17 +71,6 @@ class ImageDataHelper(TensorFlowDataHelper):
         """
         super().CopyFrom(dataHelper)
 
-        self.data                    = dataHelper.data.copy()
-
-        self.xTrainingData           = dataHelper.xTrainingData.copy()
-        self.yTrainingData           = dataHelper.yTrainingData.copy()
-
-        self.xValidationData         = dataHelper.xValidationData.copy()
-        self.yValidationData         = dataHelper.yValidationData.copy()
-
-        self.xTestingData            = dataHelper.xTestingData.copy()
-        self.yTestingData            = dataHelper.yTestingData.copy()
-
         self.labels                  = dataHelper.labels.copy(deep=True)
         self.labelCategories         = dataHelper.labelCategories.copy()
         self.numberOfLabelCategories = dataHelper.numberOfLabelCategories

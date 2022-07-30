@@ -80,21 +80,6 @@ class DataHelper(TensorFlowDataHelper):
         """
         super().CopyFrom(dataHelper)
 
-        if len(dataHelper.data) != 0:
-            self.data                      = dataHelper.data.copy(deep=True)
-
-        if len(dataHelper.xTrainingData) != 0:
-            self.xTrainingData             = dataHelper.xTrainingData.copy(deep=True)
-            self.yTrainingData             = dataHelper.yTrainingData.copy(deep=True)
-
-        if len(dataHelper.xValidationData) != 0:
-            self.xValidationData           = dataHelper.xValidationData.copy(deep=True)
-            self.yValidationData           = dataHelper.yValidationData.copy(deep=True)
-
-        if len(dataHelper.xTestingData) != 0:
-            self.xTestingData              = dataHelper.xTestingData.copy(deep=True)
-            self.yTestingData              = dataHelper.yTestingData.copy(deep=True)
-
 
     def LoadAndInspectData(self, inputFile, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
         """

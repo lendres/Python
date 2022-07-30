@@ -32,15 +32,16 @@ class DataHelperBase():
         None.
         """
         # Initialize the variables.  Helpful to know if something goes wrong.
-        self.xTrainingData             = []
-        self.xValidationData           = []
-        self.xTestingData              = []
-
-        self.yTrainingData             = []
-        self.yValidationData           = []
-        self.yTestingData              = []
-
         self.data                      = []
+
+        self.xTrainingData             = []
+        self.yTrainingData             = []
+
+        self.xValidationData           = []
+        self.yValidationData           = []
+
+        self.xTestingData              = []
+        self.yTestingData              = []
 
         self.labelEncoders             = {}
 
@@ -84,8 +85,23 @@ class DataHelperBase():
         -------
         None.
         """
-        self.consoleHelper  = dataHelper.consoleHelper
+        if len(dataHelper.data) != 0:
+            self.data                      = dataHelper.data.copy()
+
+        if len(dataHelper.xTrainingData) != 0:
+            self.xTrainingData             = dataHelper.xTrainingData.copy()
+            self.yTrainingData             = dataHelper.yTrainingData.copy()
+
+        if len(dataHelper.xValidationData) != 0:
+            self.xValidationData           = dataHelper.xValidationData.copy()
+            self.yValidationData           = dataHelper.yValidationData.copy()
+
+        if len(dataHelper.xTestingData) != 0:
+            self.xTestingData              = dataHelper.xTestingData.copy()
+            self.yTestingData              = dataHelper.yTestingData.copy()
+
         self.labelEncoders  = dataHelper.labelEncoders.copy()
+        self.consoleHelper  = dataHelper.consoleHelper
 
 
     def _SplitData(self, x, y, testSize, validationSize=None, stratify=False):
