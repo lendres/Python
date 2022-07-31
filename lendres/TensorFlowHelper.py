@@ -50,6 +50,7 @@ class TensorFlowHelper(CategoricalHelper):
 
         self.history     = None
         self.historyPath = ""
+        self.historyMode = "final"
 
         TensorFlowHelper.SetNumberOfOutputNodes(model.layers[-1].output_shape[1])
 
@@ -115,7 +116,11 @@ class TensorFlowHelper(CategoricalHelper):
             **kwargs
         )
 
-        self.SetHistory(history, True)
+        # By default, we save the history at the end of fit.  If a save history callback is
+        # being used, the callback needs to alter the history mode so this does not get called.
+        # If both callback and final are used, it will double up the history (saved twice).
+        if self.historyMode == "final":
+            self.SetHistory(history, True)
 
 
     def UseHistorySaving(self, pathAndFileName):
@@ -152,10 +157,10 @@ class TensorFlowHelper(CategoricalHelper):
         None.
         """
         history = pd.DataFrame.from_dict(tensorFlowHistory.history)
-        if appendHistory and self.history is not None:
-            self.history = pd.concat([self.history, history], axis=0)
-        else:
+        if appendHistory and self.history is None:
             self.history = history
+        else:
+            self.history = pd.concat([self.history, history], axis=0)
 
 
     def SaveHistory(self):
@@ -171,6 +176,8 @@ class TensorFlowHelper(CategoricalHelper):
         None.
         """
         self.history.to_csv(self.historyPath, index=False)
+        self.dataHelper.consoleHelper.Print("History written to: "+self.historyPath)
+        self.dataHelper.consoleHelper.Print("History length: "+str(len(self.history)))
 
 
     def _LoadHistory(self, raiseErrors=True):
@@ -187,11 +194,13 @@ class TensorFlowHelper(CategoricalHelper):
         None.
         """
         if os.path.exists(self.historyPath):
-            self.dataHelper.consoleHelper.Print("Loading history from: " + self.historyPath)
+            self.dataHelper.consoleHelper.Print("Loading history from: "+self.historyPath)
             self.history = pd.read_csv(self.historyPath)
-            self.dataHelper.consoleHelper.Print("History length: " + str(len(self.history)))
+            self.dataHelper.consoleHelper.Print("History length: "+str(len(self.history)))
         elif raiseErrors:
-            raise Exception("The specified path does not exist.\nPath: " + self.historyPath)
+            raise Exception("The specified path does not exist.\nPath: "+self.historyPath)
+        else:
+            self.dataHelper.consoleHelper.Print("Prior history does not exist.")
 
 
     def DisplayModelEvaluation(self):

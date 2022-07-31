@@ -8,6 +8,7 @@ from   tensorflow.keras.callbacks                        import Callback
 
 class SaveHistoryCallback(Callback):
 
+
     def __init__(self, tensorFlowHelper):
         """
         Constructor.
@@ -23,7 +24,8 @@ class SaveHistoryCallback(Callback):
         """
         super().__init__()
 
-        self.tensorFlowHelper = tensorFlowHelper
+        self.tensorFlowHelper             = tensorFlowHelper
+        self.tensorFlowHelper.historyMode = "callback"
 
 
     def on_epoch_end(self, epoch, logs=None):
