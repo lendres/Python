@@ -61,8 +61,7 @@ class PlotMaker():
         PlotHelper.Label(axis, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
 
         # Option to rotate the x axis labels.
-        if xLabelRotation is not None:
-            plt.xticks(rotation=xLabelRotation, ha="right")
+        PlotHelper.RotateXLabels(xLabelRotation)
 
         # Make sure the plot is shown.
         plt.show()

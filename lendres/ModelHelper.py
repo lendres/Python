@@ -236,7 +236,7 @@ class ModelHelper:
 
 
     @classmethod
-    def CreateScorePlotForAllModels(cls, score, width=20):
+    def CreateScorePlotForAllModels(cls, score, width=20, xLabelRotation=90):
         """
         Creates a bar plot of a score for all saved models.
 
@@ -246,6 +246,8 @@ class ModelHelper:
             The scoring metric to plot.
         width : int
             The plot width.
+        xLabelRotation : float
+            Rotation of x labels.
 
         Returns
         -------
@@ -268,7 +270,7 @@ class ModelHelper:
         axes.legend(bbox_to_anchor=(0.5,1.2), loc="upper center", ncol=len(dataFrame.columns))
 
         # Rotate the X axis labels to vertical so they fit without running together.
-        plt.xticks(rotation=90)
+        PlotHelper.RotateXLabels(xLabelRotation)
 
         plt.show()
 
