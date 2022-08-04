@@ -12,6 +12,14 @@ from lendres.PlotHelper        import PlotHelper
 
 import unittest
 
+
+# By default this should be True.  It can be toggled to false if you want to see the
+# output for the file saving tests (they won't be deleted).  Be advised, if you set this
+# to True, you should perform file clean up operations afterwards.  You can manually delete
+# the files, or set this back to True and rerun the tests.
+deleteOutput = True
+
+
 class TestPlotHelper(unittest.TestCase):
 
     @classmethod
@@ -75,7 +83,8 @@ class TestPlotHelper(unittest.TestCase):
     def tearDownClass(cls):
         # It's not known what test function will be last, so make sure we clean
         # up any files and directories created.
-        PlotHelper.DeleteOutputDirectory()
+        if deleteOutput:
+            PlotHelper.DeleteOutputDirectory()
 
 
 if __name__ == "__main__":
