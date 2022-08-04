@@ -14,7 +14,7 @@ class PlotHelper():
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
-    defaultOutputDirector  = ".\\Output\\"
+    defaultOutputDirector  = "./Output/"
 
     #If true, the image is saved to a subfolder or the current folder called "Output."  If false, the path is assumed to be part
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
@@ -184,6 +184,26 @@ class PlotHelper():
 
 
     @classmethod
+    def RotateXLabels(cls, xLabelRotation):
+        """
+        Rotate the x-axis labels.
+
+        Parameters
+        ----------
+        xLabelRotation : float
+            Rotation of x labels.  If none is passed, nothing is done.
+
+        Returns
+        -------
+        None.
+        """
+        # Option to rotate the x axis labels.
+        if xLabelRotation is not None:
+            plt.xticks(rotation=xLabelRotation, ha="right")
+
+
+
+    @classmethod
     def NewTopAndBottomAxisFigure(cls, title, topPercent=0.25):
         """
         Creates a new figure that has two axes, one above another.
@@ -342,7 +362,7 @@ class PlotHelper():
                 os.mkdir(cls.defaultOutputDirector)
 
             # Update path.
-            path = cls.defaultOutputDirector + saveFileName
+            path = os.path.join(cls.defaultOutputDirector, saveFileName)
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=True, bbox_inches="tight")
