@@ -7,9 +7,19 @@ from   tensorflow.keras.callbacks                        import Callback
 
 
 class SaveHistoryCallback(Callback):
+    """
+    This class is used for history saving while training a model.
+
+    Example uses:
+        Resume Training
+            By combining history saving (using saveToDisk=True) and model checkpoints, the training progress
+            can be saved to disk and restored later.  The training can then be resumed or the training results
+            plotted/displayed.
+        Hyperparameter Tuning Output
+    """
 
 
-    def __init__(self, tensorFlowHelper):
+    def __init__(self, tensorFlowHelper, saveToDisk=True):
         """
         Constructor.
 
@@ -17,6 +27,8 @@ class SaveHistoryCallback(Callback):
         ----------
         tensorFlowHeler : TensorFlowHelper
             TensorFlowHelper that contains the model and history.
+        saveToDisk : boolean
+            If true, the history is saved to the disk as well as the TensorFlowHelper.
 
         Returns
         -------
@@ -27,10 +39,12 @@ class SaveHistoryCallback(Callback):
         self.tensorFlowHelper             = tensorFlowHelper
         self.tensorFlowHelper.historyMode = "callback"
 
+        self.saveToDisk                   = saveToDisk
+
 
     def on_epoch_end(self, epoch, logs=None):
         """
-        Constructor.
+        On epoch end callback.
 
         Parameters
         ----------
@@ -45,6 +59,8 @@ class SaveHistoryCallback(Callback):
         -------
         None.
         """
+        super().on_epoch_end(epoch, logs)
+
         if self.tensorFlowHelper.history is None:
             # No history exists, so establish a new one.
             self.tensorFlowHelper.history = pd.DataFrame(logs, index=[0])
@@ -55,4 +71,5 @@ class SaveHistoryCallback(Callback):
             self.tensorFlowHelper.history = pd.concat([self.tensorFlowHelper.history, logDataFrame], axis=0)
 
         # Write the data to the disk.
-        self.tensorFlowHelper.SaveHistory()
+        if self.saveToDisk:
+            self.tensorFlowHelper.SaveHistory()
