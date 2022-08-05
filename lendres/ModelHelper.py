@@ -400,12 +400,15 @@ class ModelHelper:
         return dataFrame
 
 
-    def GetModelPerformanceScores(self, final=False):
+    def GetModelPerformanceScores(self, scores=None, final=False):
         """
         Calculate performance metrics.  Threshold for a positive result can be specified.
 
         Parameters
         ----------
+        scores : string or list of strings
+            Score to extract from the list of performance scores.  This must be a column in the DataFrame
+            returned by the "GetModelPerformanceScores" function.
         final : boolean
             If true, the testing scores are included.
 
@@ -471,6 +474,14 @@ class ModelHelper:
             index=index
         )
 
+        # If only a subset is required, extract the information out of the entire set.
+        if scores != None:
+            # Ensure scores is a list.
+            if type(scores) != list:
+                scores = [scores]
+            dataFrame = dataFrame[scores]
+
+
         return dataFrame
 
 
@@ -490,12 +501,7 @@ class ModelHelper:
         -------
         None.
         """
-        scoresDataFrame = self.GetModelPerformanceScores(final)
-        if scores != None:
-            # Ensure scores is a list.
-            if type(scores) != list:
-                scores = [scores]
-            scoresDataFrame = scoresDataFrame[scores]
+        scoresDataFrame = self.GetModelPerformanceScores(scores, final)
 
         self.dataHelper.consoleHelper.PrintTitle("Performance Scores", ConsoleHelper.VERBOSEREQUESTED)
         pd.set_option("display.float_format",  "{:0.3f}".format)
