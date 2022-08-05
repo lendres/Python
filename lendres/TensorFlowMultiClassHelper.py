@@ -65,11 +65,11 @@ class TensorFlowMultiClassHelper(TensorFlowHelper):
         yPredictedData : array like
             Predictions of the dependent variable.
         """
-        yPerdicted = self.model.predict(xData)
-        yPerdictedClass = []
+        yPredicted = self.model.predict(xData)
+        yPredictedClass = []
 
-        for i in yPerdicted:
+        for i in yPredicted:
             # Get the index of the maximum value.
-            yPerdictedClass.append(np.argmax(i))
+            yPredictedClass.append(np.argmax(i))
 
-        return yPerdictedClass
+        return yPredictedClass
