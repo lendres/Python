@@ -89,14 +89,12 @@ class DataHelper(TensorFlowDataHelper):
         data : pandas.DataFrame
             Data in a pandas.DataFrame
         """
-
         # Validate the input file.
         if type(inputFile) != str:
             raise Exception("The input file is not a string.")
 
         if not os.path.exists(inputFile):
             raise Exception("The input file \"" + inputFile + "\" does not exist.")
-
 
         # Read the file in.
         self.consoleHelper.PrintTitle("Input File: " + inputFile, )
@@ -354,14 +352,24 @@ class DataHelper(TensorFlowDataHelper):
 
 
     def GetDuplicates(self, column):
+        """
+        Returns entries which occur more than one time in a column.
+
+        Parameters
+        ----------
+        Column to find duplicates in.
+
+        Returns
+        -------
+        duplicateDataFrame : DataFrame of values that occur more than once.
+        """
         # Returns a list that has True/False values at the duplicate entries.
         duplicates         = self.dataHelper.data.duplicated(subset=[column], keep=False)
 
         # Gets the indices of just the "True" (duplicate) entries.
         indices            = duplicates[duplicates == True].index
 
-        # Extract the duplicate entries from the main DataFrame and sort them by the
-        # column of interest.
+        # Extract the duplicate entries from the main DataFrame and sort them by the column of interest.
         duplicateDataFrame = self.dataHelper.data.iloc[indices, :].sort_values(by=[column])
         return duplicateDataFrame
 

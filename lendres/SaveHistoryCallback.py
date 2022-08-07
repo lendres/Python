@@ -16,6 +16,7 @@ class SaveHistoryCallback(Callback):
             can be saved to disk and restored later.  The training can then be resumed or the training results
             plotted/displayed.
         Hyperparameter Tuning Output
+            Other classes can subclass this to make use of history save during hyperparameter tuning.
     """
 
 

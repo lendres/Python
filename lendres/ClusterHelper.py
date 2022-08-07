@@ -2,19 +2,14 @@
 Created on April 27, 2022
 @author: Lance
 """
-import pandas                         as pd
-import numpy                          as np
-from   matplotlib                     import pyplot                     as plt
-import matplotlib.cm                  as cm
-import matplotlib.ticker              as ticker
-import seaborn                        as sns
+import pandas                                    as pd
+import numpy                                     as np
+from   matplotlib                                import pyplot                     as plt
+import seaborn                                   as sns
 import math
 
-from   scipy.spatial.distance         import cdist
-
-#from   lendres.ConsoleHelper          import ConsoleHelper
-from   lendres.PlotHelper             import PlotHelper
-from   lendres.SubsetHelper           import SubsetHelper
+from   lendres.PlotHelper                        import PlotHelper
+from   lendres.SubsetHelper                      import SubsetHelper
 
 
 class ClusterHelper(SubsetHelper):
@@ -36,19 +31,65 @@ class ClusterHelper(SubsetHelper):
 
 
     def FitPredict(self):
+        """
+        Fits a hyperparameter search and runs predict.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
         self.model.fit_predict(self.scaledData)
         self.LabelData()
 
 
     def LabelData(self):
+        """
+        Adds the labels from the fitted model to the DataFrame containing the data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
         self.dataHelper.data[self.labelColumn] = self.model.labels_
 
 
     def GetClusterLabelsAsSeries(self):
+        """
+        Gets cluster labels for each sample in the data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        : Series
+            Series containing the labels for each sample.
+        """
         self.dataHelper.data[self.labelColumn]
 
 
     def GetClusterCounts(self):
+        """
+        Gets the counts of elements in each cluster.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        countDataFrame : DataFrame
+            DataFrame containing the count of each group/cluster.
+        """
         valueCounts = self.dataHelper.data[self.labelColumn].value_counts()
         valueCounts.sort_index(ascending=True, inplace=True)
         valueCounts.rename("Sample Count", inplace=True)
@@ -59,16 +100,52 @@ class ClusterHelper(SubsetHelper):
 
 
     def GetGroupMeans(self):
+        """
+        Gets the mean of each cluster.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        dataFrameOfMeans : DataFrame
+            DataFrame containing the mean of each group/cluster.
+        """
         dataFrameOfMeans                 = self.dataHelper.data.groupby([self.labelColumn]).mean()
         dataFrameOfMeans["Sample Count"] = self.dataHelper.data[self.labelColumn].value_counts()
         return dataFrameOfMeans
 
 
     def GetGroupedByCluster(self):
+        """
+        Gets a DataFrameGroupBy of the data grouped by each cluster.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        : DataFrameGroupBy
+            Grouped clusters.
+        """
         return self.dataHelper.data.groupby([self.labelColumn])
 
 
     def GetGroupCounts(self):
+        """
+        Displays the value counts for the specified column as they are grouped the clusterer.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        : Series
+            Counts of each cluster.
+        """
         return self.dataHelper.data.groupby([self.labelColumn]).sum()
 
 
