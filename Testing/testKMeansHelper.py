@@ -35,7 +35,7 @@ class TestKMeansHelper(unittest.TestCase):
                           shuffle=True,
                           random_state=1
                          )
-        cls.xDataHelper = DataHelper(data=pd.DataFrame(X), copy=True, deep=True)
+        cls.xDataHelper = DataHelper(data=pd.DataFrame(X).copy())
 
 
     def setUp(self):
