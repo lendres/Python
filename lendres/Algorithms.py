@@ -2,7 +2,8 @@
 Created on February 16, 2022
 @author: Lance A. Endres
 """
-import numpy as np
+import numpy                                     as np
+
 
 def BoundingBinarySearch(item, points, returnedUnits="indices"):
     """

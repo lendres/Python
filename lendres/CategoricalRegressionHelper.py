@@ -6,8 +6,6 @@ import pandas                                    as pd
 import matplotlib.pyplot                         as plt
 from   sklearn                                   import metrics
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.ModelHelper                       import ModelHelper
 from   lendres.CategoricalHelper                 import CategoricalHelper
 from   lendres.PlotHelper                        import PlotHelper
 from   lendres.PlotMaker                         import PlotMaker
