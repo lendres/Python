@@ -2,6 +2,7 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import pandas                                    as pd
 import IPython
 import os
 
@@ -283,6 +284,62 @@ class ConsoleHelper():
         if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
             IPython.display.display(message)
 
+
+    def DisplayDataFrame(self, dataFrame, verboseLevel=None, numberOfRows="all", numberOfColumns="all", cleanUp="reset"):
+        """
+        Displays a DataFrame with the specified number of rows and columns.
+
+        Parameters
+        ----------
+        dataFrame : pandas.DataFrame
+            DataFrame to display.
+        verboseLevel : int, optional
+            Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
+        numberOfRows : int, optional
+            The number of rows to display. The default is "all".
+        numberOfColumns : int, optional
+            The number of columns to display. The default is "all".
+        cleanUp : string, optional
+            Method used to restore normal display output.  The options are:
+            reset : Resets DataFrame displaying to the default.
+            restore : Restores it to the settings present before calling this function.
+            none : Leaves the specified settings in place.
+
+        Returns
+        -------
+        None.
+        """
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+            # Handle the input arguments.
+            if numberOfRows == "all":
+                numberOfRows = dataFrame.shape[0]+1
+
+            if numberOfColumns == "all":
+                numberOfColumns = dataFrame.shape[1]+1
+
+            # Save current values.
+            storedRowsToDisplay    = pd.get_option("display.max_rows")
+            storedColumnsToDisplay = pd.get_option("display.max_columns")
+
+            # Set the options.
+            pd.set_option("display.max_rows", numberOfRows)
+            pd.set_option("display.max_columns", numberOfColumns)
+
+            # Display the DataFrame.
+            IPython.display.display(dataFrame)
+
+            # Handle clean up.
+            if cleanUp == "reset":
+                pd.reset_option("display.max_rows")
+                pd.reset_option("display.max_columns")
+
+            elif cleanUp == "restore":
+                pd.set_option("display.max_rows", storedRowsToDisplay)
+                pd.set_option("display.max_columns", storedColumnsToDisplay)
+            elif cleanUp == "none":
+                pass
+            else:
+                raise Exception("The argument specified for clean up is invalid.")
 
     def FormatProbabilityForOutput(self, probability, decimalPlaces=3):
         """
