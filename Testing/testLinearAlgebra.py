@@ -57,6 +57,13 @@ class TestBoundingBinarySearch(unittest.TestCase):
         plt.plot(points[:, 0], points[:, 1])
         plt.show()
 
+        points = DiscritizeArc(center=[1, 1], radius=1, startAngle=0, endAngle=180, numberOfPoints=100)
+        plt.plot(points[:, 0], points[:, 1])
+        plt.show()
+
+        points = DiscritizeArc(center=[1, 1], radius=1, startAngle=180, endAngle=0, numberOfPoints=100)
+        plt.plot(points[:, 0], points[:, 1])
+        plt.show()
 
 
 
