@@ -75,10 +75,14 @@ class GeometricConnectivity(Shape):
         return outputPoints
 
 
-    def _WalkToNext(self, startShape, connectiveShape):
+    def _WalkToNext(self, startShape, connectiveShape, raiseErrors=True):
         for shape in connectiveShape.shapes.values():
             if shape.id != startShape.id:
                 return shape
+        if raiseErrors:
+            print("Start shape:", startShape)
+            print("Connective shape:", connectiveShape)
+            raise Exception("Connectivity not found.")
 
 
     def _InfillShape(self, shape, outputPoints):

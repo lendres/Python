@@ -3,7 +3,8 @@ Created on Augugst 12, 2022
 @author: Lance A. Endres
 """
 import numpy                                     as np
-from   lendres.Geometry.Shape                   import Shape
+from   lendres.Geometry.RotationDirection        import RotationDirection
+from   lendres.Geometry.Shape                    import Shape
 from   lendres.LinearAlgebra                     import AngleIn360Degrees
 from   lendres.LinearAlgebra                     import DiscritizeArc
 
@@ -14,7 +15,7 @@ class Arc(Shape):
     Defined as counter-clockwise.
     """
 
-    def __init__(self, centerPoint, startPoint, endPoint, counterClockwise=True):
+    def __init__(self, centerPoint, startPoint, endPoint, rotationDirection=RotationDirection.Positive):
         """
         Constructor.
 
@@ -33,15 +34,15 @@ class Arc(Shape):
         """
         super().__init__()
 
-        self.center = centerPoint
+        # The center point is a control point, so it is kept separate.
+        self.center  = centerPoint
 
-        if counterClockwise:
-            self.shapes["start"]  = startPoint
-            self.shapes["end"]    = endPoint
-        else:
-            self.shapes["start"]  = endPoint
-            self.shapes["end"]    = startPoint
+        self.shapes["start"]   = startPoint
+        self.shapes["end"]     = endPoint
 
+        self.rotationDirection = rotationDirection
+
+        # The center is a control point, so it is not added.
         #centerPoint.AddShape(self)
         startPoint.AddShape(self)
         endPoint.AddShape(self)
@@ -64,6 +65,20 @@ class Arc(Shape):
 
 
     def Discritize(self, numberOfPoints=100):
+        # Get the starting and ending angles.
         startAngle = AngleIn360Degrees(startPoint=self.center.values, endPoint=self.shapes["start"].values)
         endAngle   = AngleIn360Degrees(startPoint=self.center.values, endPoint=self.shapes["end"].values)
-        return DiscritizeArc(self.center.values, self.GetRadius(), startAngle, endAngle, numberOfPoints)
+
+        # The discritize function requires a positive direction.  So we reverse the angles if the the arc is negative.
+        if self.rotationDirection == RotationDirection.Negative:
+            temp       = endAngle
+            endAngle   = startAngle
+            startAngle = temp
+
+        points = DiscritizeArc(self.center.values, self.GetRadius(), startAngle, endAngle, numberOfPoints)
+
+        # If the arc goes in the negative direction we have to reverse the points so they come back in the expected order.
+        if self.rotationDirection == RotationDirection.Negative:
+            points = np.flip(points, axis=0)
+
+        return points
