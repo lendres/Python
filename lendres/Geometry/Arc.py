@@ -48,20 +48,60 @@ class Arc(Shape):
         endPoint.AddShape(self)
 
 
-    def GetRadius(self):
+    @property
+    def Center(self):
+        return self.center
+
+
+    @property
+    def StartPoint(self):
+        return self.shapes["start"]
+
+
+    @property
+    def EndPoint(self):
+        return self.shapes["end"]
+
+
+    @property
+    def Radius(self):
         return np.linalg.norm(self.shapes["end"].values - self.center.values)
 
 
-    def GetDiameter(self):
-        return 2 * self.GetRadius()
+    @property
+    def Diameter(self):
+        return 2 * self.Radius
 
 
-    def GetStartAngle(self):
-        return AngleIn360Degrees(startPoint=self.center, endPoint=self.shapes["start"])
+    @property
+    def Length(self):
+        return np.radians(self.Angle) * self.Radius
 
 
-    def GetEndAngle(self):
-        return AngleIn360Degrees(startPoint=self.center, endPoint=self.shapes["end"])
+    @property
+    def Angle(self):
+        angle = 0
+        if self.rotationDirection == RotationDirection.Positive:
+            if self.EndAngle < self.StartAngle:
+                angle = (360 - self.StartAngle) + self.EndAngle
+            else:
+                angle = self.EndAngle - self.StartAngle
+        else:
+            if self.StartAngle < self.EndAngle:
+                angle = (360 - self.EndAngle) + self.StartAngle
+            else:
+                angle = self.StartAngle - self.EndAngle
+        return angle
+
+
+    @property
+    def StartAngle(self):
+        return AngleIn360Degrees(startPoint=self.center.values, endPoint=self.shapes["start"].values)
+
+
+    @property
+    def EndAngle(self):
+        return AngleIn360Degrees(startPoint=self.center.values, endPoint=self.shapes["end"].values)
 
 
     def Discritize(self, numberOfPoints=100):
@@ -75,7 +115,7 @@ class Arc(Shape):
             endAngle   = startAngle
             startAngle = temp
 
-        points = DiscritizeArc(self.center.values, self.GetRadius(), startAngle, endAngle, numberOfPoints)
+        points = DiscritizeArc(self.center.values, self.Radius, startAngle, endAngle, numberOfPoints)
 
         # If the arc goes in the negative direction we have to reverse the points so they come back in the expected order.
         if self.rotationDirection == RotationDirection.Negative:
