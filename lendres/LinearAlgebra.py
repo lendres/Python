@@ -31,3 +31,43 @@ def AngleIn360Degrees(endPoint, startPoint=[0, 0], returnPositive=True):
         angle = angle % 360.0
 
     return angle
+
+
+def DiscritizeArc(center, radius, startAngle, endAngle, numberOfPoints):
+    """
+    Creates a discritized arc.  Useful for plotting of discritized calculations.
+
+    Works by creating the arc with the at [0, 0] and the start angle 0 degrees (positive x-axis).  The
+    arc is then rotated and translated to the requested position.
+    """
+    # Calculate the swept angle.
+    arcAngle = 360-startAngle+endAngle if endAngle<startAngle else endAngle-startAngle
+    arcAngle = np.radians(arcAngle)
+
+    # Get a set of angles (discritizes the total angle).
+    angles = np.linspace(0, arcAngle, numberOfPoints)
+
+    # Initialize output.
+    points = np.zeros((numberOfPoints, 2))
+
+    points[:, 0] = radius * np.cos(angles)
+    points[:, 1] = radius * np.sin(angles)
+
+    # Create a rotation matrix.
+    startAsRadians = np.radians(startAngle)
+    rotationMatrix = [
+        [np.cos(startAsRadians),  -np.sin(startAsRadians)],
+        [np.sin(startAsRadians),   np.cos(startAsRadians)]
+    ]
+
+    # Perform the translation and rotation to the points.
+    for i in range(numberOfPoints):
+        # Rotation.
+        result = np.matmul(rotationMatrix, points[i])
+
+        # Translation.
+        result = result + center
+
+        points[i, :] = result
+
+    return points
