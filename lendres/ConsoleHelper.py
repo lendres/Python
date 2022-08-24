@@ -52,7 +52,7 @@ class ConsoleHelper():
 
 
     @classmethod
-    def setUpClass(cls):
+    def SetUpClass(cls):
         # Automatically clear the console when this file is imported.
         cls.ClearSpyderConsole()
 
@@ -61,6 +61,10 @@ class ConsoleHelper():
     def ClearSpyderConsole(cls):
         """
         Clears the consule on the Spyder IDE.
+
+        Parameters
+        ----------
+        None.
 
         Returns
         -------
@@ -336,10 +340,13 @@ class ConsoleHelper():
             elif cleanUp == "restore":
                 pd.set_option("display.max_rows", storedRowsToDisplay)
                 pd.set_option("display.max_columns", storedColumnsToDisplay)
+
             elif cleanUp == "none":
                 pass
+
             else:
                 raise Exception("The argument specified for clean up is invalid.")
+
 
     def FormatProbabilityForOutput(self, probability, decimalPlaces=3):
         """
@@ -432,4 +439,4 @@ class ConsoleHelper():
 
 
 # Setup the class when this file is loaded.
-ConsoleHelper.setUpClass()
+ConsoleHelper.SetUpClass()
