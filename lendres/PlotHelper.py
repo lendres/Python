@@ -2,13 +2,16 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
-import matplotlib.pyplot as plt
+import matplotlib.pyplot                         as plt
 
-import seaborn as sns
+import seaborn                                   as sns
 sns.set(color_codes=True)
 
 import os
 import shutil
+from   io                                        import BytesIO
+import base64
+
 
 class PlotHelper():
     # Class level variables.
@@ -366,3 +369,38 @@ class PlotHelper():
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=True, bbox_inches="tight")
+
+
+    @classmethod
+    def SavePlotToBuffer(cls, figure=None, format="png"):
+        """
+        Saves a plot to a buffer.
+
+        Parameters
+        ----------
+        figure : Figure, optional
+            The figure to save.  If "None" is specified, the current figure will be used.
+        format : string, optional
+            The image output format.  Default is "png".
+
+        Returns
+        -------
+        BytesIO
+            Buffer with the figure written to it.
+        """
+        if figure == None:
+            figure = plt.gcf()
+
+
+        buffer    = BytesIO()
+
+        figure.savefig(buffer, format=format)
+        buffer.seek(0)
+
+        image     = buffer.getvalue()
+        plot      = base64.b64encode(image)
+        plot      = plot.decode("utf-8")
+
+        buffer.close()
+
+        return plot
