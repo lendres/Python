@@ -36,7 +36,7 @@ def CountNumberOfPairs(n, ar):
     return result
 
 
-def countingValleys(steps, path):
+def CountingValleys(steps, path):
     elevation        = 0
     valleyCount      = 0
     inValley         = False
@@ -69,8 +69,11 @@ def countingValleys(steps, path):
     return valleyCount
 
 
-def organizingContainers(container):
+def OrganizingContainers(container):
+    # Sums and sorts rows.
     r = sorted([sum(x) for x in container])
+
+    # Sums and sorts columns.
     c = sorted([sum(x) for x in zip(*container)])
     return "Possible" if r == c else "Impossible"
     # So in order to explain that, you have to understand the zip() function itself. If zip()
@@ -84,9 +87,13 @@ def organizingContainers(container):
 
 
 
-def bomberMan(r, c, n, gridString):
+def BomberMan(r, c, n, gridString):
     time      = 1
     bombTimes = [[0]*c for i in range(r)]
+
+    # Grid string is an array of strings like:
+    # ["xoox", "xxox", "oxxo", "xoxo"]
+    # This converts it to a list of lists (the strings are parsed by each character).
     grid      = [list(x) for x in gridString]
 
     printDebug = 0
@@ -143,6 +150,7 @@ def ExplodeBombs(r, c, n, grid, time, bombTimes, printDebug):
                     grid[i][j+1] = "."
     #DisplayGrid("After exploding bombs", grid, printDebug)
 
+
 def JoinStrings(grid):
     return ["".join(string) for string in grid]
 
@@ -152,3 +160,12 @@ def DisplayGrid(label, grid, printDebug):
         print("\n"+label+":")
         joinedGrid = JoinStrings(grid)
         print('\n'.join(joinedGrid))
+
+
+def BirthdayCakeCandles(candles):
+    maxValue    = max(candles)
+    numberOfMax = candles.count(maxValue)
+
+    print("Candles:", candles)
+    print("numberOfMax:", numberOfMax)
+    return numberOfMax
