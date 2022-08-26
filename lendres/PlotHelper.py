@@ -372,6 +372,22 @@ class PlotHelper():
 
 
     @classmethod
+    def ResetMatPlotLib(cls):
+        """
+        Resets Matplotlib to the default settings.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        plt.rcParams.update(plt.rcParamsDefault)
+
+
+    @classmethod
     def SavePlotToBuffer(cls, figure=None, format="png"):
         """
         Saves a plot to a buffer.
