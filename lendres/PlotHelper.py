@@ -388,7 +388,7 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlotToBuffer(cls, figure=None, format="png"):
+    def SavePlotToBuffer(cls, figure=None, format="png", autoCrop=False, borderSize=0):
         """
         Saves a plot to a buffer.
 
@@ -407,11 +407,13 @@ class PlotHelper():
         if figure == None:
             figure = plt.gcf()
 
+        buffer = PlotHelper.SaveToBuffer(figure, "PNG" if autoCrop else format)
 
-        buffer    = BytesIO()
-
-        figure.savefig(buffer, format=format)
-        buffer.seek(0)
+        if autoCrop:
+            figure = Image.open(buffer).convert("RGB")
+            buffer.close()
+            figure = PlotHelper.CropWhiteSpace(figure, borderSize)
+            buffer = PlotHelper.SaveToBuffer(figure, format)
 
         image     = buffer.getvalue()
         plot      = base64.b64encode(image)
@@ -420,3 +422,69 @@ class PlotHelper():
         buffer.close()
 
         return plot
+
+
+    @classmethod
+    def SaveToBuffer(cls, figure, format="PNG"):
+        """
+        Saves a figure or image to an IO byte buffer.
+
+        Parameters
+        ----------
+        figure : matplotlib.figure.Figure or PIL.Image.Image, optional
+            The figure/image to save.
+        format : string, optional
+            The image output format.  Default is "png".
+
+        Returns
+        -------
+        BytesIO
+        """
+        buffer = BytesIO()
+
+        figureType = type(figure)
+
+        if figureType == matplotlib.figure.Figure:
+            figure.savefig(buffer, format=format)
+        elif figureType == Image.Image:
+            figure.save(buffer, format=format)
+        else:
+            raise Exception("Unknown figure type.")
+
+        buffer.seek(0)
+        return buffer
+
+
+    @classmethod
+    def CropWhiteSpace(cls, image, borderSize):
+        """
+        Crops white space from the border of an image.
+
+        Parameters
+        ----------
+        image : ByteIO
+            An image to crop the border.
+        borderSize : int
+            The size of the border, in pixels, to leave remaing around the edge.
+
+        Returns
+        -------
+        BytesIO
+        """
+        backGround = Image.new(image.mode, image.size, image.getpixel((0, 0)))
+        difference = ImageChops.difference(backGround, image)
+
+        #difference = ImageChops.add(difference, difference, 2.0, -100)
+
+        boundingBox = difference.getbbox()
+
+        if boundingBox:
+            boundingBox = [
+                boundingBox[0]-borderSize,
+                boundingBox[1]-borderSize,
+                boundingBox[2]+borderSize,
+                boundingBox[3]+borderSize
+            ]
+            return image.crop(boundingBox)
+        else:
+            return image
