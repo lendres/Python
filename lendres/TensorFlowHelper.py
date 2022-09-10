@@ -13,7 +13,7 @@ from   sklearn                                   import metrics
 import os
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.CategoricalHelper                 import CategoricalHelper
 
 from   tensorflow.keras.models                   import load_model

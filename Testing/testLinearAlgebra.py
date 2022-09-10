@@ -5,8 +5,8 @@ Created on Febuary 16, 2022
 import numpy                                     as np
 import matplotlib.pyplot                         as plt
 
-from   lendres.LinearAlgebra                     import AngleIn360Degrees
-from   lendres.LinearAlgebra                     import DiscritizeArc
+from   lendres.mathematics.LinearAlgebra         import AngleIn360Degrees
+from   lendres.mathematics.LinearAlgebra         import DiscritizeArc
 
 import unittest
 

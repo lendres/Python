@@ -3,10 +3,10 @@ Created on Augugst 12, 2022
 @author: Lance A. Endres
 """
 import numpy                                     as np
-from   lendres.Geometry.RotationDirection        import RotationDirection
-from   lendres.Geometry.Shape                    import Shape
-from   lendres.LinearAlgebra                     import AngleIn360Degrees
-from   lendres.LinearAlgebra                     import DiscritizeArc
+from   lendres.geometry.RotationDirection        import RotationDirection
+from   lendres.geometry.Shape                    import Shape
+from   lendres.mathematics.LinearAlgebra         import AngleIn360Degrees
+from   lendres.mathematics.LinearAlgebra         import DiscritizeArc
 
 
 class Arc(Shape):

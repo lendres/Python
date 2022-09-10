@@ -4,8 +4,8 @@ Created on Augugst 12, 2022
 """
 import numpy                                     as np
 
-from   lendres.Mathematics.Precision             import Precision
-from   lendres.Geometry.Shape                    import Shape
+from   lendres.mathematics.Precision             import Precision
+from   lendres.geometry.Shape                    import Shape
 
 
 class Point(Shape):

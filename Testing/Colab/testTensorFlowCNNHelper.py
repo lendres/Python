@@ -19,7 +19,7 @@ from   tensorflow.keras.layers                   import Flatten
 from   tensorflow.keras.layers                   import Dropout
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.plotting.PlotMaker                import PlotMaker
 from   lendres.ImageDataHelper                   import ImageDataHelper
 from   lendres.TensorFlowCNNHelper               import TensorFlowCNNHelper
 

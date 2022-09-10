@@ -6,12 +6,10 @@ from   matplotlib                                import pyplot                  
 import seaborn                                   as sns
 import pandas                                    as pd
 import numpy                                     as np
-import tensorflow                                as tf
 
-import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper

@@ -9,7 +9,7 @@ import seaborn                                   as sns
 from   sklearn.decomposition                     import PCA
 
 #from lendres.ConsoleHelper                       import ConsoleHelper
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.SubsetHelper                      import SubsetHelper
 
 

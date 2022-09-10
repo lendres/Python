@@ -2,14 +2,15 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                  as pd
-import numpy                   as np
+import pandas                                    as pd
+import numpy                                     as np
 
 import os
 
-from lendres.PlotMaker         import PlotMaker
+from   lendres.plotting.PlotMaker                import PlotMaker
 
 import unittest
+
 
 class TestPlotMaker(unittest.TestCase):
 

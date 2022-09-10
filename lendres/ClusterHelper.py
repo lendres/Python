@@ -8,7 +8,7 @@ from   matplotlib                                import pyplot                  
 import seaborn                                   as sns
 import math
 
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.SubsetHelper                      import SubsetHelper
 
 

@@ -3,9 +3,9 @@ Created on Augugst 12, 2022
 @author: Lance A. Endres
 """
 import numpy                                     as np
-from   lendres.Geometry.Shape                    import Shape
-from   lendres.Geometry.Point                    import Point
-from   lendres.Geometry.Arc                      import Arc
+from   lendres.geometry.Shape                    import Shape
+from   lendres.geometry.Point                    import Point
+from   lendres.geometry.Arc                      import Arc
 from   shapely.geometry                          import Polygon
 
 

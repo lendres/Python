@@ -6,6 +6,7 @@ from xgboost import XGBClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
+
 class XGradientBoostingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper, model=None, description=""):

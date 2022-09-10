@@ -7,7 +7,7 @@ from   matplotlib                                import pyplot                  
 import math
 import cv2
 
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 
 
 class ImageHelper():

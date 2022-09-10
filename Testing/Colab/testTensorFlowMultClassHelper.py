@@ -16,7 +16,7 @@ from   tensorflow.keras.layers                   import Dense
 
 from   keras.datasets                            import mnist
 
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.plotting.PlotMaker                import PlotMaker
 from   lendres.DataHelper                        import DataHelper
 from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
 from   lendres.TensorFlowMultiClassHelper        import TensorFlowMultiClassHelper

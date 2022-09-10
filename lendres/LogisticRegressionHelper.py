@@ -2,13 +2,13 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas                               as pd
-import numpy                                as np
+import pandas                                    as pd
+import numpy                                     as np
 
-from sklearn.linear_model                   import LogisticRegression
+from   sklearn.linear_model                      import LogisticRegression
 
-from lendres.PlotMaker                      import PlotMaker
-from lendres.CategoricalRegressionHelper    import CategoricalRegressionHelper
+from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.CategoricalRegressionHelper       import CategoricalRegressionHelper
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
 

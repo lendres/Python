@@ -6,7 +6,7 @@ import seaborn                                   as sns
 import matplotlib.pyplot                         as plt
 import numpy                                     as np
 
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.ConsoleHelper                     import ConsoleHelper
 
 

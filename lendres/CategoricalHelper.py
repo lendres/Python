@@ -2,14 +2,10 @@
 Created on July 10, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import matplotlib.pyplot                         as plt
 from   sklearn                                   import metrics
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.ModelHelper                       import ModelHelper
-from   lendres.PlotHelper                        import PlotHelper
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.plotting.PlotMaker                import PlotMaker
 
 
 class CategoricalHelper(ModelHelper):

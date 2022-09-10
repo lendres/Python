@@ -5,7 +5,7 @@ Created on Thu August  4, 2022
 import os
 import tensorflow                                as tf
 
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.SaveHistoryCallback               import SaveHistoryCallback
 
 

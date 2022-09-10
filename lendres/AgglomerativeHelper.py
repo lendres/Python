@@ -2,20 +2,19 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
-import pandas                           as pd
-from   matplotlib                       import pyplot                     as plt
+import pandas                                    as pd
+from   matplotlib                                import pyplot                     as plt
 
-from   sklearn.cluster                  import AgglomerativeClustering
-from   scipy.cluster.hierarchy          import cophenet
-from   scipy.cluster.hierarchy          import dendrogram
-from   scipy.cluster.hierarchy          import linkage
+from   sklearn.cluster                           import AgglomerativeClustering
+from   scipy.cluster.hierarchy                   import cophenet
+from   scipy.cluster.hierarchy                   import dendrogram
+from   scipy.cluster.hierarchy                   import linkage
 
 # Pairwise distribution between data points.
-from   scipy.spatial.distance           import pdist
+from   scipy.spatial.distance                    import pdist
 
-#from lendres.ConsoleHelper            import ConsoleHelper
-from   lendres.PlotHelper               import PlotHelper
-from   lendres.ClusterHelper            import ClusterHelper
+from   lendres.plotting.PlotHelper              import PlotHelper
+from   lendres.ClusterHelper                     import ClusterHelper
 
 
 class AgglomerativeHelper(ClusterHelper):

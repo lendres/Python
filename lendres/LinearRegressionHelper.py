@@ -2,13 +2,13 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas as pd
-import numpy as np
+import pandas                                    as pd
+import numpy                                     as np
 
-from sklearn.linear_model import LinearRegression
+from   sklearn.linear_model                      import LinearRegression
 
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
+from   sklearn.metrics                           import mean_squared_error
+from   sklearn.metrics                           import mean_absolute_error
 
 from lendres.ModelHelper import ModelHelper
 

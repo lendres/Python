@@ -2,6 +2,7 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import matplotlib
 import matplotlib.pyplot                         as plt
 
 import seaborn                                   as sns
@@ -11,6 +12,8 @@ import os
 import shutil
 from   io                                        import BytesIO
 import base64
+from   PIL                                       import Image
+from   PIL                                       import ImageChops
 
 
 class PlotHelper():

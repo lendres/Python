@@ -3,7 +3,7 @@ Created on Augugst 12, 2022
 @author: Lance A. Endres
 """
 import numpy                                     as np
-from   lendres.Geometry.Shape                    import Shape
+from   lendres.geometry.Shape                    import Shape
 
 class Line(Shape):
 

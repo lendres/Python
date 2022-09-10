@@ -10,7 +10,7 @@ from   sklearn                                   import metrics
 from   matplotlib                                import pyplot                     as plt
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.PlotHelper                        import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 
 
 class ModelHelper:

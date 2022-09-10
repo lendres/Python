@@ -6,7 +6,7 @@ import DataSetLoading
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.BivariateAnalysis                 import BivariateAnalysis
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.plotting.PlotMaker                import PlotMaker
 
 import unittest
 

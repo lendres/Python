@@ -11,7 +11,7 @@ import matplotlib.pyplot             as plt
 import seaborn                       as sns
 
 
-from lendres.PlotHelper              import PlotHelper
+from lendres.plotting.PlotHelper             import PlotHelper
 
 # To get different performance metrics
 import sklearn.metrics               as metrics

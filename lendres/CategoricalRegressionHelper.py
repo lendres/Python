@@ -7,8 +7,8 @@ import matplotlib.pyplot                         as plt
 from   sklearn                                   import metrics
 
 from   lendres.CategoricalHelper                 import CategoricalHelper
-from   lendres.PlotHelper                        import PlotHelper
-from   lendres.PlotMaker                         import PlotMaker
+from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.PlotMaker                import PlotMaker
 
 
 class CategoricalRegressionHelper(CategoricalHelper):

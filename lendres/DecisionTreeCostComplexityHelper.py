@@ -5,7 +5,7 @@ Created on January 19, 2022
 import numpy                      as np
 import matplotlib.pyplot          as plt
 
-from lendres.PlotHelper           import PlotHelper
+from lendres.plotting.PlotHelper          import PlotHelper
 from lendres.DecisionTreeHelper   import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
