@@ -448,9 +448,9 @@ class PlotHelper():
         figureType = type(figure)
 
         if figureType == matplotlib.figure.Figure:
-            figure.savefig(buffer, format=format)
+            figure.savefig(buffer, format=format, bbox_inches="tight")
         elif figureType == Image.Image:
-            figure.save(buffer, format=format)
+            figure.save(buffer, format=format, bbox_inches="tight")
         else:
             raise Exception("Unknown figure type.")
 
