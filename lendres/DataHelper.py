@@ -15,10 +15,10 @@ import io
 
 import lendres
 from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
+from   lendres.DataHelperBase                    import DataHelperBase
 
 
-class DataHelper(TensorFlowDataHelper):
+class DataHelper(DataHelperBase):
     """
     Class for holding and processing data.
 

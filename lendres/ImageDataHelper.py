@@ -13,6 +13,7 @@ from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.UnivariateAnalysis                import UnivariateAnalysis
 from   lendres.Algorithms                        import FindIndicesByValues
 from   lendres.ImageHelper                       import ImageHelper
+from   lendres.TensorFlowDataHelperFunctions     import TensorFlowDataHelperFunctions
 
 
 class ImageDataHelper(TensorFlowDataHelper):
@@ -641,3 +642,72 @@ class ImageDataHelper(TensorFlowDataHelper):
         originalData = self.labels["Numbers"]
 
         return self._GetSplitComparisons(originalData, format=format)
+    
+
+        def EncodeDependentVariableForAI(self):
+            """
+            Converts the categorical columns ("category" data type) to encoded values.
+            Prepares categorical columns for use in a model.
+
+            Parameters
+            ----------
+            None.
+
+            Returns
+            -------
+            None.
+            """
+            TensorFlowDataHelperFunctions.EncodeDependentVariableForAI(self)
+
+
+        def GetNumberOfUniqueCategories(self):
+            """
+            Gets the number of unique categories in the ouput.  This is the same as the number of classes in a classification problem.
+            - Must be used after splitting the data.
+            - Assumes all categories are represented in the dependent variable training data.  This is, if you split the data in such
+              a way that one or more categories is not in the training data, it will not work.
+
+            Parameters
+            ----------
+            None.
+
+            Returns
+            -------
+            numberOfUniqueCategories : int
+                Number of nodes in the ouput.  This is the same as the number of classes in a classification problem.
+            """
+            return TensorFlowDataHelperFunctions.GetNumberOfUniqueCategories(self)
+            
+
+        def DisplayAIEncodingResults(self, numberOfEntries, randomEntries=False):
+            """
+            Prints a summary of the encoding processes.
+
+            Parameters
+            ----------
+            numberOfEntries : int
+                The number of entries to display.
+            randomEntries : bool
+                If true, random entries are chosen, otherwise, the first few entries are displayed.
+
+            Returns
+            -------
+            None.
+            """
+            TensorFlowDataHelperFunctions.DisplayAIEncodingResults(self, numberOfEntries, randomEntries)
+
+
+        def GetAIInputShape(self):
+            """
+            Gets the shape of the AI model input.
+
+            Parameters
+            ----------
+            None.
+
+            Returns
+            -------
+            : tuple
+                Shape of input data.
+            """
+            return TensorFlowDataHelperFunctions.GetAIInputShape(self)

@@ -36,13 +36,16 @@ class DataHelperBase():
 
         self.xTrainingData             = []
         self.yTrainingData             = []
+        self.yTrainingEncoded          = []
 
         self.xValidationData           = []
         self.yValidationData           = []
+        self.yValidationEncoded        = []
 
         self.xTestingData              = []
         self.yTestingData              = []
-
+        self.yTestingEncoded           = []
+        
         self.labelEncoders             = {}
 
         # Save the console helper first so it can be used while processing things.
@@ -91,14 +94,17 @@ class DataHelperBase():
         if len(dataHelper.xTrainingData) != 0:
             self.xTrainingData             = dataHelper.xTrainingData.copy()
             self.yTrainingData             = dataHelper.yTrainingData.copy()
-
+            self.yTrainingEncoded          = dataHelper.yTrainingEncoded.copy()
+            
         if len(dataHelper.xValidationData) != 0:
             self.xValidationData           = dataHelper.xValidationData.copy()
             self.yValidationData           = dataHelper.yValidationData.copy()
+            self.yValidationEncoded        = dataHelper.yValidationEncoded.copy()
 
         if len(dataHelper.xTestingData) != 0:
             self.xTestingData              = dataHelper.xTestingData.copy()
             self.yTestingData              = dataHelper.yTestingData.copy()
+            self.yTestingEncoded           = dataHelper.yTestingEncoded.copy()
 
         self.labelEncoders  = dataHelper.labelEncoders.copy()
         self.consoleHelper  = dataHelper.consoleHelper
