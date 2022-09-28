@@ -1,8 +1,11 @@
 """
 Created on July 16, 2022
 @author: Lance A. Endres
-"""
 
+The NLTK stopwords must be downloaded before using this module.  This can be done by using:
+    from lendres.Installation import RunInstall
+    RunInstall()
+"""
 import pandas                                    as pd
 import unicodedata
 from   bs4                                       import BeautifulSoup
@@ -16,19 +19,9 @@ import contractions
 import matplotlib.pyplot                         as plt
 from   wordcloud                                 import WordCloud
 from   wordcloud                                 import STOPWORDS
-from   wordcloud                                 import ImageColorGenerator
 
 import re
 import spacy
-
-from   IPython.display                           import display
-
-import lendres
-from   lendres.ConsoleHelper                     import ConsoleHelper
-
-
-def Install(cls):
-   nltk.download("stopwords")
 
 
 class LanguageHelper():

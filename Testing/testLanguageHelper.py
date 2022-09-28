@@ -13,7 +13,7 @@ from   lendres.LanguageHelper                    import LanguageHelper
 import warnings
 
 
-skipTests = True
+skipTests = False
 
 class TestLanguageHelper(unittest.TestCase):
 
@@ -88,13 +88,10 @@ class TestLanguageHelper(unittest.TestCase):
         result   = LanguageHelper.JoinTokens(result)
         self.assertEqual(result, text)
 
-        print("Type:", type(self.tweets["text"].loc[0]))
-        print("Single line join:", LanguageHelper.JoinTokens(self.tweets["text"].loc[0]))
         text     = LanguageHelper.RemoveSpecialCharacters(self.tweets["text"], removeDigits=True)
         text     = LanguageHelper.RemoveMultipleSpaces(text)
         result   = LanguageHelper.Tokenize(text)
         result   = LanguageHelper.JoinTokens(result)
-        print(text.loc[0])
         self.assertEqual(result[0], text.loc[0])
 
 
@@ -108,17 +105,19 @@ class TestLanguageHelper(unittest.TestCase):
         self.assertEqual(result, "my system keep crash hi crash yesterday, our crash daili")
 
 
-    def testLemmatize(self):
+    def testLemmatizeOfString(self):
         text     = "My system keeps crashing! his crashed yesterday, ours crashes daily"
 
-        result   = LanguageHelper.Lemmatize(text)
-        solution = "my system keep crash ! his crash yesterday , ours crash daily"
-        self.assertEqual(result, solution)
+        with self.subTest():
+            result   = LanguageHelper.Lemmatize(text)
+            solution = "my system keep crash ! his crash yesterday , our crash daily"
+            self.assertEqual(result, solution)
 
-        testList = text.split()
-        result   = LanguageHelper.Lemmatize(testList)
-        solution = ["my", "system", "keep", "crash !", "his", "crash", "yesterday ,", "ours", "crash", "daily"]
-        self.assertEqual(result, solution)
+        with self.subTest():
+            testList = text.split()
+            result   = LanguageHelper.Lemmatize(testList)
+            solution = ["my", "system", "keep", "crash !", "his", "crash", "yesterday ,", "our", "crash", "daily"]
+            self.assertEqual(result, solution)
 
 
     def testLowercase(self):
