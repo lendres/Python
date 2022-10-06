@@ -39,6 +39,15 @@ class TestPlotHelper(unittest.TestCase):
         plt.show()
 
 
+    def testAlternatPlotFormats(self):
+        self.createBasicPlot("Format with Defaults", formatStyle=None, width=5, height=3)
+        plt.show()
+        self.createBasicPlot("Format with Seaborn", formatStyle="seaborn", width=5, height=3)
+        plt.show()
+        self.createBasicPlot("Format by Resetting Pyplot", formatStyle="pyplot", width=5, height=3)
+        plt.show()
+
+
     def testSavePlotBeforeShowMethod1(self):
         self.createBasicPlot("Save Before Show 1")
 
@@ -63,9 +72,9 @@ class TestPlotHelper(unittest.TestCase):
         plt.show()
 
 
-    def createBasicPlot(self, titlePrefix, scale=1.0, width=10, height=6):
+    def createBasicPlot(self, titlePrefix, formatStyle=None, scale=1.0, width=10, height=6):
         PlotHelper.scale = scale
-        PlotHelper.FormatPlot(width=width, height=height)
+        PlotHelper.FormatPlot(formatStyle=formatStyle, width=width, height=height)
         axis = plt.gca()
         sns.histplot(TestPlotHelper.data["bmi"], kde=True, ax=axis, palette="winter")
         PlotHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabel="Count", titlePrefix=titlePrefix)

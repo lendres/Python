@@ -6,7 +6,6 @@ import matplotlib
 import matplotlib.pyplot                         as plt
 
 import seaborn                                   as sns
-sns.set(color_codes=True)
 
 import os
 import shutil
@@ -97,12 +96,17 @@ class PlotHelper():
 
 
     @classmethod
-    def FormatPlot(cls, width=10, height=6, transparentLegend=False):
+    def FormatPlot(cls, formatStyle=None, width=10, height=6, transparentLegend=False):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
         Parameters
         ----------
+        formatStyle : string or None
+            Specifies initial formating style.
+                None : no initial formating is done.
+                pyplot : resets matplotlib.pyplot to the default settings.
+                seaborn : uses seaborn color codes.
         width : float, optional
             The width of the figure. The default is 10.
         height : float, optional
@@ -114,6 +118,12 @@ class PlotHelper():
         -------
         None.
         """
+        if formatStyle is not None:
+            if formatStyle == "pyplot":
+                cls.ResetMatPlotLib()
+            if formatStyle == "seaborn":
+                cls.UseSeabornColorCodes()
+
         standardSize = cls.GetScaledStandardSize()
 
         # Standard formating parameters.
@@ -388,6 +398,22 @@ class PlotHelper():
         None.
         """
         plt.rcParams.update(plt.rcParamsDefault)
+
+
+    @classmethod
+    def UseSeabornColorCodes(cls):
+        """
+        Uses Seaborn to create an alternate formatting.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        sns.set(color_codes=True)
 
 
     @classmethod
