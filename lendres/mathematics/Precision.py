@@ -1,5 +1,5 @@
 """
-Created on Augugst 12, 2022
+Created on August 12, 2022
 @author: Lance A. Endres
 """
 

@@ -1,5 +1,5 @@
 """
-Created on Aug 27, 2022
+Created on August 27, 2022
 @author: Lance A. Endres
 """
 import numpy                                     as np
