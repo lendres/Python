@@ -3,18 +3,18 @@ Created on April 27, 2022
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.KMeansHelper             import KMeansHelper
-import pandas                           as pd
-import numpy                            as np
+from   lendres.KMeansHelper                      import KMeansHelper
+import pandas                                    as pd
+import numpy                                     as np
 
 
-from   sklearn.preprocessing            import StandardScaler
-from   scipy.stats                      import zscore
-from   sklearn.datasets                 import make_blobs
+from   sklearn.preprocessing                     import StandardScaler
+from   scipy.stats                               import zscore
+from   sklearn.datasets                          import make_blobs
 
-from   lendres.DataHelper               import DataHelper
+from   lendres.DataHelper                        import DataHelper
 
-from   IPython.display                  import display
+from   IPython.display                           import display
 
 import unittest
 

@@ -2,14 +2,14 @@
 Created on January 26, 2022
 @author: Lance A. Endres
 """
-from IPython.display import display
+from   IPython.display                           import display
 
 import DataSetLoading
-from lendres.DataHelper              import DataHelper
-from lendres.ModelHelper             import ModelHelper
+from   lendres.DataHelper                        import DataHelper
+from   lendres.ModelHelper                       import ModelHelper
 
-from lendres.BaggingHelper           import BaggingHelper
-from imblearn.over_sampling          import SMOTE
+from   lendres.BaggingHelper                     import BaggingHelper
+from   imblearn.over_sampling                    import SMOTE
 
 import unittest
 

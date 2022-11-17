@@ -2,14 +2,14 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
-import pandas                                     as pd
+import pandas                                    as pd
 
 import DataSetLoading
 
-from   lendres.ConsoleHelper                      import ConsoleHelper
-from   lendres.PrincipleComponentAnalysisHelper   import PrincipleComponentAnalysisHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.PrincipleComponentAnalysisHelper  import PrincipleComponentAnalysisHelper
 
-from   IPython.display                            import display
+from   IPython.display                           import display
 
 import unittest
 

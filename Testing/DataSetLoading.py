@@ -2,11 +2,11 @@
 Created on March 6, 2022
 @author: Lance A. Endres
 """
-import numpy                          as np
+import numpy                                     as np
 import os
 
-from lendres.ConsoleHelper            import ConsoleHelper
-from lendres.DataHelper               import DataHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.DataHelper                        import DataHelper
 
 def MakeDataHelper(inputFile, verboseLevel):
     inputFile          = os.path.join("Data", inputFile)

@@ -26,7 +26,7 @@ class TestPlotHelper(unittest.TestCase):
     def setUpClass(cls):
         inputFile = "insurance.csv"
         inputFile = os.path.join("Data", inputFile)
-        cls.data   = pd.read_csv(inputFile)
+        cls.data  = pd.read_csv(inputFile)
 
 
     def testFormatPlotMethod1(self):

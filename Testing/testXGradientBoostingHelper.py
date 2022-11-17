@@ -2,11 +2,11 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from IPython.display                 import display
+from   IPython.display                           import display
 
 import DataSetLoading
-from lendres.ConsoleHelper           import ConsoleHelper
-from lendres.XGradientBoostingHelper import XGradientBoostingHelper
+from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.XGradientBoostingHelper           import XGradientBoostingHelper
 
 import unittest
 
