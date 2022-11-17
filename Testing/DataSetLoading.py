@@ -8,8 +8,19 @@ import os
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.DataHelper                        import DataHelper
 
+
+def GetDataDirectory():
+    # The directory of this file.
+    thisDirectory = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(thisDirectory, "Data")
+
+
+def GetFileInDataDirectory(fileName):
+    return os.path.join(GetDataDirectory(), fileName)
+
+
 def MakeDataHelper(inputFile, verboseLevel):
-    inputFile          = os.path.join("Data", inputFile)
+    inputFile          = GetFileInDataDirectory(inputFile)
 
     consoleHelper      = ConsoleHelper(verboseLevel=verboseLevel)
     dataHelper         = DataHelper(consoleHelper=consoleHelper)
