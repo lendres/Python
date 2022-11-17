@@ -158,9 +158,10 @@ class DataHelper(DataHelperBase):
     def PrintDataTypes(self, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
         """
         Prints the data types.
-        For some reasone, trying to directly print using "self.data.info()" results in the data always being displayed.  The
-        printing seems to come from some other location (inside "info" itself, perhaps).  This is a work around to retrieve
-        the information in a buffer and then print the data in the buffer  according to the standard operations of the ConsoleHelper.
+
+        Using "self.data.info()" results in the data always being displayed (DataFrame.info() prints output).  We want to ConsoleHelper to
+        determine if the printing is actually done or not based on its settings.  Therefore, we must retrieve the information in a buffer
+        and pass the buffer contents to the ConsoleHelper as a string.
 
         Parameters
         ----------
