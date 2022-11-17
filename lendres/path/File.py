@@ -173,5 +173,9 @@ class File():
             if writeHeader:
                 outputFile.writelines(header)
 
+            lines  = []
+            # Read all the lines.
             for line in inputFile:
-                outputFile.writelines(line)
+                lines.append(line)
+
+            outputFile.writelines(lines)
