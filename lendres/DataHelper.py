@@ -75,14 +75,21 @@ class DataHelper(DataHelperBase):
         super().CopyFrom(dataHelper)
 
 
-    def LoadAndInspectData(self, inputFile, verboseLevel=ConsoleHelper.VERBOSEREQUESTED):
+    def LoadAndInspectData(self, inputFile, verboseLevel=ConsoleHelper.VERBOSEREQUESTED, **kwargs):
         """
         Loads a data file and performs some initial inspections and reports results.
+
+        To read a file that does not contain headers, use the following:
+        LoadAndInspectData(inputFile, verboseLevel, header=None, names=["header1", header2", ... headerN"])
 
         Parameters
         ----------
         inputFile : string
             Path and name of the file to load.
+        verboseLevel : integer, optional
+            Verbose level to use for the ConsoleHelper.  Default is ConsoleHelper.VERBOSEREQUESTED.
+        **kwargs : keyword arguments
+            These arguments are passed on to the Pandas.read_csv function.
 
         Returns
         -------
@@ -98,7 +105,7 @@ class DataHelper(DataHelperBase):
 
         # Read the file in.
         self.consoleHelper.PrintTitle("Input File: " + inputFile, )
-        self.data = pd.read_csv(inputFile)
+        self.data = pd.read_csv(inputFile, **kwargs)
 
         # Data size and shape.
         self.consoleHelper.PrintTitle("Data Size", verboseLevel)
