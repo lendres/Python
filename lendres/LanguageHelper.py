@@ -384,12 +384,46 @@ class LanguageHelper():
 
     @classmethod
     def RemoveWebAddresses(cls, text):
+        """
+        Removes web addresses.  This function automatically operates
+        on the text in the correct way for different types of data structions.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+
+        Returns
+        -------
+        text : Pandas DataFrame, list, or string
+            The processed text.
+        """
         pattern = r"(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{0,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
         return LanguageHelper.ApplyRegularExpression(text, pattern)
 
 
     @classmethod
     def CreateWordCloud(cls, text, width=800, height=600, preprocess=True, removeStopWords=False):
+        """
+        Creates a plot of a word cloud.
+
+        Parameters
+        ----------
+        text : Pandas DataFrame, list, or string
+            The text to operate on.
+        width : integer
+            Plot width.
+        height : integer
+            Plot height.
+        preprocess : boolean
+            If true, a series of preprocessing steps are run to clean the text before using it in the word cloud.
+        removeStopWords : boolean
+            If true, the stop words are removed before using the text in the word cloud.
+
+        Returns
+        -------
+        None.
+        """
         if preprocess:
             text = LanguageHelper.RemoveInternetHandles(text)
             text = LanguageHelper.RemoveWebAddresses(text)
