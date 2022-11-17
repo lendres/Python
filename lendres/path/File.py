@@ -83,6 +83,27 @@ class File():
 
     @classmethod
     def _WriteFileSection(cls, baseFileName, fileNumber, header, lines):
+        """
+        Writes the lines to a new file.
+
+        Parameters
+        ----------
+        baseFileName : string
+            Root file name to use for the output file name.  The part number will be appended to
+            this name to create a new, unique file name.
+        fileNumber : integer
+            The number of the file.  This function is used when breaking a file into a sequence of files.
+            This number is the current count of written files (including the current one).
+        header : string
+            The header text to write to the file.
+        lines : list of strings
+            The lines to write to the file.
+
+        Returns
+        -------
+        outputFileName : string
+            The path and file name of the file written.
+        """
         outputFileName = baseFileName+" part "+str(fileNumber)+".csv"
         with open(outputFileName, "w") as outputFile:
             if header != "":
@@ -94,16 +115,33 @@ class File():
 
     @classmethod
     def CombineFiles(cls, outputFileName, listOfFiles, removeFilesAfterCombining=False):
+        """
+        Combines multiple text/csv files into a single document.
+
+        Parameters
+        ----------
+        outputFileName : string
+            Output file path and name.
+        listOfFiles : list of strings
+            List of input files to read from.
+        removeFilesAfterCombining : boolean
+            If True, the input files are deleted after they are read.
+
+        Returns
+        -------
+        None.
+        """
         if len(listOfFiles) < 2:
             raise Exception("A list of files must be supplied.")
 
-        directory = os.path.dirname(listOfFiles[0])
-
+        directory   = os.path.dirname(listOfFiles[0])
         writeHeader = True
 
         with open(directory+"\\"+outputFileName, "w") as outputFile:
             for fileName in listOfFiles:
+                # Copy the contents of the current file into the output file.
                 cls._CopyToOutputFile(fileName, outputFile, writeHeader)
+
                 # Only write the header the from the first file.
                 writeHeader = False
 
@@ -113,6 +151,22 @@ class File():
 
     @classmethod
     def _CopyToOutputFile(cls, inputFileName, outputFile, writeHeader):
+        """
+        Copies the contents of a file to the output file.  Opens the file and writes it to an existing file object.
+
+        Parameters
+        ----------
+        inputFileName : string
+            The path and file name of the input file to read from.
+        outputFile : file object
+        writeHeader : boolean
+            If True, the all lines of the input file are written to the output.  If False, the first
+            line of the input file is skipped and not written to the output file.
+
+        Returns
+        -------
+        None.
+        """
         with open(inputFileName, "r") as inputFile:
             header = inputFile.readline()
 
