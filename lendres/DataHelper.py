@@ -329,7 +329,6 @@ class DataHelper(DataHelperBase):
         Returns
         -------
         None.
-
         """
         columnNames = self.data.dtypes[self.data.dtypes == "object"].index
         self.ChangeToCategoryType(columnNames)
@@ -346,7 +345,6 @@ class DataHelper(DataHelperBase):
         Returns
         -------
         None.
-
         """
         columnNames = self.data.dtypes[self.data.dtypes == "category"].index
         self.data[columnNames] = self.data[columnNames].astype("int")
