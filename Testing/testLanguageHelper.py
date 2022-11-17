@@ -6,11 +6,12 @@ import pandas                                    as pd
 import numpy                                     as np
 from   IPython.display                           import display
 
-import unittest
+import DataSetLoading
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.LanguageHelper                    import LanguageHelper
 
 import warnings
+import unittest
 
 
 skipTests = False
@@ -19,7 +20,7 @@ class TestLanguageHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.tweets = pd.read_csv("./Data/Tweets.csv")
+        cls.tweets = pd.read_csv(DataSetLoading.GetFileInDataDirectory("Tweets.csv"))
 
         #VERBOSETESTING
         #VERBOSEREQUESTED

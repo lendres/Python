@@ -7,6 +7,7 @@ import numpy                                     as np
 
 import os
 
+import DataSetLoading
 from   lendres.plotting.PlotMaker                import PlotMaker
 
 import unittest
@@ -17,7 +18,7 @@ class TestPlotMaker(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile  = "insurance.csv"
-        inputFile  = os.path.join("Data", inputFile)
+        inputFile  = DataSetLoading.GetFileInDataDirectory(inputFile)
         cls.data   = pd.read_csv(inputFile)
 
         cls.confusionMatrix3x3 = np.array(

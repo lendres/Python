@@ -8,6 +8,7 @@ import seaborn                                   as sns
 
 import os
 
+import DataSetLoading
 from   lendres.plotting.PlotHelper               import PlotHelper
 
 import unittest
@@ -25,7 +26,7 @@ class TestPlotHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         inputFile = "insurance.csv"
-        inputFile = os.path.join("Data", inputFile)
+        inputFile = DataSetLoading.GetFileInDataDirectory(inputFile)
         cls.data  = pd.read_csv(inputFile)
 
 
