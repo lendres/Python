@@ -5,7 +5,22 @@ Created on November 16, 2022
 import os
 
 class File():
+    @classmethod
+    def GetDirectory(cls, filePath):
+        """
+        Gets the directory from the path of a file.
 
+        Parameters
+        ----------
+        filePath : string
+            The path and file name.
+
+        Returns
+        -------
+        : string
+            The directory part of the file name and path.
+        """
+        return os.path.dirname(os.path.abspath(filePath))
 
     @classmethod
     def SplitFileByNumberOfLines(cls, path, numberOfLines=40000, hasHeader=True):
