@@ -1,5 +1,14 @@
-For Windows Machines
+WINDOWS MACHINES
 
 Add the environmental variable:
 PYTHONPATH
 C:\Custom Program Files\Python
+
+
+VISUAL STUDIO CODE
+
+To prevent "importing the numpy c-extensions failed":
+- Open VS Code's Command Palette menu by pressing Ctrl+Shift+P or F1
+- Choose "Terminal: Select Default Profile"
+- Then pick "Command Prompt" option
+- Restart VS Code
