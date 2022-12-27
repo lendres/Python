@@ -13,7 +13,7 @@ from   scipy.cluster.hierarchy                   import linkage
 # Pairwise distribution between data points.
 from   scipy.spatial.distance                    import pdist
 
-from   lendres.plotting.PlotHelper              import PlotHelper
+from   lendres.plotting.PlotHelper               import PlotHelper
 from   lendres.ClusterHelper                     import ClusterHelper
 
 
