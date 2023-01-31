@@ -22,6 +22,44 @@ class File():
         """
         return os.path.dirname(os.path.abspath(filePath))
 
+
+    @classmethod
+    def GetAllFilesByExtension(cls, path, extension):
+        """
+        Gets a list of files that have the specified extension in the specified directory.
+
+        Parameters
+        ----------
+        path : string
+            The directory to search.
+
+        Returns
+        -------
+        : list of string.
+            List of files that have the specified extension.
+        """
+        filenames = os.listdir(path)
+        return [filename for filename in filenames if filename.endswith(extension)]
+
+
+    @classmethod
+    def GetDirectoriesInDirectory(cls, directory):
+        """
+        Gets a list of directories in the specified directory.
+
+        Parameters
+        ----------
+        directory : string
+            The path (directory) to get the sub directories from.
+
+        Returns
+        -------
+        : list of strings
+            A list of directories that are subdirectories of the input path.
+        """
+        return [x.path for x in filter(lambda x : x.is_dir(), os.scandir(directory))]
+
+
     @classmethod
     def SplitFileByNumberOfLines(cls, path, numberOfLines=40000, hasHeader=True):
         """
