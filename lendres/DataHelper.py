@@ -104,7 +104,7 @@ class DataHelper(DataHelperBase):
             raise Exception("The input file \"" + inputFile + "\" does not exist.")
 
         # Read the file in.
-        self.consoleHelper.PrintTitle("Input File: " + inputFile, )
+        self.consoleHelper.PrintTitle("Input File: " + inputFile, verboseLevel)
         self.data = pd.read_csv(inputFile, **kwargs)
 
         # Data size and shape.
@@ -612,11 +612,11 @@ class DataHelper(DataHelperBase):
         column : string
             Names of the column to sort and display.
         criteria : list of two floats or a float
-            The criteria used to determine which numbers are dropped.  See "method" for more information.
+            The criteria used to determine how many rows are returned.  See "method" for more information.
         method : string
-            How to determine which values are dropped.
-                percent - A percentage of the top and bottom values are dropped.
-                quantity - The number of values specified is dropped.
+            How to determine how many rows are returned.
+                percent - A percentage of the top and bottom values returned.
+                quantity - The number of values specified is returned.
 
         Returns
         -------
@@ -645,7 +645,7 @@ class DataHelper(DataHelperBase):
         # Create new DataFrames for the head (smallest values) and the tail (largest values).
         # Reset the index to move the index to a column and create a new, renumbered index.  This lets us combine the two DataFrames at
         # the same index and saves the indices so we can use them later.
-        # Also rename the columns to make them more meaningful.
+        # Also, rename the columns to make them more meaningful.
         head = sortedSeries.head(numberOfRows).reset_index()
         head.rename({"index" : "Smallest_Index", column : "Smallest"}, axis=1, inplace=True)
 
