@@ -29,6 +29,12 @@ class PlotHelper():
     scale                  = 1.0
     annotationScale        = 1.0
 
+    # Used to scale the output width and height for all plots.
+    # Set individual plot sizes to be set with FormatPlot(width, height).  Then, if all plots need to be resized (for example, to
+    # shrink them in Jupyter Notebook), set these parameters before plotting.
+    widthScale             = 1.0
+    heightScale            = 1.0
+
     # Standard size.
     size                   = 20
 
@@ -128,7 +134,8 @@ class PlotHelper():
 
         # Standard formating parameters.
         parameters = {
-            "figure.figsize"         : (width, height),
+            "figure.figsize"         : (width*PlotHelper.widthScale, height*PlotHelper.heightScale),
+            "figure.dpi"             : 300,
             "font.size"              : 1.2*standardSize,
             "font.weight"            : "bold",
             "figure.titlesize"       : 1.2*standardSize,
