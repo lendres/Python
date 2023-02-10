@@ -2,6 +2,8 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import numpy                                     as np
+
 import matplotlib
 import matplotlib.pyplot                         as plt
 
@@ -266,10 +268,10 @@ class PlotHelper():
         ----------
         title : string
             Title to use for the plot.
-       width : float, optional
-           The width of the figure. The default is 15.
-       height : float, optional
-           The height of the figure. The default is 5.
+        width : float, optional
+            The width of the figure. The default is 15.
+        height : float, optional
+            The height of the figure. The default is 5.
 
         Returns
         -------
@@ -289,6 +291,114 @@ class PlotHelper():
 
 
     @classmethod
+    def NewTwoAxisFigure(cls):
+        """
+        Creates a new figure that has two axes that are on top of each other.  The
+        axes have an aligned (shared) x-axis.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        (leftAxis, rightAxis) : axis array
+            The left axis and right axis, respectively.
+        """
+        # The format setup needs to be run first.
+        cls.FormatPlot()
+
+        figure      = plt.figure()
+        leftAxis    = figure.add_subplot(111)
+        rightAxis   = leftAxis.twinx()
+
+        # Reverse drawing order of axes.
+        cls.ReverseZOrderOfTwoAxisPlot(leftAxis, rightAxis)
+
+        return (figure, (leftAxis, rightAxis))
+
+
+    @classmethod
+    def ReverseZOrderOfTwoAxisPlot(cls, leftAxis, rightAxis):
+        """
+        Puts the right hand axis of a two axis plot
+
+        Parameters
+        ----------
+        leftAxis : axis
+            The axis with a y-axis on the left.
+        rightAxis : axis
+            The axis with a y-axis on the right.
+
+        Returns
+        -------
+        None.
+        """
+        # This is necessary to have the axis with the left y-axis show in front of the axis with the right y-axis.
+        # In order to do this, two things are required:
+        #    1) Reverse the z order so that the left axis is drawn above (after) the right axis.
+        #    2) Reverse the patch (background) transparency.  The patch of the axis in front (left) has to be
+        #       transparent.  We want the patch of the axis in back to be the same as before, so the alpha has
+        #       to be taken from the left and set on the right.
+        zOrderSave = rightAxis.get_zorder()
+
+        # It seems that the right axis can have an alpha of "None" and be transparent, but if we set that on
+        # the left axis, it does not produce the same result.  Therefore, if it is "None", we default to
+        # completely transparent.
+        alphaSave  = rightAxis.patch.get_alpha()
+        alphaSave  = 0 if alphaSave is None else alphaSave
+
+        rightAxis.set_zorder(leftAxis.get_zorder())
+        rightAxis.patch.set_alpha(leftAxis.patch.get_alpha())
+
+        # The z orders could have been the same, in which case the first created is on top.  We need to add
+        # one to make sure the left is on top.
+        leftAxis.set_zorder(zOrderSave+1)
+        leftAxis.patch.set_alpha(alphaSave)
+
+
+    @classmethod
+    def AlignYAxes(cls, axes, numberOfTicks=None):
+        """
+        Align the ticks (grid lines) of multiple y axes.  A new set of tick marks is computed
+        as a linear interpretation of the existing range.  The number of tick marks is the
+        same for both axes.  By setting them both to the same number of tick marks (same
+        spacing between marks), the grid lines are aligned.
+
+        Parameters
+        ----------
+        axes : list
+            list of axes objects whose yaxis ticks are to be aligned.
+
+        numberOfTicks : None or integer
+            The number of ticks to use on the axes.  If None, the number of ticks on the
+            first axis is used.
+
+        Returns
+        -------
+        tickSets (list): a list of new ticks for each axis in axis.
+        """
+        tickSets = [axis.get_yticks() for axis in axes]
+
+        # If the number of ticks was not specified, use the number of ticks on the first axis.
+        if numberOfTicks is None:
+            numberOfTicks = len(tickSets[0])
+
+        # Create a new set of tick marks that have the same number of ticks for each axis.
+        for i in range(len(tickSets)):
+            tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][-1], numberOfTicks, endpoint=True)
+
+
+        # set ticks for each axis
+        for axis, tickSet in zip(axes, tickSets):
+            axis.set_yticks(tickSet)
+
+        return tickSets
+
+
+    @classmethod
     def SetAxisToSquare(cls, axis):
         """
         Sets the axis to have a square aspect ratio.
@@ -303,6 +413,24 @@ class PlotHelper():
         None.
         """
         axis.set_aspect(1./axis.get_data_ratio())
+
+
+    @classmethod
+    def GetColorCycle(cls):
+        """
+        Gets the default Matplotlib colors in the color cycle.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        : list
+            Colors in the color cycle.
+
+        """
+        prop_cycle = plt.rcParams['axes.prop_cycle']
+        return prop_cycle.by_key()['color']
 
 
     @classmethod
