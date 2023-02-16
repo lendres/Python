@@ -398,6 +398,25 @@ class PlotHelper():
         return tickSets
 
 
+    def GetYBoundaries(self, axis):
+        """
+        Gets the minimum and maximum Y tick marks on the axis.
+
+        Parameters
+        ----------
+        axis : axis
+            Axis to extract the information from.
+
+        Returns
+        -------
+        yBoundries : list
+            The minimim and maximum tick mark as a list.
+        """
+        ticks = axis.get_yticks()
+        yBoundries = [ticks[0], ticks[-1]]
+        return yBoundries
+
+
     @classmethod
     def SetAxisToSquare(cls, axis):
         """
