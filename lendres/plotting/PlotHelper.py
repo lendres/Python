@@ -98,7 +98,8 @@ class PlotHelper():
 
         Returns
         -------
-        None.
+        : double
+            Scaled annotation size.
         """
         return cls.scale*cls.annotationScale*15
 
@@ -138,14 +139,14 @@ class PlotHelper():
         parameters = {
             "figure.figsize"         : (width*PlotHelper.widthScale, height*PlotHelper.heightScale),
             "figure.dpi"             : 300,
-            "font.size"              : 1.2*standardSize,
+            "font.size"              : 1.0*standardSize,
             "font.weight"            : "bold",
             "figure.titlesize"       : 1.2*standardSize,
             "figure.titleweight"     : "bold",
             "legend.fontsize"        : 0.8*standardSize,
             "legend.title_fontsize"  : 0.85*standardSize,
             "legend.edgecolor"       : "black",
-            "axes.titlesize"         : 1.1*standardSize,
+            "axes.titlesize"         : 1.2*standardSize,
             "axes.titleweight"       : "bold",
             "axes.labelweight"       : "bold",
             "axes.labelsize"         : standardSize,
@@ -398,7 +399,8 @@ class PlotHelper():
         return tickSets
 
 
-    def GetYBoundaries(self, axis):
+    @classmethod
+    def GetYBoundaries(cls, axis):
         """
         Gets the minimum and maximum Y tick marks on the axis.
 
