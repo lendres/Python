@@ -392,7 +392,7 @@ class PlotHelper():
 
         # The first axis is remains the same.  Those ticks should already be nicely spaced.
         tickSets[0] = np.linspace(tickSets[0][0], tickSets[0][-1], numberOfTicks, endpoint=True)
-
+        axes[0].set_ylim((tickSets[0][0], tickSets[0][-1]))
         #####
         # This method needs to be adjusted to account for different scale.  E.g. 0.2-0.8 versus 20-80.
         #####
@@ -403,6 +403,7 @@ class PlotHelper():
         for i in range(1, len(tickSets)):
             interval = np.ceil((tickSets[i][-1] - tickSets[i][0]) / numberOfIntervals)
             tickSets[i] = np.linspace(tickSets[i][0], interval*(numberOfTicks-1), numberOfTicks, endpoint=True)
+            axes[i].set_ylim((tickSets[i][0], tickSets[i][-1]))
 
         # set ticks for each axis
         for axis, tickSet in zip(axes, tickSets):
