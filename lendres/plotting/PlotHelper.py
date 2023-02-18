@@ -404,10 +404,6 @@ class PlotHelper():
             interval = np.ceil((tickSets[i][-1] - tickSets[i][0]) / numberOfIntervals)
             tickSets[i] = np.linspace(tickSets[i][0], interval*(numberOfTicks-1), numberOfTicks, endpoint=True)
 
-        print("\nRight interval:", interval)
-        print("\nTick sets:", tickSets)
-        print("\ny lim:", axes[1].get_ylim())
-
         # set ticks for each axis
         for axis, tickSet in zip(axes, tickSets):
             axis.set_yticks(tickSet)
