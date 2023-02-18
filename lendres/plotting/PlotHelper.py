@@ -312,7 +312,7 @@ class PlotHelper():
         cls.FormatPlot()
 
         figure      = plt.figure()
-        leftAxis    = figure.add_subplot(111)
+        leftAxis    = figure.gca()
         rightAxis   = leftAxis.twinx()
 
         # Reverse drawing order of axes.
@@ -383,14 +383,30 @@ class PlotHelper():
         """
         tickSets = [axis.get_yticks() for axis in axes]
 
+
         # If the number of ticks was not specified, use the number of ticks on the first axis.
         if numberOfTicks is None:
             numberOfTicks = len(tickSets[0])
 
-        # Create a new set of tick marks that have the same number of ticks for each axis.
-        for i in range(len(tickSets)):
-            tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][-1], numberOfTicks, endpoint=True)
+        numberOfIntervals = numberOfTicks - 1
 
+        # The first axis is remains the same.  Those ticks should already be nicely spaced.
+        tickSets[0] = np.linspace(tickSets[0][0], tickSets[0][-1], numberOfTicks, endpoint=True)
+
+        #####
+        # This method needs to be adjusted to account for different scale.  E.g. 0.2-0.8 versus 20-80.
+        #####
+        # Create a new set of tick marks that have the same number of ticks for each axis.
+        # We have to scale the interval between tick marks.  We want them to be nice numbers (not something
+        # like 72.2351).  To do this, we calculate a new interval by rounding up the existing spacing.  Rounding
+        # up ensures no plotted data is cut off by scaling it down slightly.
+        for i in range(1, len(tickSets)):
+            interval = np.ceil((tickSets[i][-1] - tickSets[i][0]) / numberOfIntervals)
+            tickSets[i] = np.linspace(tickSets[i][0], interval*(numberOfTicks-1), numberOfTicks, endpoint=True)
+
+        print("\nRight interval:", interval)
+        print("\nTick sets:", tickSets)
+        print("\ny lim:", axes[1].get_ylim())
 
         # set ticks for each axis
         for axis, tickSet in zip(axes, tickSets):
