@@ -402,12 +402,12 @@ class PlotHelper():
         # up ensures no plotted data is cut off by scaling it down slightly.
         for i in range(1, len(tickSets)):
             interval = np.ceil((tickSets[i][-1] - tickSets[i][0]) / numberOfIntervals)
-            tickSets[i] = np.linspace(tickSets[i][0], interval*(numberOfTicks-1), numberOfTicks, endpoint=True)
-            axes[i].set_ylim((tickSets[i][0], tickSets[i][-1]))
+            tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][0]+interval*numberOfIntervals, numberOfTicks, endpoint=True)
 
-        # set ticks for each axis
+        # Set ticks for each axis.
         for axis, tickSet in zip(axes, tickSets):
             axis.set_yticks(tickSet)
+            axis.set_ylim((tickSet[0], tickSet[-1]))
 
         return tickSets
 
@@ -517,7 +517,7 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlot(cls, saveFileName, figure=None):
+    def SavePlot(cls, saveFileName, figure=None, transparent=True):
         """
         Saves a plot with a set of default parameters.
 
@@ -527,6 +527,8 @@ class PlotHelper():
             The (optionally) path and file name to save the image to.
         figure : Figure
             The figure to save.  If "None" is specified, the current figure will be used.
+        transparent : bool
+            Specificies if the background of the plot should be transparent.
 
         Returns
         -------
@@ -550,7 +552,7 @@ class PlotHelper():
             path = os.path.join(cls.defaultOutputDirector, saveFileName)
 
         # And, finally, get down to the work.
-        figure.savefig(path, dpi=500, transparent=True, bbox_inches="tight")
+        figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
 
 
     @classmethod
