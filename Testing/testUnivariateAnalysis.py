@@ -29,7 +29,7 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
     def testCreateCountPlot(self):
         categories = ["children", "smoker"]
-        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, PlotMaker.CreateCountPlot)
+        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, PlotMaker.CreateCountFigure)
 
 
     def testCreatBoxPlot(self):

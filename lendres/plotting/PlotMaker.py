@@ -104,7 +104,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateCountPlot(cls, data, primaryColumnName, subColumnName=None, titlePrefix=None, xLabelRotation=None):
+    def CreateCountFigure(cls, data, primaryColumnName, subColumnName=None, titlePrefix=None, xLabelRotation=None):
         """
         Creates a bar chart that plots a primary category and subcategory as the  hue.
 

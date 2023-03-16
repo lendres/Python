@@ -60,8 +60,8 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testCreateBarPlot(self):
-        PlotMaker.CreateCountPlot(self.cardioDataHelper.data, "Product", xLabelRotation=45)
-        PlotMaker.CreateCountPlot(self.cardioDataHelper.data, "Product", "Gender")
+        PlotMaker.CreateCountFigure(self.cardioDataHelper.data, "Product", xLabelRotation=45)
+        PlotMaker.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender")
 
 
     def testProportionalData(self):
