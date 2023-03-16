@@ -40,6 +40,9 @@ class PlotHelper():
     # Standard size.
     size                   = 20
 
+    # Format style.  This is the default, it can be overridden in the call to "Format".
+    formatStyle            = "pyplot"
+
 
     @classmethod
     def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
@@ -127,11 +130,10 @@ class PlotHelper():
         -------
         None.
         """
-        if formatStyle is not None:
-            if formatStyle == "pyplot":
-                cls.ResetMatPlotLib()
-            if formatStyle == "seaborn":
-                cls.UseSeabornColorCodes()
+        if formatStyle is None:
+            cls._SetFormatStyle(cls.formatStyle)
+        else:
+            cls._SetFormatStyle(formatStyle)
 
         standardSize = cls.GetScaledStandardSize()
 
@@ -178,6 +180,26 @@ class PlotHelper():
             parameters.update(nonTransparentLegendParameters)
 
         plt.rcParams.update(parameters)
+
+
+    @classmethod
+    def _SetFormatStyle(cls, formatStyle):
+        """
+        Sets the formatting style used for the plots.  For example, this can be pyplot formatting or Seaborn plotting.
+
+        Parameters
+        ----------
+        formatStyle : string
+            The formatting style to use.
+
+        Returns
+        -------
+        None.
+        """
+        if formatStyle == "pyplot":
+            cls.ResetMatPlotLib()
+        elif formatStyle == "seaborn":
+            cls.UseSeabornColorCodes()
 
 
     @classmethod
@@ -316,13 +338,13 @@ class PlotHelper():
         rightAxis   = leftAxis.twinx()
 
         # Reverse drawing order of axes.
-        cls.ReverseZOrderOfTwoAxisPlot(leftAxis, rightAxis)
+        cls.ReverseZOrderOfTwoAxisFigure(leftAxis, rightAxis)
 
         return (figure, (leftAxis, rightAxis))
 
 
     @classmethod
-    def ReverseZOrderOfTwoAxisPlot(cls, leftAxis, rightAxis):
+    def ReverseZOrderOfTwoAxisFigure(cls, leftAxis, rightAxis):
         """
         Puts the right hand axis of a two axis plot
 
@@ -400,8 +422,11 @@ class PlotHelper():
         # We have to scale the interval between tick marks.  We want them to be nice numbers (not something
         # like 72.2351).  To do this, we calculate a new interval by rounding up the existing spacing.  Rounding
         # up ensures no plotted data is cut off by scaling it down slightly.
+
         for i in range(1, len(tickSets)):
-            interval = np.ceil((tickSets[i][-1] - tickSets[i][0]) / numberOfIntervals)
+            span     = (tickSets[i][-1] - tickSets[i][0])
+            #interval = np.ceil(100 / numberOfIntervals) / 100 * span
+            interval = np.ceil(span / numberOfIntervals)
             tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][0]+interval*numberOfIntervals, numberOfTicks, endpoint=True)
 
         # Set ticks for each axis.
@@ -410,6 +435,16 @@ class PlotHelper():
             axis.set_ylim((tickSet[0], tickSet[-1]))
 
         return tickSets
+
+
+    @classmethod
+    def SetAxisLimits(cls, axis, limits):
+        tickSet = axis.get_yticks()
+        numberOfTicks = len(tickSet)
+
+        tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
+        axis.set_yticks(tickSet)
+        axis.set_ylim((tickSet[0], tickSet[-1]))
 
 
     @classmethod

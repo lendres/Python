@@ -17,6 +17,91 @@ class PlotMaker():
     # Color map to use for plots.
     colorMap      = None
 
+    @classmethod
+    def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xAxisLabe=None, yAxisLabel=None):
+        # Must be run before creating figure or plotting data.
+        PlotHelper.FormatPlot()
+
+        figure = plt.gcf()
+        axis   = plt.gca()
+
+
+        # Handle optional argument for y labels.  If none exist, create defaults in the type of "Data Set 1", "Data Set 2" ...
+        if yDataLabels is None:
+            yDataLabels = []
+            for i in range(1, len(yData)+1):
+                yDataLabels.append("Data Set "+str(i))
+
+
+        # Handle optional xData.  If none exist, create a set of integers from 1...N where N is the length of the y data.
+        if xData is None:
+            xData = range(1, len(yData[0])+1)
+
+        # Plot all the data sets.
+        for dataSet, label in zip(yData, yDataLabels):
+            axis.plot(xData, dataSet, label=label)
+
+        # Label the plot.
+        PlotHelper.Label(axis, title=title, xLabel=xAxisLabe, yLabel=yAxisLabel)
+
+        axis.grid()
+        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axis.transAxes)
+        plt.show()
+
+        return figure, axis
+
+
+    @classmethod
+    def NewTwoAxesPlot(cls, data, xAxisColumnName, leftAxisColumnNames, rightAxisColumnNames, colorCycle=None, **kwargs):
+        """
+        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
+        of the plot.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data.
+        xAxisColumnName : string
+            Independent variable column in the data.
+        leftAxisColumnNames : list of strings
+            Column names of the data to plot on the left y-axis.
+        rightAxisColumnNames : list of strings
+            Column names of the data to plot on the right y-axis.
+        colorCycle : array like, optional
+            The colors to use for the plotted lines. The default is None.
+        **kwargs : keyword arguments
+            These arguments are passed to the plot function.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        axis : tuple of matplotlib.pyplot.axis
+            The axes of the plot.
+        """
+        # Creates a figure with two axes having an aligned (shared) x-axis.
+        figure, axes = PlotHelper.NewTwoAxisFigure()
+        x            = data[xAxisColumnName]
+
+        # The colors are needed because each axis wants to use it's own color cycle resulting in duplication of
+        # colors on the two axis.  Therefore, we have to manually specify the colors so they don't repeat.
+        if colorCycle is None:
+            colorCycle = PlotHelper.GetColorCycle()
+        color  = 0
+
+        for column in rightAxisColumnNames:
+            axes[1].plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
+            color += 1
+
+        for column in leftAxisColumnNames:
+            axes[0].plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
+            color += 1
+
+        PlotHelper.AlignYAxes(axes)
+        axes[0].grid()
+
+        return figure, axes
+
 
     @classmethod
     def CreateCountPlot(cls, data, primaryColumnName, subColumnName=None, titlePrefix=None, xLabelRotation=None):
@@ -49,7 +134,7 @@ class PlotMaker():
         figure = plt.gcf()
 
         # Label the perentages of each column.
-        cls.LabelPercentagesOnCountPlot(axis)
+        cls.LabelPercentagesOnColumnsOfBarGraph(axis)
 
         # If adding a hue, set the legend to run horizontally.
         if subColumnName is not None:
@@ -70,9 +155,9 @@ class PlotMaker():
 
 
     @classmethod
-    def LabelPercentagesOnCountPlot(cls, axis):
+    def LabelPercentagesOnColumnsOfBarGraph(cls, axis):
         """
-        Plot the percentages of each entry of a column.
+        Labels each column with a percentage of the total sum of all columns.
 
         Parameters
         ----------
