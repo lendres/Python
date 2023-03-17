@@ -115,7 +115,7 @@ class UnivariateAnalysis():
 
 
     @classmethod
-    def CreateBoxAndHistogramPlot(cls, data, column):
+    def CreateBoxAndHistogramPlot(cls, data, column, title=None):
         """
         Creates a new figure that has a box plot and histogram for a single variable analysis.
 
@@ -133,7 +133,10 @@ class UnivariateAnalysis():
         figure : matplotlib.figure.Figure
             The newly created figure.
         """
-        figure, (boxAxis, histogramAxis) = PlotHelper.NewTopAndBottomAxisFigure("Column " + "\"" + column + "\"")
+        if title is None:
+            title = "Column " + "\"" + column + "\""
+
+        figure, (boxAxis, histogramAxis) = PlotHelper.NewTopAndBottomAxisFigure(title)
 
         cls.PlotBoxPlot(boxAxis, data, column, autoLabelX=False)
         cls.PlotHistogram(histogramAxis, data, column)
