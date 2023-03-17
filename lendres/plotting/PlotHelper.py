@@ -314,10 +314,12 @@ class PlotHelper():
 
 
     @classmethod
-    def NewTwoAxisFigure(cls):
+    def NewMultiAxisFigure(cls, numberOfAxes):
         """
-        Creates a new figure that has two axes that are on top of each other.  The
+        Creates a new figure that has multiple axes that are on top of each other.  The
         axes have an aligned (shared) x-axis.
+
+        The first axis will be the left axis.  The remaining axes are stacked on the right side.
 
         Parameters
         ----------
@@ -327,33 +329,39 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxis, rightAxis) : axis array
-            The left axis and right axis, respectively.
+        (leftAxis, rightAxis1, rightAxis2, ..., rightAxisN) : axis list
+            The left axis and all the right axes.
         """
         # The format setup needs to be run first.
         cls.FormatPlot()
 
         figure      = plt.figure()
-        leftAxis    = figure.gca()
-        rightAxis   = leftAxis.twinx()
+        axes        = []
+        axes.append(figure.gca())
+
+        for i in range(1, numberOfAxes):
+            axes.append(axes[0].twinx())
+            #axes[i].splines["right"].set_position(("outward", 60))
+            offset = 1.0 + (i-1)*0.1
+            axes[i].spines["right"].set_position(("axes", offset))
+
 
         # Reverse drawing order of axes.
-        cls.ReverseZOrderOfTwoAxisFigure(leftAxis, rightAxis)
+        cls.SetZOrderOfMupleAxisFigure(axes)
 
-        return (figure, (leftAxis, rightAxis))
+        return (figure, axes)
 
 
     @classmethod
-    def ReverseZOrderOfTwoAxisFigure(cls, leftAxis, rightAxis):
+    def SetZOrderOfMupleAxisFigure(cls, axes):
         """
         Puts the right hand axis of a two axis plot
 
         Parameters
         ----------
-        leftAxis : axis
-            The axis with a y-axis on the left.
-        rightAxis : axis
-            The axis with a y-axis on the right.
+        axes : axis
+            The axes.  The axis with a y-axis on the left is in axes[0].  The axes with the y-axis on
+            the right are in axes[0] ... axes[N].
 
         Returns
         -------
@@ -365,21 +373,24 @@ class PlotHelper():
         #    2) Reverse the patch (background) transparency.  The patch of the axis in front (left) has to be
         #       transparent.  We want the patch of the axis in back to be the same as before, so the alpha has
         #       to be taken from the left and set on the right.
-        zOrderSave = rightAxis.get_zorder()
+        # We use axes[-1] because it is the last axis on the right side and should be the highest in the order.  This
+        # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
+        zOrderSave = axes[-1].get_zorder()
 
         # It seems that the right axis can have an alpha of "None" and be transparent, but if we set that on
         # the left axis, it does not produce the same result.  Therefore, if it is "None", we default to
         # completely transparent.
-        alphaSave  = rightAxis.patch.get_alpha()
+        alphaSave  = axes[1].patch.get_alpha()
         alphaSave  = 0 if alphaSave is None else alphaSave
 
-        rightAxis.set_zorder(leftAxis.get_zorder())
-        rightAxis.patch.set_alpha(leftAxis.patch.get_alpha())
+        for i in range(1, len(axes)):
+            axes[i].set_zorder(axes[0].get_zorder()+i)
+            axes[i].patch.set_alpha(axes[0].patch.get_alpha())
 
         # The z orders could have been the same, in which case the first created is on top.  We need to add
         # one to make sure the left is on top.
-        leftAxis.set_zorder(zOrderSave+1)
-        leftAxis.patch.set_alpha(alphaSave)
+        axes[0].set_zorder(zOrderSave+1)
+        axes[0].patch.set_alpha(alphaSave)
 
 
     @classmethod

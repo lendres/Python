@@ -52,7 +52,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewTwoAxesPlot(cls, data, xAxisColumnName, leftAxisColumnNames, rightAxisColumnNames, colorCycle=None, **kwargs):
+    def NewMultiAxesPlot(cls, data, xAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -80,7 +80,7 @@ class PlotMaker():
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axes = PlotHelper.NewTwoAxisFigure()
+        figure, axes = PlotHelper.NewMultiAxisFigure(len(axesColumnNames))
         x            = data[xAxisColumnName]
 
         # The colors are needed because each axis wants to use it's own color cycle resulting in duplication of
@@ -89,13 +89,10 @@ class PlotMaker():
             colorCycle = PlotHelper.GetColorCycle()
         color  = 0
 
-        for column in rightAxisColumnNames:
-            axes[1].plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
-            color += 1
-
-        for column in leftAxisColumnNames:
-            axes[0].plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
-            color += 1
+        for axisColumnNames, axis in zip(axesColumnNames, axes):
+            for column in axisColumnNames:
+                axis.plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
+                color += 1
 
         PlotHelper.AlignYAxes(axes)
         axes[0].grid()
