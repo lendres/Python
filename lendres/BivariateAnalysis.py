@@ -30,7 +30,7 @@ class BivariateAnalysis():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : matplotlib.pyplot.axis
+        axis : matplotlib.axes.Axes
             The axis of the plot.
         """
 
@@ -128,7 +128,7 @@ class BivariateAnalysis():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : matplotlib.pyplot.axis
+        axis : matplotlib.axes.Axes
             The axis of the plot.
         """
         if title == None:
