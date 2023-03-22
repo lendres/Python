@@ -42,6 +42,7 @@ class PlotHelper():
 
     # Format style.  This is the default, it can be overridden in the call to "Format".
     formatStyle            = "pyplot"
+    colorStyle             = "seaborn"
 
 
     @classmethod
@@ -130,10 +131,7 @@ class PlotHelper():
         -------
         None.
         """
-        if formatStyle is None:
-            cls._SetFormatStyle(cls.formatStyle)
-        else:
-            cls._SetFormatStyle(formatStyle)
+        cls._SetFormatStyle(formatStyle)
 
         standardSize = cls.GetScaledStandardSize()
 
@@ -183,7 +181,7 @@ class PlotHelper():
 
 
     @classmethod
-    def _SetFormatStyle(cls, formatStyle):
+    def _SetFormatStyle(cls, formatStyle=None):
         """
         Sets the formatting style used for the plots.  For example, this can be pyplot formatting or Seaborn plotting.
 
@@ -196,6 +194,9 @@ class PlotHelper():
         -------
         None.
         """
+        if formatStyle is None:
+            formatStyle = cls.formatStyle
+
         if formatStyle == "pyplot":
             cls.ResetMatPlotLib()
         elif formatStyle == "seaborn":
@@ -250,7 +251,6 @@ class PlotHelper():
             plt.xticks(rotation=xLabelRotation, ha="right")
 
 
-
     @classmethod
     def NewTopAndBottomAxisFigure(cls, title, topPercent=0.25):
         """
@@ -275,7 +275,7 @@ class PlotHelper():
         # The format setup needs to be run first.
         cls.FormatPlot()
 
-        figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (topPercent, 1-topPercent)})
+        figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios" : (topPercent, 1-topPercent)})
 
         figure.suptitle(title)
 
@@ -449,9 +449,23 @@ class PlotHelper():
 
 
     @classmethod
-    def SetAxisLimits(cls, axis, limits):
-        tickSet = axis.get_yticks()
-        numberOfTicks = len(tickSet)
+    def SetXAxisLimits(cls, axis, limits, numberOfTicks=None):
+        tickSet       = axis.get_xticks()
+
+        if numberOfTicks is None:
+            numberOfTicks = len(tickSet)
+
+        tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
+        axis.set_xticks(tickSet)
+        axis.set_xlim((tickSet[0], tickSet[-1]))
+
+
+    @classmethod
+    def SetYAxisLimits(cls, axis, limits, numberOfTicks=None):
+        tickSet       = axis.get_yticks()
+
+        if numberOfTicks is None:
+            numberOfTicks = len(tickSet)
 
         tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
         axis.set_yticks(tickSet)
@@ -496,7 +510,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetColorCycle(cls):
+    def GetColorCycle(cls, colorStyle=None):
         """
         Gets the default Matplotlib colors in the color cycle.
 
@@ -509,8 +523,29 @@ class PlotHelper():
             Colors in the color cycle.
 
         """
-        prop_cycle = plt.rcParams['axes.prop_cycle']
-        return prop_cycle.by_key()['color']
+        if colorStyle is None:
+            colorStyle = cls.colorStyle
+
+        if colorStyle == "pyplot":
+            prop_cycle = plt.rcParams['axes.prop_cycle']
+            colors     = prop_cycle.by_key()['color']
+        elif colorStyle == "seaborn":
+            colors = [(0.2980392156862745,  0.4470588235294118,  0.6901960784313725),
+                      (0.8666666666666667,  0.5176470588235295,  0.3215686274509804),
+                      (0.3333333333333333,  0.6588235294117647,  0.40784313725490196),
+                      (0.7686274509803922,  0.3058823529411765,  0.3215686274509804),
+                      (0.5058823529411764,  0.4470588235294118,  0.7019607843137254),
+                      (0.5764705882352941,  0.47058823529411764, 0.3764705882352941),
+                      (0.8549019607843137,  0.5450980392156862,  0.7647058823529411),
+                      (0.5490196078431373,  0.5490196078431373,  0.5490196078431373),
+                      (0.8,                 0.7254901960784313,  0.4549019607843137),
+                      (0.39215686274509803, 0.7098039215686275,  0.803921568627451)]
+            #colors = sns.color_palette()
+
+        else:
+            raise Exception("Unkown color style requested.\nRequested style: "+colorStyle)
+
+        return colors
 
 
     @classmethod
