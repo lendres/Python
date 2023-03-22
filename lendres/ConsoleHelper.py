@@ -348,6 +348,24 @@ class ConsoleHelper():
                 raise Exception("The argument specified for clean up is invalid.")
 
 
+    def FormatBinaryAsString(x, n=5):
+        """
+        Get the binary representation of x.
+
+        Parameters
+        ----------
+        x : int
+        n : int
+            Minimum number of digits. If x needs less digits in binary, the rest
+            is filled with zeros.
+
+        Returns
+        -------
+        str
+        """
+        return "{0:b}".format(x).zfill(n)
+
+
     def FormatProbabilityForOutput(self, probability, decimalPlaces=3):
         """
         Formats and prints a probability.  Displays it as both a fraction and a percentage.
