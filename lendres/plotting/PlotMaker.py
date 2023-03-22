@@ -63,11 +63,12 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        leftAxisColumnNames : list of strings
-            Column names of the data to plot on the left y-axis.
-        rightAxisColumnNames : list of strings
-            Column names of the data to plot on the right y-axis.
-        colorCycle : array like, optional
+        axesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
+            plotted on the second right axis.
+       colorCycle : array like, optional
             The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.
@@ -179,7 +180,7 @@ class PlotMaker():
             # Find the center of the column/patch on the x-axis.
             x = patch.get_x() + patch.get_width()/2
 
-            # Hieght of the column/patch.  Add a little so it does not touch the top of the column.
+            # Height of the column/patch.  Add a little so it does not touch the top of the column.
             y = patch.get_y() + patch.get_height() + 0.5
 
             # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
