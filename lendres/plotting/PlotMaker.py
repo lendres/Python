@@ -52,7 +52,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiAxesPlot(cls, data, xAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
+    def NewMultiXAxesPlot(cls, data, yAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -81,24 +81,100 @@ class PlotMaker():
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axes = PlotHelper.NewMultiYAxisFigure(len(axesColumnNames))
-        x            = data[xAxisColumnName]
+        figure, axes    = PlotHelper.NewMultiXAxesFigure(len(axesColumnNames))
 
+        cls.MultiAxesPlot(axes, data, yAxisColumnName, axesColumnNames, "y", colorCycle=None, **kwargs)
+
+        #PlotHelper.AlignXAxes(axes)
+
+        return figure, axes
+
+
+    @classmethod
+    def NewMultiYAxesPlot(cls, data, xAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
+        """
+        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
+        of the plot.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data.
+        xAxisColumnName : string
+            Independent variable column in the data.
+        axesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
+            plotted on the second right axis.
+       colorCycle : array like, optional
+            The colors to use for the plotted lines. The default is None.
+        **kwargs : keyword arguments
+            These arguments are passed to the plot function.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        axis : tuple of matplotlib.pyplot.axis
+            The axes of the plot.
+        """
+        # Creates a figure with two axes having an aligned (shared) x-axis.
+        figure, axes    = PlotHelper.NewMultiYAxesFigure(len(axesColumnNames))
+
+        cls.MultiAxesPlot(axes, data, xAxisColumnName, axesColumnNames, "x", colorCycle=None, **kwargs)
+
+        PlotHelper.AlignYAxes(axes)
+
+        return figure, axes
+
+
+    @classmethod
+    def MultiAxesPlot(cls, axes, data, independentColumnName, axesColumnNames, independentAxis, colorCycle=None, **kwargs):
+        """
+        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
+        of the plot.
+
+        Parameters
+        ----------
+        axes : array like
+            A an array of axes to plot on.  There should be one axis for each grouping (list/array) in axesColumnNames.
+        data : pandas.DataFrame
+            The data.
+        independentColumnName : string
+            Independent variable column in the data.
+        axesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
+            plotted on the second right axis.
+       colorCycle : array like, optional
+            The colors to use for the plotted lines. The default is None.
+        **kwargs : keyword arguments
+            These arguments are passed to the plot function.
+
+        Returns
+        -------
+        None.
+        """
         # The colors are needed because each axis wants to use it's own color cycle resulting in duplication of
         # colors on the two axis.  Therefore, we have to manually specify the colors so they don't repeat.
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
         color  = 0
 
+        independentData = data[independentColumnName]
+
         for axisColumnNames, axis in zip(axesColumnNames, axes):
             for column in axisColumnNames:
-                axis.plot(x, data[column], color=colorCycle[color], label=column, **kwargs)
+                if independentAxis == "x":
+                    axis.plot(independentData, data[column], color=colorCycle[color], label=column, **kwargs)
+                else:
+                    pass
+                    axis.plot(data[column], independentData, color=colorCycle[color], label=column, **kwargs)
                 color += 1
 
-        PlotHelper.AlignYAxes(axes)
         axes[0].grid()
-
-        return figure, axes
 
 
     @classmethod

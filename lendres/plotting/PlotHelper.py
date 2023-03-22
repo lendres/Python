@@ -314,7 +314,43 @@ class PlotHelper():
 
 
     @classmethod
-    def NewMultiYAxisFigure(cls, numberOfAxes):
+    def NewMultiXAxesFigure(cls, numberOfAxes):
+        """
+        Creates a new figure that has multiple axes that are on top of each other.  The
+        axes have an aligned (shared) y-axis.
+
+        Parameters
+        ----------
+        numberOfAxes : int
+            The number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        (axis1, axis2, ..., axisN) : axis list
+            The axes.
+        """
+        # The format setup needs to be run first.
+        cls.FormatPlot()
+
+        figure      = plt.figure()
+        axes        = [figure.gca()]
+
+        for i in range(1, numberOfAxes):
+            axes.append(axes[0].twiny())
+            offset = 1.0 + i*0.13
+            axes[i].spines["top"].set_position(("axes", offset))
+
+        # Move the first axis ticks and label to the top.
+        axes[0].xaxis.tick_top()
+        axes[0].xaxis.set_label_position('top')
+
+        return (figure, axes)
+
+
+    @classmethod
+    def NewMultiYAxesFigure(cls, numberOfAxes):
         """
         Creates a new figure that has multiple axes that are on top of each other.  The
         axes have an aligned (shared) x-axis.
@@ -323,7 +359,8 @@ class PlotHelper():
 
         Parameters
         ----------
-        None.
+        numberOfAxes : int
+            The number of axes to create.
 
         Returns
         -------
@@ -336,8 +373,7 @@ class PlotHelper():
         cls.FormatPlot()
 
         figure      = plt.figure()
-        axes        = []
-        axes.append(figure.gca())
+        axes        = [figure.gca()]
 
         for i in range(1, numberOfAxes):
             axes.append(axes[0].twinx())
@@ -345,14 +381,14 @@ class PlotHelper():
             offset = 1.0 + (i-1)*0.1
             axes[i].spines["right"].set_position(("axes", offset))
 
-        # Reverse drawing order of axes.
-        cls.SetZOrderOfMupleAxisFigure(axes)
+        # Change the drawing order of axes so the first one created is on top.
+        cls.SetZOrderOfMultipleAxisFigure(axes)
 
         return (figure, axes)
 
 
     @classmethod
-    def SetZOrderOfMupleAxisFigure(cls, axes):
+    def SetZOrderOfMultipleAxisFigure(cls, axes):
         """
         Puts the right hand axis of a two axis plot
 
@@ -393,6 +429,31 @@ class PlotHelper():
 
 
     @classmethod
+    def AlignXAxes(cls, axes, numberOfTicks=None):
+        """
+        Align the ticks (grid lines) of multiple x axes.  A new set of tick marks is computed
+        as a linear interpretation of the existing range.  The number of tick marks is the
+        same for both axes.  By setting them both to the same number of tick marks (same
+        spacing between marks), the grid lines are aligned.
+
+        Parameters
+        ----------
+        axes : list
+            list of axes objects whose yaxis ticks are to be aligned.
+
+        numberOfTicks : None or integer
+            The number of ticks to use on the axes.  If None, the number of ticks on the
+            first axis is used.
+
+        Returns
+        -------
+        tickSets : list
+            A list of new ticks for each axis in axis.
+        """
+        cls.AlignAxes(axes, "x", numberOfTicks)
+
+
+    @classmethod
     def AlignYAxes(cls, axes, numberOfTicks=None):
         """
         Align the ticks (grid lines) of multiple y axes.  A new set of tick marks is computed
@@ -411,10 +472,41 @@ class PlotHelper():
 
         Returns
         -------
-        tickSets (list): a list of new ticks for each axis in axis.
+        tickSets : list
+            A list of new ticks for each axis in axis.
         """
-        tickSets = [axis.get_yticks() for axis in axes]
+        cls.AlignAxes(axes, "y", numberOfTicks)
 
+    @classmethod
+    def AlignAxes(cls, axes, which, numberOfTicks=None):
+        """
+        Align the ticks (grid lines) of multiple y axes.  A new set of tick marks is computed
+        as a linear interpretation of the existing range.  The number of tick marks is the
+        same for both axes.  By setting them both to the same number of tick marks (same
+        spacing between marks), the grid lines are aligned.
+
+        Parameters
+        ----------
+        axes : list
+            list of axes objects whose yaxis ticks are to be aligned.
+        which : string
+            Which set of axes to align.  Options are "x" or "y".
+
+        numberOfTicks : None or integer
+            The number of ticks to use on the axes.  If None, the number of ticks on the
+            first axis is used.
+
+        Returns
+        -------
+        tickSets : list
+            A list of new ticks for each axis in axis.
+        """
+        if which == "x":
+            tickSets = [axis.get_xticks() for axis in axes]
+        elif which == "y":
+            tickSets = [axis.get_yticks() for axis in axes]
+        else:
+            raise Exception("Invalid direction specified in \"AlignAxes\"")
 
         # If the number of ticks was not specified, use the number of ticks on the first axis.
         if numberOfTicks is None:
@@ -432,17 +524,18 @@ class PlotHelper():
         # We have to scale the interval between tick marks.  We want them to be nice numbers (not something
         # like 72.2351).  To do this, we calculate a new interval by rounding up the existing spacing.  Rounding
         # up ensures no plotted data is cut off by scaling it down slightly.
-
         for i in range(1, len(tickSets)):
             span     = (tickSets[i][-1] - tickSets[i][0])
-            #interval = np.ceil(100 / numberOfIntervals) / 100 * span
             interval = np.ceil(span / numberOfIntervals)
             tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][0]+interval*numberOfIntervals, numberOfTicks, endpoint=True)
 
         # Set ticks for each axis.
-        for axis, tickSet in zip(axes, tickSets):
-            axis.set_yticks(tickSet)
-            axis.set_ylim((tickSet[0], tickSet[-1]))
+        if which == "x":
+            for axis, tickSet in zip(axes, tickSets):
+                axis.set(xticks=tickSet, xlim=(tickSet[0], tickSet[-1]))
+        elif which == "y":
+            for axis, tickSet in zip(axes, tickSets):
+                axis.set(yticks=tickSet, ylim=(tickSet[0], tickSet[-1]))
 
         return tickSets
 
@@ -486,7 +579,7 @@ class PlotHelper():
         yBoundries : list
             The minimim and maximum tick mark as a list.
         """
-        ticks = axis.get_yticks()
+        ticks      = axis.get_yticks()
         yBoundries = [ticks[0], ticks[-1]]
         return yBoundries
 
