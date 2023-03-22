@@ -334,12 +334,12 @@ class PlotHelper():
         # The format setup needs to be run first.
         cls.FormatPlot()
 
-        figure      = plt.figure()
-        axes        = [figure.gca()]
+        figure = plt.figure()
+        axes   = [figure.gca()]
 
         for i in range(1, numberOfAxes):
             axes.append(axes[0].twiny())
-            offset = 1.0 + i*0.13
+            offset = 1.0 + i*0.12
             axes[i].spines["top"].set_position(("axes", offset))
 
         # Move the first axis ticks and label to the top.
@@ -372,8 +372,8 @@ class PlotHelper():
         # The format setup needs to be run first.
         cls.FormatPlot()
 
-        figure      = plt.figure()
-        axes        = [figure.gca()]
+        figure = plt.figure()
+        axes   = [figure.gca()]
 
         for i in range(1, numberOfAxes):
             axes.append(axes[0].twinx())
@@ -541,7 +541,41 @@ class PlotHelper():
 
 
     @classmethod
+    def ReverseYAxisLimits(cls, axis):
+        """
+        Switches the upper and lower limits so that the highest value is on top.
+
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis change the limits on.
+
+        Returns
+        -------
+        None.
+        """
+        tickSet = axis.get_yticks()
+        axis.set_ylim((tickSet[-1], tickSet[0]))
+
+
+    @classmethod
     def SetXAxisLimits(cls, axis, limits, numberOfTicks=None):
+        """
+        Sets the x-axis limits.  Allows specifying the number of ticks to use.
+
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis change the limits on.
+        limits : array like of two values
+            The lower and upper limits of the axis.
+        numberOfTicks : int, optional
+            The number of ticks (labeled points) to show. The default is None.
+
+        Returns
+        -------
+        None.
+        """
         tickSet       = axis.get_xticks()
 
         if numberOfTicks is None:
@@ -554,6 +588,22 @@ class PlotHelper():
 
     @classmethod
     def SetYAxisLimits(cls, axis, limits, numberOfTicks=None):
+        """
+        Sets the y-axis limits.  Allows specifying the number of ticks to use.
+
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis change the limits on.
+        limits : array like of two values
+            The lower and upper limits of the axis.
+        numberOfTicks : int, optional
+            The number of ticks (labeled points) to show. The default is None.
+
+        Returns
+        -------
+        None.
+        """
         tickSet       = axis.get_yticks()
 
         if numberOfTicks is None:
