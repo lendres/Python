@@ -21,28 +21,28 @@ class PlotHelper():
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
-    defaultOutputDirector  = "./Output/"
+    defaultOutputDirectory      = "./Output/"
 
     #If true, the image is saved to a subfolder or the current folder called "Output."  If false, the path is assumed to be part
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
-    useDefaultOutputFolder = True
+    usedefaultOutputDirectoryy   = True
 
     # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
-    scale                  = 1.0
-    annotationScale        = 1.0
+    scale                       = 1.0
+    annotationScale             = 1.0
 
     # Used to scale the output width and height for all plots.
     # Set individual plot sizes to be set with FormatPlot(width, height).  Then, if all plots need to be resized (for example, to
     # shrink them in Jupyter Notebook), set these parameters before plotting.
-    widthScale             = 1.0
-    heightScale            = 1.0
+    widthScale                  = 1.0
+    heightScale                 = 1.0
 
     # Standard size.
-    size                   = 20
+    size                        = 20
 
     # Format style.  This is the default, it can be overridden in the call to "Format".
-    formatStyle            = "pyplot"
-    colorStyle             = "seaborn"
+    formatStyle                 = "pyplot"
+    colorStyle                  = "seaborn"
 
 
     @classmethod
@@ -339,8 +339,17 @@ class PlotHelper():
 
         for i in range(1, numberOfAxes):
             axes.append(axes[0].twiny())
-            offset = 1.0 + i*0.12
-            axes[i].spines["top"].set_position(("axes", offset))
+
+            # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
+            # axes[i].xaxis.label.get_size()
+            # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
+            # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
+            s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
+            s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
+            m      = 4/3.0*(s1-s2)          # Slope.
+            y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
+            offset = m * PlotHelper.scale + y0
+            axes[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.
         axes[0].xaxis.tick_top()
@@ -377,7 +386,6 @@ class PlotHelper():
 
         for i in range(1, numberOfAxes):
             axes.append(axes[0].twinx())
-            #axes[i].splines["right"].set_position(("outward", 60))
             offset = 1.0 + (i-1)*0.1
             axes[i].spines["right"].set_position(("axes", offset))
 
@@ -710,7 +718,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetDefaultOutputDirectory(cls):
+    def GetdefaultOutputDirectoryy(cls):
         """
         Gets the default output location for saving figures.
 
@@ -719,7 +727,7 @@ class PlotHelper():
         : string
             The default saving location for figures.
         """
-        return os.path.join(os.getcwd(), cls.defaultOutputDirector)
+        return os.path.join(os.getcwd(), cls.defaultOutputDirectory)
 
 
     @classmethod
@@ -735,8 +743,8 @@ class PlotHelper():
         -------
         None.
         """
-        if os.path.isdir(cls.defaultOutputDirector):
-            shutil.rmtree(cls.defaultOutputDirector)
+        if os.path.isdir(cls.defaultOutputDirectory):
+            shutil.rmtree(cls.defaultOutputDirectory)
 
 
     @classmethod
@@ -765,14 +773,14 @@ class PlotHelper():
 
         # If the default ouptput folder is specified, we need to make sure it exists and update
         # the save path to account for it.
-        if cls.useDefaultOutputFolder:
+        if cls.usedefaultOutputDirectoryy:
 
             # Directory needs to exist.
-            if not os.path.isdir(cls.defaultOutputDirector):
-                os.mkdir(cls.defaultOutputDirector)
+            if not os.path.isdir(cls.defaultOutputDirectory):
+                os.mkdir(cls.defaultOutputDirectory)
 
             # Update path.
-            path = os.path.join(cls.defaultOutputDirector, saveFileName)
+            path = os.path.join(cls.defaultOutputDirectory, saveFileName)
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
