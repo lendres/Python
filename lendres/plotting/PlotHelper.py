@@ -314,7 +314,7 @@ class PlotHelper():
 
 
     @classmethod
-    def NewMultiAxisFigure(cls, numberOfAxes):
+    def NewMultiYAxisFigure(cls, numberOfAxes):
         """
         Creates a new figure that has multiple axes that are on top of each other.  The
         axes have an aligned (shared) x-axis.
@@ -344,7 +344,6 @@ class PlotHelper():
             #axes[i].splines["right"].set_position(("outward", 60))
             offset = 1.0 + (i-1)*0.1
             axes[i].spines["right"].set_position(("axes", offset))
-
 
         # Reverse drawing order of axes.
         cls.SetZOrderOfMupleAxisFigure(axes)

@@ -81,7 +81,7 @@ class PlotMaker():
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axes = PlotHelper.NewMultiAxisFigure(len(axesColumnNames))
+        figure, axes = PlotHelper.NewMultiYAxisFigure(len(axesColumnNames))
         x            = data[xAxisColumnName]
 
         # The colors are needed because each axis wants to use it's own color cycle resulting in duplication of
