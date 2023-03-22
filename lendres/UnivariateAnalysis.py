@@ -31,9 +31,7 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
-        params = {"figure.figsize" : (PlotHelper.scale*10, PlotHelper.scale*1.25)}
-        plt.rcParams.update(params)
+        PlotHelper.FormatPlot(width=10, height=1.25)
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axis = plt.gca()
@@ -277,7 +275,6 @@ class UnivariateAnalysis():
         # Create figure and a row of axes.
         topPercent   = 0.20
         heightRatios = [topPercent, 1-topPercent] * numberOfSamples
-        # "hspace" : 0.4}
         gridspec     = {"height_ratios" : heightRatios}
         figure, axes = plt.subplots(2*numberOfSamples, 1, sharex=True, gridspec_kw=gridspec)
 
