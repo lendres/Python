@@ -85,7 +85,7 @@ class PlotMaker():
 
         cls.MultiAxesPlot(axes, data, yAxisColumnName, axesColumnNames, "y", colorCycle=None, **kwargs)
 
-        #PlotHelper.AlignXAxes(axes)
+        PlotHelper.AlignXAxes(axes)
 
         return figure, axes
 
