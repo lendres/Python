@@ -77,7 +77,7 @@ class PlotMaker():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : tuple of matplotlib.pyplot.axis
+        axes : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
@@ -116,7 +116,7 @@ class PlotMaker():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : tuple of matplotlib.pyplot.axis
+        axes : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
@@ -345,7 +345,7 @@ class PlotMaker():
         -------
         figure : matplotlib.pyplot.figure
             The newly created figure.
-        axis : matplotlib.pyplot.axis
+        axis : matplotlib.axes.Axes
             The axis of the plot.
         """
         # Must be run before creating figure or plotting data.
