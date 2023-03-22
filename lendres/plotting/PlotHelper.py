@@ -46,6 +46,11 @@ class PlotHelper():
 
 
     @classmethod
+    def PushSettings(cls, formatSettings):
+        pass
+
+
+    @classmethod
     def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
         """
         Creates a new figure for every entry in the list of columns.
@@ -131,6 +136,7 @@ class PlotHelper():
         -------
         None.
         """
+        cls.ResetMatPlotLib()
         cls._SetFormatStyle(formatStyle)
 
         standardSize = cls.GetScaledStandardSize()
@@ -198,7 +204,7 @@ class PlotHelper():
             formatStyle = cls.formatStyle
 
         if formatStyle == "pyplot":
-            cls.ResetMatPlotLib()
+            pass
         elif formatStyle == "seaborn":
             cls.UseSeabornColorCodes()
 
