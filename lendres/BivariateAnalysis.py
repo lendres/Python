@@ -7,6 +7,7 @@ import matplotlib.pyplot                         as plt
 import seaborn                                   as sns
 
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 
 
 class BivariateAnalysis():
@@ -293,7 +294,7 @@ class BivariateAnalysis():
         axes = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
-        PlotHelper.Label(axes, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
 
         figure = plt.gcf()
         plt.show()
@@ -336,7 +337,7 @@ class BivariateAnalysis():
         PlotHelper.FormatPlot(width=6*numberOfUniqueValues, height=6)
 
         # Create figure and a row of axes.
-        figure, axes = plt.subplots(1, numberOfUniqueValues)
+        figure, axeses = plt.subplots(1, numberOfUniqueValues)
 
         for i in range(numberOfUniqueValues):
             sns.histplot(
@@ -383,7 +384,7 @@ class BivariateAnalysis():
         PlotHelper.FormatPlot(width=12, height=6)
 
         # Create figure and a 2x2 grid of axes.
-        figure, axes = plt.subplots(1, 2)
+        figure, axeses = plt.subplots(1, 2)
 
         # Box plot with outliers.
         sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axeses[0])

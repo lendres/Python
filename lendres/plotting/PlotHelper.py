@@ -412,7 +412,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetdefaultOutputDirectoryy(cls):
+    def GetDefaultOutputDirectory(cls):
         """
         Gets the default output location for saving figures.
 

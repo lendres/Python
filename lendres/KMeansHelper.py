@@ -21,6 +21,7 @@ from   yellowbrick.cluster                       import SilhouetteVisualizer
 
 #from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 from   lendres.ClusterHelper                     import ClusterHelper
 
 class KMeansHelper(ClusterHelper):
@@ -182,7 +183,7 @@ class KMeansHelper(ClusterHelper):
             # Axis must be set to square after call finalize.
             visualizer.finalize()
             self.SihlouettePlotFinalize(visualizer, setTitle=False, xLabelIncrement=0.2)
-            PlotHelper.SetAxisToSquare(leftAxis)
+            AxesHelper.SetAxesToSquare(leftAxis)
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
@@ -204,7 +205,7 @@ class KMeansHelper(ClusterHelper):
                 #rightAxis.scatter(c[0]+1, c[1]+1, marker="$%d$" % i, alpha=1, s=100, edgecolor="k")
 
             rightAxis.set(xlabel="Feature Space for the 1st Feature", ylabel="Feature Space for the 2nd Feature")
-            PlotHelper.SetAxisToSquare(rightAxis)
+            AxesHelper.SetAxesToSquare(rightAxis)
 
             plt.show()
 

@@ -11,6 +11,7 @@ from   matplotlib                                import pyplot                  
 
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 
 
 class ModelHelper:
@@ -270,7 +271,7 @@ class ModelHelper:
         axes.legend(bbox_to_anchor=(0.5,1.2), loc="upper center", ncol=len(dataFrame.columns))
 
         # Rotate the X axis labels to vertical so they fit without running together.
-        PlotHelper.RotateXLabels(xLabelRotation)
+        AxesHelper.RotateXLabels(xLabelRotation)
 
         plt.show()
 

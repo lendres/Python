@@ -219,10 +219,10 @@ class PlotMaker():
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        PlotHelper.Label(axes, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
 
         # Option to rotate the x-axis labels.
-        PlotHelper.RotateXLabels(xLabelRotation)
+        AxesHelper.RotateXLabels(xLabelRotation)
 
         # Make sure the plot is shown.
         plt.show()
@@ -314,7 +314,7 @@ class PlotMaker():
 
         # Create plot and set the titles.
         axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
-        PlotHelper.Label(axes, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
@@ -365,7 +365,7 @@ class PlotMaker():
         axes   = plt.gca()
         title  = "Receiver Operating Characteristic"
 
-        PlotHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
         axes.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
         plt.legend(loc="lower right")

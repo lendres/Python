@@ -8,6 +8,7 @@ from   sklearn                                   import metrics
 
 from   lendres.CategoricalHelper                 import CategoricalHelper
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 from   lendres.plotting.PlotMaker                import PlotMaker
 
 
@@ -82,7 +83,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
         plt.yticks(indices, yLabels, fontsize=12*PlotHelper.scale*yFontScale)
-        PlotHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
+        AxesHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
 
         plt.show()
 
