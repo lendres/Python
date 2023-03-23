@@ -30,8 +30,8 @@ class BivariateAnalysis():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : matplotlib.axes.Axes
-            The axis of the plot.
+        axes : matplotlib.axes.Axes
+            The axes of the plot.
         """
 
         # Must be run before creating figure or plotting data.
@@ -47,8 +47,8 @@ class BivariateAnalysis():
         else:
             correlationValues = data[columns].corr()
 
-        axis = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
-        axis.set(title="Heat Map for Continuous Data")
+        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
+        axes.set(title="Heat Map for Continuous Data")
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
@@ -56,7 +56,7 @@ class BivariateAnalysis():
         # Make sure the plot is shown.
         plt.show()
 
-        return figure, axis
+        return figure, axes
 
 
     @classmethod
@@ -128,8 +128,8 @@ class BivariateAnalysis():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axis : matplotlib.axes.Axes
-            The axis of the plot.
+        axes : matplotlib.axes.Axes
+            The axes of the plot.
         """
         if title == None:
             title = "Sorted by " + "\"" + sortColumn + "\""
@@ -137,16 +137,16 @@ class BivariateAnalysis():
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
-        axis = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
-        axis.set(title=title, xlabel=xColumn, ylabel=yColumn)
-        axis.get_legend().set_title(sortColumn)
+        axes = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
+        axes.set(title=title, xlabel=xColumn, ylabel=yColumn)
+        axes.get_legend().set_title(sortColumn)
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
         plt.show()
 
-        return figure, axis
+        return figure, axes
 
 
     @classmethod
@@ -183,14 +183,14 @@ class BivariateAnalysis():
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
-        axis   = sns.barplot(x=primaryCategoryColumnName, y="Proportion", data=proportionData, hue=subCategoryColumnName)
+        axes   = sns.barplot(x=primaryCategoryColumnName, y="Proportion", data=proportionData, hue=subCategoryColumnName)
         figure = plt.gcf()
 
         # Label the individual columns with a percentage, then add the titles to the plot.
         #LabelPercentagesOnCountPlot(axis, proportionData, category, scale)
 
         title = "\"" + primaryCategoryColumnName + "\"" + " Category"
-        axis.set(title=title, xlabel=subCategoryColumnName, ylabel="Proportion")
+        axes.set(title=title, xlabel=subCategoryColumnName, ylabel="Proportion")
 
         # Make sure the plot is shown.
         plt.show()
@@ -290,10 +290,10 @@ class BivariateAnalysis():
         # The "normalize" normalizes the values to sum to 1.
         dataFrame = pd.crosstab(data[independentColumn], data[sortColumn], normalize="index").sort_values(by=sorter, ascending=False)
 
-        axis = dataFrame.plot(kind="bar", stacked=True)
+        axes = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
-        PlotHelper.Label(axis, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
+        PlotHelper.Label(axes, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
 
         figure = plt.gcf()
         plt.show()
@@ -367,10 +367,10 @@ class BivariateAnalysis():
         data : Pandas DataFrame
             The data.
         independentColumn : string
-            Column name in the DataFrame to plot on the X axis.
+            Column name in the DataFrame to plot on the x-axis.
         sortColumn : string
             Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
-            variable of the data.  Ploted as different hues in the Y axis.
+            variable of the data.  Ploted as different hues in the y-axis.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
 
