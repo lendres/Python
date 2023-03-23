@@ -9,7 +9,9 @@ import seaborn                                   as sns
 sns.set(color_codes=True)
 
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 from   lendres.LogisticRegressionTools           import LogisticRegressionTools
+
 
 class PlotMaker():
     # Class level variables.
@@ -85,7 +87,7 @@ class PlotMaker():
 
         cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", colorCycle=None, **kwargs)
 
-        PlotHelper.AlignXAxes(axeses)
+        AxesHelper.AlignXAxes(axeses)
 
         return figure, axeses
 
@@ -124,7 +126,7 @@ class PlotMaker():
 
         cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", colorCycle=None, **kwargs)
 
-        PlotHelper.AlignYAxes(axeses)
+        AxesHelper.AlignYAxes(axeses)
 
         return figure, axeses
 

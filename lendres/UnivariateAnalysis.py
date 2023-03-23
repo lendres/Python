@@ -7,6 +7,7 @@ import matplotlib.pyplot                         as plt
 import numpy                                     as np
 
 from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.AxesHelper               import AxesHelper
 from   lendres.ConsoleHelper                     import ConsoleHelper
 
 
@@ -292,8 +293,8 @@ class UnivariateAnalysis():
             axes[2*i+1].tick_params(axis="x", bottom=True, labelbottom=True)
 
             if limits is not None:
-                PlotHelper.SetXAxisLimits(axes[2*i], limits, numberOfTicks)
-                PlotHelper.SetXAxisLimits(axes[2*i+1], limits, numberOfTicks)
+                AxesHelper.SetXAxisLimits(axes[2*i], limits, numberOfTicks)
+                AxesHelper.SetXAxisLimits(axes[2*i+1], limits, numberOfTicks)
 
         if title is None:
             title = "Distribution of "+column+" by Sample Set"
