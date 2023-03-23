@@ -34,7 +34,7 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix")
         PlotMaker.colorMap = None
         labels = ["car", "boat", "train"]
-        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix", axisLabels=labels)
+        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix", axesLabels=labels)
 
         print(list(range(5)))
 

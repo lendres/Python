@@ -23,7 +23,7 @@ class PlotMaker():
         PlotHelper.FormatPlot()
 
         figure = plt.gcf()
-        axis   = plt.gca()
+        axes   = plt.gca()
 
 
         # Handle optional argument for y labels.  If none exist, create defaults in the type of "Data Set 1", "Data Set 2" ...
@@ -39,20 +39,20 @@ class PlotMaker():
 
         # Plot all the data sets.
         for dataSet, label in zip(yData, yDataLabels):
-            axis.plot(xData, dataSet, label=label)
+            axes.plot(xData, dataSet, label=label)
 
         # Label the plot.
-        PlotHelper.Label(axis, title=title, xLabel=xAxisLabe, yLabel=yAxisLabel)
+        PlotHelper.Label(axes, title=title, xLabel=xAxisLabe, yLabel=yAxisLabel)
 
-        axis.grid()
-        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axis.transAxes)
+        axes.grid()
+        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axes.transAxes)
         plt.show()
 
-        return figure, axis
+        return figure, axes
 
 
     @classmethod
-    def NewMultiXAxesPlot(cls, data, yAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
+    def NewMultiXAxesPlot(cls, data, yAxisColumnName, axesesColumnNames, colorCycle=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -63,11 +63,11 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of array like of strings
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
-            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
-            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
-            plotted on the second right axis.
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
        colorCycle : array like, optional
             The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
@@ -77,21 +77,21 @@ class PlotMaker():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axes : tuple of matplotlib.axes.Axes
+        axeses : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axes    = PlotHelper.NewMultiXAxesFigure(len(axesColumnNames))
+        figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axes, data, yAxisColumnName, axesColumnNames, "y", colorCycle=None, **kwargs)
+        cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", colorCycle=None, **kwargs)
 
-        PlotHelper.AlignXAxes(axes)
+        PlotHelper.AlignXAxes(axeses)
 
-        return figure, axes
+        return figure, axeses
 
 
     @classmethod
-    def NewMultiYAxesPlot(cls, data, xAxisColumnName, axesColumnNames, colorCycle=None, **kwargs):
+    def NewMultiYAxesPlot(cls, data, xAxisColumnName, axesesColumnNames, colorCycle=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -102,11 +102,11 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of array like of strings
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
-            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
-            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
-            plotted on the second right axis.
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
        colorCycle : array like, optional
             The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
@@ -116,21 +116,21 @@ class PlotMaker():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axes : tuple of matplotlib.axes.Axes
+        axeses : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axes    = PlotHelper.NewMultiYAxesFigure(len(axesColumnNames))
+        figure, axeses    = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axes, data, xAxisColumnName, axesColumnNames, "x", colorCycle=None, **kwargs)
+        cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", colorCycle=None, **kwargs)
 
-        PlotHelper.AlignYAxes(axes)
+        PlotHelper.AlignYAxes(axeses)
 
-        return figure, axes
+        return figure, axeses
 
 
     @classmethod
-    def MultiAxesPlot(cls, axes, data, independentColumnName, axesColumnNames, independentAxis, colorCycle=None, **kwargs):
+    def MultiAxesPlot(cls, axeses, data, independentColumnName, axesesColumnNames, independentAxis, colorCycle=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -138,16 +138,16 @@ class PlotMaker():
         Parameters
         ----------
         axes : array like
-            A an array of axes to plot on.  There should be one axis for each grouping (list/array) in axesColumnNames.
+            A an array of axes to plot on.  There should be one axes for each grouping (list/array) in axesesColumnNames.
         data : pandas.DataFrame
             The data.
         independentColumnName : string
             Independent variable column in the data.
-        axesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of array like of strings
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
-            each axis.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
-            column1 and column2 plotted on the left axis, column3 plotted on the first right axis, and column4 and column5
-            plotted on the second right axis.
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
        colorCycle : array like, optional
             The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
@@ -157,24 +157,24 @@ class PlotMaker():
         -------
         None.
         """
-        # The colors are needed because each axis wants to use it's own color cycle resulting in duplication of
-        # colors on the two axis.  Therefore, we have to manually specify the colors so they don't repeat.
+        # The colors are needed because each axes wants to use it's own color cycle resulting in duplication of
+        # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
         color  = 0
 
         independentData = data[independentColumnName]
 
-        for axisColumnNames, axis in zip(axesColumnNames, axes):
-            for column in axisColumnNames:
+        for axesColumnNames, axes in zip(axesesColumnNames, axeses):
+            for column in axesColumnNames:
                 if independentAxis == "x":
-                    axis.plot(independentData, data[column], color=colorCycle[color], label=column, **kwargs)
+                    axes.plot(independentData, data[column], color=colorCycle[color], label=column, **kwargs)
                 else:
                     pass
-                    axis.plot(data[column], independentData, color=colorCycle[color], label=column, **kwargs)
+                    axes.plot(data[column], independentData, color=colorCycle[color], label=column, **kwargs)
                 color += 1
 
-        axes[0].grid()
+        axeses[0].grid()
 
 
     @classmethod
@@ -204,11 +204,11 @@ class PlotMaker():
         PlotHelper.FormatPlot()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
-        axis = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
+        axes = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
         figure = plt.gcf()
 
         # Label the perentages of each column.
-        cls.LabelPercentagesOnColumnsOfBarGraph(axis)
+        cls.LabelPercentagesOnColumnsOfBarGraph(axes)
 
         # If adding a hue, set the legend to run horizontally.
         if subColumnName is not None:
@@ -217,9 +217,9 @@ class PlotMaker():
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        PlotHelper.Label(axis, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
+        PlotHelper.Label(axes, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
 
-        # Option to rotate the x axis labels.
+        # Option to rotate the x-axis labels.
         PlotHelper.RotateXLabels(xLabelRotation)
 
         # Make sure the plot is shown.
@@ -229,14 +229,14 @@ class PlotMaker():
 
 
     @classmethod
-    def LabelPercentagesOnColumnsOfBarGraph(cls, axis):
+    def LabelPercentagesOnColumnsOfBarGraph(cls, axes):
         """
         Labels each column with a percentage of the total sum of all columns.
 
         Parameters
         ----------
-        axis : axis
-            Matplotlib axis to plot on.
+        axes : matplotlib.axes.Axes
+            Matplotlib axes to plot on.
 
         Returns
         -------
@@ -246,10 +246,10 @@ class PlotMaker():
         total = 0
 
         # Find the total count first.
-        for patch in axis.patches:
+        for patch in axes.patches:
             total += patch.get_height()
 
-        for patch in axis.patches:
+        for patch in axes.patches:
             # Percentage of the column.
             percentage = "{:.1f}%".format(100*patch.get_height()/total)
 
@@ -260,11 +260,11 @@ class PlotMaker():
             y = patch.get_y() + patch.get_height() + 0.5
 
             # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
-            axis.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
+            axes.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
 
 
     @classmethod
-    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None, axisLabels=None):
+    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None, axesLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -275,7 +275,7 @@ class PlotMaker():
             Main title for the data.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.
-        axisLabels : array like of strings
+        axesLabels : array like of strings
             Labels to use on the predicted and actual axes.
 
         Returns
@@ -311,12 +311,12 @@ class PlotMaker():
         PlotHelper.FormatPlot(width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
 
         # Create plot and set the titles.
-        axis = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
-        PlotHelper.Label(axis, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
+        axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
+        PlotHelper.Label(axes, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
 
-        if axisLabels is not None:
-            axis.xaxis.set_ticklabels(axisLabels, rotation=90)
-            axis.yaxis.set_ticklabels(axisLabels, rotation=0)
+        if axesLabels is not None:
+            axes.xaxis.set_ticklabels(axesLabels, rotation=90)
+            axes.yaxis.set_ticklabels(axesLabels, rotation=0)
 
         figure = plt.gcf()
         plt.show()
@@ -345,8 +345,8 @@ class PlotMaker():
         -------
         figure : matplotlib.pyplot.figure
             The newly created figure.
-        axis : matplotlib.axes.Axes
-            The axis of the plot.
+        axes : matplotlib.axes.Axes
+            The axes of the plot.
         """
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot(**kwargs)
@@ -358,18 +358,18 @@ class PlotMaker():
         # Plot the diagonal line, the wrost fit possible line.
         plt.plot([0, 1], [0, 1], "r--")
 
-        # Formatting the axis.
+        # Formatting the axes.
         figure = plt.gcf()
-        axis   = plt.gca()
+        axes   = plt.gca()
         title  = "Receiver Operating Characteristic"
 
-        PlotHelper.Label(axis, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
-        axis.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
+        PlotHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
+        axes.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
         plt.legend(loc="lower right")
         plt.show()
 
-        return figure, axis
+        return figure, axes
 
 
     @classmethod

@@ -343,11 +343,11 @@ class BivariateAnalysis():
                 data=data[data[sortColumn] == uniqueSortValues[i]],
                 x=independentColumn,
                 kde=True,
-                ax=axes[i],
+                ax=axeses[i],
                 color=sns.color_palette()[i]
             )
             title = "Distribution for " + "\""+ sortColumn + "\"" + " = " + str(uniqueSortValues[i])
-            axes[i].set(title=title, xlabel=independentColumn)
+            axeses[i].set(title=title, xlabel=independentColumn)
 
         figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
 
@@ -386,14 +386,14 @@ class BivariateAnalysis():
         figure, axes = plt.subplots(1, 2)
 
         # Box plot with outliers.
-        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[0])
+        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axeses[0])
         title = "Boxplot with Outliers"
-        axes[0].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
+        axeses[0].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
         # Box plot without outliers.
-        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axes[1], showfliers=False)
+        sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axeses[1], showfliers=False)
         title = "Boxplot without Outliers"
-        axes[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
+        axeses[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
         figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
 

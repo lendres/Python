@@ -54,7 +54,7 @@ class CategoricalHelper(ModelHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix=titlePrefix, axisLabels=axisLabels)
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix=titlePrefix, axesLabels=axisLabels)
 
         return confusionMatrix
 

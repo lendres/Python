@@ -381,8 +381,8 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxis, rightAxis1, rightAxis2, ..., rightAxisN) : axis list
-            The left axis and all the right axes.
+        (leftAxes, rightAxes1, rightAxes2, ..., rightAxesN) : axes list
+            The left axes and all the right axeses.
         """
         # The format setup needs to be run first.
         cls.FormatPlot()
