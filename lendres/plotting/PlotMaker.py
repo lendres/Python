@@ -20,7 +20,7 @@ class PlotMaker():
     colorMap      = None
 
     @classmethod
-    def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xAxisLabe=None, yAxisLabel=None):
+    def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
@@ -41,14 +41,17 @@ class PlotMaker():
 
         # Plot all the data sets.
         for dataSet, label in zip(yData, yDataLabels):
-            axes.plot(xData, dataSet, label=label)
+            axes.plot(xData, dataSet, label=label, **kwargs)
 
         # Label the plot.
-        PlotHelper.Label(axes, title=title, xLabel=xAxisLabe, yLabel=yAxisLabel)
-
+        AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabel=yLabel)
         axes.grid()
-        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axes.transAxes)
-        plt.show()
+
+        if showLegend:
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.scale), ncol=2, bbox_transform=axes.transAxes)
+
+        if show:
+            plt.show()
 
         return figure, axes
 
