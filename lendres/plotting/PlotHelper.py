@@ -348,7 +348,7 @@ class PlotHelper():
             axes[i].spines["right"].set_position(("axes", offset))
 
         # Change the drawing order of axes so the first one created is on top.
-        AxesHelper.SetZOrderOfMultipleAxisFigure(axes)
+        AxesHelper.SetZOrderOfMultipleAxesFigure(axes)
 
         return (figure, axes)
 

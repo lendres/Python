@@ -15,18 +15,18 @@ class AxesHelper():
     @classmethod
     def Label(cls, instance, title, xLabel, yLabel="", titlePrefix=None):
         """
-        Add title, x axis label, and y axis label.
+        Add title, x-axis label, and y-axis label.
 
         Parameters
         ----------
-        instance : figure or axis
+        instance : figure or matplotlib.axes.Axes
             The object to label.
         title : TYPE
             Main plot title.
         xLabel : string
-            X axis label.
+            X-axis label.
         yLabel : string, optional
-            Y axis label.  Default is a blank string.
+            Y-axis label.  Default is a blank string.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.  Default is none.
 
@@ -61,32 +61,32 @@ class AxesHelper():
 
 
     @classmethod
-    def SetZOrderOfMultipleAxisFigure(cls, axes):
+    def SetZOrderOfMultipleAxesFigure(cls, axes):
         """
-        Puts the right hand axis of a two axis plot
+        Puts the left hand axes of a multiple y-axis plot on top of the z-order.
 
         Parameters
         ----------
-        axes : axis
-            The axes.  The axis with a y-axis on the left is in axes[0].  The axes with the y-axis on
+        axes : matplotlib.axes.Axes
+            The axes.  The axes with a y-axis on the left is in axes[0].  The axes with the y-axis on
             the right are in axes[0] ... axes[N].
 
         Returns
         -------
         None.
         """
-        # This is necessary to have the axis with the left y-axis show in front of the axis with the right y-axis.
+        # This is necessary to have the axes with the left y-axis show in front of the axes with the right y-axis.
         # In order to do this, two things are required:
-        #    1) Reverse the z order so that the left axis is drawn above (after) the right axis.
-        #    2) Reverse the patch (background) transparency.  The patch of the axis in front (left) has to be
-        #       transparent.  We want the patch of the axis in back to be the same as before, so the alpha has
+        #    1) Reverse the z order so that the left axes is drawn above (after) the right axes.
+        #    2) Reverse the patch (background) transparency.  The patch of the axes in front (left) has to be
+        #       transparent.  We want the patch of the axes in back to be the same as before, so the alpha has
         #       to be taken from the left and set on the right.
-        # We use axes[-1] because it is the last axis on the right side and should be the highest in the order.  This
+        # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
         # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
         zOrderSave = axes[-1].get_zorder()
 
-        # It seems that the right axis can have an alpha of "None" and be transparent, but if we set that on
-        # the left axis, it does not produce the same result.  Therefore, if it is "None", we default to
+        # It seems that the right axes can have an alpha of "None" and be transparent, but if we set that on
+        # the left axes, it does not produce the same result.  Therefore, if it is "None", we default to
         # completely transparent.
         alphaSave  = axes[1].patch.get_alpha()
         alphaSave  = 0 if alphaSave is None else alphaSave
@@ -102,11 +102,36 @@ class AxesHelper():
 
 
     @classmethod
-    def AlignXAxes(cls, axes, numberOfTicks=None):
+    def AlignXAxes(cls, axeses, numberOfTicks=None):
         """
-        Align the ticks (grid lines) of multiple x axes.  A new set of tick marks is computed
+        Align the ticks (grid lines) for the x-axis of multiple axes.  A new set of tick marks is computed
         as a linear interpretation of the existing range.  The number of tick marks is the
-        same for both axes.  By setting them both to the same number of tick marks (same
+        same for all axes.  By setting them both to the same number of tick marks (same
+        spacing between marks), the grid lines are aligned.
+
+        Parameters
+        ----------
+        axes : list
+            list of axes objects whose y-axis ticks are to be aligned.
+
+        numberOfTicks : None or integer
+            The number of ticks to use on the axes.  If None, the number of ticks on the
+            first axis is used.
+
+        Returns
+        -------
+        tickSets : list
+            A list of new ticks for each axes in axeses.
+        """
+        cls.AlignAxes(axeses, "x", numberOfTicks)
+
+
+    @classmethod
+    def AlignYAxes(cls, axeses, numberOfTicks=None):
+        """
+        Align the ticks (grid lines) for the y-axis of multiple axes.  A new set of tick marks is computed
+        as a linear interpretation of the existing range.  The number of tick marks is the
+        same for all axes.  By setting them both to the same number of tick marks (same
         spacing between marks), the grid lines are aligned.
 
         Parameters
@@ -121,38 +146,13 @@ class AxesHelper():
         Returns
         -------
         tickSets : list
-            A list of new ticks for each axis in axis.
+            A list of new ticks for each axes in axeses.
         """
-        cls.AlignAxes(axes, "x", numberOfTicks)
+        cls.AlignAxes(axeses, "y", numberOfTicks)
 
 
     @classmethod
-    def AlignYAxes(cls, axes, numberOfTicks=None):
-        """
-        Align the ticks (grid lines) of multiple y axes.  A new set of tick marks is computed
-        as a linear interpretation of the existing range.  The number of tick marks is the
-        same for both axes.  By setting them both to the same number of tick marks (same
-        spacing between marks), the grid lines are aligned.
-
-        Parameters
-        ----------
-        axes : list
-            list of axes objects whose yaxis ticks are to be aligned.
-
-        numberOfTicks : None or integer
-            The number of ticks to use on the axes.  If None, the number of ticks on the
-            first axis is used.
-
-        Returns
-        -------
-        tickSets : list
-            A list of new ticks for each axis in axis.
-        """
-        cls.AlignAxes(axes, "y", numberOfTicks)
-
-
-    @classmethod
-    def AlignAxes(cls, axes, which, numberOfTicks=None):
+    def AlignAxes(cls, axeses, which, numberOfTicks=None):
         """
         Align the ticks (grid lines) of multiple y axes.  A new set of tick marks is computed
         as a linear interpretation of the existing range.  The number of tick marks is the
@@ -173,12 +173,12 @@ class AxesHelper():
         Returns
         -------
         tickSets : list
-            A list of new ticks for each axis in axis.
+            A list of new ticks for each axes in axeses.
         """
         if which == "x":
-            tickSets = [axis.get_xticks() for axis in axes]
+            tickSets = [axis.get_xticks() for axis in axeses]
         elif which == "y":
-            tickSets = [axis.get_yticks() for axis in axes]
+            tickSets = [axis.get_yticks() for axis in axeses]
         else:
             raise Exception("Invalid direction specified in \"AlignAxes\"")
 
@@ -205,42 +205,42 @@ class AxesHelper():
 
         # Set ticks for each axis.
         if which == "x":
-            for axis, tickSet in zip(axes, tickSets):
+            for axis, tickSet in zip(axeses, tickSets):
                 axis.set(xticks=tickSet, xlim=(tickSet[0], tickSet[-1]))
         elif which == "y":
-            for axis, tickSet in zip(axes, tickSets):
+            for axis, tickSet in zip(axeses, tickSets):
                 axis.set(yticks=tickSet, ylim=(tickSet[0], tickSet[-1]))
 
         return tickSets
 
 
     @classmethod
-    def ReverseYAxisLimits(cls, axis):
+    def ReverseYAxisLimits(cls, axes):
         """
         Switches the upper and lower limits so that the highest value is on top.
 
         Parameters
         ----------
-        axis : matplotlib.axes.Axes
-            Axis change the limits on.
+        axes : matplotlib.axes.Axes
+            Axes to change the limits on.
 
         Returns
         -------
         None.
         """
-        tickSet = axis.get_yticks()
-        axis.set_ylim((tickSet[-1], tickSet[0]))
+        tickSet = axes.get_yticks()
+        axes.set_ylim((tickSet[-1], tickSet[0]))
 
 
     @classmethod
-    def SetXAxisLimits(cls, axis, limits, numberOfTicks=None):
+    def SetXAxisLimits(cls, axes, limits, numberOfTicks=None):
         """
-        Sets the x-axis limits.  Allows specifying the number of ticks to use.
+        Sets the x-axes limits.  Allows specifying the number of ticks to use.
 
         Parameters
         ----------
-        axis : matplotlib.axes.Axes
-            Axis change the limits on.
+        axes : matplotlib.axes.Axes
+            Axes to change the limits on.
         limits : array like of two values
             The lower and upper limits of the axis.
         numberOfTicks : int, optional
@@ -250,25 +250,25 @@ class AxesHelper():
         -------
         None.
         """
-        tickSet       = axis.get_xticks()
+        tickSet       = axes.get_xticks()
 
         if numberOfTicks is None:
             numberOfTicks = len(tickSet)
 
         tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
-        axis.set_xticks(tickSet)
-        axis.set_xlim((tickSet[0], tickSet[-1]))
+        axes.set_xticks(tickSet)
+        axes.set_xlim((tickSet[0], tickSet[-1]))
 
 
     @classmethod
-    def SetYAxisLimits(cls, axis, limits, numberOfTicks=None):
+    def SetYAxisLimits(cls, axes, limits, numberOfTicks=None):
         """
         Sets the y-axis limits.  Allows specifying the number of ticks to use.
 
         Parameters
         ----------
-        axis : matplotlib.axes.Axes
-            Axis change the limits on.
+        axes : matplotlib.axes.Axes
+            Axes to change the limits on.
         limits : array like of two values
             The lower and upper limits of the axis.
         numberOfTicks : int, optional
@@ -278,48 +278,48 @@ class AxesHelper():
         -------
         None.
         """
-        tickSet       = axis.get_yticks()
+        tickSet       = axes.get_yticks()
 
         if numberOfTicks is None:
             numberOfTicks = len(tickSet)
 
         tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
-        axis.set_yticks(tickSet)
-        axis.set_ylim((tickSet[0], tickSet[-1]))
+        axes.set_yticks(tickSet)
+        axes.set_ylim((tickSet[0], tickSet[-1]))
 
 
     @classmethod
-    def GetYBoundaries(cls, axis):
+    def GetYBoundaries(cls, axes):
         """
-        Gets the minimum and maximum Y tick marks on the axis.
+        Gets the minimum and maximum y tick marks on the y-axis.
 
         Parameters
         ----------
-        axis : axis
-            Axis to extract the information from.
+        axes : matplotlib.axes.Axes
+            Axes to extract the information from.
 
         Returns
         -------
         yBoundries : list
             The minimim and maximum tick mark as a list.
         """
-        ticks      = axis.get_yticks()
+        ticks      = axes.get_yticks()
         yBoundries = [ticks[0], ticks[-1]]
         return yBoundries
 
 
     @classmethod
-    def SetAxesToSquare(cls, axis):
+    def SetAxesToSquare(cls, axes):
         """
-        Sets the axis to have a square aspect ratio.
+        Sets the axes to have a square aspect ratio.
 
         Parameters
         ----------
-        axis : axis
-            Axis to set the aspect ratio of.
+        axes : matplotlib.axes.Axes
+            axes to set the aspect ratio of.
 
         Returns
         -------
         None.
         """
-        axis.set_aspect(1./axis.get_data_ratio())
+        axes.set_aspect(1./axes.get_data_ratio())
