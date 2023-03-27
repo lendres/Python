@@ -2,30 +2,44 @@
 Created on July 16, 2022
 @author: Lance A. Endres
 
-The NLTK stopwords must be downloaded before using this module.  This can be done by using:
-    from lendres.Installation import RunInstall
-    RunInstall()
+The NLTK stop words must be downloaded before using this module.  See below to find
+a function for doing this.
 """
 import pandas                                    as pd
 import unicodedata
 from   bs4                                       import BeautifulSoup
 
-# Natural language processing tool-kit
+# Natural language processing tool-kit.
 import nltk
 from   nltk.tokenize.toktok                      import ToktokTokenizer
 import contractions
 
-#for plotting images & adjusting colors
+# For plotting images & adjusting colors.
 import matplotlib.pyplot                         as plt
 from   wordcloud                                 import WordCloud
 from   wordcloud                                 import STOPWORDS
 
 import re
 import spacy
+#import os
 
 
 class LanguageHelper():
     stopWords = nltk.corpus.stopwords.words("english")
+
+
+    @classmethod
+    def DownloadStopWords():
+        """
+        Downloads or upgrades the NLTK stop words.
+
+        Returns
+        -------
+        None.
+        """
+        nltk.download("stopwords")
+        # Alternate method.
+        #os.system("python -m spacy download en_core_web_sm")
 
 
     @classmethod
@@ -103,7 +117,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result  = None
@@ -161,7 +175,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result = None
@@ -190,7 +204,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result = None
@@ -219,11 +233,10 @@ class LanguageHelper():
 
         Returns
         -------
-        text : string
+        : string
             The processed text.
         """
-        text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
-        return text
+        return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
 
 
     @classmethod
@@ -260,7 +273,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         pattern = r"  +"
@@ -282,7 +295,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         # Remove text style "emojis" character groups that contain letters.
@@ -310,7 +323,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         pattern = r"[^a-zA-z\s]" if removeDigits else  r"[^a-zA-z0-9\s]"
@@ -330,7 +343,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         pattern = r"\d+"
@@ -350,7 +363,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         pattern = r"[^\w\s]"
@@ -370,7 +383,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        : Pandas DataFrame, list, or string
             The processed text.
         """
         # @(\w{1,15})
@@ -505,7 +518,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result = None
@@ -535,7 +548,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result = None
@@ -575,7 +588,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         # !pip install spacy
@@ -613,7 +626,7 @@ class LanguageHelper():
 
         Returns
         -------
-        text : Pandas DataFrame, list, or string
+        result : Pandas DataFrame, list, or string
             The processed text.
         """
         result = None
