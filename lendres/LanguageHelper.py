@@ -414,9 +414,38 @@ class LanguageHelper():
         pattern = r"(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{0,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
         return LanguageHelper.ApplyRegularExpression(text, pattern)
 
+    @classmethod
+    def RunAllPreprocessing(cls, text, removeStopWords=False):
+        """
+        Run all the text preprocessing steps.
+
+        Parameters
+        ----------
+        text : TYPE
+            DESCRIPTION.
+        removeStopWords : boolean, optional
+            If true, the stop words are removed before using the text in the word cloud. The default is False.
+
+        Returns
+        -------
+        text : string
+            The processed text.
+        """
+        text = LanguageHelper.RemoveInternetHandles(text)
+        text = LanguageHelper.RemoveWebAddresses(text)
+        text = LanguageHelper.ToLowercase(text)
+
+        if removeStopWords:
+            text = LanguageHelper.RemoveStopWords(text)
+
+        text = LanguageHelper.RemovePunctuation(text)
+        text = LanguageHelper.RemoveSpecialCharacters(text)
+        text = LanguageHelper.StripHtmlTags(text)
+        return text
+
 
     @classmethod
-    def CreateWordCloud(cls, text, width=800, height=600, preprocess=True, removeStopWords=False):
+    def CreateWordCloud(cls, text, width=800, height=600):
         """
         Creates a plot of a word cloud.
 
@@ -428,31 +457,16 @@ class LanguageHelper():
             Plot width.
         height : integer
             Plot height.
-        preprocess : boolean
-            If true, a series of preprocessing steps are run to clean the text before using it in the word cloud.
-        removeStopWords : boolean
-            If true, the stop words are removed before using the text in the word cloud.
 
         Returns
         -------
         None.
         """
-        if preprocess:
-            text = LanguageHelper.RemoveInternetHandles(text)
-            text = LanguageHelper.RemoveWebAddresses(text)
-            text = LanguageHelper.ToLowercase(text)
-
-            if removeStopWords:
-                text = LanguageHelper.RemoveStopWords(text)
-
-            #text = LanguageHelper.RemovePunctuation(text)
-            #text = LanguageHelper.RemoveSpecialCharacters(text)
-            text = LanguageHelper.StripHtmlTags(text)
-
-        if type(text) != list:
+        if type(text) == pd.core.series.Series:
             text = text.tolist()
-
-        text = " ".join(text)
+            text = " ".join(text)
+        elif type(text) == list:
+            text = " ".join(text)
 
         wordcloud = WordCloud(
             stopwords=STOPWORDS,
