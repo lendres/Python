@@ -25,7 +25,7 @@ class PlotHelper():
 
     #If true, the image is saved to a subfolder or the current folder called "Output."  If false, the path is assumed to be part
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
-    usedefaultOutputDirectoryy   = True
+    usedefaultOutputDirectory   = True
 
     # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
     scale                       = 1.0
@@ -467,7 +467,7 @@ class PlotHelper():
 
         # If the default ouptput folder is specified, we need to make sure it exists and update
         # the save path to account for it.
-        if cls.usedefaultOutputDirectoryy:
+        if cls.usedefaultOutputDirectory:
 
             # Directory needs to exist.
             if not os.path.isdir(cls.defaultOutputDirectory):

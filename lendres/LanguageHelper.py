@@ -460,7 +460,8 @@ class LanguageHelper():
 
         Returns
         -------
-        None.
+        figure : matplotlib.figure.Figure
+            The newly created figure.
         """
         if type(text) == pd.core.series.Series:
             text = text.tolist()
@@ -479,10 +480,12 @@ class LanguageHelper():
 
         # Plot the wordcloud object.
         pixelsPerInch = 50
-        plt.figure(figsize=(width/pixelsPerInch,height/pixelsPerInch))
+        figure        = plt.figure(figsize=(width/pixelsPerInch,height/pixelsPerInch))
         plt.imshow(wordcloud, interpolation="bilInear")
         plt.axis("off")
         plt.show()
+
+        return figure
 
 
     @classmethod
