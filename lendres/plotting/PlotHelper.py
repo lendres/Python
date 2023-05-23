@@ -2,8 +2,10 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import numpy                                     as np
 import matplotlib
 import matplotlib.pyplot                         as plt
+import math
 
 import seaborn                                   as sns
 
@@ -13,6 +15,7 @@ from   io                                        import BytesIO
 import base64
 from   PIL                                       import Image
 from   PIL                                       import ImageChops
+from   PIL                                       import ImageColor
 
 from   lendres.plotting.AxesHelper               import AxesHelper
 
@@ -354,7 +357,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetColorCycle(cls, colorStyle=None):
+    def GetColorCycle(cls, colorStyle=None, numberFormat="RGB"):
         """
         Gets the default Matplotlib colors in the color cycle.
 
@@ -365,14 +368,21 @@ class PlotHelper():
         -------
         : list
             Colors in the color cycle.
-
         """
+        numberFormat = numberFormat.lower()
+        if numberFormat != "rgb" and numberFormat != "hex":
+            raise Exception("The number format specified is not valid.\nRequested format: "+numberFormat)
+
         if colorStyle is None:
             colorStyle = cls.colorStyle
 
         if colorStyle == "pyplot":
             prop_cycle = plt.rcParams['axes.prop_cycle']
             colors     = prop_cycle.by_key()['color']
+
+            if numberFormat == "rgb":
+                colors = PlotHelper.ListOfHexToRgb(colors)
+
         elif colorStyle == "seaborn":
             colors = [(0.2980392156862745,  0.4470588235294118,  0.6901960784313725),
                       (0.8666666666666667,  0.5176470588235295,  0.3215686274509804),
@@ -386,10 +396,73 @@ class PlotHelper():
                       (0.39215686274509803, 0.7098039215686275,  0.803921568627451)]
             #colors = sns.color_palette()
 
+            if numberFormat == "hex":
+                colors = PlotHelper.ListOfRgbToHex(colors)
+
         else:
             raise Exception("Unkown color style requested.\nRequested style: "+colorStyle)
 
         return colors
+
+
+    @classmethod
+    def ListOfHexToRgb(cls, colors):
+        """
+        Convert a list of colors represented as hexadecimal strings into RGB colors.
+
+        Parameters
+        ----------
+        colors : array like of strings
+            An array like series of strings that are hexadecimal values representing colors.
+
+        Returns
+        -------
+        : List of tuples.
+            RGB colors in a List of colors in a tuple.
+        """
+        return [ImageColor.getrgb(color) for color in colors]
+
+
+    @classmethod
+    def RgbToHex(cls, color):
+        """
+        Converts an RGB color to a hexadecimal string color.
+
+        Parameters
+        ----------
+        color : array like
+            A RGB color.
+
+        Returns
+        -------
+        : string
+            A hexadecimal color.
+        """
+        if isinstance(color[0], float):
+            color = [math.floor(255*x) for x in color]
+
+        return "#{:02x}{:02x}{:02x}".format(color[0], color[1], color[2])
+
+
+    @classmethod
+    def ListOfRgbToHex(cls, colors):
+        """
+        Converts an list of RGB colors to a list of hexadecimal string colors.
+
+        Parameters
+        ----------
+        colors : array like of array like
+            A list of RGB colors.
+
+        Returns
+        -------
+        : list of string
+            List of hexadecimal colors.
+        """
+        if isinstance(colors[0][0], float):
+            colors = [[math.floor(255*x) for x in color] for color in colors]
+
+        return ["#{:02x}{:02x}{:02x}".format(color[0], color[1], color[2]) for color in colors]
 
 
     @classmethod

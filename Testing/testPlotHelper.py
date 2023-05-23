@@ -74,6 +74,15 @@ class TestPlotHelper(unittest.TestCase):
         plt.show()
 
 
+    def testNumberFormatException(self):
+        # Should not cause an exception.
+        PlotHelper.GetColorCycle(numberFormat="RGB")
+        PlotHelper.GetColorCycle(colorStyle="seaborn", numberFormat="hex")
+
+        # Test the exception.
+        self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
+
+
     def createBasicPlot(self, titlePrefix, formatStyle=None, scale=1.0, width=10, height=6):
         PlotHelper.scale = scale
         PlotHelper.FormatPlot(formatStyle=formatStyle, width=width, height=height)

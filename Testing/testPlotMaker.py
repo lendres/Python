@@ -5,8 +5,6 @@ Created on May 30, 2022
 import pandas                                    as pd
 import numpy                                     as np
 
-import os
-
 import DataSetLoading
 from   lendres.plotting.PlotMaker                import PlotMaker
 
@@ -37,6 +35,12 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix", axesLabels=labels)
 
         print(list(range(5)))
+
+
+    def testPlotColorCycle(self):
+        # A test that will also conveniently display the color cycles for reference.
+        PlotMaker.PlotColorCycle(colorStyle="pyplot")
+        PlotMaker.PlotColorCycle(colorStyle="seaborn")
 
 
 if __name__ == "__main__":

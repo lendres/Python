@@ -418,3 +418,49 @@ class PlotMaker():
         index = scores["Index of Best Threshold"]
         label = which.title() + " Best Threshold %0.3f" % scores["Best Threshold"]
         plt.scatter(falsePositiveRates[index], truePositiveRates[index], marker="o", color=color, label=label)
+
+
+    @classmethod
+    def PlotColorCycle(cls, colorStyle=None):
+        """
+        Create a plot that shows the colors in a color cycle.
+
+        Parameters
+        ----------
+        colorStyle : string, optional
+            The color cycle to plot. The default is None.  These can be any color cycle accepted by PlotHelper.
+
+        Returns
+        -------
+        None.
+        """
+        PlotHelper.FormatPlot(formatStyle="pyplot")
+
+        numberOfPoints  = 5
+        figure, axes    = plt.subplots()
+        x               = range(numberOfPoints)
+        colors          = PlotHelper.GetColorCycle(colorStyle=colorStyle, numberFormat="hex")
+        numberOfColors  = len(colors)
+
+        for i in range(numberOfColors):
+            # Set the y to the same as the position in the color cycle.
+            y = [i] * numberOfPoints
+            axes.plot(x, y, label="data", marker="o", markerfacecolor=colors[i], markeredgecolor=colors[i], markeredgewidth=10, markersize=20, linewidth=10, color=colors[i])
+
+            # Plot the name on the right.
+            plt.annotate(str(colors[i]), (numberOfPoints-0.75, i-0.15), annotation_clip=False)
+
+            # Clear the x axis labels and use the y axis labels to label the position of the color.
+            plt.xticks([])
+            plt.yticks(range(numberOfColors))
+
+            # Turn off the bounding box (spline).
+            [spline.set_visible(False) for spline in axes.spines.values()]
+
+            # Display the name of the color cycle.
+            axes.xaxis.label.set_fontsize(40)
+            if colorStyle == None:
+                axes.set(xlabel=PlotHelper.colorStyle)
+            else:
+                axes.set(xlabel=colorStyle)
+        plt.show()
