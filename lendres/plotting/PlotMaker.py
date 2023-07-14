@@ -40,8 +40,19 @@ class PlotMaker():
             xData = range(1, len(yData[0])+1)
 
         # Plot all the data sets.
+        # Need to repackage all the key word arguments.
+        i = 0
         for dataSet, label in zip(yData, yDataLabels):
-            axes.plot(xData, dataSet, label=label, **kwargs)
+            seriesKwargs = {}
+            for key, value in kwargs.items():
+                if value is None:
+                    pass
+                elif len(value) == 1:
+                    seriesKwargs[key] = value[0]
+                else:
+                    seriesKwargs[key] = value[i]
+            axes.plot(xData, dataSet, label=label, **seriesKwargs)
+            i += 1
 
         # Label the plot.
         AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabel=yLabel)
