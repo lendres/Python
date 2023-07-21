@@ -21,6 +21,39 @@ class PlotMaker():
 
     @classmethod
     def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
+        """
+        Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
+        to customize the plot.
+
+        Parameters
+        ----------
+        yData : array like of array like
+            A list of data sets to plot.
+        yDataLabels : array like of strings, optional
+            Labels to use in the legend for each series. The default is None.
+        xData : array like, optional
+            The x-axis values.  If none is supplied, a list of integers of the length of the y-data
+            is created. The default is None.
+        title : string, optional
+            Top title for the figure. The default is None.
+        xLabel : string, optional
+            X-axis title/label. The default is None.
+        yLabel : string, optional
+            Y-axis title/label. The default is None.
+        showLegend : boolean, optional
+            Specifies if the legend should be shown. The default is True.
+        show : boolean, optional
+            If true, the plot is shown. The default is True.
+        **kwargs : key word arguments with array like values
+            Arguments to pass to each series when it is plotted.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        axeses : tuple of matplotlib.axes.Axes
+            The axes of the plot.
+        """
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
@@ -55,7 +88,7 @@ class PlotMaker():
             i += 1
 
         # Label the plot.
-        AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabel=yLabel)
+        AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabels=yLabel)
         axes.grid()
 
         if showLegend:

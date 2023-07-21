@@ -13,20 +13,21 @@ class AxesHelper():
 
 
     @classmethod
-    def Label(cls, instance, title, xLabel, yLabel="", titlePrefix=None):
+    def Label(cls, instances, title, xLabel, yLabels="", titlePrefix=None):
         """
         Add title, x-axis label, and y-axis label.
 
         Parameters
         ----------
-        instance : figure or matplotlib.axes.Axes
-            The object to label.
+        instances : figure or matplotlib.axes.Axes or array like of figure/axes
+            The object(s) to label.
         title : TYPE
             Main plot title.
         xLabel : string
             X-axis label.
-        yLabel : string, optional
-            Y-axis label.  Default is a blank string.
+        yLabels : string or array like of strings, optional
+            Y-axis label(s).  Default is a blank string.  If instances is an array, ylabels
+            must be an array of the same length.
         titlePrefix : string or None, optional
             If supplied, the string is prepended to the title.  Default is none.
 
@@ -38,7 +39,11 @@ class AxesHelper():
         if titlePrefix != None:
             title = titlePrefix + "\n" + title
 
-        instance.set(title=title, xlabel=xLabel, ylabel=yLabel)
+        if type(instances) is list:
+            for instance, yLabel in zip(instances, yLabels):
+                instance.set(title=title, xlabel=xLabel, ylabel=yLabel)
+        else:
+            instances.set(title=title, xlabel=xLabel, ylabel=yLabels)
 
 
     @classmethod
