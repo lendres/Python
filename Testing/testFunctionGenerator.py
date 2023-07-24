@@ -2,8 +2,6 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-#import pandas                                    as pd
-#import numpy                                     as np
 import matplotlib.pyplot                         as plt
 
 #import DataSetLoading
@@ -31,7 +29,7 @@ class TestFunctionGenerator(unittest.TestCase):
 
 
     def testSineWaveDataFrame(self):
-        dataFrame = FunctionGenerator.GetSineWaveDataFrame()
+        dataFrame = FunctionGenerator.GetMultipleSineWaveDataFrame()
 
         # This function is a short cut for creating multiple Y axis plots.  Really this creates multiple "axes" (a set of X and Y axis).
         # Therefore, you have to align all the X values of each axes or it looks funny.  This function createas all the axes and
@@ -54,19 +52,20 @@ class TestFunctionGenerator(unittest.TestCase):
 
         Parameters
         ----------
+        x : array like
+            The sine wave x values.
+        y : array like
+            The sine wave y values.
         title : string
             Title to use for the plot.
-        formatPlot : bool
-            Specifies if PlotHelper should be used to apply formatting.
 
         Returns
         -------
-        figure : matplotlib.figure.Figure
-            The newly created figure.
+        None.
         """
         PlotHelper.FormatPlot()
 
-        axes   = plt.gca()
+        axes = plt.gca()
 
         axes.plot(x, y, label="Sine Wave")
         axes.set(title=title, xlabel="Time", ylabel="Vibration")
