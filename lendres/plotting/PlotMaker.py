@@ -14,10 +14,21 @@ from   lendres.LogisticRegressionTools           import LogisticRegressionTools
 
 
 class PlotMaker():
-    # Class level variables.
+    """
+    A class for making common plots.
 
+    Nomenclature:
+        Finalize
+            Shows the plot, the figure can no longer be manipulated after this.  It can be saved as an image.
+        Create*
+            Makes the entire figure.  The figure is created, the data plotted, and the figure is finalized.
+        New*Plot
+            Makes a new figure and plots data.  Does NOT finalize the figure.
+    """
+    # Class level variables.
     # Color map to use for plots.
     colorMap      = None
+
 
     @classmethod
     def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
@@ -103,13 +114,12 @@ class PlotMaker():
     @classmethod
     def NewMultiXAxesPlot(cls, data, yAxisColumnName, axesesColumnNames, colorCycle=None, **kwargs):
         """
-        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
-        of the plot.
+        Plots data on two axes with the same y-axis but different x-axis scales.
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            The data.
+        data : pandas.DataFrame or list of pandas.DataFrame
+            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
         xAxisColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -147,8 +157,8 @@ class PlotMaker():
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            The data.
+        data : pandas.DataFrame or list of pandas.DataFrame
+            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
         xAxisColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -188,8 +198,8 @@ class PlotMaker():
         ----------
         axes : array like
             A an array of axes to plot on.  There should be one axes for each grouping (list/array) in axesesColumnNames.
-        data : pandas.DataFrame
-            The data.
+        data : pandas.DataFrame or list of pandas.DataFrame
+            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
         independentColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -210,18 +220,28 @@ class PlotMaker():
         # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
-        color  = 0
+        color = 0
 
-        independentData = data[independentColumnName]
+        if type(data) is not list:
+            data = [data]
 
-        for axesColumnNames, axes in zip(axesesColumnNames, axeses):
-            for column in axesColumnNames:
-                if independentAxis == "x":
-                    axes.plot(independentData, data[column], color=colorCycle[color], label=column, **kwargs)
-                else:
-                    pass
-                    axes.plot(data[column], independentData, color=colorCycle[color], label=column, **kwargs)
-                color += 1
+        for dataSet in data:
+            independentData = dataSet[independentColumnName]
+
+            for axesColumnNames, axes in zip(axesesColumnNames, axeses):
+                for column in axesColumnNames:
+                    # If multiple data sets were supplied and they have a name, combine the name and column.  Otherwise,
+                    # just use the column name.
+                    label = column
+                    if hasattr(dataSet, "name") and not dataSet.name == "" and len(data) > 1:
+                        label = dataSet.name+" "+column
+
+                    if independentAxis == "x":
+                        axes.plot(independentData, dataSet[column], color=colorCycle[color], label=label, **kwargs)
+                    else:
+                        pass
+                        axes.plot(dataSet[column], independentData, color=colorCycle[color], label=label, **kwargs)
+                    color += 1
 
         axeses[0].grid()
 
@@ -361,7 +381,7 @@ class PlotMaker():
 
         # Create plot and set the titles.
         axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
-        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabels="Actual", titlePrefix=titlePrefix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
