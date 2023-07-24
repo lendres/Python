@@ -4,8 +4,7 @@ Created on Febuary 16, 2022
 """
 import numpy                                     as np
 
-from   lendres.Algorithms                        import BoundingBinarySearch
-from   lendres.Algorithms                        import FindIndicesByValues
+from   lendres.algorithms.Search                 import Search
 import unittest
 
 # More information at:
@@ -18,37 +17,37 @@ class TestBoundingBinarySearch(unittest.TestCase):
         cls.points = [1, 3, 5, 8, 11, 14, 18, 22]
 
     def testIndicesFirstHalf(self):
-        result = BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="indices")
         self.assertEqual(result[0], 0)
         self.assertEqual(result[1], 1)
 
 
     def testIndicesSecondHalf(self):
-        result = BoundingBinarySearch(16, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(16, TestBoundingBinarySearch.points, returnedUnits="indices")
         self.assertEqual(result[0], 5)
         self.assertEqual(result[1], 6)
 
 
     def testIndicesOnAPoint(self):
-        result = BoundingBinarySearch(5, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(5, TestBoundingBinarySearch.points, returnedUnits="indices")
         self.assertEqual(result[0], 2)
         self.assertEqual(result[1], 2)
 
 
     def testValues(self):
-        result = BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="values")
         self.assertEqual(result[0], 1)
         self.assertEqual(result[1], 3)
 
 
     def testValueTooLow(self):
-        result = BoundingBinarySearch(-2, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(-2, TestBoundingBinarySearch.points, returnedUnits="values")
         self.assertTrue(result[0] is np.nan)
         self.assertTrue(result[1] is np.nan)
 
 
     def testValueTooHigh(self):
-        result = BoundingBinarySearch(10000, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(10000, TestBoundingBinarySearch.points, returnedUnits="values")
         self.assertTrue(result[0] is np.nan)
         self.assertTrue(result[1] is np.nan)
 
@@ -64,19 +63,19 @@ class TestFindIndicesByValues(unittest.TestCase):
 
 
     def testFindNumbers(self):
-        result = FindIndicesByValues(TestFindIndicesByValues.numbers, 3)
+        result = Search.FindIndicesByValues(TestFindIndicesByValues.numbers, 3)
         self.assertEqual(result[0], 1)
         self.assertEqual(len(result), 3)
 
 
     def testFindStrings(self):
-        result = FindIndicesByValues(TestFindIndicesByValues.strings, "b")
+        result = Search.FindIndicesByValues(TestFindIndicesByValues.strings, "b")
         self.assertEqual(result[5], 12)
         self.assertEqual(len(result), 6)
 
 
     def testFindMaxCount(self):
-        result = FindIndicesByValues(TestFindIndicesByValues.strings, "b", maxCount=4)
+        result = Search.FindIndicesByValues(TestFindIndicesByValues.strings, "b", maxCount=4)
         self.assertEqual(result[3], 10)
         self.assertEqual(len(result), 4)
 
