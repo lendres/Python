@@ -50,7 +50,21 @@ class DataType():
         if not (cls.IsListOfLists(listOfLists1) and cls.IsListOfLists(listOfLists2)):
             raise Exception("At least one of the inputs is not a list of lists.")
 
-        sizes1 = [len(element) for element in listOfLists1]
-        sizes2 = [len(element) for element in listOfLists2]
+        sizes1 = cls.GetSizesOfListOfLists(listOfLists1)
+        sizes2 = cls.GetSizesOfListOfLists(listOfLists2)
 
         return sizes1 == sizes2
+
+
+    @classmethod
+    def GetSizesOfListOfLists(cls, listOfLists):
+        return [len(element) for element in listOfLists]
+
+
+    @classmethod
+    def CreateListOfLists(cls, sizes, initializationValue=0):
+        if not cls.IsListOfLists(sizes):
+            raise Exception("The input sizes is not a list of lists.")
+
+        result = [[initializationValue for size in sizeList] for sizeList in sizes]
+        return result

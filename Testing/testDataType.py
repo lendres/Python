@@ -50,5 +50,10 @@ class TestBoundingDataType(unittest.TestCase):
         self.assertRaises(Exception, DataType.AreListsOfListsSameSize, self.listOfLists, self.mixedList)
 
 
+    def testCreateListOfLists(self):
+        newListofLists = DataType.CreateListOfLists(self.listOfLists, 1)
+        print(newListofLists)
+        self.assertTrue(DataType.AreListsOfListsSameSize(self.listOfLists, newListofLists))
+
 if __name__ == "__main__":
     unittest.main()
