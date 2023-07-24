@@ -17,37 +17,37 @@ class TestBoundingBinarySearch(unittest.TestCase):
         cls.points = [1, 3, 5, 8, 11, 14, 18, 22]
 
     def testIndicesFirstHalf(self):
-        result = Search.BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(2, self.points, returnedUnits="indices")
         self.assertEqual(result[0], 0)
         self.assertEqual(result[1], 1)
 
 
     def testIndicesSecondHalf(self):
-        result = Search.BoundingBinarySearch(16, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(16, self.points, returnedUnits="indices")
         self.assertEqual(result[0], 5)
         self.assertEqual(result[1], 6)
 
 
     def testIndicesOnAPoint(self):
-        result = Search.BoundingBinarySearch(5, TestBoundingBinarySearch.points, returnedUnits="indices")
+        result = Search.BoundingBinarySearch(5, self.points, returnedUnits="indices")
         self.assertEqual(result[0], 2)
         self.assertEqual(result[1], 2)
 
 
     def testValues(self):
-        result = Search.BoundingBinarySearch(2, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(2, self.points, returnedUnits="values")
         self.assertEqual(result[0], 1)
         self.assertEqual(result[1], 3)
 
 
     def testValueTooLow(self):
-        result = Search.BoundingBinarySearch(-2, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(-2, self.points, returnedUnits="values")
         self.assertTrue(result[0] is np.nan)
         self.assertTrue(result[1] is np.nan)
 
 
     def testValueTooHigh(self):
-        result = Search.BoundingBinarySearch(10000, TestBoundingBinarySearch.points, returnedUnits="values")
+        result = Search.BoundingBinarySearch(10000, self.points, returnedUnits="values")
         self.assertTrue(result[0] is np.nan)
         self.assertTrue(result[1] is np.nan)
 
@@ -63,19 +63,19 @@ class TestFindIndicesByValues(unittest.TestCase):
 
 
     def testFindNumbers(self):
-        result = Search.FindIndicesByValues(TestFindIndicesByValues.numbers, 3)
+        result = Search.FindIndicesByValues(self.numbers, 3)
         self.assertEqual(result[0], 1)
         self.assertEqual(len(result), 3)
 
 
     def testFindStrings(self):
-        result = Search.FindIndicesByValues(TestFindIndicesByValues.strings, "b")
+        result = Search.FindIndicesByValues(self.strings, "b")
         self.assertEqual(result[5], 12)
         self.assertEqual(len(result), 6)
 
 
     def testFindMaxCount(self):
-        result = Search.FindIndicesByValues(TestFindIndicesByValues.strings, "b", maxCount=4)
+        result = Search.FindIndicesByValues(self.strings, "b", maxCount=4)
         self.assertEqual(result[3], 10)
         self.assertEqual(len(result), 4)
 
