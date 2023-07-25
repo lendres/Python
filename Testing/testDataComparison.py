@@ -52,18 +52,22 @@ class TestDataComparison(unittest.TestCase):
 
 
     def testPlotComparison(self):
+        # Test basic plot.
         self.dataComparison.CreateComparisonPlot("Displacement (revs)")
+
+        # Test supplying axes labels.
+        self.dataComparison.CreateComparisonPlot("Displacement (revs)", xLabel="Time (s)", yLabel="Displacement (revolutions)")
 
 
     def testCreateDualAxisComparisonPlot(self):
         columns = [["Displacement (revs)"], ["w_bit"]]
         labels = ["Displacement (revs)", "Velocity (rpm)"]
-        self.dataComparison.CreateDualAxisComparisonPlot(columns, labels)
+        self.dataComparison.CreateMultiAxisComparisonPlot(columns, labels)
 
 
     def testGetVelocity(self):
         self.assertAlmostEqual(self.dataComparison.GetValueAtTime(0, self.velColumn, 11), 38.4657299, places=3)
-        self.assertAlmostEqual(self.dataComparison.GetVelocityAtTime(1, self.velColumn, 11), 75.1645423, places=3)
+        self.assertAlmostEqual(self.dataComparison.GetValueAtTime(1, self.velColumn, 11), 75.1645423, places=3)
 
 
 if __name__ == "__main__":

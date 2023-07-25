@@ -21,6 +21,21 @@ class DataComparison():
     """
 
     def __init__(self, independentColumn:str, directory:str=None):
+        """
+        Constructor.
+
+        Parameters
+        ----------
+        independentColumn : str
+            The column name of the independent data.
+        directory : str, optional
+            The directory to load the data files from. The default is None.  If none is supplied,
+            the complete path must be specified when loading files.
+
+        Returns
+        -------
+        None.
+        """
         self.independentColumn  = independentColumn
         self.directory          = directory
 
@@ -111,13 +126,6 @@ class DataComparison():
         return (self.dataSets[0])[self.independentColumn].iloc[-1]
 
 
-    def GetDataAsDataFrame(self, dataSet:int):
-        data        = self.dataSets[dataSet]
-        dataFrame   = pd.concat([data[self.independentColumn], data[self.dispColumn], data[self.velColumn]], axis=1)
-        dataFrame.rename({self.independentColumn : "Time", self.dispColumn : "Displacement", self.velColumn : "Velocity"}, axis="columns", inplace=True)
-        return dataFrame
-
-
     def GetValueAtTime(self, dataSet:int, column:str, time:float):
         """
         Gets the value in the specified column at the specified time from the specified data set.
@@ -164,7 +172,24 @@ class DataComparison():
              function(dataSet)
 
 
-    def CreateComparisonPlot(self, column, yLabel="", **kwargs):
+    def CreateComparisonPlot(self, column:str, xLabel=None, yLabel:str=None, **kwargs):
+        """
+        Creates a plot comparing a column from each data set.
+
+        Parameters
+        ----------
+        column : str
+            The name of the column to compare.
+        yLabel : str, optional
+            The y-axis label. The default is None.
+        **kwargs : keyword arguments
+            Keyword arguments to pass to the plot function.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        """
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
@@ -176,15 +201,43 @@ class DataComparison():
             axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i), **kwargs)
             i += 1
 
-        AxesHelper.Label(axes, title="Comparison of "+column, xLabel="Time", yLabels=yLabel)
+        # If no x-axis label is provided, default to the column name.
+        if xLabel == None:
+            xLabel = self.independentColumn
+
+        # If no y-axis label is provided, default to the column name.
+        if yLabel == None:
+            yLabel = column
+
+        AxesHelper.Label(axes, title="Comparison of "+column, xLabel=xLabel, yLabels=yLabel)
         axes.grid()
 
         plt.show()
         return figure
 
 
-    def CreateDualAxisComparisonPlot(self, columns, yLabels, **kwargs):
-        figure, axeses = PlotMaker.NewMultiYAxesPlot(self.dataSets, self.independentColumn, columns)
+    def CreateMultiAxisComparisonPlot(self, axesesColumnNames, yLabels, **kwargs):
+        """
+        Creates a multi y-axes plot.  The columns are plotted for each data set.
+
+        Parameters
+        ----------
+        axesesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
+        yLabels : array like of strings
+            A list of strings to use as labels for the y-axes.
+        **kwargs : keyword arguments
+            Keyword arguments to pass to the plot function.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        """
+        figure, axeses = PlotMaker.NewMultiYAxesPlot(self.dataSets, self.independentColumn, axesesColumnNames, colorCycle=None, **kwargs)
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
         AxesHelper.Label(axeses, title="Data Comparison", xLabel=self.independentColumn, yLabels=yLabels)
