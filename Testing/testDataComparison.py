@@ -2,8 +2,10 @@
 Created on July 20, 2023
 @author: Lance A. Endres
 """
+import pandas                                                   as pd
 import matplotlib.pyplot                                        as plt
 import os
+import math
 
 from   lendres.plotting.AxesHelper                              import AxesHelper
 from   lendres.plotting.PlotMaker                               import PlotMaker
@@ -11,13 +13,15 @@ from   lendres.data.DataComparison                              import DataCompa
 
 import unittest
 
+pd.set_option('display.max_columns', None)
+
 class TestDataComparison(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         thisDirectory = os.path.dirname(os.path.abspath(__file__))
 
-        cls.dispColumn  = "bit_disp_cumulate (deg)"
+        cls.dispColumn  = "bit_disp_cumulate (rad)"
         cls.velColumn   = "w_bit"
 
         cls.dataComparison = DataComparison(
@@ -39,7 +43,8 @@ class TestDataComparison(unittest.TestCase):
 
 
     def AddRevolutions(self, dataSet):
-        dataSet["Displacement (revs)"] = dataSet["bit_disp_cumulate (deg)"] / 360.0
+        print(dataSet.head())
+        dataSet["Displacement (revs)"] = dataSet["bit_disp_cumulate (rad)"] / 2 / math.pi
 
 
     def testGetData(self):
@@ -57,6 +62,9 @@ class TestDataComparison(unittest.TestCase):
 
         # Test supplying axes labels.
         self.dataComparison.CreateComparisonPlot("Displacement (revs)", xLabel="Time (s)", yLabel="Displacement (revolutions)")
+
+        # Test supplying multiple columns.
+        self.dataComparison.CreateComparisonPlot(["w_td", "w_bit"], xLabel="Time (s)", yLabel="Displacement (revolutions)")
 
 
     def testCreateDualAxisComparisonPlot(self):

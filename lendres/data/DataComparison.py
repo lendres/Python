@@ -172,14 +172,14 @@ class DataComparison():
              function(dataSet)
 
 
-    def CreateComparisonPlot(self, column:str, xLabel=None, yLabel:str=None, **kwargs):
+    def CreateComparisonPlot(self, columns:list, xLabel=None, yLabel:str=None, **kwargs):
         """
         Creates a plot comparing a column from each data set.
 
         Parameters
         ----------
-        column : str
-            The name of the column to compare.
+        columns : list
+            The name of the column to compare or a list of column names to compare.
         yLabel : str, optional
             The y-axis label. The default is None.
         **kwargs : keyword arguments
@@ -196,10 +196,14 @@ class DataComparison():
         figure = plt.gcf()
         axes   = plt.gca()
 
+        if type(columns) is str:
+            columns = [columns]
+
         i = 0
         for dataSet in self.dataSets:
-            axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i), **kwargs)
-            i += 1
+            for column in columns:
+                axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i), **kwargs)
+                i += 1
 
         # If no x-axis label is provided, default to the column name.
         if xLabel == None:
