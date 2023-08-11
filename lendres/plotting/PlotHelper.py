@@ -346,7 +346,10 @@ class PlotHelper():
         axes   = [figure.gca()]
 
         for i in range(1, numberOfAxes):
+            # Create the remaining axis and specify that the same x-axis should be used.
             axes.append(axes[0].twinx())
+
+            # Off set the new y-axis labels to the right of the previous.
             offset = 1.0 + (i-1)*0.1
             axes[i].spines["right"].set_position(("axes", offset))
 
