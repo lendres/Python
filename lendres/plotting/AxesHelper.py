@@ -173,7 +173,7 @@ class AxesHelper():
 
         numberOfTicks : None or integer
             The number of ticks to use on the axes.  If None, the number of ticks on the
-            first axis is used.
+            first axes is used.
 
         Returns
         -------
@@ -181,25 +181,25 @@ class AxesHelper():
             A list of new ticks for each axes in axeses.
         """
         if which == "x":
-            tickSets = [axis.get_xticks() for axis in axeses]
+            tickSets = [axes.get_xticks() for axes in axeses]
         elif which == "y":
-            tickSets = [axis.get_yticks() for axis in axeses]
+            tickSets = [axes.get_yticks() for axes in axeses]
         else:
             raise Exception("Invalid direction specified in \"AlignAxes\"")
 
-        # If the number of ticks was not specified, use the number of ticks on the first axis.
+        # If the number of ticks was not specified, use the number of ticks on the first axes.
         if numberOfTicks is None:
             numberOfTicks = len(tickSets[0])
 
         numberOfIntervals = numberOfTicks - 1
 
-        # The first axis is remains the same.  Those ticks should already be nicely spaced.
+        # The first axes is remains the same.  Those ticks should already be nicely spaced.
         tickSets[0] = np.linspace(tickSets[0][0], tickSets[0][-1], numberOfTicks, endpoint=True)
 
         #####
         # This method needs to be adjusted to account for different scale.  E.g. 0.2-0.8 versus 20-80.
         #####
-        # Create a new set of tick marks that have the same number of ticks for each axis.
+        # Create a new set of tick marks that have the same number of ticks for each axes.
         # We have to scale the interval between tick marks.  We want them to be nice numbers (not something
         # like 72.2351).  To do this, we calculate a new interval by rounding up the existing spacing.  Rounding
         # up ensures no plotted data is cut off by scaling it down slightly.
@@ -208,13 +208,13 @@ class AxesHelper():
             interval = np.ceil(span / numberOfIntervals)
             tickSets[i] = np.linspace(tickSets[i][0], tickSets[i][0]+interval*numberOfIntervals, numberOfTicks, endpoint=True)
 
-        # Set ticks for each axis.
+        # Set ticks for each axes.
         if which == "x":
-            for axis, tickSet in zip(axeses, tickSets):
-                axis.set(xticks=tickSet, xlim=(tickSet[0], tickSet[-1]))
+            for axes, tickSet in zip(axeses, tickSets):
+                axes.set(xticks=tickSet, xlim=(tickSet[0], tickSet[-1]))
         elif which == "y":
-            for axis, tickSet in zip(axeses, tickSets):
-                axis.set(yticks=tickSet, ylim=(tickSet[0], tickSet[-1]))
+            for axes, tickSet in zip(axeses, tickSets):
+                axes.set(yticks=tickSet, ylim=(tickSet[0], tickSet[-1]))
 
         return tickSets
 
