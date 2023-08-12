@@ -2,7 +2,6 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
-import numpy                                     as np
 import matplotlib
 import matplotlib.pyplot                         as plt
 import math
