@@ -40,7 +40,7 @@ class PlotHelper():
     heightScale                 = 1.0
 
     # Standard size.
-    size                        = 20
+    #size                        = 20
 
     # Format style.  This is the default, it can be overridden in the call to "Format".
     formatStyle                 = "pyplot"
@@ -95,7 +95,7 @@ class PlotHelper():
         -------
         None.
         """
-        return cls.scale*cls.size
+        return plt.rcParams["font.size"]
 
 
     @classmethod
@@ -116,7 +116,7 @@ class PlotHelper():
 
 
     @classmethod
-    def FormatPlot(cls, formatStyle=None, width=10, height=6, transparentLegend=False):
+    def FormatPlot(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
@@ -131,59 +131,160 @@ class PlotHelper():
             The width of the figure. The default is 10.
         height : float, optional
             The height of the figure. The default is 6.
-        transparentLegend : bool
-            Option to create a legend with a transparent background.
+        transparentLegend : bool, optional
+            Option to create a legend with a transparent background.  The default is False.
 
         Returns
         -------
         None.
         """
+        # Handle input arguments default values.
+        if parameterFile is None:
+            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "default.mplstyle")
+
+        # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
+        # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
         cls._SetFormatStyle(formatStyle)
 
-        standardSize = cls.GetScaledStandardSize()
+        # Establish the parameters specified in the input file.
+        plt.style.use(parameterFile)
 
-        # Standard formating parameters.
+        figureSize = plt.rcParams["figure.figsize"]
+
+        # Apply scaling.
         parameters = {
-            "figure.figsize"         : (width*PlotHelper.widthScale, height*PlotHelper.heightScale),
-            "figure.dpi"             : 300,
-            "font.size"              : 1.0*standardSize,
-            "font.weight"            : "bold",
-            "figure.titlesize"       : 1.2*standardSize,
-            "figure.titleweight"     : "bold",
-            "legend.fontsize"        : 0.8*standardSize,
-            "legend.title_fontsize"  : 0.85*standardSize,
-            "legend.edgecolor"       : "black",
-            "axes.titlesize"         : 1.2*standardSize,
-            "axes.titleweight"       : "bold",
-            "axes.labelweight"       : "bold",
-            "axes.labelsize"         : standardSize,
-            "xtick.labelsize"        : 0.80*standardSize,
-            "ytick.labelsize"        : 0.80*standardSize,
-            "axes.titlepad"          : 25,
-            "axes.linewidth"         : 0.75*cls.scale,              # Axis border.
-            "axes.edgecolor"         : "black",                     # Axis border.
-            "patch.linewidth"        : 1.5*cls.scale,               # Legend border.
-            "lines.linewidth"        : 3*cls.scale,
-            "lines.markersize"       : 10*cls.scale
+            "figure.figsize"         : (figureSize[0]*cls.widthScale, figureSize[1]*cls.heightScale),
+            "font.size"              : cls._ScaleFontSize(plt.rcParams["font.size"]),
+            "figure.titlesize"       : cls._ScaleFontSize(plt.rcParams["figure.titlesize"]),
+            "legend.fontsize"        : cls._ScaleFontSize(plt.rcParams["legend.fontsize"]),
+            "legend.title_fontsize"  : cls._ScaleFontSize(plt.rcParams["legend.title_fontsize"]),
+            "axes.titlesize"         : cls._ScaleFontSize(plt.rcParams["axes.titlesize"]),
+            "axes.labelsize"         : cls._ScaleFontSize(plt.rcParams["axes.labelsize"]),
+            "xtick.labelsize"        : cls._ScaleFontSize(plt.rcParams["xtick.labelsize"]),
+            "ytick.labelsize"        : cls._ScaleFontSize(plt.rcParams["ytick.labelsize"]),
+            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.scale,                # Axis border.
+            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.scale,               # Legend border.
+            "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.scale,
+            "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.scale,
+            "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.scale,
         }
 
-        # Parameters to create a legend with a border and transparent background.
-        transparentLegendParameters = {
-            "legend.framealpha"      : None,
-            "legend.facecolor"       : (1, 1, 1, 0)
-        }
-
-        # Parameters for a legend with a border and a solid background.
-        nonTransparentLegendParameters = {
-            "legend.framealpha"      : 1.0,
-            "legend.facecolor"       : 'inherit'
-        }
-
+        plt.rcParams.update(parameters)
         if transparentLegend:
-            parameters.update(transparentLegendParameters)
+            cls.UseTransparentLegend(True)
+
+
+    @classmethod
+    def FormatArtisticPlot(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
+        """
+        Default formatting for an artistic style plot.
+
+        Parameters
+        ----------
+        parameterFile : string, optional
+            A Matplotlib parameter style file.. The default is None.
+        formatStyle : string or None
+            Specifies initial formating style.
+                None : no initial formating is done.
+                pyplot : resets matplotlib.pyplot to the default settings.
+                seaborn : uses seaborn color codes.
+        width : float, optional
+            The width of the figure. The default is 10.
+        height : float, optional
+            The height of the figure. The default is 6.
+        transparentLegend : bool, optional
+            Option to create a legend with a transparent background.  The default is False.
+
+        Returns
+        -------
+        None.
+        """
+        if parameterFile is None:
+            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artistic.mplstyle")
+
+        cls.FormatPlot(parameterFile, formatStyle, width, height, transparentLegend)
+
+
+    @classmethod
+    def _ScaleFontSize(cls, size):
+        """
+        Scale a font by the scale.  Checks for missing values and converts values that are strings to their numerical values.
+
+        Parameters
+        ----------
+        size : None, string, or float
+            The size of the font.  If None is supplied, the default value is used.
+
+        Returns
+        -------
+        : float
+            The font size converted to a numerical value and scaled.
+        """
+        if size is None:
+            size = matplotlib.font_manager.fontManager.get_default_size();
+
+        if type(size) is str:
+            size = cls.ConvertFontRelativeSizeToPoints(size)
+
+        return size*cls.scale
+
+
+    @classmethod
+    def ConvertFontRelativeSizeToPoints(cls, relativeSize):
+        """
+        Converts a relative size (large, small, medium, et cetera) to a numerical value.
+
+        Parameters
+        ----------
+        cls : TYPE
+            DESCRIPTION.
+        relativeSize : string
+            A Matplotlib relative font size string.
+
+        Returns
+        -------
+        : float
+            The font size as a flaot.
+        """
+        if type(relativeSize) is not str:
+            raise Exception("The relative font size must be a string.")
+
+        defaultSize = matplotlib.font_manager.fontManager.get_default_size();
+        scalings    = matplotlib.font_manager.font_scalings
+
+        if not relativeSize in scalings:
+            raise Exception("Not a valid relative font size.")
+
+        return scalings[relativeSize] * defaultSize
+
+
+    @classmethod
+    def UseTransparentLegend(cls, transparent=True):
+        """
+        Sets if the legend should be transparent of opaque.
+
+        Parameters
+        ----------
+        transparent : bool, optional
+            If True, the legend background is set to transparent, otherwise it is set to opaque. The default is True.
+
+        Returns
+        -------
+        None.
+        """
+        if transparent:
+            # Parameters to create a legend with a border and transparent background.
+            parameters = {
+                "legend.framealpha"      : None,
+                "legend.facecolor"       : (1, 1, 1, 0)
+            }
         else:
-            parameters.update(nonTransparentLegendParameters)
+            # Parameters for a legend with a border and a solid background.
+            parameters = {
+                "legend.framealpha"      : 1.0,
+                "legend.facecolor"       : 'inherit'
+            }
 
         plt.rcParams.update(parameters)
 
@@ -308,7 +409,7 @@ class PlotHelper():
             s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
             m      = 4/3.0*(s1-s2)          # Slope.
             y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
-            offset = m * PlotHelper.scale + y0
+            offset = m * cls.scale + y0
             axes[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.
@@ -359,6 +460,50 @@ class PlotHelper():
 
 
     @classmethod
+    def NewArtisticFigure(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
+        """
+        Create a new artistic plot.
+
+        Parameters
+        ----------
+        parameterFile : string, optional
+            A Matplotlib parameter style file.. The default is None.
+        formatStyle : string or None
+            Specifies initial formating style.
+                None : no initial formating is done.
+                pyplot : resets matplotlib.pyplot to the default settings.
+                seaborn : uses seaborn color codes.
+        width : float, optional
+            The width of the figure. The default is 10.
+        height : float, optional
+            The height of the figure. The default is 6.
+        transparentLegend : bool, optional
+            Option to create a legend with a transparent background.  The default is False.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        axeses : tuple of matplotlib.axes.Axes
+            The axes of the plot.
+        """
+        cls.FormatArtisticPlot(parameterFile, formatStyle, width, height, transparentLegend)
+
+        figure  = plt.gcf()
+        axes    = plt.gca()
+
+        # Zero lines.
+        axes.axhline(y=0, color="black", linewidth=3.6*cls.scale)
+        axes.axvline(x=0, color="black", linewidth=3.6*cls.scale)
+        AxesHelper.AddArrows(axes, color="black")
+
+        # Erase axis numbers (labels).
+        axes.set(xticks=[], yticks=[])
+
+        return figure, axes
+
+
+    @classmethod
     def GetColorCycle(cls, colorStyle=None, numberFormat="RGB"):
         """
         Gets the default Matplotlib colors in the color cycle.
@@ -383,7 +528,7 @@ class PlotHelper():
             colors     = prop_cycle.by_key()['color']
 
             if numberFormat == "rgb":
-                colors = PlotHelper.ListOfHexToRgb(colors)
+                colors = cls.ListOfHexToRgb(colors)
 
         elif colorStyle == "seaborn":
             colors = [(0.2980392156862745,  0.4470588235294118,  0.6901960784313725),
@@ -399,7 +544,7 @@ class PlotHelper():
             #colors = sns.color_palette()
 
             if numberFormat == "hex":
-                colors = PlotHelper.ListOfRgbToHex(colors)
+                colors = cls.ListOfRgbToHex(colors)
 
         else:
             raise Exception("Unkown color style requested.\nRequested style: "+colorStyle)
@@ -607,13 +752,13 @@ class PlotHelper():
         if figure == None:
             figure = plt.gcf()
 
-        buffer = PlotHelper.SaveToBuffer(figure, "PNG" if autoCrop else format)
+        buffer = cls.SaveToBuffer(figure, "PNG" if autoCrop else format)
 
         if autoCrop:
             figure = Image.open(buffer).convert("RGB")
             buffer.close()
-            figure = PlotHelper.CropWhiteSpace(figure, borderSize)
-            buffer = PlotHelper.SaveToBuffer(figure, format)
+            figure = cls.CropWhiteSpace(figure, borderSize)
+            buffer = cls.SaveToBuffer(figure, format)
 
         image     = buffer.getvalue()
         plot      = base64.b64encode(image)
