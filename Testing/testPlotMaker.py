@@ -30,12 +30,12 @@ class TestPlotMaker(unittest.TestCase):
 
 
     def testConfusionMatrix(self):
-        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix")
+        PlotMaker.CreateConfusionMatrixPlot(self.confusionMatrix3x3, "3 by 3 Confusion Matrix")
         PlotMaker.colorMap = "Blues"
-        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix")
+        PlotMaker.CreateConfusionMatrixPlot(self.confusionMatrix3x3, "3 by 3 Confusion Matrix")
         PlotMaker.colorMap = None
         labels = ["car", "boat", "train"]
-        PlotMaker.CreateConfusionMatrixPlot(TestPlotMaker.confusionMatrix3x3, "3 by 3 Confusion Matrix", axesLabels=labels)
+        PlotMaker.CreateConfusionMatrixPlot(self.confusionMatrix3x3, "3 by 3 Confusion Matrix", axesLabels=labels)
 
 
     def testPlotColorCycle(self):
