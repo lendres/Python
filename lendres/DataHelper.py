@@ -13,7 +13,7 @@ from   sklearn.preprocessing                     import LabelEncoder
 import os
 import io
 
-import lendres
+from   lendres.algorithms.Search                 import Search
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.DataHelperBase                    import DataHelperBase
 
@@ -907,7 +907,7 @@ class DataHelper(DataHelperBase):
         existingColumn = self.data[column]
 
         for i in range(existingColumn.size):
-            boundedIndices   = lendres.Algorithms.BoundingBinarySearch(existingColumn.iloc[i], boundaries, returnedUnits="indices")
+            boundedIndices   = Search.BoundingBinarySearch(existingColumn.iloc[i], boundaries, returnedUnits="indices")
             newColumn.loc[i] = labels[boundedIndices[0]]
 
         # Default to the original column name, then determine how to procede based on if we are to replace
