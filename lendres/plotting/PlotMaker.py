@@ -2,15 +2,15 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
-import matplotlib.pyplot                         as plt
+import numpy                                                    as np
+import matplotlib.pyplot                                        as plt
 
-import seaborn                                   as sns
+import seaborn                                                  as sns
 sns.set(color_codes=True)
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.LogisticRegressionTools           import LogisticRegressionTools
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.LogisticRegressionTools                          import LogisticRegressionTools
 
 
 class PlotMaker():
@@ -286,7 +286,7 @@ class PlotMaker():
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabel="Count", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabels="Count", titlePrefix=titlePrefix)
 
         # Option to rotate the x-axis labels.
         AxesHelper.RotateXLabels(xLabelRotation)
@@ -432,7 +432,7 @@ class PlotMaker():
         axes   = plt.gca()
         title  = "Receiver Operating Characteristic"
 
-        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabel="True Positive Rate", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabels="True Positive Rate", titlePrefix=titlePrefix)
         axes.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
         plt.legend(loc="lower right")
@@ -475,12 +475,12 @@ class PlotMaker():
         # Get values for plotting the curve and the scores associated with the curve.
         falsePositiveRates, truePositiveRates, scores = LogisticRegressionTools.GetRocCurveAndScores(y, yPredicted)
 
-        label = which.title()+" (area = %0.2f)" % scores["Area Under Curve"]
+        label = which.title()+" (area = %0.2f)" % (scores["Area Under Curve"]).iloc[0]
         plt.plot(falsePositiveRates, truePositiveRates, label=label, color=color)
 
 
-        index = scores["Index of Best Threshold"]
-        label = which.title() + " Best Threshold %0.3f" % scores["Best Threshold"]
+        index = (scores["Index of Best Threshold"]).iloc[0]
+        label = which.title() + " Best Threshold %0.3f" % (scores["Best Threshold"]).iloc[0]
         plt.scatter(falsePositiveRates[index], truePositiveRates[index], marker="o", color=color, label=label)
 
 

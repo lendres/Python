@@ -2,27 +2,22 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
-import matplotlib
-from   matplotlib                                import pyplot                     as plt
-import matplotlib.cm                             as cm
-import matplotlib.ticker                         as ticker
+import pandas                                                        as pd
+import numpy                                                         as np
+from   matplotlib                                                    import pyplot                     as plt
+import matplotlib.cm                                                 as cm
+import matplotlib.ticker                                             as ticker
 
-from   sklearn.cluster                           import KMeans
-from   scipy.spatial.distance                    import cdist
-
-from   sklearn.metrics                           import silhouette_samples
-from   sklearn.metrics                           import silhouette_score
+from   sklearn.cluster                                               import KMeans
+from   sklearn.metrics                                               import silhouette_score
 
 # To visualize the elbow curve and silhouette scores.
-from   yellowbrick.cluster                       import KElbowVisualizer
-from   yellowbrick.cluster                       import SilhouetteVisualizer
+from   yellowbrick.cluster                                           import KElbowVisualizer
+from   yellowbrick.cluster                                           import SilhouetteVisualizer
 
-#from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.ClusterHelper                     import ClusterHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.ClusterHelper                                         import ClusterHelper
 
 class KMeansHelper(ClusterHelper):
 
@@ -43,14 +38,14 @@ class KMeansHelper(ClusterHelper):
 
 
     def CreateModel(self, clusters):
-        self.model = KMeans(n_clusters=clusters, random_state=1)
+        self.model = KMeans(n_clusters=clusters, random_state=1, n_init="auto")
 
 
     def CreateVisualizerPlot(self, clusters, metric="silhouette"):
         # Must be run before creating figure or plotting data.
         PlotHelper.FormatPlot()
 
-        self.model = KMeans(random_state=1)
+        self.model = KMeans(random_state=1, n_init="auto")
         visualizer = KElbowVisualizer(
             self.model,
             k=clusters,
@@ -99,7 +94,7 @@ class KMeansHelper(ClusterHelper):
         for clusters in rangeOfClusters:
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            clusterer         = KMeans(n_clusters=clusters, random_state=1)
+            clusterer         = KMeans(n_clusters=clusters, random_state=1, n_init="auto")
 
             # The silhouette_score gives the average value for all the samples.
             # This gives a perspective into the density and separation of the formed clusters.
@@ -134,7 +129,7 @@ class KMeansHelper(ClusterHelper):
 
         for clusters in rangeOfClusters:
 
-            visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1))
+            visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1, n_init="auto"))
             visualizer.fit(self.scaledData)
 
             # Finalize on the visualizer to do most of the formatting.  Then call our version
@@ -174,10 +169,10 @@ class KMeansHelper(ClusterHelper):
 
             # Initialize the clusterer with clusters value and a random generator.
             # seed of 10 for reproducibility.
-            clusterer     = KMeans(n_clusters=clusters, random_state=1)
+            clusterer     = KMeans(n_clusters=clusters, random_state=1, n_init="auto")
 
             colors = cm.nipy_spectral(np.arange(0, clusters) / float(clusters))
-            visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1), ax=leftAxis, colors=colors)
+            visualizer = SilhouetteVisualizer(KMeans(n_clusters=clusters, random_state=1, n_init="auto"), ax=leftAxis, colors=colors)
             visualizer.fit(X)
 
             # Axis must be set to square after call finalize.

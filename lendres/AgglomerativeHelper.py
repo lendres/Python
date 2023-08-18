@@ -2,19 +2,19 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-from   matplotlib                                import pyplot                     as plt
+import pandas                                                   as pd
+from   matplotlib                                               import pyplot                     as plt
 
-from   sklearn.cluster                           import AgglomerativeClustering
-from   scipy.cluster.hierarchy                   import cophenet
-from   scipy.cluster.hierarchy                   import dendrogram
-from   scipy.cluster.hierarchy                   import linkage
+from   sklearn.cluster                                          import AgglomerativeClustering
+from   scipy.cluster.hierarchy                                  import cophenet
+from   scipy.cluster.hierarchy                                  import dendrogram
+from   scipy.cluster.hierarchy                                  import linkage
 
 # Pairwise distribution between data points.
-from   scipy.spatial.distance                    import pdist
+from   scipy.spatial.distance                                   import pdist
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.ClusterHelper                     import ClusterHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.ClusterHelper                                    import ClusterHelper
 
 
 class AgglomerativeHelper(ClusterHelper):
@@ -41,7 +41,7 @@ class AgglomerativeHelper(ClusterHelper):
     def CreateModel(self, clusters, distanceMetric="euclidean", linkageMethod="average"):
         self.distanceMetric = distanceMetric
         self.linkageMethod  = linkageMethod
-        self.model = AgglomerativeClustering(n_clusters=clusters, affinity=distanceMetric, linkage=linkageMethod)
+        self.model = AgglomerativeClustering(n_clusters=clusters, metric=distanceMetric, linkage=linkageMethod)
 
 
     def CreateMyDendrogramPlot(self, xLabelScale=1.0, cutDistance=None, drawCutLine=False):
@@ -77,7 +77,7 @@ class AgglomerativeHelper(ClusterHelper):
 
         # Subtitle.
         title = "Distance Metric = " + distanceMetric.capitalize() + ", Linkage Method = " + linkageMethod.capitalize()
-        plt.suptitle(title, fontsize=0.9*PlotHelper.scale*PlotHelper.size)
+        plt.suptitle(title, fontsize=0.9*PlotHelper.GetScaledStandardSize())
 
         # Cophenetic score annotation.
         axis.annotate(f"Cophenetic\nCorrelation\n{cophenetCorrelation:0.3f}", (0.90, 0.875), xycoords="axes fraction", fontsize=13*PlotHelper.scale)

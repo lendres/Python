@@ -2,12 +2,12 @@
 Created on December 29, 2021
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import matplotlib.pyplot                         as plt
-import seaborn                                   as sns
+import pandas                                                   as pd
+import matplotlib.pyplot                                        as plt
+import seaborn                                                  as sns
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.plotting.AxesHelper                              import AxesHelper
 
 
 class BivariateAnalysis():
@@ -44,9 +44,9 @@ class BivariateAnalysis():
         # If the input argument "columns" is "None," plot all the columns, otherwise, only
         # plot those columns specified in the "columns" argument.
         if columns == None:
-            correlationValues = data.corr()
+            correlationValues = data.corr(numeric_only=True)
         else:
-            correlationValues = data[columns].corr()
+            correlationValues = data[columns].corr(numeric_only=True)
 
         axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
         axes.set(title="Heat Map for Continuous Data")
@@ -294,7 +294,7 @@ class BivariateAnalysis():
         axes = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
-        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabel="Fraction of "+sortColumn, titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabels="Fraction of "+sortColumn, titlePrefix=titlePrefix)
 
         figure = plt.gcf()
         plt.show()

@@ -87,7 +87,7 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.scale = scale
         PlotHelper.FormatPlot(formatStyle=formatStyle, width=width, height=height)
         axis = plt.gca()
-        sns.histplot(TestPlotHelper.data["bmi"], kde=True, ax=axis, palette="winter")
+        sns.histplot(self.data["bmi"], kde=True, ax=axis)
         AxesHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabels="Count", titlePrefix=titlePrefix)
 
         # Reset the scale to the default for the next plot.

@@ -2,14 +2,14 @@
 Created on April 27, 2022
 @author: Lance
 """
-import pandas                                    as pd
-import numpy                                     as np
-from   matplotlib                                import pyplot                     as plt
-import seaborn                                   as sns
+import pandas                                                   as pd
+import numpy                                                    as np
+from   matplotlib                                               import pyplot                     as plt
+import seaborn                                                  as sns
 import math
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.SubsetHelper                      import SubsetHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.SubsetHelper                                     import SubsetHelper
 
 
 class ClusterHelper(SubsetHelper):
@@ -112,7 +112,7 @@ class ClusterHelper(SubsetHelper):
         dataFrameOfMeans : DataFrame
             DataFrame containing the mean of each group/cluster.
         """
-        dataFrameOfMeans                 = self.dataHelper.data.groupby([self.labelColumn]).mean()
+        dataFrameOfMeans                 = self.dataHelper.data.groupby([self.labelColumn]).mean(numeric_only=True)
         dataFrameOfMeans["Sample Count"] = self.dataHelper.data[self.labelColumn].value_counts()
         return dataFrameOfMeans
 
@@ -146,7 +146,7 @@ class ClusterHelper(SubsetHelper):
         : Series
             Counts of each cluster.
         """
-        return self.dataHelper.data.groupby([self.labelColumn]).sum()
+        return self.dataHelper.data.groupby([self.labelColumn]).sum(numeric_only=False)
 
 
     def DisplayValueCountsByCluster(self, column):

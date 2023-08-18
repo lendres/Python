@@ -220,7 +220,7 @@ class DataComparison():
         return figure
 
 
-    def CreateMultiAxisComparisonPlot(self, axesesColumnNames, yLabels, **kwargs):
+    def CreateMultiAxisComparisonPlot(self, axesesColumnNames:list, yLabels:list, **kwargs):
         """
         Creates a multi y-axes plot.  The columns are plotted for each data set.
 

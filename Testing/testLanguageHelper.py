@@ -174,7 +174,8 @@ class TestLanguageHelper(unittest.TestCase):
             LanguageHelper.CreateWordCloud(self.tweets["text"], width=2000, height=1600)
 
             LanguageHelper.AppendToStopWordsList(["thank", "thanks", "plane", "flight", "flights", "im", "u"])
-            LanguageHelper.CreateWordCloud(self.tweets["text"], removeStopWords=True)
+            stopwordsRemoved = LanguageHelper.RemoveStopWords(self.tweets["text"])
+            LanguageHelper.CreateWordCloud(stopwordsRemoved)
 
 
 if __name__ == "__main__":

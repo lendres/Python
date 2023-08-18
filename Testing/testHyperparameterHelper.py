@@ -2,23 +2,22 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-import numpy                                     as np
-from   IPython.display                           import display
-from   sklearn                                   import metrics
+import numpy                                                    as np
+from   sklearn                                                  import metrics
 
-from   sklearn.tree                              import DecisionTreeClassifier
-from   sklearn.ensemble                          import AdaBoostClassifier
+from   sklearn.tree                                             import DecisionTreeClassifier
+from   sklearn.ensemble                                         import AdaBoostClassifier
 
 import DataSetLoading
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.ModelHelper                       import ModelHelper
-from   lendres.DecisionTreeHelper                import DecisionTreeHelper
-from   lendres.BaggingHelper                     import BaggingHelper
-from   lendres.RandomForestHelper                import RandomForestHelper
-from   lendres.AdaBoostHelper                    import AdaBoostHelper
-from   lendres.GradientBoostingHelper            import GradientBoostingHelper
-from   lendres.XGradientBoostingHelper           import XGradientBoostingHelper
-from   lendres.HyperparameterHelper              import HyperparameterHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.ModelHelper                                      import ModelHelper
+from   lendres.DecisionTreeHelper                               import DecisionTreeHelper
+from   lendres.BaggingHelper                                    import BaggingHelper
+from   lendres.RandomForestHelper                               import RandomForestHelper
+from   lendres.AdaBoostHelper                                   import AdaBoostHelper
+from   lendres.GradientBoostingHelper                           import GradientBoostingHelper
+from   lendres.XGradientBoostingHelper                          import XGradientBoostingHelper
+from   lendres.HyperparameterHelper                             import HyperparameterHelper
 
 import unittest
 
@@ -39,15 +38,15 @@ class TestHyperparameterHelper(unittest.TestCase):
     def setUpClass(cls):
         cls.regresionHelpers = []
 
-        #VERBOSETESTING
-        #VERBOSEREQUESTED
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSETESTING, dropFirst=False)
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        verboseLevel = ConsoleHelper.VERBOSENONE
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=verboseLevel, dropFirst=False)
 
         if skipTests:
-            print("\nThe following tests have been skipped:")
+            cls.dataHelper.consoleHelper.Print("\nThe following tests have been skipped:")
             for test in skippedTests:
-                print("    ", test)
-            print("\n")
+                cls.dataHelper.consoleHelper.Print("    "+test)
 
 
     def setUp(self):
@@ -55,7 +54,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper             = TestHyperparameterHelper.dataHelper.Copy()
+        self.dataHelper             = self.dataHelper.Copy()
 
 
     @unittest.skipIf("Decision Tree" in skippedTests, "Skipped decision tree unit test.")
@@ -67,7 +66,7 @@ class TestHyperparameterHelper(unittest.TestCase):
             "criterion"             : ["entropy", "gini"]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = DecisionTreeHelper(self.dataHelper)
         self.regressionHelper.description = "Decision Tree"
         scores, confusionMatrix = self.RunClassifier(parameters, True)
@@ -83,7 +82,7 @@ class TestHyperparameterHelper(unittest.TestCase):
             "n_estimators" : [10,  20]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = BaggingHelper(self.dataHelper)
         self.regressionHelper.description = "Bagging"
         scores, confusionMatrix           = self.RunClassifier(parameters, True)
@@ -99,7 +98,7 @@ class TestHyperparameterHelper(unittest.TestCase):
             "max_samples"      : [0.3, 0.7]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = RandomForestHelper(self.dataHelper)
         self.regressionHelper.description = "Random Forest"
         scores, confusionMatrix           = self.RunClassifier(parameters, False)
@@ -109,13 +108,13 @@ class TestHyperparameterHelper(unittest.TestCase):
     @unittest.skipIf("AdaBoost" in skippedTests, "Skipped adaboost unit test.")
     def testAdaBoostClassifier(self):
         parameters = {
-            "base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
+            "estimator"      : [DecisionTreeClassifier(max_depth=1, random_state=1),
                                 DecisionTreeClassifier(max_depth=2, random_state=1)],
             "n_estimators"   : [10, 25],
             "learning_rate"  : [0.1, 0.5]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = AdaBoostHelper(self.dataHelper)
         self.regressionHelper.description = "Adaboost"
         scores, confusionMatrix = self.RunClassifier(parameters, True)
@@ -130,7 +129,7 @@ class TestHyperparameterHelper(unittest.TestCase):
             "max_features" : [0.7, 0.8]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.3, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=True)
         self.regressionHelper             = GradientBoostingHelper(self.dataHelper)
         self.regressionHelper.description = "Gradient Boosting"
         scores, confusionMatrix           = self.RunClassifier(parameters, False)
@@ -149,7 +148,7 @@ class TestHyperparameterHelper(unittest.TestCase):
             "colsample_bylevel" : [0.5]
         }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = XGradientBoostingHelper(self.dataHelper)
         self.regressionHelper.description = "X Gradient Boost"
         scores, confusionMatrix           = self.RunClassifier(parameters, True)
@@ -164,11 +163,11 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.dataHelper.consoleHelper.PrintSectionTitle("Model Comparisons")
 
         # Test getting a single score.
-        ModelHelper.DisplayModelComparisons("Recall", TestHyperparameterHelper.regresionHelpers)
+        ModelHelper.DisplayModelComparisons("Recall", self.regresionHelpers)
 
         # Test getting multiple scores and test using the print function.
         print("\n\n")
-        ModelHelper.DisplayModelComparisons(["Accuracy", "Recall"], TestHyperparameterHelper.regresionHelpers)
+        ModelHelper.DisplayModelComparisons(["Accuracy", "Recall"], self.regresionHelpers)
 
         # Test using the internally saved model helpers of ModelHelpr.
         print("\n\n")
@@ -185,12 +184,14 @@ class TestHyperparameterHelper(unittest.TestCase):
     def testZZAdditionalOutput(self):
         # Tests printing of a previous runs scores and parameters.
         # This functionality is used for testing and searching for good parameters.
-        parameters = {"base_estimator" : [DecisionTreeClassifier(max_depth=1, random_state=1),
-                                          DecisionTreeClassifier(max_depth=2, random_state=1)],
-                      "n_estimators"   : [10, 25],
-                      "learning_rate"  : [0.1, 0.5]}
+        parameters = {
+            "estimator"      : [DecisionTreeClassifier(max_depth=1, random_state=1),
+                                DecisionTreeClassifier(max_depth=2, random_state=1)],
+            "n_estimators"   : [10, 25],
+            "learning_rate"  : [0.1, 0.5]
+        }
 
-        self.dataHelper.SplitData(TestHyperparameterHelper.dependentVariable, 0.2, 0.25, stratify=True)
+        self.dataHelper.SplitData(self.dependentVariable, 0.2, 0.25, stratify=True)
         self.regressionHelper             = AdaBoostHelper(self.dataHelper)
         self.regressionHelper.description = "Adaboost"
 
@@ -215,7 +216,7 @@ class TestHyperparameterHelper(unittest.TestCase):
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titlePrefix=self.regressionHelper.description)
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
-        TestHyperparameterHelper.regresionHelpers.append(self.regressionHelper)
+        self.regresionHelpers.append(self.regressionHelper)
 
         return scores, confusionMatrix
 

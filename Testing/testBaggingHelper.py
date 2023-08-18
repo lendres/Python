@@ -2,11 +2,11 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   sklearn.linear_model                      import LogisticRegression
+from   sklearn.linear_model                                     import LogisticRegression
 
 import DataSetLoading
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.BaggingHelper                     import BaggingHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.BaggingHelper                                    import BaggingHelper
 
 import unittest
 
@@ -14,7 +14,9 @@ class TestBaggingHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=verboseLevel, dropFirst=False)
 
 
     def setUp(self):
@@ -41,7 +43,7 @@ class TestBaggingHelper(unittest.TestCase):
 
     def testLogisticRegressionClassifier(self):
         baseEstimator = LogisticRegression(solver='liblinear', max_iter=1000, random_state=1)
-        self.regressionHelper   = BaggingHelper(self.dataHelper, BaggingHelper.CreateDefaultModel(base_estimator=baseEstimator))
+        self.regressionHelper   = BaggingHelper(self.dataHelper, BaggingHelper.CreateDefaultModel(estimator=baseEstimator))
 
         self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
