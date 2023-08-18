@@ -13,7 +13,9 @@ class TestGradientBoostingHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=verboseLevel, dropFirst=False)
 
 
     def setUp(self):

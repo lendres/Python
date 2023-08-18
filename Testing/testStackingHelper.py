@@ -2,15 +2,14 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   sklearn.ensemble                          import StackingClassifier
+from   sklearn.ensemble                                         import StackingClassifier
 
 import DataSetLoading
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.AdaBoostHelper                    import AdaBoostHelper
-from   lendres.GradientBoostingHelper            import GradientBoostingHelper
-from   lendres.XGradientBoostingHelper           import XGradientBoostingHelper
-from   lendres.StackingHelper                    import StackingHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.AdaBoostHelper                                   import AdaBoostHelper
+from   lendres.GradientBoostingHelper                           import GradientBoostingHelper
+from   lendres.StackingHelper                                   import StackingHelper
 
 import unittest
 
@@ -18,7 +17,9 @@ class TestStackingHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, dropFirst=False)
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCreditData(verboseLevel=verboseLevel, dropFirst=False)
 
 
     def setUp(self):
@@ -26,21 +27,21 @@ class TestStackingHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper         = TestStackingHelper.dataHelper.Copy()
-        self.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        self.dataHelper         = self.dataHelper.Copy()
+        self.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=False)
 
 
     def testResults(self):
         estimator1       = AdaBoostHelper(self.dataHelper)
-        estimator1.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        estimator1.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=False)
         estimator1.Fit()
 
         estimator2       = GradientBoostingHelper(self.dataHelper)
-        estimator2.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        estimator2.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=False)
         estimator2.Fit()
 
         finalEstimator   = GradientBoostingHelper(self.dataHelper)
-        finalEstimator.dataHelper.SplitData(TestStackingHelper.dependentVariable, 0.3, stratify=False)
+        finalEstimator.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=False)
         finalEstimator.Fit()
 
         estimators       = [("AdaBoost", estimator1.model), ("Gradient Boost", estimator2.model)]

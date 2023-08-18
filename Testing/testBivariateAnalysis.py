@@ -29,8 +29,8 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def setUp(self):
-        self.insuranceDataHelper = TestBivariateAnalysis.insuranceDataHelper.Copy()
-        self.cardioDataHelper    = TestBivariateAnalysis.cardioDataHelper.Copy()
+        self.insuranceDataHelper = self.insuranceDataHelper.Copy()
+        self.cardioDataHelper    = self.cardioDataHelper.Copy()
 
 
     @unittest.skipIf("Heat Maps" in skippedTests, "Skipped pair plots unit test.")
@@ -74,7 +74,7 @@ class TestBivariateAnalysis(unittest.TestCase):
 
     def testGetCrossTabulatedValueCounts(self):
         result = BivariateAnalysis.GetCrossTabulatedValueCounts(self.cardioDataHelper.data, "Product", "Gender")
-        TestBivariateAnalysis.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
+        self.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
         self.assertEqual(result.loc["TM195", "Female"], 40)
 
 

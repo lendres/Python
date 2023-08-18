@@ -2,9 +2,9 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-from   sklearn.preprocessing                     import StandardScaler
-from   scipy.stats                               import zscore
+import pandas                                                   as pd
+from   sklearn.preprocessing                                    import StandardScaler
+from   scipy.stats                                              import zscore
 
 class SubsetHelper():
 

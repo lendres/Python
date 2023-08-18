@@ -16,6 +16,7 @@ class TestAgglomerativeHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
 
         cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCustomerSpendData(verboseLevel=verboseLevel)
         # Used to display all the columns in the output.
@@ -68,7 +69,7 @@ class TestAgglomerativeHelper(unittest.TestCase):
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         result = self.agglomerativeHelper.GetCophenetCorrelationScores()
-        print(result)
+        self.dataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
 
     def testCreateBarPlotsOfMeanByCluster(self):

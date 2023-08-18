@@ -2,9 +2,10 @@
 Created on July 23, 2023
 @author: Lance A. Endres
 """
-import numpy                                     as np
+import numpy                                                    as np
 
-from   lendres.algorithms.DataType               import DataType
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.algorithms.DataType                              import DataType
 import unittest
 
 # More information at:
@@ -15,6 +16,10 @@ class TestBoundingDataType(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.consoleHelper = ConsoleHelper(verboseLevel=verboseLevel)
+
         cls.listOfLists = [[1, 3], [5], [8, 11, 14]]
         cls.mixedList   = [1, [5], [8, 11, 14]]
 
@@ -52,7 +57,7 @@ class TestBoundingDataType(unittest.TestCase):
 
     def testCreateListOfLists(self):
         newListofLists = DataType.CreateListOfLists(self.listOfLists, 1)
-        print(newListofLists)
+        self.consoleHelper.Display(newListofLists, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.assertTrue(DataType.AreListsOfListsSameSize(self.listOfLists, newListofLists))
 
 if __name__ == "__main__":

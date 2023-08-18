@@ -9,8 +9,6 @@ import DataSetLoading
 from   lendres.ConsoleHelper                     import ConsoleHelper
 from   lendres.PrincipleComponentAnalysisHelper  import PrincipleComponentAnalysisHelper
 
-from   IPython.display                           import display
-
 import unittest
 
 class TestPrincipleComponentAnalysisHelper(unittest.TestCase):

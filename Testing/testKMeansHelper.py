@@ -2,21 +2,20 @@
 Created on April 27, 2022
 @author: Lance A. Endres
 """
+# Remove in the future.
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import DataSetLoading
-from   lendres.KMeansHelper                      import KMeansHelper
-import pandas                                    as pd
-import numpy                                     as np
 
-
-from   sklearn.preprocessing                     import StandardScaler
-from   scipy.stats                               import zscore
-from   sklearn.datasets                          import make_blobs
-
-from   lendres.DataHelper                        import DataHelper
-
-from   IPython.display                           import display
+import pandas                                                   as pd
+from   sklearn.datasets                                         import make_blobs
 
 import unittest
+
+from   lendres.DataHelper                                       import DataHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.KMeansHelper                                     import KMeansHelper
 
 skipTests = 0
 
@@ -24,7 +23,9 @@ class TestKMeansHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetTechnicalSupportData()
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetTechnicalSupportData(verboseLevel=verboseLevel)
 
 
         X, y = make_blobs(n_samples=500,
@@ -43,11 +44,11 @@ class TestKMeansHelper(unittest.TestCase):
         Set up function that runs before each test.  Creates a new copy of the data and uses
         it to create a new regression helper.
         """
-        self.dataHelper         = TestKMeansHelper.dataHelper.Copy()
+        self.dataHelper         = self.dataHelper.Copy()
         self.kMeansHelper       = KMeansHelper(self.dataHelper, ["PROBLEM_TYPE"], copyMethod="exclude")
         self.kMeansHelper.ScaleData(method="standardscaler")
 
-        self.xDataHelper        = TestKMeansHelper.xDataHelper.Copy()
+        self.xDataHelper        = self.xDataHelper.Copy()
         self.xKMeansHelper      = KMeansHelper(self.xDataHelper, [], copyMethod="exclude")
         self.xKMeansHelper.ScaleData(method="zscore")
 
@@ -71,14 +72,16 @@ class TestKMeansHelper(unittest.TestCase):
 
 
     def testSilhouetteScores(self):
-        print()
         result = self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10))
-        display(result)
+        self.dataHelper.consoleHelper.PrintNewLine(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
 
     @unittest.skipIf(skipTests, "Skipped box plot test.")
     def testBoxPlots(self):
-        display(self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10)))
+        result = self.kMeansHelper.GetSilhouetteAnalysScores(range(2, 10))
+        self.dataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()
         self.kMeansHelper.CreateBoxPlotsOfClusters("original")
@@ -89,8 +92,8 @@ class TestKMeansHelper(unittest.TestCase):
     def testGroupStats(self):
         self.kMeansHelper.CreateModel(6)
         self.kMeansHelper.FitPredict()
-        display(self.kMeansHelper.GetGroupMeans())
-        display(self.kMeansHelper.GetGroupCounts())
+        self.dataHelper.consoleHelper.Display(self.kMeansHelper.GetGroupMeans(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Display(self.kMeansHelper.GetGroupCounts(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
 
 if __name__ == "__main__":

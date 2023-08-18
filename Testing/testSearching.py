@@ -2,9 +2,9 @@
 Created on Febuary 16, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
+import numpy                                                    as np
 
-from   lendres.algorithms.Search                 import Search
+from   lendres.algorithms.Search                                import Search
 import unittest
 
 # More information at:

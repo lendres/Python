@@ -7,6 +7,7 @@ import matplotlib.pyplot                                        as plt
 import os
 import math
 
+from   lendres.ConsoleHelper                                    import ConsoleHelper
 from   lendres.plotting.AxesHelper                              import AxesHelper
 from   lendres.plotting.PlotMaker                               import PlotMaker
 from   lendres.data.DataComparison                              import DataComparison
@@ -19,10 +20,14 @@ class TestDataComparison(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.consoleHelper = ConsoleHelper(verboseLevel=verboseLevel)
+
         thisDirectory = os.path.dirname(os.path.abspath(__file__))
 
-        cls.dispColumn  = "bit_disp_cumulate (rad)"
-        cls.velColumn   = "w_bit"
+        cls.dispColumn    = "bit_disp_cumulate (rad)"
+        cls.velColumn     = "w_bit"
 
         cls.dataComparison = DataComparison(
             directory           = os.path.join(thisDirectory, "Data"),
@@ -43,7 +48,7 @@ class TestDataComparison(unittest.TestCase):
 
 
     def AddRevolutions(self, dataSet):
-        print(dataSet.head())
+        self.consoleHelper.Display(dataSet.head(), verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         dataSet["Displacement (revs)"] = dataSet["bit_disp_cumulate (rad)"] / 2 / math.pi
 
 

@@ -2,14 +2,12 @@
 Created on January 26, 2022
 @author: Lance A. Endres
 """
-from   IPython.display                           import display
-
 import DataSetLoading
-from   lendres.DataHelper                        import DataHelper
-from   lendres.ModelHelper                       import ModelHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.ModelHelper                                      import ModelHelper
 
-from   lendres.BaggingHelper                     import BaggingHelper
-from   imblearn.over_sampling                    import SMOTE
+from   lendres.BaggingHelper                                    import BaggingHelper
+from   imblearn.over_sampling                                   import SMOTE
 
 import unittest
 
@@ -18,7 +16,9 @@ class TestModelHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCardiacData()
+        verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+        verboseLevel = ConsoleHelper.VERBOSETESTING
+        cls.dataHelper, cls.dependentVariable = DataSetLoading.GetCardiacData(verboseLevel=verboseLevel)
 
 
     def setUp(self):
@@ -29,35 +29,35 @@ class TestModelHelper(unittest.TestCase):
 
 
     def testBasicSplit(self):
-        dataHelper = TestModelHelper.dataHelper.Copy()
+        dataHelper = self.dataHelper.Copy()
 
         modelHelper = ModelHelper(dataHelper, BaggingHelper(dataHelper))
-        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=False)
+        modelHelper.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=False)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
-        print()
-        display(result)
+        self.dataHelper.consoleHelper.PrintNewLine(1, ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Print(result, ConsoleHelper.VERBOSEREQUESTED)
 
         modelHelper = ModelHelper(dataHelper, BaggingHelper(dataHelper))
-        modelHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.3, stratify=True)
+        modelHelper.dataHelper.SplitData(self.dependentVariable, 0.3, stratify=True)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
-        print()
-        display(result)
+        self.dataHelper.consoleHelper.PrintNewLine(1, ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Print(result, ConsoleHelper.VERBOSEREQUESTED)
 
 
     def testValidationSplit(self):
-        dataHelper = TestModelHelper.dataHelper.Copy()
+        dataHelper = self.dataHelper.Copy()
 
         modelHelper = ModelHelper(dataHelper,  BaggingHelper(dataHelper))
-        dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, 0.3, stratify=False)
+        dataHelper.SplitData(self.dependentVariable, 0.2, 0.3, stratify=False)
 
         result = modelHelper.dataHelper.GetSplitComparisons()
-        print()
-        display(result)
+        self.dataHelper.consoleHelper.PrintNewLine(1, ConsoleHelper.VERBOSEREQUESTED)
+        self.dataHelper.consoleHelper.Print(result, ConsoleHelper.VERBOSEREQUESTED)
 
         regressionHelper = BaggingHelper(dataHelper)
-        regressionHelper.dataHelper.SplitData(TestModelHelper.dependentVariable, 0.2, validationSize=0.25, stratify=True)
+        regressionHelper.dataHelper.SplitData(self.dependentVariable, 0.2, validationSize=0.25, stratify=True)
 
         sm = SMOTE(sampling_strategy=1, k_neighbors=5, random_state=1)
         regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData = sm.fit_resample(regressionHelper.dataHelper.xTrainingData, regressionHelper.dataHelper.yTrainingData)
@@ -65,7 +65,7 @@ class TestModelHelper(unittest.TestCase):
         regressionHelper.FitPredict()
 
         result = regressionHelper.GetModelPerformanceScores()
-        #display(result)
+        self.dataHelper.consoleHelper.Display(result)
 
         self.assertAlmostEqual(result["Recall"]["Validation"], 0.5789, places=3)
         self.assertAlmostEqual(result["Precision"]["Validation"], 0.2650, places=3)

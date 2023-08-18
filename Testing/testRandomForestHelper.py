@@ -27,7 +27,6 @@ class TestRandomForestHelper(unittest.TestCase):
 
 
     def testResults(self):
-        print("\nTest 1")
         self.regressionHelper.FitPredict()
         self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing")
 

@@ -34,14 +34,14 @@ class TestDataHelper(unittest.TestCase):
 
 
     def setUp(self):
-        self.insuranceDataHelper = TestDataHelper.insuranceDataHelper.Copy()
-        self.loanData            = TestDataHelper.loanData.Copy()
-        self.dataWithErrors      = TestDataHelper.dataWithErrors.Copy()
-        self.usedCarData         = TestDataHelper.usedCarData.Copy()
+        self.insuranceDataHelper = self.insuranceDataHelper.Copy()
+        self.loanData            = self.loanData.Copy()
+        self.dataWithErrors      = self.dataWithErrors.Copy()
+        self.usedCarData         = self.usedCarData.Copy()
 
 
     def testValueCounts(self):
-        newColumnName = self.loanData.MergeNumericalDataByRange("ZIPCode", TestDataHelper.labels, TestDataHelper.boundaries);
+        newColumnName = self.loanData.MergeNumericalDataByRange("ZIPCode", self.labels, self.boundaries);
         self.assertEqual(self.loanData.data[newColumnName].value_counts()["96000"], 40)
 
 
@@ -57,11 +57,11 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testGetMinAndMaxValues(self):
-        result = TestDataHelper.loanData.GetMinAndMaxValues("Income", 5, method="quantity")
+        result = self.loanData.GetMinAndMaxValues("Income", 5, method="quantity")
         self.assertEqual(result["Largest"].iloc[-1], 224)
 
-        solution = TestDataHelper.loanData.data.shape[0] * 0.05
-        result   = TestDataHelper.loanData.GetMinAndMaxValues("Income", 5, method="percent")
+        solution = self.loanData.data.shape[0] * 0.05
+        result   = self.loanData.GetMinAndMaxValues("Income", 5, method="percent")
         self.assertAlmostEqual(len(result["Largest"]), solution, 0)
 
 
@@ -74,7 +74,7 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testSplitComparisons(self):
-        self.loanData.SplitData(TestDataHelper.loanDependentVariable, 0.2, 0.3, stratify=False)
+        self.loanData.SplitData(self.loanDependentVariable, 0.2, 0.3, stratify=False)
 
         result = self.loanData.GetSplitComparisons()
         self.loanData.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
@@ -110,7 +110,7 @@ class TestDataHelper(unittest.TestCase):
 
     @unittest.skipIf(skipTests, "Skipped print final test.")
     def testPrintFinal(self):
-        dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=TestDataHelper.verboseLevel)
+        dataHelper, dependentVariable = DataSetLoading.GetCreditCardCustomerData(verboseLevel=self.verboseLevel)
         dataHelper.consoleHelper.PrintNewLine(2, ConsoleHelper.VERBOSEREQUESTED)
         dataHelper.PrintFinalDataSummary()
 
