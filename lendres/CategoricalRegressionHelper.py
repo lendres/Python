@@ -2,14 +2,14 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import matplotlib.pyplot                         as plt
-from   sklearn                                   import metrics
+import pandas                                                   as pd
+import matplotlib.pyplot                                        as plt
+from   sklearn                                                  import metrics
 
-from   lendres.CategoricalHelper                 import CategoricalHelper
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.CategoricalHelper                                import CategoricalHelper
+from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.plotting.PlotMaker                               import PlotMaker
 
 
 class CategoricalRegressionHelper(CategoricalHelper):

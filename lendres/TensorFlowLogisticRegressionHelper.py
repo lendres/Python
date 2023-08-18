@@ -3,7 +3,7 @@ Created on June 27, 2022
 @author: Lance A. Endres
 """
 
-from   lendres.TensorFlowHelper                  import TensorFlowHelper
+from   lendres.TensorFlowHelper                                 import TensorFlowHelper
 
 
 class TensorFlowLogisticRegressionHelper(TensorFlowHelper):

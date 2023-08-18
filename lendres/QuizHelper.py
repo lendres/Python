@@ -2,19 +2,19 @@
 Created on April 9, 2022
 @author: Lance A. Endres
 """
-# To help with reading and manipulation of data
-import numpy                         as np
-import pandas                        as pd
+# To help with reading and manipulation of data.
+import numpy                                                    as np
+import pandas                                                   as pd
 
-# To help with data visualization
-import matplotlib.pyplot             as plt
-import seaborn                       as sns
+# To help with data visualization.
+import matplotlib.pyplot                                        as plt
+import seaborn                                                  as sns
 
 
-from lendres.plotting.PlotHelper             import PlotHelper
+from lendres.plotting.PlotHelper                                import PlotHelper
 
-# To get different performance metrics
-import sklearn.metrics               as metrics
+# To get different performance metrics.
+import sklearn.metrics                                          as metrics
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,

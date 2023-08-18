@@ -2,14 +2,14 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import matplotlib.pyplot                         as plt
+import matplotlib.pyplot                                        as plt
 
-from   sklearn                                   import tree
-from   sklearn.tree                              import DecisionTreeClassifier
+from   sklearn                                                  import tree
+from   sklearn.tree                                             import DecisionTreeClassifier
 
 import os
 
-from lendres.CategoricalRegressionHelper  import CategoricalRegressionHelper
+from lendres.CategoricalRegressionHelper                        import CategoricalRegressionHelper
 
 class DecisionTreeHelper(CategoricalRegressionHelper):
 

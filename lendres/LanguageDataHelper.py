@@ -3,10 +3,10 @@ Created on July 27, 2022
 @author: Lance A. Endres
 """
 
-from   sklearn.feature_extraction.text           import CountVectorizer
-from   sklearn.feature_extraction.text           import TfidfVectorizer
+from   sklearn.feature_extraction.text                               import CountVectorizer
+from   sklearn.feature_extraction.text                               import TfidfVectorizer
 
-from   lendres.DataHelper                        import DataHelper
+from   lendres.DataHelper                                            import DataHelper
 
 
 class LanguageDataHelper(DataHelper):

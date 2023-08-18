@@ -3,10 +3,10 @@ Created on Thu August  4, 2022
 @author: Lance A. Endres
 """
 import os
-import tensorflow                                as tf
+import tensorflow                                                    as tf
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.SaveHistoryCallback               import SaveHistoryCallback
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.SaveHistoryCallback                                   import SaveHistoryCallback
 
 
 class KerasTuningOutputCallback(SaveHistoryCallback):

@@ -2,12 +2,12 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from   sklearn                                   import metrics
-from   sklearn.model_selection                   import GridSearchCV
-from   sklearn.model_selection                   import RandomizedSearchCV
+from   sklearn                                                       import metrics
+from   sklearn.model_selection                                       import GridSearchCV
+from   sklearn.model_selection                                       import RandomizedSearchCV
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.ModelHelper                       import ModelHelper
+from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.ModelHelper                                           import ModelHelper
 
 
 class HyperparameterHelper():

@@ -2,9 +2,9 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from   sklearn.ensemble                          import RandomForestClassifier
+from   sklearn.ensemble                                         import RandomForestClassifier
 
-from   lendres.CategoricalRegressionHelper       import CategoricalRegressionHelper
+from   lendres.CategoricalRegressionHelper                      import CategoricalRegressionHelper
 
 class RandomForestHelper(CategoricalRegressionHelper):
 

@@ -2,8 +2,8 @@
 Created on July 29, 2022
 @author: Lance A. Endres
 """
-from   lendres.DataHelperBase                    import DataHelper
-from   lendres.TensorFlowDataHelperFunctions     import TensorFlowDataHelperFunctions
+from   lendres.DataHelperBase                                   import DataHelper
+from   lendres.TensorFlowDataHelperFunctions                    import TensorFlowDataHelperFunctions
 
 
 class TensorFlowDataHelper(DataHelper):
@@ -70,7 +70,7 @@ class TensorFlowDataHelper(DataHelper):
             Number of nodes in the ouput.  This is the same as the number of classes in a classification problem.
         """
         return TensorFlowDataHelperFunctions.GetNumberOfUniqueCategories(self)
-        
+
 
     def DisplayAIEncodingResults(self, numberOfEntries, randomEntries=False):
         """

@@ -2,12 +2,12 @@
 Created on June 24, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
-from   matplotlib                                import pyplot                     as plt
+import numpy                                                         as np
+from   matplotlib                                                    import pyplot                     as plt
 import math
 import cv2
 
-from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
 
 
 class ImageHelper():

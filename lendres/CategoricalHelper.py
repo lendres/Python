@@ -2,10 +2,10 @@
 Created on July 10, 2022
 @author: Lance A. Endres
 """
-from   sklearn                                   import metrics
+from   sklearn                                                  import metrics
 
-from   lendres.ModelHelper                       import ModelHelper
-from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.ModelHelper                                      import ModelHelper
+from   lendres.plotting.PlotMaker                               import PlotMaker
 
 
 class CategoricalHelper(ModelHelper):

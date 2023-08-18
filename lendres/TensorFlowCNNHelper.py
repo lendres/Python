@@ -2,10 +2,10 @@
 Created on June 27, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
+import numpy                                                    as np
 
-from   lendres.ImageHelper                       import ImageHelper
-from   lendres.TensorFlowMultiClassHelper        import TensorFlowMultiClassHelper
+from   lendres.ImageHelper                                      import ImageHelper
+from   lendres.TensorFlowMultiClassHelper                       import TensorFlowMultiClassHelper
 
 
 class TensorFlowCNNHelper(TensorFlowMultiClassHelper):

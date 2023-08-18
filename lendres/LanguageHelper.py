@@ -5,23 +5,22 @@ Created on July 16, 2022
 The NLTK stop words must be downloaded before using this module.  See below to find
 a function for doing this.
 """
-import pandas                                    as pd
+import pandas                                                        as pd
 import unicodedata
-from   bs4                                       import BeautifulSoup
+from   bs4                                                           import BeautifulSoup
 
 # Natural language processing tool-kit.
 import nltk
-from   nltk.tokenize.toktok                      import ToktokTokenizer
+from   nltk.tokenize.toktok                                          import ToktokTokenizer
 import contractions
 
 # For plotting images & adjusting colors.
-import matplotlib.pyplot                         as plt
-from   wordcloud                                 import WordCloud
-from   wordcloud                                 import STOPWORDS
+import matplotlib.pyplot                                             as plt
+from   wordcloud                                                     import WordCloud
+from   wordcloud                                                     import STOPWORDS
 
 import re
 import spacy
-#import os
 
 
 class LanguageHelper():

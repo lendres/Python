@@ -2,13 +2,12 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
+import pandas                                                        as pd
+import numpy                                                         as np
 
-from   sklearn.linear_model                      import LinearRegression
-
-from   sklearn.metrics                           import mean_squared_error
-from   sklearn.metrics                           import mean_absolute_error
+from   sklearn.linear_model                                          import LinearRegression
+from   sklearn.metrics                                               import mean_squared_error
+from   sklearn.metrics                                               import mean_absolute_error
 
 from lendres.ModelHelper import ModelHelper
 
@@ -67,7 +66,7 @@ class LinearRegressionHelper(ModelHelper):
         DataFrame that contains various performance scores for the training and test data.
         """
 		# NOTE, need to implement the final argument.
-		
+
         # Make sure the model has been initiated and of the correct type.
         if not isinstance(self.model, LinearRegression):
             raise Exception("The regression model has not be initiated.")

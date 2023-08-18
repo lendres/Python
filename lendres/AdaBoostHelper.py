@@ -2,8 +2,8 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from   sklearn.ensemble                          import AdaBoostClassifier
-from   lendres.CategoricalRegressionHelper       import CategoricalRegressionHelper
+from   sklearn.ensemble                                         import AdaBoostClassifier
+from   lendres.CategoricalRegressionHelper                      import CategoricalRegressionHelper
 
 class AdaBoostHelper(CategoricalRegressionHelper):
 

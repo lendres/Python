@@ -2,9 +2,9 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from sklearn.ensemble                    import BaggingClassifier
+from sklearn.ensemble                                           import BaggingClassifier
 
-from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
+from lendres.CategoricalRegressionHelper                        import CategoricalRegressionHelper
 
 class BaggingHelper(CategoricalRegressionHelper):
 

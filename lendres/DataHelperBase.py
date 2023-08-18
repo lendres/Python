@@ -2,13 +2,13 @@
 Created on July 26, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-from   matplotlib                                import pyplot                     as plt
-import seaborn                                   as sns
-from   sklearn.model_selection                   import train_test_split
+import pandas                                                   as pd
+from   matplotlib                                               import pyplot                     as plt
+import seaborn                                                  as sns
+from   sklearn.model_selection                                  import train_test_split
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.plotting.PlotHelper               import PlotHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
 
 
 class DataHelperBase():
@@ -45,7 +45,7 @@ class DataHelperBase():
         self.xTestingData              = []
         self.yTestingData              = []
         self.yTestingEncoded           = []
-        
+
         self.labelEncoders             = {}
 
         # Save the console helper first so it can be used while processing things.
@@ -95,7 +95,7 @@ class DataHelperBase():
             self.xTrainingData             = dataHelper.xTrainingData.copy()
             self.yTrainingData             = dataHelper.yTrainingData.copy()
             self.yTrainingEncoded          = dataHelper.yTrainingEncoded.copy()
-            
+
         if len(dataHelper.xValidationData) != 0:
             self.xValidationData           = dataHelper.xValidationData.copy()
             self.yValidationData           = dataHelper.yValidationData.copy()

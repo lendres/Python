@@ -2,18 +2,18 @@
 Created on June 30, 2022
 @author: Lance A. Endres
 """
-from   matplotlib                                import pyplot                     as plt
-import seaborn                                   as sns
-import pandas                                    as pd
-import numpy                                     as np
+from   matplotlib                                                    import pyplot                     as plt
+import seaborn                                                       as sns
+import pandas                                                        as pd
+import numpy                                                         as np
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.UnivariateAnalysis                import UnivariateAnalysis
-from   lendres.Algorithms                        import FindIndicesByValues
-from   lendres.ImageHelper                       import ImageHelper
-from   lendres.TensorFlowDataHelperFunctions     import TensorFlowDataHelperFunctions
+from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.TensorFlowDataHelper                                  import TensorFlowDataHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.UnivariateAnalysis                                    import UnivariateAnalysis
+from   lendres.Algorithms                                            import FindIndicesByValues
+from   lendres.ImageHelper                                           import ImageHelper
+from   lendres.TensorFlowDataHelperFunctions                         import TensorFlowDataHelperFunctions
 
 
 class ImageDataHelper(TensorFlowDataHelper):
@@ -642,7 +642,7 @@ class ImageDataHelper(TensorFlowDataHelper):
         originalData = self.labels["Numbers"]
 
         return self._GetSplitComparisons(originalData, format=format)
-    
+
 
         def EncodeDependentVariableForAI(self):
             """
@@ -677,7 +677,7 @@ class ImageDataHelper(TensorFlowDataHelper):
                 Number of nodes in the ouput.  This is the same as the number of classes in a classification problem.
             """
             return TensorFlowDataHelperFunctions.GetNumberOfUniqueCategories(self)
-            
+
 
         def DisplayAIEncodingResults(self, numberOfEntries, randomEntries=False):
             """

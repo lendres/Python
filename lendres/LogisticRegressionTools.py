@@ -2,10 +2,10 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import pandas                               as pd
-import numpy                                as np
+import pandas                                                   as pd
+import numpy                                                    as np
 
-from sklearn                                import metrics
+from sklearn                                                    import metrics
 
 class LogisticRegressionTools():
 

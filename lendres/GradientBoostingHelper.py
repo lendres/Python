@@ -2,10 +2,10 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble                                           import AdaBoostClassifier
+from sklearn.ensemble                                           import GradientBoostingClassifier
 
-from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
+from lendres.CategoricalRegressionHelper                        import CategoricalRegressionHelper
 
 class GradientBoostingHelper(CategoricalRegressionHelper):
 

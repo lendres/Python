@@ -2,12 +2,12 @@
 Created on July 29, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
-import tensorflow                                as tf
+import pandas                                                   as pd
+import numpy                                                    as np
+import tensorflow                                               as tf
 import random
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
 
 class TensorFlowDataHelperFunctions():
     """
@@ -16,7 +16,7 @@ class TensorFlowDataHelperFunctions():
     The DataHelper and ImageHelper work very differently, but both need to be used for TensorFlow.  To support this
     the common code is here and the TensorFlowDataHelper and ImageHelper reference these functions to do the
     work.
-    
+
     It was decided to keep all TensorFlow materials out of the DataHelper class so it could be used without having
     to install the TensorFlow library.  The only other solution was to create very odd diamond shape inheritance
     scheme.

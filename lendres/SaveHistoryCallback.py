@@ -2,8 +2,8 @@
 Created on July 10, 2022
 @author: Lance A. Endres
 """
-import pandas                                            as pd
-from   tensorflow.keras.callbacks                        import Callback
+import pandas                                                   as pd
+from   tensorflow.keras.callbacks                               import Callback
 
 
 class SaveHistoryCallback(Callback):

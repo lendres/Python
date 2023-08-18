@@ -2,9 +2,9 @@
 Created on June 27, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
+import numpy                                                    as np
 
-from   lendres.TensorFlowHelper                  import TensorFlowHelper
+from   lendres.TensorFlowHelper                                 import TensorFlowHelper
 
 
 class TensorFlowMultiClassHelper(TensorFlowHelper):
