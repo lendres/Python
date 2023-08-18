@@ -2,7 +2,7 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from xgboost import XGBClassifier
+from xgboost                                     import XGBClassifier
 
 from lendres.CategoricalRegressionHelper import CategoricalRegressionHelper
 
