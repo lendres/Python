@@ -3,7 +3,7 @@ Created on November 16, 2022
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.path.File                         import File
+from   lendres.path.File                                        import File
 
 import os
 import unittest

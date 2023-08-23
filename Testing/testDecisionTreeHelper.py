@@ -3,7 +3,7 @@ Created on December 27, 2021
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.DecisionTreeHelper                import DecisionTreeHelper
+from   lendres.DecisionTreeHelper                               import DecisionTreeHelper
 
 import unittest
 

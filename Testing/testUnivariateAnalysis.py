@@ -4,9 +4,9 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.UnivariateAnalysis                import UnivariateAnalysis
-from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.UnivariateAnalysis                               import UnivariateAnalysis
+from   lendres.plotting.PlotMaker                               import PlotMaker
 
 import unittest
 

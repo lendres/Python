@@ -2,15 +2,15 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import matplotlib.pyplot                         as plt
-import seaborn                                   as sns
+import pandas                                                   as pd
+import matplotlib.pyplot                                        as plt
+import seaborn                                                  as sns
 
 import os
 
 import DataSetLoading
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.plotting.AxesHelper                              import AxesHelper
 
 import unittest
 

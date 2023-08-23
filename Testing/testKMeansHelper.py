@@ -13,8 +13,8 @@ from   sklearn.datasets                                         import make_blob
 
 import unittest
 
-from   lendres.DataHelper                                       import DataHelper
 from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.DataHelper                                       import DataHelper
 from   lendres.KMeansHelper                                     import KMeansHelper
 
 skipTests = 0

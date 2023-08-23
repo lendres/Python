@@ -308,6 +308,25 @@ class DataHelper(DataHelperBase):
              self.data[column] = self.data[column].apply(function)
 
 
+    def ChangeToType(self, columns, toType):
+        """
+        Changes the specified columns to the specifiied type.
+
+        Parameters
+        ----------
+        columns : list, array of strings
+            Names of the columns to change to the category data type.
+        toType : string
+            Type to change the columns to.
+
+        Returns
+        -------
+        None.
+        """
+        for column in columns:
+            self.data[column] = self.data[column].astype(toType)
+
+
     def ChangeToCategoryType(self, columns):
         """
         Changes the specified columns to type "category."
@@ -321,8 +340,7 @@ class DataHelper(DataHelperBase):
         -------
         None.
         """
-        for column in columns:
-            self.data[column] = self.data[column].astype("category")
+        self.ChangeToType(columns, "category")
 
 
     def ChangeAllObjectColumnsToCategories(self):

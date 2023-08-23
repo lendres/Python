@@ -2,13 +2,11 @@
 Created on July 16, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
-from   IPython.display                           import display
+import pandas                                                   as pd
 
 import DataSetLoading
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.LanguageHelper                    import LanguageHelper
+from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.LanguageHelper                                   import LanguageHelper
 
 import warnings
 import unittest

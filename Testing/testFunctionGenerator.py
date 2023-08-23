@@ -2,13 +2,13 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import matplotlib.pyplot                         as plt
+import matplotlib.pyplot                                        as plt
 
 #import DataSetLoading
-from   lendres.demonstration.FunctionGenerator   import FunctionGenerator
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.demonstration.FunctionGenerator                  import FunctionGenerator
+from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.plotting.PlotMaker                               import PlotMaker
 
 import unittest
 
