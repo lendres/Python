@@ -8,8 +8,8 @@ import matplotlib.pyplot                                        as plt
 import seaborn                                                  as sns
 sns.set(color_codes=True)
 
-from   lendres.plotting.PlotHelper                              import PlotHelper
 from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
 from   lendres.LogisticRegressionTools                          import LogisticRegressionTools
 
 
