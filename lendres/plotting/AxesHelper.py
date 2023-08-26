@@ -238,6 +238,26 @@ class AxesHelper():
 
 
     @classmethod
+    def SetXAxisNumberOfTicks(cls, axes, numberOfTicks):
+        """
+        Sets the x-axes limits.  Allows specifying the number of ticks to use.
+
+        Parameters
+        ----------
+        axes : matplotlib.axes.Axes
+            Axes to change the limits on.
+        numberOfTicks : int, optional
+            The number of ticks (labeled points) to show. The default is None.
+
+        Returns
+        -------
+        None.
+        """
+        tickSet       = axes.get_xticks()
+        cls.SetXAxisLimits(axes, [tickSet[0], tickSet[-1]], numberOfTicks)
+
+
+    @classmethod
     def SetXAxisLimits(cls, axes, limits, numberOfTicks=None):
         """
         Sets the x-axes limits.  Allows specifying the number of ticks to use.
