@@ -316,10 +316,10 @@ class ConsoleHelper():
         if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
             # Handle the input arguments.
             if numberOfRows == "all":
-                numberOfRows = dataFrame.shape[0]+1
+                numberOfRows = None
 
             if numberOfColumns == "all":
-                numberOfColumns = dataFrame.shape[1]+1
+                numberOfColumns = None
 
             # Save current values.
             storedRowsToDisplay    = pd.get_option("display.max_rows")
