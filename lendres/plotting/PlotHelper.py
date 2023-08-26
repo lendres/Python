@@ -46,6 +46,8 @@ class PlotHelper():
     formatStyle                 = "pyplot"
     colorStyle                  = "seaborn"
 
+    currentColor                = 0
+
 
     @classmethod
     def PushSettings(cls, formatSettings):
@@ -146,6 +148,7 @@ class PlotHelper():
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
         cls._SetFormatStyle(formatStyle)
+        cls.currentColor = 0
 
         # Establish the parameters specified in the input file.
         plt.style.use(parameterFile)
@@ -610,6 +613,12 @@ class PlotHelper():
             colors = [[math.floor(255*x) for x in color] for color in colors]
 
         return ["#{:02x}{:02x}{:02x}".format(color[0], color[1], color[2]) for color in colors]
+
+
+    @classmethod
+    def NextColor(cls):
+        cls.currentColor += 1
+        return cls.GetColorCycle()[cls.currentColor]
 
 
     @classmethod
