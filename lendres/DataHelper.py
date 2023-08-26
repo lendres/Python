@@ -583,44 +583,6 @@ class DataHelper(DataHelperBase):
             return np.nan
 
 
-    def ConvertMileage(self, value):
-        """
-        Takes a value from the mileage column, strips the units string, converts the units, and returns it as a float.
-
-        Parameters
-        ----------
-        value : string
-            The entry to be split.
-
-        Returns
-        -------
-        value : float
-            The mileage as km per liter or np.nan if entry was not a string or number.
-        """
-        # Make sure we are processing a string.
-        if isinstance(value, str):
-            # Splits the string at the space and returns the first entry as a number.
-            splitString = value.split()
-            value       = float(splitString[0])
-
-            if splitString[1] == "km/kg":
-                # Approximately 1.35 kg/liter.
-                # km   1.35 kg   km
-                # -- * ------  = --
-                # kg     l       l
-                value *= 1.35
-
-            return value
-
-        elif isinstance(value, float):
-            # Already a number, return it.
-            return value
-
-        else:
-            # Entry wasn't a string or number, so return an out of range value.
-            return np.nan
-
-
     def GetMinAndMaxValues(self, column, criteria, method="quantity"):
         """
         Display and maximum and minimum values in a Series.
