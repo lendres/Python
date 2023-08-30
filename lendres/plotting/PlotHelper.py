@@ -118,21 +118,25 @@ class PlotHelper():
 
 
     @classmethod
-    def FormatPlot(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
+    def FormatPlot(cls, parameterFile:str=None, formatStyle:str=None, width:float=None, height:float=None, transparentLegend:bool=False):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
         Parameters
         ----------
-        formatStyle : string or None
+        parameterFile : string or None, optional
+            A Matplotlib parameters file that has formatting values.  If None, the default file is used.
+        formatStyle : string or None, optional
             Specifies initial formating style.
                 None : no initial formating is done.
                 pyplot : resets matplotlib.pyplot to the default settings.
                 seaborn : uses seaborn color codes.
         width : float, optional
-            The width of the figure. The default is 10.
+            The width of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
+            file, the default value is ued.  The default is None.
         height : float, optional
-            The height of the figure. The default is 6.
+            The height of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
+            file, the default value is ued.  The default is None.
         transparentLegend : bool, optional
             Option to create a legend with a transparent background.  The default is False.
 
@@ -154,6 +158,13 @@ class PlotHelper():
         plt.style.use(parameterFile)
 
         figureSize = plt.rcParams["figure.figsize"]
+
+        # Apply optional paramenters.
+        if width is not None:
+            figureSize[0] = width
+
+        if height is not None:
+            figureSize[1] = height
 
         # Apply scaling.
         parameters = {
