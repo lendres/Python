@@ -10,12 +10,13 @@ class ConsoleHelper():
 
     # Class variables.
     VERBOSENONE         =  0
-    VERBOSETESTING      =  5
-    VERBOSEREQUESTED    = 10
-    VERBOSEERROR        = 20
-    VERBOSEWARNING      = 30
-    VERBOSEIMPORTANT    = 40
-    VERBOSEALL          = 50
+    VERBOSEELEVATED     = 10
+    VERBOSETESTING      = 20
+    VERBOSEREQUESTED    = 30
+    VERBOSEERROR        = 40
+    VERBOSEWARNING      = 50
+    VERBOSEIMPORTANT    = 60
+    VERBOSEALL          = 70
 
     markdownTitleLevel  =  3
 
