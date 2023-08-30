@@ -38,5 +38,23 @@ class TestFile(unittest.TestCase):
         os.remove(combinedOutputPath)
 
 
+    def testChangeDirectoryDotDot(self):
+        thisDirectory = os.path.dirname(os.path.abspath(__file__))
+
+        solution      = os.path.dirname(thisDirectory)
+        result        = File.ChangeDirectoryDotDot(thisDirectory)
+
+        self.assertEqual(solution, result)
+
+        solution      = os.path.dirname(solution)
+        result        = File.ChangeDirectoryDotDot(thisDirectory, 2)
+        self.assertEqual(solution, result)
+
+        file          = os.path.join(thisDirectory, "file.txt")
+        result        = File.ChangeDirectoryDotDot(thisDirectory, 2)
+        self.assertEqual(solution, result)
+
+
+
 if __name__ == "__main__":
     unittest.main()

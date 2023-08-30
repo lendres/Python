@@ -3,10 +3,12 @@ Created on November 16, 2022
 @author: Lance A. Endres
 """
 import os
+from   io                                                       import TextIOWrapper
+
 
 class File():
     @classmethod
-    def GetDirectory(cls, filePath):
+    def GetDirectory(cls, filePath:str):
         """
         Gets the directory from the path of a file.
 
@@ -24,7 +26,23 @@ class File():
 
 
     @classmethod
-    def GetAllFilesByExtension(cls, path, extension):
+    def ChangeDirectoryDotDot(cls, path:str, levels:int=1):
+        if os.path.exists(path):
+            # If the path exists, determine if it is a file or directory.  We only want the directory.
+            if os.path.isfile(path):
+                path = cls.GetDirectory(path)
+
+        for i in range(levels):
+            path = os.path.join(path, '..')
+
+        return os.path.abspath(path)
+
+
+
+
+
+    @classmethod
+    def GetAllFilesByExtension(cls, path:str, extension:str):
         """
         Gets a list of files that have the specified extension in the specified directory.
 
@@ -43,7 +61,7 @@ class File():
 
 
     @classmethod
-    def GetDirectoriesInDirectory(cls, directory):
+    def GetDirectoriesInDirectory(cls, directory:str):
         """
         Gets a list of directories in the specified directory.
 
@@ -61,7 +79,7 @@ class File():
 
 
     @classmethod
-    def SplitFileByNumberOfLines(cls, path, numberOfLines=40000, hasHeader=True):
+    def SplitFileByNumberOfLines(cls, path:str, numberOfLines:int=40000, hasHeader:bool=True):
         """
         Constructor.
 
@@ -120,7 +138,7 @@ class File():
 
 
     @classmethod
-    def _WriteFileSection(cls, baseFileName, fileNumber, header, lines):
+    def _WriteFileSection(cls, baseFileName:str, fileNumber:int, header:str, lines:list[str]):
         """
         Writes the lines to a new file.
 
@@ -152,7 +170,7 @@ class File():
 
 
     @classmethod
-    def CombineFiles(cls, outputFileName, listOfFiles, removeFilesAfterCombining=False):
+    def CombineFiles(cls, outputFileName:str, listOfFiles:list[str], removeFilesAfterCombining:bool=False):
         """
         Combines multiple text/csv files into a single document.
 
@@ -188,7 +206,7 @@ class File():
 
 
     @classmethod
-    def _CopyToOutputFile(cls, inputFileName, outputFile, writeHeader):
+    def _CopyToOutputFile(cls, inputFileName:str, outputFile:TextIOWrapper, writeHeader:bool):
         """
         Copies the contents of a file to the output file.  Opens the file and writes it to an existing file object.
 
