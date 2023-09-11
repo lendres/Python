@@ -108,7 +108,7 @@ def confusion_matrix_sklearn(model, predictors, target, titlePrefix=None):
     labels[0, 1] += "\nFP\nType 1"
     labels[1, 1] += "\nTP"
 
-    PlotHelper.FormatPlot(width=5.35, height=4)
+    PlotHelper.Format(width=5.35, height=4)
     #plt.figure(figsize=(6, 4))
     axis = sns.heatmap(cm, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
     PlotHelper.Label(axis, title="Data", xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)

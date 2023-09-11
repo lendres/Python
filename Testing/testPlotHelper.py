@@ -31,12 +31,12 @@ class TestPlotHelper(unittest.TestCase):
         cls.data  = pd.read_csv(inputFile)
 
 
-    def testFormatPlotMethod1(self):
+    def testFormatMethod1(self):
         self.createBasicPlot("Format by Scale", scale=2.0)
         plt.show()
 
 
-    def testFormatPlotMethod2(self):
+    def testFormatMethod2(self):
         self.createBasicPlot("Format by Width and Height", width=5, height=3)
         plt.show()
 
@@ -85,7 +85,7 @@ class TestPlotHelper(unittest.TestCase):
 
     def createBasicPlot(self, titlePrefix, formatStyle=None, scale=1.0, width=10, height=6):
         PlotHelper.scale = scale
-        PlotHelper.FormatPlot(formatStyle=formatStyle, width=width, height=height)
+        PlotHelper.Format(formatStyle=formatStyle, width=width, height=height)
         axis = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis)
         AxesHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabels="Count", titlePrefix=titlePrefix)

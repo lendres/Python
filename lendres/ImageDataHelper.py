@@ -498,7 +498,7 @@ class ImageDataHelper(TensorFlowDataHelper):
         -------
         None.
         """
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
         axis = sns.countplot(x=self.labels["Names"], palette=sns.color_palette("mako"))
         axis.set(title="Category Count Plot", xlabel="Category", ylabel="Count")
         UnivariateAnalysis.LabelPercentagesOnCountPlot(axis)

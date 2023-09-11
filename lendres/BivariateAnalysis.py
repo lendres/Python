@@ -36,7 +36,7 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         # Initialize so the variable is available.
         correlationValues = []
@@ -84,7 +84,7 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         if columns != None and hue != None:
             if not hue in columns:
@@ -136,7 +136,7 @@ class BivariateAnalysis():
             title = "Sorted by " + "\"" + sortColumn + "\""
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         axes = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
         axes.set(title=title, xlabel=xColumn, ylabel=yColumn)
@@ -180,7 +180,7 @@ class BivariateAnalysis():
         proportionData = pd.concat([data0, data1], ignore_index=True)
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
@@ -284,7 +284,7 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         sorter = data[sortColumn].value_counts().index[-1]
 
@@ -334,7 +334,7 @@ class BivariateAnalysis():
         numberOfUniqueValues = uniqueSortValues.size
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(width=6*numberOfUniqueValues, height=6)
+        PlotHelper.Format(width=6*numberOfUniqueValues, height=6)
 
         # Create figure and a row of axes.
         figure, axeses = plt.subplots(1, numberOfUniqueValues)
@@ -381,7 +381,7 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(width=12, height=6)
+        PlotHelper.Format(width=12, height=6)
 
         # Create figure and a 2x2 grid of axes.
         figure, axeses = plt.subplots(1, 2)

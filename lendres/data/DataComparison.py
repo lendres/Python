@@ -191,7 +191,7 @@ class DataComparison():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         figure = plt.gcf()
         axes   = plt.gca()

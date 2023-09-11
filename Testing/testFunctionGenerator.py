@@ -63,7 +63,7 @@ class TestFunctionGenerator(unittest.TestCase):
         -------
         None.
         """
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         axes = plt.gca()
 

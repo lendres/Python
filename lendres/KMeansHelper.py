@@ -43,7 +43,7 @@ class KMeansHelper(ClusterHelper):
 
     def CreateVisualizerPlot(self, clusters, metric="silhouette"):
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         self.model = KMeans(random_state=1, n_init="auto")
         visualizer = KElbowVisualizer(
@@ -125,7 +125,7 @@ class KMeansHelper(ClusterHelper):
         None.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         for clusters in rangeOfClusters:
 
@@ -159,7 +159,7 @@ class KMeansHelper(ClusterHelper):
         X = data
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         for clusters in rangeOfClusters:
 

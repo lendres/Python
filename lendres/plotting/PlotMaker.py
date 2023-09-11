@@ -18,12 +18,17 @@ class PlotMaker():
     A class for making common plots.
 
     Nomenclature:
+        Format
+            Establishes the font size, line widths, marker sizes, and colors.
+        New*Figure
+            Makes a new figure, formats the plot, and does additional setup work.
+        New*Plot
+            Makes a new figure, formats it, does additional setup, and plots data.  Does NOT finalize the figure.
         Finalize
             Shows the plot, the figure can no longer be manipulated after this.  It can be saved as an image.
         Create*
-            Makes the entire figure.  The figure is created, the data plotted, and the figure is finalized.
-        New*Plot
-            Makes a new figure and plots data.  Does NOT finalize the figure.
+            Makes the entire figure.  The figure is made and formatted, the data plotted, and the figure is finalized.
+
     """
     # Class level variables.
     # Color map to use for plots.
@@ -66,7 +71,7 @@ class PlotMaker():
             The axes of the plot.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         figure = plt.gcf()
         axes   = plt.gca()
@@ -270,7 +275,7 @@ class PlotMaker():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axes = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
@@ -377,7 +382,7 @@ class PlotMaker():
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
         categorySizeAdjustment = 0.65*(numberOfCategories-2)
-        PlotHelper.FormatPlot(width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
+        PlotHelper.Format(width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
 
         # Create plot and set the titles.
         axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
@@ -418,7 +423,7 @@ class PlotMaker():
             The axes of the plot.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(**kwargs)
+        PlotHelper.Format(**kwargs)
 
         # Plot the ROC curve(s).
         for key, value in dataSets.items():
@@ -498,7 +503,7 @@ class PlotMaker():
         -------
         None.
         """
-        PlotHelper.FormatPlot(formatStyle="pyplot")
+        PlotHelper.Format(formatStyle="pyplot")
 
         numberOfPoints  = 5
         figure, axes    = plt.subplots()

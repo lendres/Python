@@ -231,7 +231,7 @@ class TensorFlowHelper(CategoricalHelper):
         figure : Matplotlib.Figure
         """
         # Must be called first.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         # Create x-values so that the first epoch is at 1 and not 0, the default plot start.
         xValues = range(1, len(self.history)+1)

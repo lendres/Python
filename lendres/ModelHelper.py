@@ -263,7 +263,7 @@ class ModelHelper:
         dataFrame.rename(columns={"index" : "Index", "variable" : "Model", "value" : score}, inplace=True)
 
         # Create the plot.
-        PlotHelper.FormatPlot(width=width, height=4)
+        PlotHelper.Format(width=width, height=4)
         axes = sns.barplot(x="Model", y=score, data=dataFrame, hue="Index")
 
         # Clear the title legend, move its location to top center, and list the entries horizontally.

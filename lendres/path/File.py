@@ -27,6 +27,23 @@ class File():
 
     @classmethod
     def ChangeDirectoryDotDot(cls, path:str, levels:int=1):
+        """
+        Returns the directory that is "levels" up from the provided path.  Works similar to the "CD.." OOS command, but with some added features.  The path
+        can be a file or directory.  If it is a file, the file name is removed and then the command is executed on the directory part.  This version also allows
+        for traversing multiple levels at once.  If levels is 2, it is similar to using CD..,CD.. at the DOC command prompt.
+
+        Parameters
+        ----------
+        path : str
+            Path to remove levels from.  Can be a full path to a file or directory.  If it is a file, the file part is first stripped.
+        levels : int, optional
+            Number of durectories to go up. The default is 1.
+
+        Returns
+        -------
+        : str
+            The new path.
+        """
         if os.path.exists(path):
             # If the path exists, determine if it is a file or directory.  We only want the directory.
             if os.path.isfile(path):
@@ -36,9 +53,6 @@ class File():
             path = os.path.join(path, '..')
 
         return os.path.abspath(path)
-
-
-
 
 
     @classmethod

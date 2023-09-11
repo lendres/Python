@@ -37,7 +37,7 @@ class ImageHelper():
         """
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
         #PlotHelper.scale = 0.65
-        PlotHelper.FormatPlot(width=size, height=size)
+        PlotHelper.Format(width=size, height=size)
 
         # Adding subplots with 3 rows and 4 columns.
         axis = plt.gca()
@@ -84,7 +84,7 @@ class ImageHelper():
 
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
         PlotHelper.scale = 0.55
-        PlotHelper.FormatPlot(width=columns*ImageHelper.arrayImageSize+2, height=rows*ImageHelper.arrayImageSize+2)
+        PlotHelper.Format(width=columns*ImageHelper.arrayImageSize+2, height=rows*ImageHelper.arrayImageSize+2)
         figure = plt.figure()
 
         # Position in the index array/range.

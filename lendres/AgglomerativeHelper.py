@@ -62,7 +62,7 @@ class AgglomerativeHelper(ClusterHelper):
         cophenetCorrelation, cophenetDistances = cophenet(linkageDistances , pdist(self.scaledData))
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(width=15)
+        PlotHelper.Format(width=15)
 
         # The 0.80*PlotHelper.GetScaledStandardSize() is the standard size the PlotHelper uses.  We scale that
         # by the argument provided.

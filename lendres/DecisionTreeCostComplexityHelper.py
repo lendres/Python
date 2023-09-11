@@ -159,7 +159,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         ccpAlphas                  = self.costComplexityPath.ccp_alphas[:-1]
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
         axis = plt.gca()
 
         # The actual plotting part.
@@ -191,7 +191,7 @@ class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
         impurities = self.costComplexityPath.impurities[:-1]
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         axis = plt.gca()
         axis.plot(ccpAlphas, impurities, marker='o', drawstyle="steps-post")

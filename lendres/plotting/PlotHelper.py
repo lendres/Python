@@ -34,7 +34,7 @@ class PlotHelper():
     annotationScale             = 1.0
 
     # Used to scale the output width and height for all plots.
-    # Set individual plot sizes to be set with FormatPlot(width, height).  Then, if all plots need to be resized (for example, to
+    # Set individual plot sizes to be set with Format(width, height).  Then, if all plots need to be resized (for example, to
     # shrink them in Jupyter Notebook), set these parameters before plotting.
     widthScale                  = 1.0
     heightScale                 = 1.0
@@ -118,7 +118,7 @@ class PlotHelper():
 
 
     @classmethod
-    def FormatPlot(cls, parameterFile:str=None, formatStyle:str=None, width:float=None, height:float=None, transparentLegend:bool=False):
+    def Format(cls, parameterFile:str=None, formatStyle:str=None, width:float=None, height:float=None, transparentLegend:bool=False):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
@@ -152,7 +152,7 @@ class PlotHelper():
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
         cls._SetFormatStyle(formatStyle)
-        cls.currentColor = 0
+        cls.currentColor = -1
 
         # Establish the parameters specified in the input file.
         plt.style.use(parameterFile)
@@ -190,7 +190,7 @@ class PlotHelper():
 
 
     @classmethod
-    def FormatArtisticPlot(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
+    def ArtisticFormat(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
         """
         Default formatting for an artistic style plot.
 
@@ -217,7 +217,7 @@ class PlotHelper():
         if parameterFile is None:
             parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artistic.mplstyle")
 
-        cls.FormatPlot(parameterFile, formatStyle, width, height, transparentLegend)
+        cls.Format(parameterFile, formatStyle, width, height, transparentLegend)
 
 
     @classmethod
@@ -348,7 +348,7 @@ class PlotHelper():
             raise Exception("Top percentage out of range.")
 
         # The format setup needs to be run first.
-        cls.FormatPlot()
+        cls.Format()
 
         figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios" : (topPercent, 1-topPercent)})
 
@@ -379,7 +379,7 @@ class PlotHelper():
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
-        cls.FormatPlot(width=width, height=height)
+        cls.Format(width=width, height=height)
 
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
 
@@ -407,7 +407,7 @@ class PlotHelper():
             The axes.
         """
         # The format setup needs to be run first.
-        cls.FormatPlot()
+        cls.Format()
 
         figure = plt.figure()
         axes   = [figure.gca()]
@@ -454,7 +454,7 @@ class PlotHelper():
             The left axes and all the right axeses.
         """
         # The format setup needs to be run first.
-        cls.FormatPlot()
+        cls.Format()
 
         figure = plt.figure()
         axes   = [figure.gca()]
@@ -501,7 +501,7 @@ class PlotHelper():
         axeses : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
-        cls.FormatArtisticPlot(parameterFile, formatStyle, width, height, transparentLegend)
+        cls.ArtisticFormat(parameterFile, formatStyle, width, height, transparentLegend)
 
         figure  = plt.gcf()
         axes    = plt.gca()
@@ -630,6 +630,14 @@ class PlotHelper():
     def NextColor(cls):
         cls.currentColor += 1
         return cls.GetColorCycle()[cls.currentColor]
+
+    @classmethod
+    def CurrentColor(cls):
+        return cls.GetColorCycle()[cls.currentColor]
+
+    @classmethod
+    def GetColor(cls, color:int):
+        return cls.GetColorCycle()[color]
 
 
     @classmethod

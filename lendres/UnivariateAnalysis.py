@@ -32,7 +32,7 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot(width=10, height=1.25)
+        PlotHelper.Format(width=10, height=1.25)
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axis = plt.gca()
@@ -270,7 +270,7 @@ class UnivariateAnalysis():
         """
         # Must be run before creating figure or plotting data.
         numberOfSamples = len(samples)
-        PlotHelper.FormatPlot(height=numberOfSamples*6)
+        PlotHelper.Format(height=numberOfSamples*6)
         plt.rcParams['figure.constrained_layout.use'] = True
 
         # Create figure and a row of axes.

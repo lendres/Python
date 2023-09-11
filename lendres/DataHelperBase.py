@@ -253,7 +253,7 @@ class DataHelperBase():
         columns = splits.columns.values
         splits.reset_index(inplace=True)
 
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
         axis = splits.plot(x="index", y=columns, kind="bar", color=sns.color_palette())
         axis.set(title="Split Comparison", xlabel="Category", ylabel="Percentage")
 

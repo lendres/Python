@@ -49,7 +49,7 @@ class PrincipleComponentAnalysisHelper(SubsetHelper):
     def CreateVarianceExplainedPlot(self):
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.FormatPlot()
+        PlotHelper.Format()
 
         values  = self.model.explained_variance_ratio_
         xlabels = np.arange(1, len(values)+1)
