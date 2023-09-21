@@ -17,6 +17,8 @@ axes.labelsize         : 20
 xtick.labelsize        : 16
 ytick.labelsize        : 16
 axes.titlepad          : 25
+axes.labelpad          : 8
+axes.grid              : True              # Turn on axis grid.
 axes.linewidth         : 0.75              # Axis border.
 axes.edgecolor         : black             # Axis border.
 patch.linewidth        : 1.5               # Legend border.
