@@ -12,6 +12,7 @@ import seaborn                                                  as sns
 
 
 from lendres.plotting.PlotHelper                                import PlotHelper
+from lendres.plotting.AxesHelper                                import AxesHelper
 
 # To get different performance metrics.
 import sklearn.metrics                                          as metrics
@@ -84,7 +85,7 @@ def model_performance_classification(trueValues, predictedValues):
     return performanceDataFrame
 
 
-def confusion_matrix_sklearn(model, predictors, target, titlePrefix=None):
+def confusion_matrix_sklearn(model, predictors, target, titleSuffix=None):
     """
     To plot the confusion_matrix with percentages
 
@@ -111,5 +112,5 @@ def confusion_matrix_sklearn(model, predictors, target, titlePrefix=None):
     PlotHelper.Format(width=5.35, height=4)
     #plt.figure(figsize=(6, 4))
     axis = sns.heatmap(cm, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
-    PlotHelper.Label(axis, title="Data", xLabel="Predicted", yLabel="Actual", titlePrefix=titlePrefix)
+    AxesHelper.Label(axis, title="Data", xLabel="Predicted", yLabel="Actual", titleSuffix=titleSuffix)
     plt.show()
