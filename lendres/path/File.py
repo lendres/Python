@@ -10,7 +10,7 @@ class File():
     @classmethod
     def GetDirectory(cls, filePath:str):
         """
-        Gets the directory from the path of a file.
+        Gets the directory from the path of a file.  First resolves the path to be absolute.
 
         Parameters
         ----------
@@ -23,6 +23,25 @@ class File():
             The directory part of the file name and path.
         """
         return os.path.dirname(os.path.abspath(filePath))
+
+
+    @classmethod
+    def ContainsDirectory(cls, filePath:str):
+        """
+        Returns True if the filePath contains the directory part and False if not.
+
+        Parameters
+        ----------
+        filePath : str
+            A file name or path that contains the file name.
+
+        Returns
+        -------
+        bool
+            True if filePath contains the directory, False otherwise.
+        """
+        directory = os.path.dirname(filePath)
+        return directory != ""
 
 
     @classmethod

@@ -55,6 +55,35 @@ class TestFile(unittest.TestCase):
         self.assertEqual(solution, result)
 
 
+    def testContainsDirectory(self):
+        fileName = "c:/temp/test.txt"
+        result   = File.ContainsDirectory(fileName)
+        self.assertTrue(result)
+
+        fileName = "c:\\temp\\test.txt"
+        result   = File.ContainsDirectory(fileName)
+        self.assertTrue(result)
+
+        fileName = "test.txt"
+        result   = File.ContainsDirectory(fileName)
+        self.assertFalse(result)
+
+
+    def testGetDirectory(self):
+        fileName = "c:/temp/test.txt"
+        result   = File.GetDirectory(fileName)
+        self.assertEqual("c:\\temp", result)
+
+        fileName = "c:\\temp\\test.txt"
+        result   = File.GetDirectory(fileName)
+        self.assertEqual("c:\\temp", result)
+
+        # If no directory is provied, the current path will be used.
+        thisDirectory = os.path.dirname(os.path.abspath(__file__))
+        fileName      = "test.txt"
+        result        = File.GetDirectory(fileName)
+        self.assertEqual(thisDirectory, result.lower())
+
 
 if __name__ == "__main__":
     unittest.main()
