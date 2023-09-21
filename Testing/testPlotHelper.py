@@ -83,12 +83,12 @@ class TestPlotHelper(unittest.TestCase):
         self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
 
 
-    def createBasicPlot(self, titlePrefix, formatStyle=None, scale=1.0, width=10, height=6):
+    def createBasicPlot(self, titleSuffix, formatStyle=None, scale=1.0, width=10, height=6):
         PlotHelper.scale = scale
         PlotHelper.Format(formatStyle=formatStyle, width=width, height=height)
         axis = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis)
-        AxesHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabels="Count", titlePrefix=titlePrefix)
+        AxesHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabels="Count", titleSuffix=titleSuffix)
 
         # Reset the scale to the default for the next plot.
         PlotHelper.scale = 1.0

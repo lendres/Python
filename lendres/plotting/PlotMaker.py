@@ -2,6 +2,7 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
+import pandas                                                   as pd
 import numpy                                                    as np
 import matplotlib.pyplot                                        as plt
 
@@ -36,7 +37,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateFastFigure(cls, yData, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
+    def CreateFastFigure(cls, yData:list, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
         """
         Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
         to customize the plot.
@@ -105,7 +106,6 @@ class PlotMaker():
 
         # Label the plot.
         AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabels=yLabel)
-        axes.grid()
 
         if showLegend:
             figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.scale), ncol=2, bbox_transform=axes.transAxes)
@@ -194,7 +194,7 @@ class PlotMaker():
 
 
     @classmethod
-    def MultiAxesPlot(cls, axeses, data, independentColumnName, axesesColumnNames, independentAxis, colorCycle=None, **kwargs):
+    def MultiAxesPlot(cls, axeses:list, data:list|pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, colorCycle:list=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -225,36 +225,41 @@ class PlotMaker():
         # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
-        color = 0
 
         if type(data) is not list:
             data = [data]
+
+        plottedLines = []
+
+        # Calculate the maximum z order required to ensure all the series are stacked correctly.
+        zOrder = 0
+        for subList in axesesColumnNames:
+            zOrder += len(subList)
+        zOrder *= len(data)
 
         for dataSet in data:
             independentData = dataSet[independentColumnName]
 
             for axesColumnNames, axes in zip(axesesColumnNames, axeses):
                 for column in axesColumnNames:
-                    # If multiple data sets were supplied and they have a name, combine the name and column.  Otherwise,
-                    # just use the column name.
+                    # If multiple data sets were supplied and they have a name, combine the name and column.  Otherwise, just use the column name.
                     label = column
                     if hasattr(dataSet, "name") and not dataSet.name == "" and len(data) > 1:
-                        label = dataSet.name+" "+column
+                        label = dataSet.name + " " + column
 
                     if independentAxis == "x":
-                        axes.plot(independentData, dataSet[column], color=colorCycle[color], label=label, **kwargs)
+                        lines = axes.plot(independentData, dataSet[column], color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
                     else:
-                        pass
-                        axes.plot(dataSet[column], independentData, color=colorCycle[color], label=label, **kwargs)
-                    color += 1
+                        lines = axes.plot(dataSet[column], independentData, color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
 
-        axeses[0].grid()
+                    plottedLines.append(lines[0])
+                    zOrder -= 1
 
 
     @classmethod
-    def CreateCountFigure(cls, data, primaryColumnName, subColumnName=None, titlePrefix=None, xLabelRotation=None):
+    def CreateCountFigure(cls, data, primaryColumnName, subColumnName=None, titleSuffix=None, xLabelRotation=None):
         """
-        Creates a bar chart that plots a primary category and subcategory as the  hue.
+        Creates a bar chart that plots a primary category and subcategory as the hue.
 
         Parameters
         ----------
@@ -264,7 +269,7 @@ class PlotMaker():
             Column name in the DataFrame.
         subColumnName : string
             If present, the column used as the hue.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
         xLabelRotation : float
             Rotation of x labels.
@@ -291,7 +296,7 @@ class PlotMaker():
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabels="Count", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabels="Count", titleSuffix=titleSuffix)
 
         # Option to rotate the x-axis labels.
         AxesHelper.RotateXLabels(xLabelRotation)
@@ -338,7 +343,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titlePrefix=None, axesLabels=None):
+    def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titleSuffix=None, axesLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -347,7 +352,7 @@ class PlotMaker():
         confusionMatrix : ndarray of shape (n_classes, n_classes)
         title : string
             Main title for the data.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
         axesLabels : array like of strings
             Labels to use on the predicted and actual axes.
@@ -382,11 +387,11 @@ class PlotMaker():
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
         categorySizeAdjustment = 0.65*(numberOfCategories-2)
-        PlotHelper.Format(width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
+        PlotHelper.Format(parameterFile="gridless.mplstyle", width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
 
         # Create plot and set the titles.
         axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
-        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabels="Actual", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
@@ -399,7 +404,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateRocCurvePlot(self, dataSets, titlePrefix=None, **kwargs):
+    def CreateRocCurvePlot(self, dataSets, titleSuffix=None, **kwargs):
         """
         Creates a plot of the receiver operatoring characteristic curve(s).
 
@@ -437,7 +442,7 @@ class PlotMaker():
         axes   = plt.gca()
         title  = "Receiver Operating Characteristic"
 
-        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabels="True Positive Rate", titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabels="True Positive Rate", titleSuffix=titleSuffix)
         axes.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
         plt.legend(loc="lower right")

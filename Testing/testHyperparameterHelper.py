@@ -213,7 +213,7 @@ class TestHyperparameterHelper(unittest.TestCase):
 
         scores = self.regressionHelper.GetModelPerformanceScores(final=True)
 
-        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titlePrefix=self.regressionHelper.description)
+        self.regressionHelper.CreateConfusionMatrixPlot(dataSet="testing", titleSuffix=self.regressionHelper.description)
         confusionMatrix = self.regressionHelper.GetConfusionMatrix(dataSet="testing")
 
         self.regresionHelpers.append(self.regressionHelper)

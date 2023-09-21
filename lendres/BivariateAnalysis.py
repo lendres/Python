@@ -262,7 +262,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def CreateStackedPercentageBarPlot(cls, data, independentColumn, sortColumn, titlePrefix=None):
+    def CreateStackedPercentageBarPlot(cls, data, independentColumn, sortColumn, titleSuffix=None):
         """
         Creates a stacked bar chart that plots the "independentColumn" in seperate hues based on the percentages sorted by the "sortColumn."
 
@@ -275,7 +275,7 @@ class BivariateAnalysis():
         sortColumn : string
             Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
             variable of the data.  Ploted as different hues in the Y axis.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
 
         Returns
@@ -294,7 +294,7 @@ class BivariateAnalysis():
         axes = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
-        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabels="Fraction of "+sortColumn, titlePrefix=titlePrefix)
+        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)
 
         figure = plt.gcf()
         plt.show()
@@ -303,7 +303,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def CreateDistributionByTargetPlot(cls, data, independentColumn, sortColumn, titlePrefix=None):
+    def CreateDistributionByTargetPlot(cls, data, independentColumn, sortColumn, titleSuffix=None):
         """
         Creates histograms of the "independentColumn" sorted by the "sortColumn."
 
@@ -316,7 +316,7 @@ class BivariateAnalysis():
         sortColumn : string
             Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
             variable of the data.  Ploted as different hues in the Y axis.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
 
         Returns
@@ -359,7 +359,7 @@ class BivariateAnalysis():
 
 
     @classmethod
-    def CreateBoxPlotByTarget(cls, data, independentColumn, sortColumn, titlePrefix=None):
+    def CreateBoxPlotByTarget(cls, data, independentColumn, sortColumn, titleSuffix=None):
         """
         Creates histograms and bar plots of the "independentColumn" sorted by the "sortColumn."
 
@@ -372,7 +372,7 @@ class BivariateAnalysis():
         sortColumn : string
             Column name of data used to calculate percentages of the categories in "independentColumn."  Typically, this is the independent
             variable of the data.  Ploted as different hues in the y-axis.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
 
         Returns

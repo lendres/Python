@@ -13,7 +13,7 @@ class AxesHelper():
 
 
     @classmethod
-    def Label(cls, instances, title, xLabel, yLabels="", titlePrefix=None):
+    def Label(cls, instances, title, xLabel, yLabels="", titleSuffix=None):
         """
         Add title, x-axis label, and y-axis label.
 
@@ -28,20 +28,21 @@ class AxesHelper():
         yLabels : string or array like of strings, optional
             Y-axis label(s).  Default is a blank string.  If instances is an array, ylabels
             must be an array of the same length.
-        titlePrefix : string or None, optional
-            If supplied, the string is prepended to the title.  Default is none.
+        titleSuffix : string or None, optional
+            If supplied, the string is appended to the title.  Default is none.
 
         Returns
         -------
         None.
         """
         # Create the title.
-        if titlePrefix != None:
-            title = titlePrefix + "\n" + title
+        if titleSuffix != None:
+            title += "\n" + titleSuffix
 
         if type(instances) is list:
+            instances[0].set(title=title, xlabel=xLabel)
             for instance, yLabel in zip(instances, yLabels):
-                instance.set(title=title, xlabel=xLabel, ylabel=yLabel)
+                instance.set(ylabel=yLabel)
         else:
             instances.set(title=title, xlabel=xLabel, ylabel=yLabels)
 
@@ -88,6 +89,7 @@ class AxesHelper():
         #       to be taken from the left and set on the right.
         # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
         # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
+        # Typically, they default to all the same, so this should be ok.
         zOrderSave = axes[-1].get_zorder()
 
         # It seems that the right axes can have an alpha of "None" and be transparent, but if we set that on
@@ -96,13 +98,13 @@ class AxesHelper():
         alphaSave  = axes[1].patch.get_alpha()
         alphaSave  = 0 if alphaSave is None else alphaSave
 
-        for i in range(1, len(axes)):
-            axes[i].set_zorder(axes[0].get_zorder()+i)
+        # Reverse the order.  Typically, the last one made is highest.  We want the opposite.
+        maxZOrder = len(axes) - 1 + zOrderSave
+        for i in range(0, len(axes)):
+            axes[i].set_zorder(maxZOrder-i)
             axes[i].patch.set_alpha(axes[0].patch.get_alpha())
 
-        # The z orders could have been the same, in which case the first created is on top.  We need to add
-        # one to make sure the left is on top.
-        axes[0].set_zorder(zOrderSave+1)
+        # Make the front axes transparent (or whatever the last one was before).
         axes[0].patch.set_alpha(alphaSave)
 
 

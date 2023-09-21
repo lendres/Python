@@ -35,13 +35,13 @@ class CategoricalRegressionHelper(CategoricalHelper):
         super().__init__(dataHelper, model, description)
 
 
-    def CreateFeatureImportancePlot(self, titlePrefix=None, yFontScale=1.0, maximumFeatures=None, yAxisLabels=None, width=10, height=6):
+    def CreateFeatureImportancePlot(self, titleSuffix=None, yFontScale=1.0, maximumFeatures=None, yAxisLabels=None, width=10, height=6):
         """
         Plots importance factors as a bar plot.
 
         Parameters
         ----------
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
         yFontScale : float
             Scale factor for the y axis labels.  If there are a lot of features, they tend to run together
@@ -83,7 +83,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
         plt.yticks(indices, yLabels, fontsize=12*PlotHelper.scale*yFontScale)
-        AxesHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titlePrefix=titlePrefix)
+        AxesHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titleSuffix=titleSuffix)
 
         plt.show()
 
@@ -118,7 +118,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
         return importances
 
 
-    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None, axisLabels=None):
+    def CreateConfusionMatrixPlot(self, dataSet="training", titleSuffix=None, axisLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -128,7 +128,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
             Which data set(s) to plot.
             training - Plots the results from the training data.
             testing  - Plots the results from the test data.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
         axisLabels : array like of strings
             Labels to use on the predicted and actual axes.
@@ -140,7 +140,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix, axisLabels)
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titleSuffix, axisLabels)
 
         return confusionMatrix
 

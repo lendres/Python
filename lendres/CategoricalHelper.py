@@ -31,7 +31,7 @@ class CategoricalHelper(ModelHelper):
         super().__init__(dataHelper, model, description)
 
 
-    def CreateConfusionMatrixPlot(self, dataSet="training", titlePrefix=None, axisLabels=None):
+    def CreateConfusionMatrixPlot(self, dataSet="training", titleSuffix=None, axisLabels=None):
         """
         Plots the confusion matrix for the model output.
 
@@ -42,7 +42,7 @@ class CategoricalHelper(ModelHelper):
             training   - Plots the results from the training data.
             validation - Plots the result from the validation data.
             testing    - Plots the results from the test data.
-        titlePrefix : string or None, optional
+        titleSuffix : string or None, optional
             If supplied, the string is prepended to the title.
         axisLabels : array like of strings
             Labels to use on the predicted and actual axes.
@@ -54,7 +54,7 @@ class CategoricalHelper(ModelHelper):
         """
         confusionMatrix = self.GetConfusionMatrix(dataSet)
 
-        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titlePrefix=titlePrefix, axesLabels=axisLabels)
+        PlotMaker.CreateConfusionMatrixPlot(confusionMatrix, dataSet.title()+" Data", titleSuffix=titleSuffix, axesLabels=axisLabels)
 
         return confusionMatrix
 
