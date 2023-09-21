@@ -17,6 +17,7 @@ from   PIL                                       import ImageChops
 from   PIL                                       import ImageColor
 
 from   lendres.plotting.AxesHelper               import AxesHelper
+from   lendres.path.File                         import File
 
 
 class PlotHelper():
@@ -147,6 +148,9 @@ class PlotHelper():
         # Handle input arguments default values.
         if parameterFile is None:
             parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "default.mplstyle")
+
+        if not File.ContainsDirectory(parameterFile):
+            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), parameterFile)
 
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
@@ -428,7 +432,7 @@ class PlotHelper():
 
         # Move the first axis ticks and label to the top.
         axes[0].xaxis.tick_top()
-        axes[0].xaxis.set_label_position('top')
+        axes[0].xaxis.set_label_position("top")
 
         return (figure, axes)
 
@@ -457,20 +461,20 @@ class PlotHelper():
         cls.Format()
 
         figure = plt.figure()
-        axes   = [figure.gca()]
+        axeses = [figure.gca()]
 
         for i in range(1, numberOfAxes):
             # Create the remaining axis and specify that the same x-axis should be used.
-            axes.append(axes[0].twinx())
+            axeses.append(axeses[0].twinx())
 
             # Off set the new y-axis labels to the right of the previous.
-            offset = 1.0 + (i-1)*0.1
-            axes[i].spines["right"].set_position(("axes", offset))
+            offset = 1.0 + (i-1)*0.12
+            axeses[i].spines["right"].set_position(("axes", offset))
 
         # Change the drawing order of axes so the first one created is on top.
-        AxesHelper.SetZOrderOfMultipleAxesFigure(axes)
+        AxesHelper.SetZOrderOfMultipleAxesFigure(axeses)
 
-        return (figure, axes)
+        return (figure, axeses)
 
 
     @classmethod
