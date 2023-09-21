@@ -5,6 +5,7 @@ Created on December 4, 2021
 import pandas                                                   as pd
 import IPython
 import os
+import sys
 
 class ConsoleHelper():
 
@@ -183,7 +184,9 @@ class ConsoleHelper():
         None.
         """
         if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
-            print(message)
+            #print(message)
+            sys.stdout.write(message+"\n")
+            sys.stdout.flush()
 
 
     def PrintBold(self, message, verboseLevel=None):
