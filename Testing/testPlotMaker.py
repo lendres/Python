@@ -44,6 +44,15 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.PlotColorCycle(colorStyle="seaborn")
 
 
+    def testCreateFastFigure(self):
+        x, a = FunctionGenerator.GetSineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
+        x, b = FunctionGenerator.GetSineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
+        x, c = FunctionGenerator.GetSineWave(magnitude=5, frequency=3, yOffset=30, slope=-5, steps=1000)
+        PlotMaker.CreateFastFigure([a, b])
+        PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test", xLabel="Time", yLabel="Value", linewidth=7)
+        PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test", xLabel="Time", yLabel="Value", linewidth=[3, 8])
+
+
     def testMultiAxesPlot(self):
         """
         Demonstrate that we can plot two data sets that have been sampled at different rates on a multi-axes plot.
