@@ -278,6 +278,28 @@ class PlotHelper():
 
 
     @classmethod
+    def SetLegendLineWidths(cls, legend:plt.legend, linewidth:float=4.0):
+        """
+        Change the line width for the legend.  Sets all the line widths to the same value.  Useful for when the
+        legend lines are too thin to see the color well.
+
+        Parameters
+        ----------
+        legend : matplotlib.pyplot.legend
+            The legend.
+        linewidth : float, optional
+            The line width. The default is 4.0.
+
+        Returns
+        -------
+        None.
+        """
+        # Loop over all the lines in the legend and set the line width.  Doesn't change patches.
+        for line in legend.get_lines():
+            line.set_linewidth(linewidth)
+
+
+    @classmethod
     def UseTransparentLegend(cls, transparent=True):
         """
         Sets if the legend should be transparent of opaque.
