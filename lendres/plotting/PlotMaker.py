@@ -37,7 +37,7 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateFastFigure(cls, yData:list, yDataLabels=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
+    def CreateFastFigure(cls, yData:list, yDataLabels:list=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
         """
         Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
         to customize the plot.
@@ -77,13 +77,11 @@ class PlotMaker():
         figure = plt.gcf()
         axes   = plt.gca()
 
-
         # Handle optional argument for y labels.  If none exist, create defaults in the type of "Data Set 1", "Data Set 2" ...
         if yDataLabels is None:
             yDataLabels = []
             for i in range(1, len(yData)+1):
                 yDataLabels.append("Data Set "+str(i))
-
 
         # Handle optional xData.  If none exist, create a set of integers from 1...N where N is the length of the y data.
         if xData is None:
@@ -95,12 +93,13 @@ class PlotMaker():
         for dataSet, label in zip(yData, yDataLabels):
             seriesKwargs = {}
             for key, value in kwargs.items():
-                if value is None:
-                    pass
-                elif len(value) == 1:
-                    seriesKwargs[key] = value[0]
-                else:
-                    seriesKwargs[key] = value[i]
+                match value:
+                    case int() | float() | str():
+                        seriesKwargs[key] = value
+                    case list():
+                        seriesKwargs[key] = value[i]
+                    case _:
+                        raise Exception("Unknown type found.")
             axes.plot(xData, dataSet, label=label, **seriesKwargs)
             i += 1
 
