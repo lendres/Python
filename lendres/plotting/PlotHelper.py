@@ -147,10 +147,10 @@ class PlotHelper():
         """
         # Handle input arguments default values.
         if parameterFile is None:
-            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "default.mplstyle")
+            parameterFile = os.path.join(File.GetDirectory(__file__), "default.mplstyle")
 
         if not File.ContainsDirectory(parameterFile):
-            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), parameterFile)
+            parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
 
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
@@ -635,9 +635,21 @@ class PlotHelper():
         cls.currentColor += 1
         return cls.GetColorCycle()[cls.currentColor]
 
+
+    @classmethod
+    def NextColorAsHex(cls):
+        return cls.RgbToHex(cls.NextColor())
+
+
     @classmethod
     def CurrentColor(cls):
         return cls.GetColorCycle()[cls.currentColor]
+
+
+    @classmethod
+    def CurrentColorAsHex(cls):
+        return cls.RgbToHex(cls.CurrentColor())
+
 
     @classmethod
     def GetColor(cls, color:int):
