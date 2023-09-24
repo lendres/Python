@@ -49,22 +49,16 @@ class TestPlotMaker(unittest.TestCase):
         Demonstrate that we can plot two data sets that have been sampled at different rates on a multi-axes plot.
         """
         # Generate the first data set of 2 sine waves.
-        sine1a = FunctionGenerator.GetSineWaveAsDataFrame(magnitude=10, frequency=4, yOffset=0, slope=10, steps=1000)
-        sine1a.rename({"y" : "Sine a"}, axis="columns", inplace=True)
-        sine1b = FunctionGenerator.GetSineWaveAsDataFrame(magnitude=6, frequency=10, yOffset=22, slope=0, steps=1000)
-        sine1b.rename({"y" : "Sine b"}, axis="columns", inplace=True)
-        sine1b.drop("x", axis=1, inplace=True)
-        sine1 = pd.concat([sine1a, sine1b], axis=1)
+        sine1 = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[10, 6], frequency=[4, 10], yOffset=[0, 22], slope=[10, 0], steps=1000)
         sine1.name = "Data 1"
 
         # Generate the second data set of 2 sine waves.
-        sine2a = FunctionGenerator.GetSineWaveAsDataFrame(magnitude=8, frequency=2, yOffset=0, slope=-6, steps=500)
-        sine2a.rename({"y" : "Sine a"}, axis="columns", inplace=True)
-        sine2b = FunctionGenerator.GetSineWaveAsDataFrame(magnitude=2, frequency=1, yOffset=-2, slope=0, steps=500)
-        sine2b.rename({"y" : "Sine b"}, axis="columns", inplace=True)
-        sine2b.drop("x", axis=1, inplace=True)
-        sine2 = pd.concat([sine2a, sine2b], axis=1)
+        sine2 = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[8, 2], frequency=[2, 1], yOffset=[0, 2], slope=[-6, 0], steps=1000)
         sine2.name = "Data 2"
+
+        for sine in [sine1, sine2]:
+            sine.rename({"y0" : "Sine a"}, axis="columns", inplace=True)
+            sine.rename({"y1" : "Sine b"}, axis="columns", inplace=True)
 
         figure, axeses = PlotMaker.NewMultiYAxesPlot([sine1, sine2], "x", [["Sine a"], ["Sine b"]], linewidth="4.0")
         AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabel="Time", yLabels=["Left (a)", "Right (b)"])
