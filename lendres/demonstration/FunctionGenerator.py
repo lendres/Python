@@ -89,6 +89,8 @@ class FunctionGenerator():
                     x, y  = cls.GetSineWave(magnitude[i], frequency[i], yOffset[i], slope[i], startTime, timeLength, steps)
                     dataFrame["y"+str(i)] = y
                 return dataFrame
+            case _:
+                raise Exception("Unknown type found.")
 
 
     @classmethod
