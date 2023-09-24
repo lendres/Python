@@ -75,7 +75,8 @@ class FunctionGenerator():
 
         Returns
         -------
-        : pandas.DataFrame
+        dataFrame : pandas.DataFrame
+            The sine wave(s) in a DataFrame.
         """
         match magnitude:
             case int() | float():
