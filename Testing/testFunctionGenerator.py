@@ -36,7 +36,7 @@ class TestFunctionGenerator(unittest.TestCase):
         # it automatically aligns the X axis of each one.
         # You pass a list of lists as the y values.  Each list are the values to plot on each axes.  This plots "y1" on the first axes,
         # "y2a" and "y2b" on the second axes, and "y3" on the third.
-        figure, axeses = PlotMaker.NewMultiYAxesPlot(dataFrame, "x", [["y1"], ["y2a", "y2b"], ["y3"]])
+        figure, axeses = PlotMaker.NewMultiYAxesPlot(dataFrame, "x", [["y0"], ["y1", "y2"], ["y3"]])
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
         AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabel="Time", yLabels=["Left", "Right 1", "Right 2"])

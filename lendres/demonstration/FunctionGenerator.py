@@ -100,9 +100,4 @@ class FunctionGenerator():
         -------
         : pandas.DataFrame
         """
-        x, y1  = cls.GetSineWave(9, 4, 20, 8)
-        x, y2a = cls.GetSineWave(6, 2, 40)
-        x, y2b = cls.GetSineWave(4, 2, 60)
-        x, y3  = cls.GetSineWave(3, 1, 100)
-
-        return pd.DataFrame({"x" : x, "y1" : y1, "y2a" : y2a, "y2b" : y2b, "y3" : y3})
+        return cls.GetSineWavesAsDataFrame([9, 6, 4, 3], [4, 2, 2, 1], [20, 40, 60, 100], [8, 0, 0, 0])
