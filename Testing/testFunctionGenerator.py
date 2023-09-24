@@ -34,8 +34,8 @@ class TestFunctionGenerator(unittest.TestCase):
         # This function is a short cut for creating multiple Y axis plots.  Really this creates multiple "axes" (a set of X and Y axis).
         # Therefore, you have to align all the X values of each axes or it looks funny.  This function createas all the axes and
         # it automatically aligns the X axis of each one.
-        # You pass a list of lists as the y values.  Each list are the values to plot on each axes.  This plots "y1" on the first axes,
-        # "y2a" and "y2b" on the second axes, and "y3" on the third.
+        # You pass a list of lists as the y values.  Each list are the values to plot on each axes.  This plots "y0" on the first axes,
+        # "y1" and "y2" on the second axes, and "y3" on the third.
         figure, axeses = PlotMaker.NewMultiYAxesPlot(dataFrame, "x", [["y0"], ["y1", "y2"], ["y3"]])
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
@@ -69,7 +69,6 @@ class TestFunctionGenerator(unittest.TestCase):
 
         axes.plot(x, y, label="Sine Wave")
         axes.set(title=title, xlabel="Time", ylabel="Vibration")
-        axes.grid()
 
         plt.show()
 
