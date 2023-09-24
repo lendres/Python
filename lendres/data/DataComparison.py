@@ -214,7 +214,6 @@ class DataComparison():
             yLabel = column
 
         AxesHelper.Label(axes, title="Comparison of "+column, xLabel=xLabel, yLabels=yLabel)
-        axes.grid()
 
         plt.show()
         return figure
