@@ -211,7 +211,7 @@ class PlotMaker():
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
             plotted on the second right axes.
-       colorCycle : array like, optional
+        colorCycle : array like, optional
             The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.
@@ -227,8 +227,6 @@ class PlotMaker():
 
         if type(data) is not list:
             data = [data]
-
-        plottedLines = []
 
         # Calculate the maximum z order required to ensure all the series are stacked correctly.
         zOrder = 0
@@ -250,8 +248,6 @@ class PlotMaker():
                         lines = axes.plot(independentData, dataSet[column], color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
                     else:
                         lines = axes.plot(dataSet[column], independentData, color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
-
-                    plottedLines.append(lines[0])
                     zOrder -= 1
 
 
