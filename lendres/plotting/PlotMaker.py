@@ -225,12 +225,6 @@ class PlotMaker():
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
 
-        # Calculate the maximum z order required to ensure all the series are stacked correctly.
-        zOrder = 0
-        for subList in axesesColumnNames:
-            zOrder += len(subList)
-        zOrder *= len(data)
-
         lines2d = []
 
         independentData = data[independentColumnName]
@@ -238,12 +232,11 @@ class PlotMaker():
         for axesColumnNames, axes in zip(axesesColumnNames, axeses):
             for column in axesColumnNames:
                 if independentAxis == "x":
-                    lines = axes.plot(independentData, data[column], color=PlotHelper.NextColor(), label=column, zorder=zOrder, **kwargs)
+                    lines = axes.plot(independentData, data[column], color=PlotHelper.NextColor(), label=column, **kwargs)
 
                 else:
-                    lines = axes.plot(data[column], independentData, color=PlotHelper.NextColor(), label=column, zorder=zOrder, **kwargs)
+                    lines = axes.plot(data[column], independentData, color=PlotHelper.NextColor(), label=column, **kwargs)
                 lines2d.append(lines[0])
-                zOrder -= 1
         return lines2d
 
 
@@ -486,13 +479,13 @@ class PlotMaker():
 
 
     @classmethod
-    def PlotColorCycle(cls, colorStyle=None):
+    def PlotColorCycle(cls, lineColorCycle=None):
         """
         Create a plot that shows the colors in a color cycle.
 
         Parameters
         ----------
-        colorStyle : string, optional
+        lineColorCycle : string, optional
             The color cycle to plot. The default is None.  These can be any color cycle accepted by PlotHelper.
 
         Returns
@@ -504,7 +497,7 @@ class PlotMaker():
         numberOfPoints  = 5
         figure, axes    = plt.subplots()
         x               = range(numberOfPoints)
-        colors          = PlotHelper.GetColorCycle(colorStyle=colorStyle, numberFormat="hex")
+        colors          = PlotHelper.GetColorCycle(lineColorCycle=lineColorCycle, numberFormat="hex")
         numberOfColors  = len(colors)
 
         for i in range(numberOfColors):
@@ -524,8 +517,8 @@ class PlotMaker():
 
             # Display the name of the color cycle.
             axes.xaxis.label.set_fontsize(40)
-            if colorStyle == None:
-                axes.set(xlabel=PlotHelper.colorStyle)
+            if lineColorCycle == None:
+                axes.set(xlabel=PlotHelper.lineColorCycle)
             else:
-                axes.set(xlabel=colorStyle)
+                axes.set(xlabel=lineColorCycle)
         plt.show()

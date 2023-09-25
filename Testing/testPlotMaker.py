@@ -40,8 +40,8 @@ class TestPlotMaker(unittest.TestCase):
 
     def testPlotColorCycle(self):
         # A test that will also conveniently display the color cycles for reference.
-        PlotMaker.PlotColorCycle(colorStyle="pyplot")
-        PlotMaker.PlotColorCycle(colorStyle="seaborn")
+        PlotMaker.PlotColorCycle(lineColorCycle="pyplot")
+        PlotMaker.PlotColorCycle(lineColorCycle="seaborn")
 
 
     def testCreateFastFigure(self):
@@ -58,19 +58,18 @@ class TestPlotMaker(unittest.TestCase):
         Demonstrate that we can plot two data sets that have been sampled at different rates on a multi-axes plot.
         """
         # Generate the first data set of 2 sine waves.
-        sine1 = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[10, 6], frequency=[4, 10], yOffset=[0, 22], slope=[10, 0], steps=1000)
-        sine1.name = "Data 1"
+        data = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[10, 6, 8, 2], frequency=[4, 10, 2, 1], yOffset=[0, 22, 0, 2], slope=[10, 0, -6, 0], steps=1000)
 
         # Generate the second data set of 2 sine waves.
-        sine2 = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[8, 2], frequency=[2, 1], yOffset=[0, 2], slope=[-6, 0], steps=1000)
-        sine2.name = "Data 2"
+        # sine2 = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[8, 2], frequency=[2, 1], yOffset=[0, 2], slope=[-6, 0], steps=1000)
 
-        for sine in [sine1, sine2]:
-            sine.rename({"y0" : "Sine a"}, axis="columns", inplace=True)
-            sine.rename({"y1" : "Sine b"}, axis="columns", inplace=True)
+        data.rename({"y0" : "Sine A1"}, axis="columns", inplace=True)
+        data.rename({"y1" : "Sine B1"}, axis="columns", inplace=True)
+        data.rename({"y2" : "Sine A2"}, axis="columns", inplace=True)
+        data.rename({"y3" : "Sine B2"}, axis="columns", inplace=True)
 
-        figure, axeses = PlotMaker.NewMultiYAxesPlot([sine1, sine2], "x", [["Sine a"], ["Sine b"]], linewidth="4.0")
-        AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabel="Time", yLabels=["Left (a)", "Right (b)"])
+        figure, axeses = PlotMaker.NewMultiYAxesPlot(data, "x", [["Sine A1", "Sine A2"], ["Sine B1", "Sine B2"]], linewidth="4.0")
+        AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabel="Time", yLabels=["Left (A)", "Right (B)"])
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axeses[0].transAxes)
         plt.show()
 
