@@ -2,17 +2,17 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import numpy                                                    as np
-import matplotlib.pyplot                                        as plt
+import pandas                                                             as pd
+import numpy                                                              as np
+import matplotlib.pyplot                                                  as plt
 
-import seaborn                                                  as sns
+import seaborn                                                            as sns
 sns.set(color_codes=True)
 
-from   lendres.plotting.AxesHelper                              import AxesHelper
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.LogisticRegressionTools                          import LogisticRegressionTools
-
+from   lendres.plotting.AxesHelper                                        import AxesHelper
+from   lendres.plotting.PlotHelper                                        import PlotHelper
+from   lendres.LogisticRegressionTools                                    import LogisticRegressionTools
+from   lendres.algorithms.DataType                                        import DataType
 
 class PlotMaker():
     """
@@ -87,21 +87,12 @@ class PlotMaker():
         if xData is None:
             xData = range(1, len(yData[0])+1)
 
-        # Plot all the data sets.
+        # Convert the kwargs into individual series kwargs.
+        seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(len(yDataLabels), **kwargs)
+
         # Need to repackage all the key word arguments.
-        i = 0
-        for dataSet, label in zip(yData, yDataLabels):
-            seriesKwargs = {}
-            for key, value in kwargs.items():
-                match value:
-                    case int() | float() | str():
-                        seriesKwargs[key] = value
-                    case list():
-                        seriesKwargs[key] = value[i]
-                    case _:
-                        raise Exception("Unknown type found.")
+        for dataSet, label, seriesKwargs in zip(yData, yDataLabels, seriesKeyWordArgs):
             axes.plot(xData, dataSet, label=label, **seriesKwargs)
-            i += 1
 
         # Label the plot.
         AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabels=yLabel)
@@ -116,7 +107,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, colorCycle:list=None, **kwargs):
+    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same y-axis but different x-axis scales.
 
@@ -131,8 +122,6 @@ class PlotMaker():
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
             plotted on the second right axes.
-       colorCycle : array like, optional
-            The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.
 
@@ -146,7 +135,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", colorCycle=None, **kwargs)
+        cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -154,7 +143,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiYAxesPlot(cls, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, colorCycle:list=None, **kwargs):
+    def NewMultiYAxesPlot(cls, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -170,8 +159,6 @@ class PlotMaker():
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
             plotted on the second right axes.
-       colorCycle : array like, optional
-            The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.
 
@@ -185,7 +172,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", colorCycle=None, **kwargs)
+        cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
@@ -193,7 +180,7 @@ class PlotMaker():
 
 
     @classmethod
-    def MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", colorCycle:list=None, **kwargs):
+    def MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -211,8 +198,6 @@ class PlotMaker():
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
             plotted on the second right axes.
-        colorCycle : array like, optional
-            The colors to use for the plotted lines. The default is None.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.
 
@@ -224,16 +209,28 @@ class PlotMaker():
         # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.  This is
         # done by using the PlotHelper.NextColor() function.
 
+        # Convert the kwargs into individual series kwargs.
+        seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(DataType.GetLengthOfNestedObjects(axesesColumnNames), **kwargs)
+
         # Store the plotted lines so we can return them.
-        lines2d = []
+        lines2d     = []
+        seriesIndex = 0
 
         for axesColumnNames, axes in zip(axesesColumnNames, axeses):
             for column in axesColumnNames:
+
+                # Key word arguments.  Start with a default set and then override with any specified as arguments.
+                defaultKwargs = {"color" : PlotHelper.NextColor()}
+                seriesKwargs  = seriesKeyWordArgs[seriesIndex]
+                defaultKwargs.update(seriesKwargs)
+
                 if independentAxis == "x":
-                    lines = axes.plot(data[independentColumnName], data[column], color=PlotHelper.NextColor(), label=column, **kwargs)
+                    lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
                 else:
-                    lines = axes.plot(data[column], data[independentColumnName], color=PlotHelper.NextColor(), label=column, **kwargs)
+                    lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
+
                 lines2d.append(lines[0])
+                seriesIndex += 1
         return lines2d
 
 
