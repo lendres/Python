@@ -116,14 +116,14 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiXAxesPlot(cls, data, yAxisColumnName, axesesColumnNames, colorCycle=None, **kwargs):
+    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, colorCycle:list=None, **kwargs):
         """
         Plots data on two axes with the same y-axis but different x-axis scales.
 
         Parameters
         ----------
-        data : pandas.DataFrame or list of pandas.DataFrame
-            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
+        data : pandas.DataFrame
+            The data.
         xAxisColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -154,15 +154,15 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiYAxesPlot(cls, data, xAxisColumnName, axesesColumnNames, colorCycle=None, **kwargs):
+    def NewMultiYAxesPlot(cls, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, colorCycle:list=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
 
         Parameters
         ----------
-        data : pandas.DataFrame or list of pandas.DataFrame
-            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
+        data : pandas.DataFrame
+            The data.
         xAxisColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -193,7 +193,7 @@ class PlotMaker():
 
 
     @classmethod
-    def MultiAxesPlot(cls, axeses:list, data:list|pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", colorCycle:list=None, **kwargs):
+    def MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", colorCycle:list=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -202,8 +202,8 @@ class PlotMaker():
         ----------
         axes : array like
             A an array of axes to plot on.  There should be one axes for each grouping (list/array) in axesesColumnNames.
-        data : pandas.DataFrame or list of pandas.DataFrame
-            The data.  If a list of DataFrames is provided, the same information is plotted from both data sets.
+        data : pandas.DataFrame
+            The data.
         independentColumnName : string
             Independent variable column in the data.
         axesesColumnNames : array like of array like of strings
@@ -225,9 +225,6 @@ class PlotMaker():
         if colorCycle is None:
             colorCycle = PlotHelper.GetColorCycle()
 
-        if type(data) is not list:
-            data = [data]
-
         # Calculate the maximum z order required to ensure all the series are stacked correctly.
         zOrder = 0
         for subList in axesesColumnNames:
@@ -236,23 +233,17 @@ class PlotMaker():
 
         lines2d = []
 
-        for dataSet in data:
-            independentData = dataSet[independentColumnName]
+        independentData = data[independentColumnName]
 
-            for axesColumnNames, axes in zip(axesesColumnNames, axeses):
-                for column in axesColumnNames:
-                    # If multiple data sets were supplied and they have a name, combine the name and column.  Otherwise, just use the column name.
-                    label = column
-                    if hasattr(dataSet, "name") and not dataSet.name == "" and len(data) > 1:
-                        label = dataSet.name + " " + column
+        for axesColumnNames, axes in zip(axesesColumnNames, axeses):
+            for column in axesColumnNames:
+                if independentAxis == "x":
+                    lines = axes.plot(independentData, data[column], color=PlotHelper.NextColor(), label=column, zorder=zOrder, **kwargs)
 
-                    if independentAxis == "x":
-                        lines = axes.plot(independentData, dataSet[column], color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
-
-                    else:
-                        lines = axes.plot(dataSet[column], independentData, color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
-                    lines2d.append(lines[0])
-                    zOrder -= 1
+                else:
+                    lines = axes.plot(data[column], independentData, color=PlotHelper.NextColor(), label=column, zorder=zOrder, **kwargs)
+                lines2d.append(lines[0])
+                zOrder -= 1
         return lines2d
 
 
