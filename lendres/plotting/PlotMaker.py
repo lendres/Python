@@ -221,21 +221,18 @@ class PlotMaker():
         None.
         """
         # The colors are needed because each axes wants to use it's own color cycle resulting in duplication of
-        # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.
-        if colorCycle is None:
-            colorCycle = PlotHelper.GetColorCycle()
+        # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.  This is
+        # done by using the PlotHelper.NextColor() function.
 
+        # Store the plotted lines so we can return them.
         lines2d = []
-
-        independentData = data[independentColumnName]
 
         for axesColumnNames, axes in zip(axesesColumnNames, axeses):
             for column in axesColumnNames:
                 if independentAxis == "x":
-                    lines = axes.plot(independentData, data[column], color=PlotHelper.NextColor(), label=column, **kwargs)
-
+                    lines = axes.plot(data[independentColumnName], data[column], color=PlotHelper.NextColor(), label=column, **kwargs)
                 else:
-                    lines = axes.plot(data[column], independentData, color=PlotHelper.NextColor(), label=column, **kwargs)
+                    lines = axes.plot(data[column], data[independentColumnName], color=PlotHelper.NextColor(), label=column, **kwargs)
                 lines2d.append(lines[0])
         return lines2d
 
