@@ -45,7 +45,7 @@ class PlotHelper():
 
     # Format style.  This is the default, it can be overridden in the call to "Format".
     formatStyle                 = "pyplot"
-    colorStyle                  = "seaborn"
+    lineColorCycle              = "seaborn"
 
     currentColor                = 0
 
@@ -544,7 +544,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetColorCycle(cls, colorStyle=None, numberFormat="RGB"):
+    def GetColorCycle(cls, lineColorCycle=None, numberFormat="RGB"):
         """
         Gets the default Matplotlib colors in the color cycle.
 
@@ -560,17 +560,17 @@ class PlotHelper():
         if numberFormat != "rgb" and numberFormat != "hex":
             raise Exception("The number format specified is not valid.\nRequested format: "+numberFormat)
 
-        if colorStyle is None:
-            colorStyle = cls.colorStyle
+        if lineColorCycle is None:
+            lineColorCycle = cls.lineColorCycle
 
-        if colorStyle == "pyplot":
+        if lineColorCycle == "pyplot":
             prop_cycle = plt.rcParams['axes.prop_cycle']
             colors     = prop_cycle.by_key()['color']
 
             if numberFormat == "rgb":
                 colors = cls.ListOfHexToRgb(colors)
 
-        elif colorStyle == "seaborn":
+        elif lineColorCycle == "seaborn":
             colors = [(0.2980392156862745,  0.4470588235294118,  0.6901960784313725),
                       (0.8666666666666667,  0.5176470588235295,  0.3215686274509804),
                       (0.3333333333333333,  0.6588235294117647,  0.40784313725490196),
@@ -587,7 +587,7 @@ class PlotHelper():
                 colors = cls.ListOfRgbToHex(colors)
 
         else:
-            raise Exception("Unkown color style requested.\nRequested style: "+colorStyle)
+            raise Exception("Unkown color style requested.\nRequested style: "+lineColorCycle)
 
         return colors
 
