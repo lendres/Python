@@ -515,7 +515,7 @@ class PlotHelper():
                         seriesKwargs[key] = value[i]
 
                     case _:
-                        raise Exception("Unknown type found.")
+                        raise Exception("Unknown type found.\nType:  "+str(type(value))+"\nKey:   "+str(key)+"\nValue: "+str(value)+"\nSupplied kwargs:\n"+str(kwargs))
 
             keyWordArgumentSets.append(seriesKwargs)
         return keyWordArgumentSets
