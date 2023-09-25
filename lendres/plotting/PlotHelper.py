@@ -500,6 +500,28 @@ class PlotHelper():
 
 
     @classmethod
+    def ConvertKeyWordArgumentsToSeriesSets(cls, numberOfSets:int, **kwargs):
+        keyWordArgumentSets = []
+
+        for i in range(numberOfSets):
+            seriesKwargs = {}
+
+            for key, value in kwargs.items():
+                match value:
+                    case int() | float() | str():
+                        seriesKwargs[key] = value
+
+                    case list():
+                        seriesKwargs[key] = value[i]
+
+                    case _:
+                        raise Exception("Unknown type found.")
+
+            keyWordArgumentSets.append(seriesKwargs)
+        return keyWordArgumentSets
+
+
+    @classmethod
     def NewArtisticFigure(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
         """
         Create a new artistic plot.
