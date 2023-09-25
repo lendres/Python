@@ -183,7 +183,7 @@ class PlotMaker():
             The axes of the plot.
         """
         # Creates a figure with two axes having an aligned (shared) x-axis.
-        figure, axeses    = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
+        figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
         cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", colorCycle=None, **kwargs)
 
@@ -193,7 +193,7 @@ class PlotMaker():
 
 
     @classmethod
-    def MultiAxesPlot(cls, axeses:list, data:list|pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, colorCycle:list=None, **kwargs):
+    def MultiAxesPlot(cls, axeses:list, data:list|pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", colorCycle:list=None, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -234,6 +234,8 @@ class PlotMaker():
             zOrder += len(subList)
         zOrder *= len(data)
 
+        lines2d = []
+
         for dataSet in data:
             independentData = dataSet[independentColumnName]
 
@@ -246,9 +248,12 @@ class PlotMaker():
 
                     if independentAxis == "x":
                         lines = axes.plot(independentData, dataSet[column], color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
+
                     else:
                         lines = axes.plot(dataSet[column], independentData, color=PlotHelper.NextColor(), label=label, zorder=zOrder, **kwargs)
+                    lines2d.append(lines[0])
                     zOrder -= 1
+        return lines2d
 
 
     @classmethod
