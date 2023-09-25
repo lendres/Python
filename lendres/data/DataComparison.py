@@ -202,7 +202,7 @@ class DataComparison():
         i = 0
         for dataSet in self.dataSets:
             for column in columns:
-                axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i), **kwargs)
+                axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i)+" "+column, color=PlotHelper.NextColor(), **kwargs)
                 i += 1
 
         # If no x-axis label is provided, default to the column name.
@@ -215,7 +215,10 @@ class DataComparison():
 
         AxesHelper.Label(axes, title="Comparison of "+column, xLabel=xLabel, yLabels=yLabel)
 
+        legendColumns = 2 if len(self.dataSets)*len(columns) > 2 else 1
+        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=legendColumns, bbox_transform=axes.transAxes)
         plt.show()
+
         return figure
 
 
@@ -240,7 +243,14 @@ class DataComparison():
         figure : matplotlib.figure.Figure
             The newly created figure.
         """
-        figure, axeses = PlotMaker.NewMultiYAxesPlot(self.dataSets, self.independentColumn, axesesColumnNames, colorCycle=None, **kwargs)
+        figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
+
+        for dataSet in self.dataSets:
+            lines = PlotMaker.MultiAxesPlot(axeses, dataSet, self.independentColumn, axesesColumnNames, independentAxis="x", **kwargs)
+            for line in lines:
+                line.set_label(dataSet.name + " " + line.get_label())
+
+        AxesHelper.AlignYAxes(axeses)
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
         AxesHelper.Label(axeses, title="Data Comparison", xLabel=self.independentColumn, yLabels=yLabels)
