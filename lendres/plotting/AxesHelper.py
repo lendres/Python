@@ -87,10 +87,6 @@ class AxesHelper():
         #    2) Reverse the patch (background) transparency.  The patch of the axes in front (left) has to be
         #       transparent.  We want the patch of the axes in back to be the same as before, so the alpha has
         #       to be taken from the left and set on the right.
-        # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
-        # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
-        # Typically, they default to all the same, so this should be ok.
-        zOrderSave = axes[-1].get_zorder()
 
         # It seems that the right axes can have an alpha of "None" and be transparent, but if we set that on
         # the left axes, it does not produce the same result.  Therefore, if it is "None", we default to
@@ -98,8 +94,12 @@ class AxesHelper():
         alphaSave  = axes[1].patch.get_alpha()
         alphaSave  = 0 if alphaSave is None else alphaSave
 
-        # Reverse the order.  Typically, the last one made is highest.  We want the opposite.
-        maxZOrder = len(axes) - 1 + zOrderSave
+        # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
+        # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
+        # Typically, they default to all the same, so this should be ok.
+        maxZOrder = len(axes) - 1 + axes[-1].get_zorder()
+
+        # Reverse the order.
         for i in range(0, len(axes)):
             axes[i].set_zorder(maxZOrder-i)
             axes[i].patch.set_alpha(axes[0].patch.get_alpha())
