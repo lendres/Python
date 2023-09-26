@@ -221,8 +221,7 @@ class PlotMaker():
 
                 # Key word arguments.  Start with a default set and then override with any specified as arguments.
                 defaultKwargs = {"color" : PlotHelper.NextColor()}
-                seriesKwargs  = seriesKeyWordArgs[seriesIndex]
-                defaultKwargs.update(seriesKwargs)
+                defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
                 if independentAxis == "x":
                     lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
