@@ -501,6 +501,30 @@ class PlotHelper():
 
     @classmethod
     def ConvertKeyWordArgumentsToSeriesSets(cls, numberOfSets:int, **kwargs):
+        """
+        Converts key word arguments into a set of key word arguments.
+        
+        Example:
+            ConvertKeyWordArgumentsToSeriesSets(2, color="r")
+            Output:
+                [{color:"r"}, {color:"r"}]
+                
+                ConvertKeyWordArgumentsToSeriesSets(2, color=["r", "g"], linewidth=3)
+                Output:
+                    [{color:"r", linewidth=3}, {color:"g", linewidth=3}]
+
+        Parameters
+        ----------
+        numberOfSets : int
+            The number of output key word argument sets.
+        **kwargs : kwargs
+            The key word arguments to convert.
+
+        Returns
+        -------
+        keyWordArgumentSets : list
+            A list of length numberOfSets that contains individual key word argument dictionaries.
+        """
         keyWordArgumentSets = []
 
         for i in range(numberOfSets):
