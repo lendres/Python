@@ -8,6 +8,7 @@ import matplotlib.pyplot                                                  as plt
 import matplotlib.colors                                                  as mcolors
 from   matplotlib.gridspec                                                import GridSpec
 import seaborn                                                            as sns
+import os
 
 from   lendres.plotting.PlotHelper                                        import PlotHelper
 
@@ -15,7 +16,7 @@ from   lendres.plotting.PlotHelper                                        import
 COLUMNWIDTH     = 17.0 / 6
 ROWHEIGHT       = 46.0 / 195
 
-def PlotAllColors(colorTable, label="name", saveImage=False):
+def PlotAllColors(colorTable, label="names", saveImage=False):
     """
     Creates an image of all the colors.
 
@@ -71,7 +72,7 @@ def PlotAllColors(colorTable, label="name", saveImage=False):
     hsvColors = [
         (
             tuple(mcolors.rgb_to_hsv(mcolors.to_rgb(color))),
-            name if label=="name" else PlotHelper.RgbToHex(mcolors.to_rgb(color))
+            name if label=="names" else PlotHelper.RgbToHex(mcolors.to_rgb(color))
         )
         for name, color in colors.items()
     ]
@@ -121,6 +122,9 @@ def PlotAllColors(colorTable, label="name", saveImage=False):
         axis.text(0, 0, "* = xkcd")
 
     if saveImage:
-        figure.savefig("Matplotlib Named Colors - "+colorTable+".png", bbox_inches="tight")
+        directory = os.path.dirname(os.path.abspath(__file__))
+        file      = "Matplotlib Colors - " + colorTable.upper() + " - " + label.title() + ".png"
+        path      = os.path.join(directory, file)
+        figure.savefig(path, bbox_inches="tight")
 
     plt.show()
