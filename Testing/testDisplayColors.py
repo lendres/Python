@@ -18,36 +18,45 @@ class TestBoundingDataType(unittest.TestCase):
         pass
 
 
-    @unittest.skip("")
+    # @unittest.skip("")
     def testDisplayColor(self):
-        PlotAllColors("base")
-        PlotAllColors("tableau")
-        PlotAllColors("css")
-        PlotAllColors("xkcd")
-        PlotAllColors("full")
-        PlotAllColors("seaborn")
+        """
+        Plots all the colors tables with names as labels.
+        """
+        self.PlotAllTables()
 
 
-    @unittest.skip("")
+    # @unittest.skip("")
     def testDisplayColorsWithImageSave(self):
-        saveImage = True
-        PlotAllColors("base", saveImage=saveImage)
-        PlotAllColors("tableau", saveImage=saveImage)
-        PlotAllColors("css", saveImage=saveImage)
-        PlotAllColors("xkcd", saveImage=saveImage)
-        PlotAllColors("full", saveImage=saveImage)
-        PlotAllColors("seaborn", saveImage=saveImage)
+        """
+        Plots all the colors tables with names as labels and saves them to a file.
+        """
+        self.PlotAllTables(saveImage=True)
+
+
+    # @unittest.skip("")
+    def testDisplayHexColors(self):
+        """
+        Plots all the colors tables with hex values as labels and saves them to a file.
+        """
+        self.PlotAllTables(label="hex")
 
     
     # @unittest.skip("")
     def testDisplayHexColorsWithImageSave(self):
-        saveImage = True
-        PlotAllColors("base", label="hex", saveImage=saveImage)
-        PlotAllColors("tableau", label="hex", saveImage=saveImage)
-        PlotAllColors("css", label="hex", saveImage=saveImage)
-        PlotAllColors("xkcd", label="hex", saveImage=saveImage)
-        PlotAllColors("full", label="hex", saveImage=saveImage)
-        PlotAllColors("seaborn", label="hex", saveImage=saveImage)
+        """
+        Plots all the colors tables with hex values as labels and saves them to a file.
+        """
+        self.PlotAllTables(label="hex", saveImage=True)
+
+        
+    def PlotAllTables(self, **kwargs):
+        PlotAllColors("base", **kwargs)
+        PlotAllColors("tableau", **kwargs)
+        PlotAllColors("css", **kwargs)
+        PlotAllColors("xkcd", **kwargs)
+        PlotAllColors("full", **kwargs)
+        PlotAllColors("seaborn", **kwargs)
 
 
 if __name__ == "__main__":
