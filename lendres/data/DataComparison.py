@@ -72,6 +72,24 @@ class DataComparison():
         None.
         """
         dataFrame       = self.ValidateFile(file)
+        self.AddDataSet(dataFrame, name)
+
+
+    def AddDataSet(self, dataFrame:pd.DataFrame, name:str):
+        """
+        Add a data set from an existing DataFrame.
+
+        Parameters
+        ----------
+        dataFrame : pd.DataFrame
+            A data set as a pandas.DataFrame.
+        name : str
+            The name to give to the data set.
+
+        Returns
+        -------
+        None.
+        """
         dataFrame.name  = name
         self.dataSets.append(dataFrame)
         self.dataSetNames.append(name)
@@ -99,21 +117,6 @@ class DataComparison():
         return pd.read_csv(path)
 
 
-    def ValidateData(self):
-        dataZero = self.dataSets[0]
-
-        # Make sure starting times are the same.
-        for i in range(1, self.NumberOfDataSets):
-            data = self.dataSets[i]
-
-            if abs(data[self.independentColumn].iloc[0] - dataZero[self.independentColumn].iloc[0]) != 0:
-                raise Exception("The starting times are not equal.")
-
-            # Make sure end times are the same.
-            if abs(data[self.independentColumn].iloc[-1] - dataZero[self.independentColumn].iloc[-1]) != 0:
-                raise Exception("The ending times are not equal.")
-
-
     def GetEndTime(self):
         """
         Get the end time of the data.  Returns the value in the last row of the time column.
@@ -126,9 +129,10 @@ class DataComparison():
         return (self.dataSets[0])[self.independentColumn].iloc[-1]
 
 
-    def GetValueAtTime(self, dataSet:int, column:str, time:float):
+    def GetValue(self, dataSet:int, column:str, time:float):
         """
-        Gets the value in the specified column at the specified time from the specified data set.
+        Gets the value in the specified column at the specified value of the independent axis.  The value is returned
+        from the specified data set.
 
         Parameters
         ----------
@@ -137,32 +141,48 @@ class DataComparison():
         column : string
             The name of the column the value is in.
         time : double
-            Time of interest to get the velocity.
+            Time of interest.
 
         Returns
         -------
         value : float
             The value.
         """
+        index = self.GetIndex(dataSet, time)
+        data  = self.dataSets[dataSet]
+        value = data[column].iloc[index]
+        return value
+
+
+    def GetIndex(self, dataSet:int, time:float):
+        """
+        Gets the index at the specified value of the independent axis.  The index is returned from the specified data set.
+
+        Parameters
+        ----------
+        dataSet : int
+            Index of the data set to get the value from.
+        time : double
+            Time of interest.
+
+        Returns
+        -------
+        : int
+            The index (or closest index if the time value does not exist) to the specified time.
+        """
         data            = self.dataSets[dataSet]
         boundingIndices = Search.BoundingBinarySearch(time, data[self.independentColumn])
-        value = data[column].iloc[boundingIndices[0]]
-        return value
+        return boundingIndices[0]
 
 
     def Apply(self, function):
         """
-        Runs a function on every column in the list.
-
-        This runs the "apply" operation on the columns.  Therefore, "function" must take a
-        pandas Series as the input.
+        Runs a function on every data set.
 
         Parameters
         ----------
-        columns : list of strings
-            Columns to operate on.
         function : function
-            The function that is applied to each column.
+            The function that is applied to each data set.  The function should take a pandas.DataFrame as the input.
 
         Returns
         -------
