@@ -13,21 +13,20 @@ class AxesHelper():
 
 
     @classmethod
-    def Label(cls, instances, title, xLabel, yLabels="", titleSuffix=None):
+    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix=None):
         """
-        Add title, x-axis label, and y-axis label.
+        Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
 
         Parameters
         ----------
-        instances : figure or matplotlib.axes.Axes or array like of figure/axes
+        axeses : figure or matplotlib.axes.Axes or array like of figure/axes
             The object(s) to label.
         title : TYPE
             Main plot title.
-        xLabel : string
-            X-axis label.
+        xLabels : string or array like of strings
+            X-axis label(s).  If axeses is an array, xLabels can be an array of the same length.
         yLabels : string or array like of strings, optional
-            Y-axis label(s).  Default is a blank string.  If instances is an array, ylabels
-            must be an array of the same length.
+            Y-axis label(s).  Default is a blank string.  If axeses is an array, ylabels can be an array of the same length.
         titleSuffix : string or None, optional
             If supplied, the string is appended to the title.  Default is none.
 
@@ -38,13 +37,46 @@ class AxesHelper():
         # Create the title.
         if titleSuffix != None:
             title += "\n" + titleSuffix
+            
+        method = "single"
+        
+        if isinstance(axeses, list):
+            # Check for both multiple x and y labels.
+            if isinstance(xLabels, list) and isinstance(yLabels, list):
+                if len(xLabels) != len(axeses) or len(yLabels) != len(axeses):
+                    raise Exception("Invalid sizes of axeses, x labels, and y labels.")
+                method = "multiple"
+                
+            # Check for multiple x labels.
+            elif isinstance(xLabels, list):
+                if len(xLabels) != len(axeses):
+                    raise Exception("Invalid sizes of axeses and x labels.")
+                method = "multipleX"
+                
+            # Check for multiple y labels.
+            elif isinstance(yLabels, list):
+                if len(yLabels) != len(axeses):
+                    raise Exception("Invalid sizes of axeses and y labels.")
+                method = "multipleY"
+                
+            # Unknown configuration.
+            else:
+                raise Exception("Invalid types of axeses, x labels, and y labels.")
 
-        if type(instances) is list:
-            instances[0].set(title=title, xlabel=xLabel)
-            for instance, yLabel in zip(instances, yLabels):
-                instance.set(ylabel=yLabel)
-        else:
-            instances.set(title=title, xlabel=xLabel, ylabel=yLabels)
+        match method:
+            case "single":
+                axeses.set(title=title, xlabel=xLabels, ylabel=yLabels)
+            case "multiple":
+                for instance, xLabel, yLabel in zip(axeses, xLabels, yLabels):
+                    instance.set(xlabel=xLabel, ylabel=yLabel)
+            case "multipleX":
+                axeses[0].set(title=title, ylabel=yLabels)
+                for instance, xLabel in zip(axeses, xLabels):
+                    instance.set(xlabel=xLabel)
+            case "multipleY":
+                axeses[0].set(title=title, xlabel=xLabels)
+                for instance, yLabel in zip(axeses, yLabels):
+                    instance.set(ylabel=yLabel)
 
 
     @classmethod
