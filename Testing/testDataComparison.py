@@ -2,15 +2,12 @@
 Created on July 20, 2023
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import matplotlib.pyplot                                        as plt
+import pandas                                                        as pd
 import os
 import math
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.plotting.AxesHelper                              import AxesHelper
-from   lendres.plotting.PlotMaker                               import PlotMaker
-from   lendres.data.DataComparison                              import DataComparison
+from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.data.DataComparison                                   import DataComparison
 
 import unittest
 
@@ -79,8 +76,8 @@ class TestDataComparison(unittest.TestCase):
 
 
     def testGetVelocity(self):
-        self.assertAlmostEqual(self.dataComparison.GetValueAtTime(0, self.velColumn, 11), 38.4657299, places=3)
-        self.assertAlmostEqual(self.dataComparison.GetValueAtTime(1, self.velColumn, 11), 75.1645423, places=3)
+        self.assertAlmostEqual(self.dataComparison.GetValue(0, self.velColumn, 11), 38.4657299, places=3)
+        self.assertAlmostEqual(self.dataComparison.GetValue(1, self.velColumn, 11), 75.1645423, places=3)
 
 
 if __name__ == "__main__":
