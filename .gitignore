@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+lendres/plotting/Matplotlib Colors - BASE - Names.png
+lendres/plotting/Matplotlib Colors - CSS - Names.png
+lendres/plotting/Matplotlib Colors - TABLEAU - Names.png
+lendres/plotting/Matplotlib Colors - XKCD - Names.png
