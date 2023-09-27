@@ -31,71 +31,79 @@ class TestPlotHelper(unittest.TestCase):
         cls.data  = pd.read_csv(inputFile)
 
 
-    def testFormatMethod1(self):
-        self.createBasicPlot("Format by Scale", scale=2.0)
+    def testArtistiPlot(self):
+        PlotHelper.NewArtisticFigure()
         plt.show()
 
 
-    def testFormatMethod2(self):
-        self.createBasicPlot("Format by Width and Height", width=5, height=3)
-        plt.show()
+    def testPlotStyleFormats(self):
+        self.CreateBasicPlot("Format with Defaults")
+
+        # Test using the file extension or not using the file extension.
+        self.CreateBasicPlot("Format without Grid Lines with Extension", parameterFile="gridless.mplstyle")
+        self.CreateBasicPlot("Format without Grid Lines without Extension", parameterFile="gridless")
+
+        styleFiles = PlotHelper.GetListOfPlotStyles()
+        for styleFile in styleFiles:
+            self.CreateBasicPlot("Format with "+styleFile, parameterFile=styleFile)
 
 
-    def testAlternatPlotFormats(self):
-        self.createBasicPlot("Format with Defaults", formatStyle=None, width=5, height=3)
+    def testCompareSeabornToSeaborn(self):
+        """
+        Compare the real Seaborn style to the "seaborn.mplstyle" version.
+        """
+        sns.set(color_codes=True)
+        #print(plt.rcParams)
+        axis = plt.gca()
+        sns.histplot(self.data["bmi"], kde=True, ax=axis)
+        AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix="Format with Seaborn")
         plt.show()
-        self.createBasicPlot("Format with Seaborn", formatStyle="seaborn", width=5, height=3)
-        plt.show()
-        self.createBasicPlot("Format by Resetting Pyplot", formatStyle="pyplot", width=5, height=3)
-        plt.show()
+
+        self.CreateBasicPlot("Format with Seaborn Using Parameter File", parameterFile="seaborn.mplstyle", scale=0.6)
+
+
+    def testFormatScales(self):
+        self.CreateBasicPlot("Format by Scale", scale=2.0)
+        #self.CreateBasicPlot("Format by Width and Height")
 
 
     def testSavePlotBeforeShowMethod1(self):
-        self.createBasicPlot("Save Before Show 1")
+        self.CreateBasicPlot("Save Figure")
 
         # Test with current figure.
-        fileName = "Plot Before Show (gcf).png"
+        fileName = "Test Plot.png"
         PlotHelper.SavePlot(fileName)
 
-        fullPath = self.getFullPath(fileName)
+        fullPath = self.GetFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
-        plt.show()
-
-
-    def testSavePlotBeforeShowMethod2(self):
-        figure = self.createBasicPlot("Save Before Show 2")
-
-        # Test with supplied figure.
-        fileName = "Plot Before Show (figure).png"
-        PlotHelper.SavePlot(fileName, figure=figure)
-
-        fullPath = self.getFullPath(fileName)
-        self.assertTrue(os.path.exists(fullPath))
-        plt.show()
 
 
     def testNumberFormatException(self):
         # Should not cause an exception.
         PlotHelper.GetColorCycle(numberFormat="RGB")
-        PlotHelper.GetColorCycle(colorStyle="seaborn", numberFormat="hex")
+        PlotHelper.GetColorCycle(lineColorCycle="seaborn", numberFormat="hex")
 
         # Test the exception.
         self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
 
 
-    def createBasicPlot(self, titleSuffix, formatStyle=None, scale=1.0, width=10, height=6):
+    def CreateBasicPlot(self, titleSuffix, scale=1.0, **kwargs):
         PlotHelper.scale = scale
-        PlotHelper.Format(formatStyle=formatStyle, width=width, height=height)
+        PlotHelper.Format(**kwargs)
+
         axis = plt.gca()
-        sns.histplot(self.data["bmi"], kde=True, ax=axis)
-        AxesHelper.Label(axis, title="Test Plot", xLabel="BMI", yLabels="Count", titleSuffix=titleSuffix)
+        sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
+        AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix=titleSuffix)
 
-        # Reset the scale to the default for the next plot.
-        PlotHelper.scale = 1.0
-        return plt.gcf()
+        plt.gca().legend()
+
+        plt.show()
+        figure = plt.gcf()
+
+        return figure
 
 
-    def getFullPath(self, fileName):
+    def GetFullPath(self, fileName):
         return os.path.join(PlotHelper.GetDefaultOutputDirectory(), fileName)
 
 

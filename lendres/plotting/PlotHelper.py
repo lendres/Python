@@ -6,7 +6,7 @@ import matplotlib
 import matplotlib.pyplot                         as plt
 import math
 
-import seaborn                                   as sns
+#import seaborn                                   as sns
 
 import os
 import shutil
@@ -34,17 +34,7 @@ class PlotHelper():
     scale                       = 1.0
     annotationScale             = 1.0
 
-    # Used to scale the output width and height for all plots.
-    # Set individual plot sizes to be set with Format(width, height).  Then, if all plots need to be resized (for example, to
-    # shrink them in Jupyter Notebook), set these parameters before plotting.
-    widthScale                  = 1.0
-    heightScale                 = 1.0
-
-    # Standard size.
-    #size                        = 20
-
     # Format style.  This is the default, it can be overridden in the call to "Format".
-    formatStyle                 = "pyplot"
     lineColorCycle              = "seaborn"
 
     currentColor                = 0
@@ -119,7 +109,7 @@ class PlotHelper():
 
 
     @classmethod
-    def Format(cls, parameterFile:str=None, formatStyle:str=None, width:float=None, height:float=None, transparentLegend:bool=False):
+    def Format(cls, parameterFile:str=None, width:float=None, height:float=None):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
@@ -127,19 +117,12 @@ class PlotHelper():
         ----------
         parameterFile : string or None, optional
             A Matplotlib parameters file that has formatting values.  If None, the default file is used.
-        formatStyle : string or None, optional
-            Specifies initial formating style.
-                None : no initial formating is done.
-                pyplot : resets matplotlib.pyplot to the default settings.
-                seaborn : uses seaborn color codes.
         width : float, optional
             The width of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
             file, the default value is ued.  The default is None.
         height : float, optional
             The height of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
             file, the default value is ued.  The default is None.
-        transparentLegend : bool, optional
-            Option to create a legend with a transparent background.  The default is False.
 
         Returns
         -------
@@ -152,10 +135,12 @@ class PlotHelper():
         if not File.ContainsDirectory(parameterFile):
             parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
 
+        if not parameterFile.endswith(".mplstyle"):
+            parameterFile += ".mplstyle"
+
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
-        cls._SetFormatStyle(formatStyle)
         cls.currentColor = -1
 
         # Establish the parameters specified in the input file.
@@ -172,7 +157,7 @@ class PlotHelper():
 
         # Apply scaling.
         parameters = {
-            "figure.figsize"         : (figureSize[0]*cls.widthScale, figureSize[1]*cls.heightScale),
+            "figure.figsize"         : (figureSize[0], figureSize[1]),
             "font.size"              : cls._ScaleFontSize(plt.rcParams["font.size"]),
             "figure.titlesize"       : cls._ScaleFontSize(plt.rcParams["figure.titlesize"]),
             "legend.fontsize"        : cls._ScaleFontSize(plt.rcParams["legend.fontsize"]),
@@ -181,47 +166,14 @@ class PlotHelper():
             "axes.labelsize"         : cls._ScaleFontSize(plt.rcParams["axes.labelsize"]),
             "xtick.labelsize"        : cls._ScaleFontSize(plt.rcParams["xtick.labelsize"]),
             "ytick.labelsize"        : cls._ScaleFontSize(plt.rcParams["ytick.labelsize"]),
-            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.scale,                # Axis border.
-            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.scale,               # Legend border.
+            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.scale,                   # Axis border.
+            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.scale,                  # Legend border.
             "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.scale,
             "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.scale,
             "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.scale,
         }
 
         plt.rcParams.update(parameters)
-        if transparentLegend:
-            cls.UseTransparentLegend(True)
-
-
-    @classmethod
-    def ArtisticFormat(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
-        """
-        Default formatting for an artistic style plot.
-
-        Parameters
-        ----------
-        parameterFile : string, optional
-            A Matplotlib parameter style file.. The default is None.
-        formatStyle : string or None
-            Specifies initial formating style.
-                None : no initial formating is done.
-                pyplot : resets matplotlib.pyplot to the default settings.
-                seaborn : uses seaborn color codes.
-        width : float, optional
-            The width of the figure. The default is 10.
-        height : float, optional
-            The height of the figure. The default is 6.
-        transparentLegend : bool, optional
-            Option to create a legend with a transparent background.  The default is False.
-
-        Returns
-        -------
-        None.
-        """
-        if parameterFile is None:
-            parameterFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "artistic.mplstyle")
-
-        cls.Format(parameterFile, formatStyle, width, height, transparentLegend)
 
 
     @classmethod
@@ -246,6 +198,22 @@ class PlotHelper():
             size = cls.ConvertFontRelativeSizeToPoints(size)
 
         return size*cls.scale
+
+
+    @classmethod
+    def GetListOfPlotStyles(self):
+        """
+        Get a list of the plot styles.
+
+        Returns
+        -------
+        styles : list
+            A list of plot styles.
+        """
+        directory  = File.GetDirectory(__file__)
+        styleFiles = File.GetAllFilesByExtension(directory, "mplstyle")
+        styles     = [os.path.splitext(styleFile)[0] for styleFile in styleFiles]
+        return styles
 
 
     @classmethod
@@ -275,59 +243,6 @@ class PlotHelper():
             raise Exception("Not a valid relative font size.")
 
         return scalings[relativeSize] * defaultSize
-
-
-    @classmethod
-    def UseTransparentLegend(cls, transparent=True):
-        """
-        Sets if the legend should be transparent of opaque.
-
-        Parameters
-        ----------
-        transparent : bool, optional
-            If True, the legend background is set to transparent, otherwise it is set to opaque. The default is True.
-
-        Returns
-        -------
-        None.
-        """
-        if transparent:
-            # Parameters to create a legend with a border and transparent background.
-            parameters = {
-                "legend.framealpha"      : None,
-                "legend.facecolor"       : (1, 1, 1, 0)
-            }
-        else:
-            # Parameters for a legend with a border and a solid background.
-            parameters = {
-                "legend.framealpha"      : 1.0,
-                "legend.facecolor"       : 'inherit'
-            }
-
-        plt.rcParams.update(parameters)
-
-
-    @classmethod
-    def _SetFormatStyle(cls, formatStyle=None):
-        """
-        Sets the formatting style used for the plots.  For example, this can be pyplot formatting or Seaborn plotting.
-
-        Parameters
-        ----------
-        formatStyle : string
-            The formatting style to use.
-
-        Returns
-        -------
-        None.
-        """
-        if formatStyle is None:
-            formatStyle = cls.formatStyle
-
-        if formatStyle == "pyplot":
-            pass
-        elif formatStyle == "seaborn":
-            cls.UseSeabornColorCodes()
 
 
     @classmethod
@@ -481,12 +396,12 @@ class PlotHelper():
     def ConvertKeyWordArgumentsToSeriesSets(cls, numberOfSets:int, **kwargs):
         """
         Converts key word arguments into a set of key word arguments.
-        
+
         Example:
             ConvertKeyWordArgumentsToSeriesSets(2, color="r")
             Output:
                 [{color:"r"}, {color:"r"}]
-                
+
                 ConvertKeyWordArgumentsToSeriesSets(2, color=["r", "g"], linewidth=3)
                 Output:
                     [{color:"r", linewidth=3}, {color:"g", linewidth=3}]
@@ -524,7 +439,7 @@ class PlotHelper():
 
 
     @classmethod
-    def NewArtisticFigure(cls, parameterFile=None, formatStyle=None, width=10, height=6, transparentLegend=False):
+    def NewArtisticFigure(cls, parameterFile=None, width=10, height=6):
         """
         Create a new artistic plot.
 
@@ -532,17 +447,10 @@ class PlotHelper():
         ----------
         parameterFile : string, optional
             A Matplotlib parameter style file.. The default is None.
-        formatStyle : string or None
-            Specifies initial formating style.
-                None : no initial formating is done.
-                pyplot : resets matplotlib.pyplot to the default settings.
-                seaborn : uses seaborn color codes.
         width : float, optional
             The width of the figure. The default is 10.
         height : float, optional
             The height of the figure. The default is 6.
-        transparentLegend : bool, optional
-            Option to create a legend with a transparent background.  The default is False.
 
         Returns
         -------
@@ -551,7 +459,9 @@ class PlotHelper():
         axeses : tuple of matplotlib.axes.Axes
             The axes of the plot.
         """
-        cls.ArtisticFormat(parameterFile, formatStyle, width, height, transparentLegend)
+        if parameterFile is None:
+            parameterFile = "artistic"
+        cls.Format(parameterFile, width, height)
 
         figure  = plt.gcf()
         axes    = plt.gca()
@@ -804,22 +714,6 @@ class PlotHelper():
         None.
         """
         plt.rcParams.update(plt.rcParamsDefault)
-
-
-    @classmethod
-    def UseSeabornColorCodes(cls):
-        """
-        Uses Seaborn to create an alternate formatting.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        sns.set(color_codes=True)
 
 
     @classmethod
