@@ -1,0 +1,28 @@
+# Created on August 12, 2023
+# @author: Lance A. Endres
+
+figure.figsize         : 10, 6
+figure.dpi             : 300
+font.size              : 20
+font.weight            : bold
+figure.titlesize       : 24
+figure.titleweight     : bold
+legend.fontsize        : 16
+legend.title_fontsize  : 17
+legend.edgecolor       : black
+axes.titlesize         : 24
+axes.titleweight       : bold
+axes.labelweight       : bold
+axes.labelsize         : 20
+xtick.labelsize        : 16
+ytick.labelsize        : 16
+axes.titlepad          : 25
+axes.labelpad          : 8
+axes.grid              : True              # Turn on axis grid.
+axes.linewidth         : 0.75              # Axis border.
+axes.edgecolor         : black             # Axis border.
+patch.linewidth        : 1.5               # Legend border.
+lines.linewidth        : 3
+lines.markersize       : 10
+legend.framealpha      : None              # Transparent legend.
+legend.facecolor       : (1, 1, 1, 0)      # Transparent legend.
