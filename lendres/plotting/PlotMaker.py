@@ -95,7 +95,7 @@ class PlotMaker():
             axes.plot(xData, dataSet, label=label, **seriesKwargs)
 
         # Label the plot.
-        AxesHelper.Label(axes, title=title, xLabel=xLabel, yLabels=yLabel)
+        AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend:
             figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.scale), ncol=2, bbox_transform=axes.transAxes)
@@ -304,7 +304,7 @@ class PlotMaker():
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
-        AxesHelper.Label(axes, title=title, xLabel=subColumnName, yLabels="Count", titleSuffix=titleSuffix)
+        AxesHelper.Label(axes, title=title, xLabels=subColumnName, yLabels="Count", titleSuffix=titleSuffix)
 
         # Option to rotate the x-axis labels.
         AxesHelper.RotateXLabels(xLabelRotation)
@@ -399,7 +399,7 @@ class PlotMaker():
 
         # Create plot and set the titles.
         axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
-        AxesHelper.Label(axes, title=title, xLabel="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
+        AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
@@ -450,7 +450,7 @@ class PlotMaker():
         axes   = plt.gca()
         title  = "Receiver Operating Characteristic"
 
-        AxesHelper.Label(axes, title=title, xLabel="False Positive Rate", yLabels="True Positive Rate", titleSuffix=titleSuffix)
+        AxesHelper.Label(axes, title=title, xLabels="False Positive Rate", yLabels="True Positive Rate", titleSuffix=titleSuffix)
         axes.set(xlim=[0.0, 1.0], ylim=[0.0, 1.05])
 
         plt.legend(loc="lower right")
@@ -516,7 +516,7 @@ class PlotMaker():
         -------
         None.
         """
-        PlotHelper.Format(formatStyle="pyplot")
+        PlotHelper.Format()
 
         numberOfPoints  = 5
         figure, axes    = plt.subplots()

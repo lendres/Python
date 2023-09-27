@@ -294,7 +294,7 @@ class BivariateAnalysis():
         axes = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
-        AxesHelper.Label(axes, title=title, xLabel=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)
+        AxesHelper.Label(axes, title=title, xLabels=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)
 
         figure = plt.gcf()
         plt.show()

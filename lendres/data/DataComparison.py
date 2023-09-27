@@ -233,7 +233,7 @@ class DataComparison():
         if yLabel == None:
             yLabel = column
 
-        AxesHelper.Label(axes, title="Comparison of "+column, xLabel=xLabel, yLabels=yLabel)
+        AxesHelper.Label(axes, title="Comparison of "+column, xLabels=xLabel, yLabels=yLabel)
 
         legendColumns = 2 if len(self.dataSets)*len(columns) > 2 else 1
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=legendColumns, bbox_transform=axes.transAxes)
@@ -273,7 +273,7 @@ class DataComparison():
         AxesHelper.AlignYAxes(axeses)
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
-        AxesHelper.Label(axeses, title="Data Comparison", xLabel=self.independentColumn, yLabels=yLabels)
+        AxesHelper.Label(axeses, title="Data Comparison", xLabels=self.independentColumn, yLabels=yLabels)
 
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axeses[0].transAxes)
         plt.show()

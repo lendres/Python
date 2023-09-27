@@ -83,7 +83,7 @@ class CategoricalRegressionHelper(CategoricalHelper):
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
         plt.yticks(indices, yLabels, fontsize=12*PlotHelper.scale*yFontScale)
-        AxesHelper.Label(plt.gca(), title="Feature Importances", xLabel="Relative Importance", titleSuffix=titleSuffix)
+        AxesHelper.Label(plt.gca(), title="Feature Importances", xLabels="Relative Importance", titleSuffix=titleSuffix)
 
         plt.show()
 

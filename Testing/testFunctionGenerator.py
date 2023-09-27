@@ -39,7 +39,7 @@ class TestFunctionGenerator(unittest.TestCase):
         figure, axeses = PlotMaker.NewMultiYAxesPlot(dataFrame, "x", [["y0"], ["y1", "y2"], ["y3"]])
 
         # The AxesHelper can automatically label the axes if you supply it a list of strings for the y labels.
-        AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabel="Time", yLabels=["Left", "Right 1", "Right 2"])
+        AxesHelper.Label(axeses, title="Multiple Y Axis Plot", xLabels="Time", yLabels=["Left", "Right 1", "Right 2"])
 
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=4, bbox_transform=axeses[0].transAxes)
         plt.show()
