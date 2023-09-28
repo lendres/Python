@@ -79,10 +79,10 @@ class CategoricalRegressionHelper(CategoricalHelper):
             yLabels.reverse()
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=width, height=height)
+        PlotHelper.Format(overrides={"figure.figsize" : (width, height)})
 
         plt.barh(indices, importancesDataFrame["Importance"], color="cornflowerblue", align="center")
-        plt.yticks(indices, yLabels, fontsize=12*PlotHelper.scale*yFontScale)
+        plt.yticks(indices, yLabels, fontsize=12*PlotHelper.formatSettings.Scale*yFontScale)
         AxesHelper.Label(plt.gca(), title="Feature Importances", xLabels="Relative Importance", titleSuffix=titleSuffix)
 
         plt.show()

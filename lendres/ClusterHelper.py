@@ -194,7 +194,7 @@ class ClusterHelper(SubsetHelper):
 
         numberOfRows = math.ceil(len(self.columns) / subPlotColumns)
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=25, height=6*numberOfRows)
+        PlotHelper.Format(overrides={"figure.figsize" : (25, 6*numberOfRows)})
 
         figure, axes = plt.subplots(numberOfRows, subPlotColumns)
         figure.suptitle("Box Plot of Clusters for " + whichData.title() + " Data")
@@ -233,7 +233,7 @@ class ClusterHelper(SubsetHelper):
         -------
         None.
         """
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
 
         if type(columns) != list:
             columns = [columns]

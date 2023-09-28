@@ -14,6 +14,88 @@ from   lendres.ConsoleHelper                                    import ConsoleHe
 class UnivariateAnalysis():
     supFigureYAdjustment = 1.0
 
+
+    @classmethod
+    def CreateCountFigure(cls, data, columnName, titleSuffix=None, xLabelRotation=None):
+        """
+        Creates a bar chart that plots a primary category and subcategory as the hue.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        primaryColumnName : string
+            Column name in the DataFrame.
+        subColumnName : string
+            If present, the column used as the hue.
+        titleSuffix : string or None, optional
+            If supplied, the string is prepended to the title.
+        xLabelRotation : float
+            Rotation of x labels.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.Format("gridless")
+
+        # This creates the bar chart.  At the same time, save the figure so we can return it.
+        axes = sns.countplot(x=columnName, data=data)
+        figure = plt.gcf()
+
+        # Label the perentages of each column.
+        cls.LabelPercentagesOnColumnsOfBarGraph(axes)
+
+        # Titles.
+        title = "\"" + columnName + "\"" + " Category"
+        AxesHelper.Label(axes, title=title, xLabels=columnName, yLabels="Count", titleSuffix=titleSuffix)
+
+        # Option to rotate the x-axis labels.
+        AxesHelper.RotateXLabels(xLabelRotation)
+
+        # Make sure the plot is shown.
+        plt.show()
+
+        return figure
+
+
+    @classmethod
+    def LabelPercentagesOnColumnsOfBarGraph(cls, axes):
+        """
+        Labels each column with a percentage of the total sum of all columns.
+
+        Parameters
+        ----------
+        axes : matplotlib.axes.Axes
+            Matplotlib axes to plot on.
+
+        Returns
+        -------
+        None.
+        """
+        # Number of entries.
+        total = 0
+
+        # Find the total count first.
+        for patch in axes.patches:
+            total += patch.get_height()
+
+        for patch in axes.patches:
+            # Percentage of the column.
+            percentage = "{:.1f}%".format(100*patch.get_height()/total)
+
+            # Find the center of the column/patch on the x-axis.
+            x = patch.get_x() + patch.get_width()/2
+
+            # Height of the column/patch.  Add a little so it does not touch the top of the column.
+            y = patch.get_y() + patch.get_height() + 0.5
+
+            # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
+            axes.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
+
+
     @classmethod
     def CreateBoxPlot(cls, data, column):
         """
@@ -32,7 +114,10 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=10, height=1.25)
+        PlotHelper.Format(overrides={"figure.figsize" : (10, 1.25)})
+
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
+        figure = plt.gcf()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axis = plt.gca()
@@ -40,9 +125,6 @@ class UnivariateAnalysis():
 
         title = "Column " + "\"" + column + "\""
         axis.set(title=title, xlabel=column, ylabel="Count")
-
-        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
-        figure = plt.gcf()
 
         # Make sure the plot is shown.
         plt.show()

@@ -137,7 +137,7 @@ class BivariateAnalysis():
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
-        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
+        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.formatSettings.Scale}, fmt=".2f")
         axes.set(title="Heat Map for Continuous Data")
 
         # Make sure the plot is shown.
@@ -176,13 +176,13 @@ class BivariateAnalysis():
             if not hue in columns:
                 columns.append(hue)
 
-        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
-        figure = plt.gcf()
-
         if columns == None:
             sns.pairplot(data, hue=hue)
         else:
             sns.pairplot(data[columns], hue=hue)
+
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
+        figure = plt.gcf()
 
         figure.suptitle("Pair Plot for Continuous Data", y=1.015*BivariateAnalysis.supFigureYAdjustment)
 
@@ -377,8 +377,8 @@ class BivariateAnalysis():
         # The "normalize" normalizes the values to sum to 1.
         dataFrame = pd.crosstab(data[independentColumn], data[sortColumn], normalize="index").sort_values(by=sorter, ascending=False)
 
-        figure = plt.gcf()
         axes   = dataFrame.plot(kind="bar", stacked=True)
+        figure = plt.gcf()
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
         AxesHelper.Label(axes, title=title, xLabels=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)

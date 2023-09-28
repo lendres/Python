@@ -233,6 +233,8 @@ class TensorFlowHelper(CategoricalHelper):
         # Must be called first.
         PlotHelper.Format()
 
+        figure = plt.gcf()
+
         # Create x-values so that the first epoch is at 1 and not 0, the default plot start.
         xValues = range(1, len(self.history)+1)
         plt.plot(xValues, self.history[parameter])
@@ -241,8 +243,6 @@ class TensorFlowHelper(CategoricalHelper):
         # Create titles and set legend.
         plt.gca().set(title="Model "+parameter.title(), xlabel="Epoch", ylabel=parameter.title())
         plt.legend(["Training", "Validation"], loc="best")
-
-        figure = plt.gcf()
 
         plt.show()
 

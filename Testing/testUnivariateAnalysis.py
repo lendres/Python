@@ -4,7 +4,6 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from   lendres.plotting.PlotHelper                              import PlotHelper
 from   lendres.UnivariateAnalysis                               import UnivariateAnalysis
 from   lendres.plotting.PlotMaker                               import PlotMaker
 
@@ -24,12 +23,12 @@ class TestUnivariateAnalysis(unittest.TestCase):
 
     def testBoxAndHistorgramPlot(self):
         categories = ["bmi", "charges"]
-        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateBoxAndHistogramPlot)
+        PlotMaker.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateBoxAndHistogramPlot)
 
 
     def testCreateCountPlot(self):
         categories = ["children", "smoker"]
-        PlotHelper.ApplyPlotToEachCategory(self.dataHelper.data, categories, PlotMaker.CreateCountFigure)
+        PlotMaker.ApplyPlotToEachCategory(self.dataHelper.data, categories, UnivariateAnalysis.CreateCountFigure)
 
 
     def testCreatBoxPlot(self):

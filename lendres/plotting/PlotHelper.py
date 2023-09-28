@@ -3,21 +3,22 @@ Created on December 4, 2021
 @author: Lance A. Endres
 """
 import matplotlib
-import matplotlib.pyplot                         as plt
+import matplotlib.pyplot                                             as plt
 import math
 
-#import seaborn                                   as sns
+#import seaborn                                                       as sns
 
 import os
 import shutil
-from   io                                        import BytesIO
+from   io                                                            import BytesIO
 import base64
-from   PIL                                       import Image
-from   PIL                                       import ImageChops
-from   PIL                                       import ImageColor
+from   PIL                                                           import Image
+from   PIL                                                           import ImageChops
+from   PIL                                                           import ImageColor
 
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.path.File                         import File
+from   lendres.plotting.FormatSettings                               import FormatSettings
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.path.File                                             import File
 
 
 class PlotHelper():
@@ -30,56 +31,46 @@ class PlotHelper():
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
     usedefaultOutputDirectory   = True
 
-    # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
-    scale                       = 1.0
-    annotationSize              = 15
+    # Format settings.
+    formatSettings              = FormatSettings()
+    storedFormatSettings        = None
 
-    # Format style.  This is the default, it can be overridden in the call to "Format".
-    lineColorCycle              = "seaborn"
+
+    # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
+    # scale                       = 1.0
+    # annotationSize              = 15
+
+    # # Format style.  This is the default, it can be overridden in the call to "Format".
+    # lineColorCycle              = "seaborn"
 
     currentColor                = 0
 
-    storedSettings              = None
+
+    @classmethod
+    def PushSettings(cls, formatSettings):
+        cls.storedFormatSettings = cls.formatSettings
+        cls.formatSettings       = formatSettings
 
 
     @classmethod
-    def PushSettings(cls, rcParams):
-        cls.storedSettings = plt.rcParams
-        plt.rcParams.update(rcParams)
-
-
-    def PopSettings(cls, formatSettings):
-        plt.rcParams.update(cls.storedSettings)
+    def PopSettings(cls):
+        cls.formatSettings = cls.storedFormatSettings
 
 
     @classmethod
-    def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
+    def GetListOfPlotStyles(self):
         """
-        Creates a new figure for every entry in the list of columns.
-
-        Parameters
-        ----------
-        data : Pandas DataFrame
-            The data.
-        columns : an arry or list of strings
-            Column names in the DataFrame.
-        plotFunction : function
-            Plotting function to apply to all columns.
-        save : bool
-            If true, the plots are saved to the default plotting directory.
-        **kwargs : keyword arguments
-            These arguments are passed on to the plotFunction.
+        Get a list of the plot styles.
 
         Returns
         -------
-        None.
+        styles : list
+            A list of plot styles.
         """
-        for column in columns:
-            figure = plotFunction(data, column, **kwargs)
-
-            if save:
-                fileName = plotFunction.__name__ + column.title() + " Category"
-                cls.SavePlot(fileName, figure=figure)
+        directory  = File.GetDirectory(__file__)
+        styleFiles = File.GetAllFilesByExtension(directory, "mplstyle")
+        styles     = [os.path.splitext(styleFile)[0] for styleFile in styleFiles]
+        return styles
 
 
     @classmethod
@@ -112,7 +103,7 @@ class PlotHelper():
         : double
             Scaled annotation size.
         """
-        return cls.scale*cls.annotationSize
+        return cls.formatSettings.Scale*cls.formatSettings.AnnotationSize
 
 
     @classmethod
@@ -132,8 +123,11 @@ class PlotHelper():
         None.
         """
         # Handle input arguments default values.
+        # If a parameter file is not supplied, use a default.
+        # If the file does not contain a directory, assume the same directory as this file.
+        # If the file does not contain a file extension, assume a default.
         if parameterFile is None:
-            parameterFile = os.path.join(File.GetDirectory(__file__), "default.mplstyle")
+            parameterFile = os.path.join(File.GetDirectory(__file__), cls.formatSettings.ParameterFile)
 
         if not File.ContainsDirectory(parameterFile):
             parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
@@ -150,6 +144,8 @@ class PlotHelper():
         plt.style.use(parameterFile)
 
         # Apply override, if they exist.
+        if cls.formatSettings.Overrides is not None:
+            plt.rcParams.update(cls.formatSettings.Overrides)
         if overrides is not None:
             plt.rcParams.update(overrides)
 
@@ -163,13 +159,12 @@ class PlotHelper():
             "axes.labelsize"         : cls._ScaleFontSize(plt.rcParams["axes.labelsize"]),
             "xtick.labelsize"        : cls._ScaleFontSize(plt.rcParams["xtick.labelsize"]),
             "ytick.labelsize"        : cls._ScaleFontSize(plt.rcParams["ytick.labelsize"]),
-            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.scale,                   # Axis border.
-            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.scale,                  # Legend border.
-            "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.scale,
-            "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.scale,
-            "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.scale,
+            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.formatSettings.Scale,                   # Axis border.
+            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.formatSettings.Scale,                  # Legend border.
+            "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.formatSettings.Scale,
+            "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.formatSettings.Scale,
+            "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.formatSettings.Scale,
         }
-
         plt.rcParams.update(parameters)
 
 
@@ -194,23 +189,7 @@ class PlotHelper():
         if type(size) is str:
             size = cls.ConvertFontRelativeSizeToPoints(size)
 
-        return size*cls.scale
-
-
-    @classmethod
-    def GetListOfPlotStyles(self):
-        """
-        Get a list of the plot styles.
-
-        Returns
-        -------
-        styles : list
-            A list of plot styles.
-        """
-        directory  = File.GetDirectory(__file__)
-        styleFiles = File.GetAllFilesByExtension(directory, "mplstyle")
-        styles     = [os.path.splitext(styleFile)[0] for styleFile in styleFiles]
-        return styles
+        return size*cls.formatSettings.Scale
 
 
     @classmethod
@@ -220,8 +199,6 @@ class PlotHelper():
 
         Parameters
         ----------
-        cls : TYPE
-            DESCRIPTION.
         relativeSize : string
             A Matplotlib relative font size string.
 
@@ -295,7 +272,7 @@ class PlotHelper():
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
-        cls.Format(width=width, height=height)
+        cls.Format(overrides={"figure.figsize" : (width, height)})
 
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
 
@@ -338,7 +315,7 @@ class PlotHelper():
             s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
             m      = 4/3.0*(s1-s2)          # Slope.
             y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
-            offset = m * cls.scale + y0
+            offset = m * cls.formatSettings.Scale + y0
             axes[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.
@@ -459,8 +436,8 @@ class PlotHelper():
         axes    = plt.gca()
 
         # Zero lines.
-        axes.axhline(y=0, color="black", linewidth=3.6*cls.scale)
-        axes.axvline(x=0, color="black", linewidth=3.6*cls.scale)
+        axes.axhline(y=0, color="black", linewidth=3.6*cls.formatSettings.Scale)
+        axes.axvline(x=0, color="black", linewidth=3.6*cls.formatSettings.Scale)
         AxesHelper.AddArrows(axes, color="black")
 
         # Erase axis numbers (labels).
@@ -487,7 +464,7 @@ class PlotHelper():
             raise Exception("The number format specified is not valid.\nRequested format: "+numberFormat)
 
         if lineColorCycle is None:
-            lineColorCycle = cls.lineColorCycle
+            lineColorCycle = cls.formatSettings.LineColorCycle
 
         if lineColorCycle == "pyplot":
             prop_cycle = plt.rcParams['axes.prop_cycle']

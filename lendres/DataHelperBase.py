@@ -253,11 +253,11 @@ class DataHelperBase():
         columns = splits.columns.values
         splits.reset_index(inplace=True)
 
-        PlotHelper.Format()
-        axis = splits.plot(x="index", y=columns, kind="bar", color=sns.color_palette())
+        PlotHelper.Format("gridless")
+        axis   = splits.plot(x="index", y=columns, kind="bar", color=sns.color_palette())
+        figure = plt.gcf()
         axis.set(title="Split Comparison", xlabel="Category", ylabel="Percentage")
 
-        figure = plt.gcf()
         plt.show()
 
         return figure

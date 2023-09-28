@@ -54,7 +54,7 @@ class KMeansHelper(ClusterHelper):
         )
 
         # Fix marker size.  Needs to be done before the call to "fit."
-        plt.rcParams.update({"lines.markersize" : 8*PlotHelper.scale})
+        plt.rcParams.update({"lines.markersize" : 8*PlotHelper.formatSettings.Scale})
 
         # Creates the plot.
         visualizer.fit(self.scaledData)
@@ -196,7 +196,7 @@ class KMeansHelper(ClusterHelper):
 
             # Label circles.
             for i, c in enumerate(centers):
-                rightAxis.text(c[0], c[1], str(i), fontsize=12*PlotHelper.scale, horizontalalignment="center", verticalalignment="center")
+                rightAxis.text(c[0], c[1], str(i), fontsize=12*PlotHelper.formatSettings.Scale, horizontalalignment="center", verticalalignment="center")
                 #rightAxis.scatter(c[0]+1, c[1]+1, marker="$%d$" % i, alpha=1, s=100, edgecolor="k")
 
             rightAxis.set(xlabel="Feature Space for the 1st Feature", ylabel="Feature Space for the 2nd Feature")

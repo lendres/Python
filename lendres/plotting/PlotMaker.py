@@ -98,7 +98,7 @@ class PlotMaker():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend:
-            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.scale), ncol=2, bbox_transform=axes.transAxes)
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
             plt.show()
@@ -313,7 +313,7 @@ class PlotMaker():
 
         # Create plot and set the titles.
         figure = plt.gcf()
-        axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
+        axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.formatSettings.Scale}, fmt="")
         AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:
@@ -466,3 +466,33 @@ class PlotMaker():
         plt.yticks(range(numberOfColors))
 
         plt.show()
+
+
+    @classmethod
+    def ApplyPlotToEachCategory(cls, data, columns, plotFunction, save=False, **kwargs):
+        """
+        Creates a new figure for every entry in the list of columns.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        columns : an arry or list of strings
+            Column names in the DataFrame.
+        plotFunction : function
+            Plotting function to apply to all columns.
+        save : bool
+            If true, the plots are saved to the default plotting directory.
+        **kwargs : keyword arguments
+            These arguments are passed on to the plotFunction.
+
+        Returns
+        -------
+        None.
+        """
+        for column in columns:
+            figure = plotFunction(data, column, **kwargs)
+
+            if save:
+                fileName = plotFunction.__name__ + column.title() + " Category"
+                cls.SavePlot(fileName, figure=figure)

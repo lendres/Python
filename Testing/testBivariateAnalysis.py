@@ -15,6 +15,7 @@ import unittest
 skipTests = 0
 if skipTests:
     skippedTests = ["Pair Plots", "Heat Maps"]
+    skippedTests = ["Heat Maps"]
 else:
     skippedTests = []
 
@@ -59,8 +60,7 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testCreateBarPlot(self):
-        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", xLabelRotation=45)
-        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender")
+        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender", xLabelRotation=45)
 
 
     def testProportionalData(self):

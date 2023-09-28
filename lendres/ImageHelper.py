@@ -36,7 +36,7 @@ class ImageHelper():
         None.
         """
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        #PlotHelper.scale = 0.65
+        #PlotHelper.formatSettings.Scale = 0.65
         PlotHelper.Format(width=size, height=size)
 
         # Adding subplots with 3 rows and 4 columns.
@@ -54,7 +54,7 @@ class ImageHelper():
         plt.grid(False)
 
         plt.show()
-        PlotHelper.scale = 1.0
+        PlotHelper.formatSettings.Scale = 1.0
 
 
     @classmethod
@@ -83,7 +83,7 @@ class ImageHelper():
         rows = math.ceil(numberOfImages / columns)
 
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        PlotHelper.scale = 0.55
+        PlotHelper.formatSettings.Scale = 0.55
         PlotHelper.Format(width=columns*ImageHelper.arrayImageSize+2, height=rows*ImageHelper.arrayImageSize+2)
         figure = plt.figure()
 
@@ -111,7 +111,7 @@ class ImageHelper():
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
         plt.show()
-        PlotHelper.scale = 1.0
+        PlotHelper.formatSettings.Scale = 1.0
 
 
     @classmethod

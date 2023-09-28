@@ -111,6 +111,6 @@ def confusion_matrix_sklearn(model, predictors, target, titleSuffix=None):
 
     PlotHelper.Format(width=5.35, height=4)
     #plt.figure(figsize=(6, 4))
-    axis = sns.heatmap(cm, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.scale}, fmt="")
+    axis = sns.heatmap(cm, annot=labels, annot_kws={"fontsize" : 14*PlotHelper.formatSettings.Scale}, fmt="")
     AxesHelper.Label(axis, title="Data", xLabels="Predicted", yLabel="Actual", titleSuffix=titleSuffix)
     plt.show()

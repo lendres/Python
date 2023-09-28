@@ -62,7 +62,7 @@ class AgglomerativeHelper(ClusterHelper):
         cophenetCorrelation, cophenetDistances = cophenet(linkageDistances , pdist(self.scaledData))
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=15)
+        PlotHelper.Format(overrides={"figure.figsize" : (15, 6)})
 
         # The 0.80*PlotHelper.GetScaledStandardSize() is the standard size the PlotHelper uses.  We scale that
         # by the argument provided.
@@ -80,11 +80,11 @@ class AgglomerativeHelper(ClusterHelper):
         plt.suptitle(title, fontsize=0.9*PlotHelper.GetScaledStandardSize())
 
         # Cophenetic score annotation.
-        axis.annotate(f"Cophenetic\nCorrelation\n{cophenetCorrelation:0.3f}", (0.90, 0.875), xycoords="axes fraction", fontsize=13*PlotHelper.scale)
+        axis.annotate(f"Cophenetic\nCorrelation\n{cophenetCorrelation:0.3f}", (0.90, 0.875), xycoords="axes fraction", fontsize=13*PlotHelper.formatSettings.Scale)
 
         # Cut line.
         if drawCutLine:
-            axis.axhline(y=cutDistance, c="red", lw=1.5*PlotHelper.scale, linestyle="dashdot")
+            axis.axhline(y=cutDistance, c="red", lw=1.5*PlotHelper.formatSettings.Scale, linestyle="dashdot")
 
         plt.show()
 

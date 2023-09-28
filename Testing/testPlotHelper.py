@@ -2,15 +2,16 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import matplotlib.pyplot                                        as plt
-import seaborn                                                  as sns
+import pandas                                                        as pd
+import matplotlib.pyplot                                             as plt
+import seaborn                                                       as sns
 
 import os
 
 import DataSetLoading
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.plotting.FormatSettings                               import FormatSettings
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
 
 import unittest
 
@@ -31,13 +32,11 @@ class TestPlotHelper(unittest.TestCase):
         cls.data  = pd.read_csv(inputFile)
 
 
-    @unittest.skip
     def testArtistiPlot(self):
         PlotHelper.NewArtisticFigure()
         plt.show()
 
 
-    @unittest.skip
     def testCompareSeabornToSeaborn(self):
         """
         Compare the real Seaborn style to the "seaborn.mplstyle" version.
@@ -52,7 +51,6 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Format with Seaborn Using Parameter File", parameterFile="seaborn.mplstyle", scale=0.6)
 
 
-    @unittest.skip
     def testFormatScales(self):
         self.CreateBasicPlot("Format by Scale", scale=2.0)
 
@@ -69,14 +67,20 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Format Parameter File without Extension", parameterFile="gridless")
 
 
-    @unittest.skip
     def testPlotAllStyles(self):
         styleFiles = PlotHelper.GetListOfPlotStyles()
         for styleFile in styleFiles:
             self.CreateBasicPlot("Format with "+styleFile, parameterFile=styleFile)
 
 
-    @unittest.skip
+    def testPushPopSettings(self):
+        self.CreateBasicPlot("Format with Defaults")
+        PlotHelper.PushSettings(FormatSettings(overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15}))
+        self.CreateBasicPlot("Formated with Pushed Settings")
+        PlotHelper.PopSettings()
+        self.CreateBasicPlot("Formated with Popped Settings")
+
+
     def testSavePlotBeforeShowMethod1(self):
         self.CreateBasicPlot("Save Figure")
 
@@ -98,18 +102,16 @@ class TestPlotHelper(unittest.TestCase):
 
 
     def CreateBasicPlot(self, titleSuffix, scale=1.0, **kwargs):
-        PlotHelper.scale = scale
+        PlotHelper.formatSettings.Scale = scale
         PlotHelper.Format(**kwargs)
 
-        figure = figure = plt.gcf()
+        figure = plt.gcf()
         axis   = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
         AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix=titleSuffix)
 
         axis.legend()
-
         plt.show()
-
 
         return figure
 

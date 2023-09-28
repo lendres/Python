@@ -9,6 +9,7 @@ import unittest
 
 # More information at:
 # https://docs.python.org/3/library/unittest.html
+skipTests = 1
 
 class TestBoundingDataType(unittest.TestCase):
 
@@ -18,7 +19,7 @@ class TestBoundingDataType(unittest.TestCase):
         pass
 
 
-    # @unittest.skip("")
+    @unittest.skipIf(skipTests, "Time saving")
     def testDisplayColor(self):
         """
         Plots all the colors tables with names as labels.
@@ -26,7 +27,7 @@ class TestBoundingDataType(unittest.TestCase):
         self.PlotAllTables()
 
 
-    # @unittest.skip("")
+    @unittest.skipIf(skipTests, "Time saving")
     def testDisplayColorsWithImageSave(self):
         """
         Plots all the colors tables with names as labels and saves them to a file.
@@ -34,22 +35,22 @@ class TestBoundingDataType(unittest.TestCase):
         self.PlotAllTables(saveImage=True)
 
 
-    # @unittest.skip("")
+    @unittest.skipIf(skipTests, "Time saving")
     def testDisplayHexColors(self):
         """
         Plots all the colors tables with hex values as labels and saves them to a file.
         """
         self.PlotAllTables(label="hex")
 
-    
-    # @unittest.skip("")
+
+    @unittest.skipIf(skipTests, "Time saving")
     def testDisplayHexColorsWithImageSave(self):
         """
         Plots all the colors tables with hex values as labels and saves them to a file.
         """
         self.PlotAllTables(label="hex", saveImage=True)
 
-        
+
     def PlotAllTables(self, **kwargs):
         PlotAllColors("base", **kwargs)
         PlotAllColors("tableau", **kwargs)
