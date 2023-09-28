@@ -265,92 +265,6 @@ class PlotMaker():
 
 
     @classmethod
-    def CreateCountFigure(cls, data, primaryColumnName, subColumnName=None, titleSuffix=None, xLabelRotation=None):
-        """
-        Creates a bar chart that plots a primary category and subcategory as the hue.
-
-        Parameters
-        ----------
-        data : Pandas DataFrame
-            The data.
-        primaryColumnName : string
-            Column name in the DataFrame.
-        subColumnName : string
-            If present, the column used as the hue.
-        titleSuffix : string or None, optional
-            If supplied, the string is prepended to the title.
-        xLabelRotation : float
-            Rotation of x labels.
-
-        Returns
-        -------
-        figure : Figure
-            The newly created figure.
-        """
-        # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
-
-        # This creates the bar chart.  At the same time, save the figure so we can return it.
-        axes = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
-        figure = plt.gcf()
-
-        # Label the perentages of each column.
-        cls.LabelPercentagesOnColumnsOfBarGraph(axes)
-
-        # If adding a hue, set the legend to run horizontally.
-        if subColumnName is not None:
-            ncol = data[subColumnName].nunique()
-            plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
-
-        # Titles.
-        title = "\"" + primaryColumnName + "\"" + " Category"
-        AxesHelper.Label(axes, title=title, xLabels=subColumnName, yLabels="Count", titleSuffix=titleSuffix)
-
-        # Option to rotate the x-axis labels.
-        AxesHelper.RotateXLabels(xLabelRotation)
-
-        # Make sure the plot is shown.
-        plt.show()
-
-        return figure
-
-
-    @classmethod
-    def LabelPercentagesOnColumnsOfBarGraph(cls, axes):
-        """
-        Labels each column with a percentage of the total sum of all columns.
-
-        Parameters
-        ----------
-        axes : matplotlib.axes.Axes
-            Matplotlib axes to plot on.
-
-        Returns
-        -------
-        None.
-        """
-        # Number of entries.
-        total = 0
-
-        # Find the total count first.
-        for patch in axes.patches:
-            total += patch.get_height()
-
-        for patch in axes.patches:
-            # Percentage of the column.
-            percentage = "{:.1f}%".format(100*patch.get_height()/total)
-
-            # Find the center of the column/patch on the x-axis.
-            x = patch.get_x() + patch.get_width()/2
-
-            # Height of the column/patch.  Add a little so it does not touch the top of the column.
-            y = patch.get_y() + patch.get_height() + 0.5
-
-            # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
-            axes.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
-
-
-    @classmethod
     def CreateConfusionMatrixPlot(cls, confusionMatrix, title, titleSuffix=None, axesLabels=None):
         """
         Plots the confusion matrix for the model output.
@@ -395,17 +309,17 @@ class PlotMaker():
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
         categorySizeAdjustment = 0.65*(numberOfCategories-2)
-        PlotHelper.Format(parameterFile="gridless.mplstyle", width=5.35+categorySizeAdjustment, height=4+categorySizeAdjustment)
+        PlotHelper.Format(parameterFile="gridless", overrides={"figure.figsize" : (5.35+categorySizeAdjustment, 4+categorySizeAdjustment)})
 
         # Create plot and set the titles.
-        axes = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
+        figure = plt.gcf()
+        axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.scale}, fmt="")
         AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
             axes.yaxis.set_ticklabels(axesLabels, rotation=0)
 
-        figure = plt.gcf()
         plt.show()
 
         return figure
@@ -524,25 +438,31 @@ class PlotMaker():
         colors          = PlotHelper.GetColorCycle(lineColorCycle=lineColorCycle, numberFormat="hex")
         numberOfColors  = len(colors)
 
+        # Turn off the bounding box (set of splines that surround axes).
+        [spline.set_visible(False) for spline in axes.spines.values()]
+
+
         for i in range(numberOfColors):
             # Set the y to the same as the position in the color cycle.
             y = [i] * numberOfPoints
             axes.plot(x, y, label="data", marker="o", markerfacecolor=colors[i], markeredgecolor=colors[i], markeredgewidth=10, markersize=20, linewidth=10, color=colors[i])
 
-            # Plot the name on the right.
-            plt.annotate(str(colors[i]), (numberOfPoints-0.75, i-0.15), annotation_clip=False)
+            # Plot the name on the right.  The location is the x, y plot point adjusted to center it.
+            plt.annotate(str(colors[i]), (numberOfPoints-0.75, i+0.15), annotation_clip=False)
 
-            # Clear the x axis labels and use the y axis labels to label the position of the color.
-            plt.xticks([])
-            plt.yticks(range(numberOfColors))
+        # Display the name of the color cycle.
+        axes.xaxis.label.set_fontsize(40)
+        if lineColorCycle == None:
+            axes.set(xlabel=PlotHelper.lineColorCycle)
+        else:
+            axes.set(xlabel=lineColorCycle)
 
-            # Turn off the bounding box (spline).
-            [spline.set_visible(False) for spline in axes.spines.values()]
+        # Reverse the y-axis so that the lower numbers are on top.
+        AxesHelper.SetYAxisLimits(axes, limits=[-1, 10], numberOfTicks=numberOfPoints+2)
+        AxesHelper.ReverseYAxisLimits(axes)
 
-            # Display the name of the color cycle.
-            axes.xaxis.label.set_fontsize(40)
-            if lineColorCycle == None:
-                axes.set(xlabel=PlotHelper.lineColorCycle)
-            else:
-                axes.set(xlabel=lineColorCycle)
+        # Clear the x axis labels and use the y axis labels to label the position of the color.
+        plt.xticks([])
+        plt.yticks(range(numberOfColors))
+
         plt.show()

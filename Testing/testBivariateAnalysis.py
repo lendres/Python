@@ -6,7 +6,6 @@ import DataSetLoading
 
 from   lendres.ConsoleHelper                                    import ConsoleHelper
 from   lendres.BivariateAnalysis                                import BivariateAnalysis
-from   lendres.plotting.PlotMaker                               import PlotMaker
 
 import unittest
 
@@ -60,8 +59,8 @@ class TestBivariateAnalysis(unittest.TestCase):
 
 
     def testCreateBarPlot(self):
-        PlotMaker.CreateCountFigure(self.cardioDataHelper.data, "Product", xLabelRotation=45)
-        PlotMaker.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender")
+        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", xLabelRotation=45)
+        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender")
 
 
     def testProportionalData(self):

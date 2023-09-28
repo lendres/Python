@@ -15,6 +15,92 @@ class BivariateAnalysis():
 
 
     @classmethod
+    def CreateCountFigure(cls, data, primaryColumnName, subColumnName=None, titleSuffix=None, xLabelRotation=None):
+        """
+        Creates a bar chart that plots a primary category and subcategory as the hue.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame
+            The data.
+        primaryColumnName : string
+            Column name in the DataFrame.
+        subColumnName : string
+            If present, the column used as the hue.
+        titleSuffix : string or None, optional
+            If supplied, the string is prepended to the title.
+        xLabelRotation : float
+            Rotation of x labels.
+
+        Returns
+        -------
+        figure : Figure
+            The newly created figure.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.Format("gridless")
+
+        # This creates the bar chart.  At the same time, save the figure so we can return it.
+        axes = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
+        figure = plt.gcf()
+
+        # Label the perentages of each column.
+        cls.LabelPercentagesOnColumnsOfBarGraph(axes)
+
+        # If adding a hue, set the legend to run horizontally.
+        if subColumnName is not None:
+            ncol = data[subColumnName].nunique()
+            plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
+
+        # Titles.
+        title = "\"" + primaryColumnName + "\"" + " Category"
+        AxesHelper.Label(axes, title=title, xLabels=subColumnName, yLabels="Count", titleSuffix=titleSuffix)
+
+        # Option to rotate the x-axis labels.
+        AxesHelper.RotateXLabels(xLabelRotation)
+
+        # Make sure the plot is shown.
+        plt.show()
+
+        return figure
+
+
+    @classmethod
+    def LabelPercentagesOnColumnsOfBarGraph(cls, axes):
+        """
+        Labels each column with a percentage of the total sum of all columns.
+
+        Parameters
+        ----------
+        axes : matplotlib.axes.Axes
+            Matplotlib axes to plot on.
+
+        Returns
+        -------
+        None.
+        """
+        # Number of entries.
+        total = 0
+
+        # Find the total count first.
+        for patch in axes.patches:
+            total += patch.get_height()
+
+        for patch in axes.patches:
+            # Percentage of the column.
+            percentage = "{:.1f}%".format(100*patch.get_height()/total)
+
+            # Find the center of the column/patch on the x-axis.
+            x = patch.get_x() + patch.get_width()/2
+
+            # Height of the column/patch.  Add a little so it does not touch the top of the column.
+            y = patch.get_y() + patch.get_height() + 0.5
+
+            # Plot a label slightly above the column and use the horizontal alignment to center it in the column.
+            axes.annotate(percentage, (x, y), size=PlotHelper.GetScaledAnnotationSize(), fontweight="bold", horizontalalignment="center")
+
+
+    @classmethod
     def CreateBivariateHeatMap(cls, data, columns=None):
         """
         Creates a new figure that has a bar plot labeled with a percentage for a single variable analysis.  Does this
@@ -36,7 +122,7 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
 
         # Initialize so the variable is available.
         correlationValues = []
@@ -48,11 +134,11 @@ class BivariateAnalysis():
         else:
             correlationValues = data[columns].corr(numeric_only=True)
 
-        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
-        axes.set(title="Heat Map for Continuous Data")
-
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
+
+        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.scale}, fmt=".2f")
+        axes.set(title="Heat Map for Continuous Data")
 
         # Make sure the plot is shown.
         plt.show()
@@ -84,19 +170,19 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
 
         if columns != None and hue != None:
             if not hue in columns:
                 columns.append(hue)
 
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
+        figure = plt.gcf()
+
         if columns == None:
             sns.pairplot(data, hue=hue)
         else:
             sns.pairplot(data[columns], hue=hue)
-
-        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
-        figure = plt.gcf()
 
         figure.suptitle("Pair Plot for Continuous Data", y=1.015*BivariateAnalysis.supFigureYAdjustment)
 
@@ -136,14 +222,14 @@ class BivariateAnalysis():
             title = "Sorted by " + "\"" + sortColumn + "\""
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
+
+        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
+        figure = plt.gcf()
 
         axes = sns.scatterplot(x=data[xColumn], y=data[yColumn], hue=data[sortColumn], palette=["indianred","mediumseagreen"])
         axes.set(title=title, xlabel=xColumn, ylabel=yColumn)
         axes.get_legend().set_title(sortColumn)
-
-        # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
-        figure = plt.gcf()
 
         plt.show()
 
@@ -180,12 +266,12 @@ class BivariateAnalysis():
         proportionData = pd.concat([data0, data1], ignore_index=True)
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
-        axes   = sns.barplot(x=primaryCategoryColumnName, y="Proportion", data=proportionData, hue=subCategoryColumnName)
         figure = plt.gcf()
+        axes   = sns.barplot(x=primaryCategoryColumnName, y="Proportion", data=proportionData, hue=subCategoryColumnName)
 
         # Label the individual columns with a percentage, then add the titles to the plot.
         #LabelPercentagesOnCountPlot(axis, proportionData, category, scale)
@@ -284,19 +370,19 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format()
+        PlotHelper.Format("gridless")
 
         sorter = data[sortColumn].value_counts().index[-1]
 
         # The "normalize" normalizes the values to sum to 1.
         dataFrame = pd.crosstab(data[independentColumn], data[sortColumn], normalize="index").sort_values(by=sorter, ascending=False)
 
-        axes = dataFrame.plot(kind="bar", stacked=True)
+        figure = plt.gcf()
+        axes   = dataFrame.plot(kind="bar", stacked=True)
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
         AxesHelper.Label(axes, title=title, xLabels=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)
 
-        figure = plt.gcf()
         plt.show()
 
         return figure
@@ -329,12 +415,11 @@ class BivariateAnalysis():
         uniqueSortValues = data[sortColumn].unique()
         uniqueSortValues.sort()
 
-
         # Number of unique values.
         numberOfUniqueValues = uniqueSortValues.size
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=6*numberOfUniqueValues, height=6)
+        PlotHelper.Format(overrides={"figure.figsize" : (6*numberOfUniqueValues, 6)})
 
         # Create figure and a row of axes.
         figure, axeses = plt.subplots(1, numberOfUniqueValues)
@@ -381,7 +466,7 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(width=12, height=6)
+        PlotHelper.Format("gridless", overrides={"figure.figsize" : (12, 6)})
 
         # Create figure and a 2x2 grid of axes.
         figure, axeses = plt.subplots(1, 2)
