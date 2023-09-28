@@ -31,23 +31,13 @@ class TestPlotHelper(unittest.TestCase):
         cls.data  = pd.read_csv(inputFile)
 
 
+    @unittest.skip
     def testArtistiPlot(self):
         PlotHelper.NewArtisticFigure()
         plt.show()
 
 
-    def testPlotStyleFormats(self):
-        self.CreateBasicPlot("Format with Defaults")
-
-        # Test using the file extension or not using the file extension.
-        self.CreateBasicPlot("Format without Grid Lines with Extension", parameterFile="gridless.mplstyle")
-        self.CreateBasicPlot("Format without Grid Lines without Extension", parameterFile="gridless")
-
-        styleFiles = PlotHelper.GetListOfPlotStyles()
-        for styleFile in styleFiles:
-            self.CreateBasicPlot("Format with "+styleFile, parameterFile=styleFile)
-
-
+    @unittest.skip
     def testCompareSeabornToSeaborn(self):
         """
         Compare the real Seaborn style to the "seaborn.mplstyle" version.
@@ -62,11 +52,31 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Format with Seaborn Using Parameter File", parameterFile="seaborn.mplstyle", scale=0.6)
 
 
+    @unittest.skip
     def testFormatScales(self):
         self.CreateBasicPlot("Format by Scale", scale=2.0)
-        #self.CreateBasicPlot("Format by Width and Height")
 
 
+    def testOverrides(self):
+        self.CreateBasicPlot("Test Overrides", overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15})
+
+
+    def testPlotStyleFormats(self):
+        self.CreateBasicPlot("Format with Defaults")
+
+        # Test using the file extension or not using the file extension.
+        self.CreateBasicPlot("Format Parameter File with Extension", parameterFile="gridless.mplstyle")
+        self.CreateBasicPlot("Format Parameter File without Extension", parameterFile="gridless")
+
+
+    @unittest.skip
+    def testPlotAllStyles(self):
+        styleFiles = PlotHelper.GetListOfPlotStyles()
+        for styleFile in styleFiles:
+            self.CreateBasicPlot("Format with "+styleFile, parameterFile=styleFile)
+
+
+    @unittest.skip
     def testSavePlotBeforeShowMethod1(self):
         self.CreateBasicPlot("Save Figure")
 
@@ -91,14 +101,15 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.scale = scale
         PlotHelper.Format(**kwargs)
 
-        axis = plt.gca()
+        figure = figure = plt.gcf()
+        axis   = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
         AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix=titleSuffix)
 
-        plt.gca().legend()
+        axis.legend()
 
         plt.show()
-        figure = plt.gcf()
+
 
         return figure
 

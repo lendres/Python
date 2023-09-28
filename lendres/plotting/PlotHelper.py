@@ -32,17 +32,24 @@ class PlotHelper():
 
     # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
     scale                       = 1.0
-    annotationScale             = 1.0
+    annotationSize              = 15
 
     # Format style.  This is the default, it can be overridden in the call to "Format".
     lineColorCycle              = "seaborn"
 
     currentColor                = 0
 
+    storedSettings              = None
+
 
     @classmethod
-    def PushSettings(cls, formatSettings):
-        pass
+    def PushSettings(cls, rcParams):
+        cls.storedSettings = plt.rcParams
+        plt.rcParams.update(rcParams)
+
+
+    def PopSettings(cls, formatSettings):
+        plt.rcParams.update(cls.storedSettings)
 
 
     @classmethod
@@ -105,11 +112,11 @@ class PlotHelper():
         : double
             Scaled annotation size.
         """
-        return cls.scale*cls.annotationScale*15
+        return cls.scale*cls.annotationSize
 
 
     @classmethod
-    def Format(cls, parameterFile:str=None, width:float=None, height:float=None):
+    def Format(cls, parameterFile:str=None, overrides:dict=None):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
@@ -117,12 +124,8 @@ class PlotHelper():
         ----------
         parameterFile : string or None, optional
             A Matplotlib parameters file that has formatting values.  If None, the default file is used.
-        width : float, optional
-            The width of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
-            file, the default value is ued.  The default is None.
-        height : float, optional
-            The height of the figure.  If None, the value from the parameters file is used, or if missing from the parameters
-            file, the default value is ued.  The default is None.
+        overrides : dict, optional
+            A set of rcParams that will override any values in the parameterFile.
 
         Returns
         -------
@@ -146,18 +149,12 @@ class PlotHelper():
         # Establish the parameters specified in the input file.
         plt.style.use(parameterFile)
 
-        figureSize = plt.rcParams["figure.figsize"]
-
-        # Apply optional paramenters.
-        if width is not None:
-            figureSize[0] = width
-
-        if height is not None:
-            figureSize[1] = height
+        # Apply override, if they exist.
+        if overrides is not None:
+            plt.rcParams.update(overrides)
 
         # Apply scaling.
         parameters = {
-            "figure.figsize"         : (figureSize[0], figureSize[1]),
             "font.size"              : cls._ScaleFontSize(plt.rcParams["font.size"]),
             "figure.titlesize"       : cls._ScaleFontSize(plt.rcParams["figure.titlesize"]),
             "legend.fontsize"        : cls._ScaleFontSize(plt.rcParams["legend.fontsize"]),
@@ -310,8 +307,7 @@ class PlotHelper():
     @classmethod
     def NewMultiXAxesFigure(cls, numberOfAxes):
         """
-        Creates a new figure that has multiple axes that are on top of each other.  The
-        axes have an aligned (shared) y-axis.
+        Creates a new figure that has multiple axes that are on top of each other.  The axes have an aligned (shared) y-axis.
 
         Parameters
         ----------
@@ -439,18 +435,14 @@ class PlotHelper():
 
 
     @classmethod
-    def NewArtisticFigure(cls, parameterFile=None, width=10, height=6):
+    def NewArtisticFigure(cls, parameterFile=None):
         """
         Create a new artistic plot.
 
         Parameters
         ----------
         parameterFile : string, optional
-            A Matplotlib parameter style file.. The default is None.
-        width : float, optional
-            The width of the figure. The default is 10.
-        height : float, optional
-            The height of the figure. The default is 6.
+            A Matplotlib parameter style file. The default is None.
 
         Returns
         -------
@@ -461,7 +453,7 @@ class PlotHelper():
         """
         if parameterFile is None:
             parameterFile = "artistic"
-        cls.Format(parameterFile, width, height)
+        cls.Format(parameterFile)
 
         figure  = plt.gcf()
         axes    = plt.gca()
