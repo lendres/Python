@@ -37,28 +37,28 @@ class AxesHelper():
         # Create the title.
         if titleSuffix != None:
             title += "\n" + titleSuffix
-            
+
         method = "single"
-        
+
         if isinstance(axeses, list):
             # Check for both multiple x and y labels.
             if isinstance(xLabels, list) and isinstance(yLabels, list):
                 if len(xLabels) != len(axeses) or len(yLabels) != len(axeses):
                     raise Exception("Invalid sizes of axeses, x labels, and y labels.")
                 method = "multiple"
-                
+
             # Check for multiple x labels.
             elif isinstance(xLabels, list):
                 if len(xLabels) != len(axeses):
                     raise Exception("Invalid sizes of axeses and x labels.")
                 method = "multipleX"
-                
+
             # Check for multiple y labels.
             elif isinstance(yLabels, list):
                 if len(yLabels) != len(axeses):
                     raise Exception("Invalid sizes of axeses and y labels.")
                 method = "multipleY"
-                
+
             # Unknown configuration.
             else:
                 raise Exception("Invalid types of axeses, x labels, and y labels.")
@@ -337,10 +337,8 @@ class AxesHelper():
         -------
         None.
         """
-        tickSet       = axes.get_yticks()
-
         if numberOfTicks is None:
-            numberOfTicks = len(tickSet)
+            numberOfTicks = len(axes.get_yticks())
 
         tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
         axes.set_yticks(tickSet)
