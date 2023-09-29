@@ -309,16 +309,24 @@ class PlotMaker():
         # The standard scale for this plot will be a little higher than the normal scale.
         # Not much is shown, so we can shrink the figure size.
         categorySizeAdjustment = 0.65*(numberOfCategories-2)
-        PlotHelper.Format(parameterFile="gridless", overrides={"figure.figsize" : (5.35+categorySizeAdjustment, 4+categorySizeAdjustment)})
+        PlotHelper.Format()
 
-        # Create plot and set the titles.
+        # Create plot.
         figure = plt.gcf()
+
+        # Set the figure size.
+        figure.set_figwidth(5.35+categorySizeAdjustment)
+        figure.set_figheight(4+categorySizeAdjustment)
+
         axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.formatSettings.Scale}, fmt="")
         AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:
             axes.xaxis.set_ticklabels(axesLabels, rotation=90)
             axes.yaxis.set_ticklabels(axesLabels, rotation=0)
+
+        # Turn off the grid.
+        axes.grid(False)
 
         plt.show()
 

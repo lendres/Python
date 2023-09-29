@@ -39,7 +39,7 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axes = sns.countplot(x=columnName, data=data)
@@ -54,6 +54,9 @@ class UnivariateAnalysis():
 
         # Option to rotate the x-axis labels.
         AxesHelper.RotateXLabels(xLabelRotation)
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
 
         # Make sure the plot is shown.
         plt.show()
@@ -114,10 +117,12 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(overrides={"figure.figsize" : (10, 1.25)})
+        PlotHelper.Format()
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
+        figure.set_figwidth(10)
+        figure.set_figheight(1.25)
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axis = plt.gca()
@@ -352,7 +357,6 @@ class UnivariateAnalysis():
         """
         # Must be run before creating figure or plotting data.
         numberOfSamples = len(samples)
-        PlotHelper.Format(height=numberOfSamples*6)
         plt.rcParams['figure.constrained_layout.use'] = True
 
         # Create figure and a row of axes.
@@ -360,6 +364,8 @@ class UnivariateAnalysis():
         heightRatios = [topPercent, 1-topPercent] * numberOfSamples
         gridspec     = {"height_ratios" : heightRatios}
         figure, axes = plt.subplots(2*numberOfSamples, 1, sharex=True, gridspec_kw=gridspec)
+        figure.set_figwidth(10)
+        figure.set_figheight(numberOfSamples*6)
 
         for i in range(numberOfSamples):
             color = sns.color_palette()[i]

@@ -4,8 +4,10 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.BivariateAnalysis                                import BivariateAnalysis
+from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.BivariateAnalysis                                     import BivariateAnalysis
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.FormatSettings                               import FormatSettings
 
 import unittest
 
@@ -27,10 +29,30 @@ class TestBivariateAnalysis(unittest.TestCase):
         cls.insuranceDataHelper, cls.insuranceDependentVariable = DataSetLoading.GetInsuranceData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED, encode=False)
         cls.cardioDataHelper,    cls.cardioDependentVariable    = DataSetLoading.GetCardioGoodFitnessData(verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
 
+        cls.gridlessSettings = FormatSettings(parameterFile="gridless")
+
 
     def setUp(self):
         self.insuranceDataHelper = self.insuranceDataHelper.Copy()
         self.cardioDataHelper    = self.cardioDataHelper.Copy()
+
+
+    def testCreateBarPlot(self):
+        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender", xLabelRotation=45)
+
+
+    def testCreateStackedPercentageBarPlot(self):
+        PlotHelper.PushSettings(self.gridlessSettings)
+        BivariateAnalysis.CreateStackedPercentageBarPlot(self.cardioDataHelper.data, "Product", "Gender")
+        PlotHelper.PopSettings()
+
+
+    def testGetCrossTabulatedValueCounts(self):
+        PlotHelper.PushSettings(self.gridlessSettings)
+        result = BivariateAnalysis.GetCrossTabulatedValueCounts(self.cardioDataHelper.data, "Product", "Gender")
+        self.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
+        self.assertEqual(result.loc["TM195", "Female"], 40)
+        PlotHelper.PopSettings()
 
 
     @unittest.skipIf("Heat Maps" in skippedTests, "Skipped pair plots unit test.")
@@ -43,6 +65,7 @@ class TestBivariateAnalysis(unittest.TestCase):
 
     @unittest.skipIf("Pair Plots" in skippedTests, "Skipped pair plots unit test.")
     def testPairPlots(self):
+        PlotHelper.PushSettings(FormatSettings(parameterFile="seaborn", scale=0.8, lineColorCycle="seaborn"))
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data)
 
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, hue="sex")
@@ -53,28 +76,11 @@ class TestBivariateAnalysis(unittest.TestCase):
 
         columns = list(self.insuranceDataHelper.data.columns)
         BivariateAnalysis.CreateBivariatePairPlot(self.insuranceDataHelper.data, columns, hue="sex")
+        PlotHelper.PopSettings()
 
 
     def testPlotComparisonByCategory(self):
         BivariateAnalysis.CreateScatterPlotComparisonByCategory(self.insuranceDataHelper.data, "age", "charges", "sex")
-
-
-    def testCreateBarPlot(self):
-        BivariateAnalysis.CreateCountFigure(self.cardioDataHelper.data, "Product", "Gender", xLabelRotation=45)
-
-
-    def testProportionalData(self):
-        BivariateAnalysis.CreateComparisonPercentageBarPlot(self.cardioDataHelper.data, "Product", ["TM498", "TM798"], "Gender")
-
-
-    def testCreateStackedPercentageBarPlot(self):
-        BivariateAnalysis.CreateStackedPercentageBarPlot(self.cardioDataHelper.data, "Product", "Gender")
-
-
-    def testGetCrossTabulatedValueCounts(self):
-        result = BivariateAnalysis.GetCrossTabulatedValueCounts(self.cardioDataHelper.data, "Product", "Gender")
-        self.cardioDataHelper.consoleHelper.Display(result, verboseLevel=ConsoleHelper.VERBOSEALL)
-        self.assertEqual(result.loc["TM195", "Female"], 40)
 
 
     def testPlottingByTarget(self):
@@ -85,6 +91,12 @@ class TestBivariateAnalysis(unittest.TestCase):
         # Test where sort value is numerical.  Also tests where sort value has more than two categories.
         BivariateAnalysis.CreateDistributionByTargetPlot(self.insuranceDataHelper.data, "bmi", "children")
         BivariateAnalysis.CreateBoxPlotByTarget(self.insuranceDataHelper.data, "bmi", "children")
+
+
+    def testProportionalData(self):
+        PlotHelper.PushSettings(self.gridlessSettings)
+        BivariateAnalysis.CreateComparisonPercentageBarPlot(self.cardioDataHelper.data, "Product", ["TM498", "TM798"], "Gender")
+        PlotHelper.PopSettings()
 
 
 if __name__ == "__main__":

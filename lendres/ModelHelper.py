@@ -263,8 +263,12 @@ class ModelHelper:
         dataFrame.rename(columns={"index" : "Index", "variable" : "Model", "value" : score}, inplace=True)
 
         # Create the plot.
-        PlotHelper.Format("gridless", overrides={"figure.figsize" : (width, 4)})
+        PlotHelper.Format()
         axes = sns.barplot(x="Model", y=score, data=dataFrame, hue="Index")
+
+        figure = plt.gcf()
+        figure.set_figwidth(width)
+        figure.set_figheight(4)
 
         # Clear the title legend, move its location to top center, and list the entries horizontally.
         axes.legend().set_title(None)
@@ -272,6 +276,9 @@ class ModelHelper:
 
         # Rotate the X axis labels to vertical so they fit without running together.
         AxesHelper.RotateXLabels(xLabelRotation)
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
 
         plt.show()
 

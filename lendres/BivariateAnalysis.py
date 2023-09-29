@@ -38,7 +38,7 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         axes = sns.countplot(x=primaryColumnName, data=data, hue=subColumnName)
@@ -51,6 +51,9 @@ class BivariateAnalysis():
         if subColumnName is not None:
             ncol = data[subColumnName].nunique()
             plt.legend(loc="upper right", borderaxespad=0, ncol=ncol)
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
 
         # Titles.
         title = "\"" + primaryColumnName + "\"" + " Category"
@@ -122,7 +125,7 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         # Initialize so the variable is available.
         correlationValues = []
@@ -140,10 +143,13 @@ class BivariateAnalysis():
         axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.formatSettings.Scale}, fmt=".2f")
         axes.set(title="Heat Map for Continuous Data")
 
+        # Turn off the grid.
+        axes.grid(False)
+
         # Make sure the plot is shown.
         plt.show()
 
-        return figure, axes
+        return figure
 
 
     @classmethod
@@ -170,7 +176,7 @@ class BivariateAnalysis():
         """
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         if columns != None and hue != None:
             if not hue in columns:
@@ -222,7 +228,7 @@ class BivariateAnalysis():
             title = "Sorted by " + "\"" + sortColumn + "\""
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
@@ -233,7 +239,7 @@ class BivariateAnalysis():
 
         plt.show()
 
-        return figure, axes
+        return figure
 
 
     @classmethod
@@ -266,7 +272,7 @@ class BivariateAnalysis():
         proportionData = pd.concat([data0, data1], ignore_index=True)
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         # This creates the bar chart.  At the same time, save the figure so we can return it.
         #palette='winter',
@@ -278,6 +284,9 @@ class BivariateAnalysis():
 
         title = "\"" + primaryCategoryColumnName + "\"" + " Category"
         axes.set(title=title, xlabel=subCategoryColumnName, ylabel="Proportion")
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
 
         # Make sure the plot is shown.
         plt.show()
@@ -370,7 +379,7 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         sorter = data[sortColumn].value_counts().index[-1]
 
@@ -382,6 +391,9 @@ class BivariateAnalysis():
         plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         title = "\"" + independentColumn + "\"" + " as Fraction of " + "\"" + sortColumn + "\""
         AxesHelper.Label(axes, title=title, xLabels=independentColumn, yLabels="Fraction of "+sortColumn, titleSuffix=titleSuffix)
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
 
         plt.show()
 
@@ -419,10 +431,13 @@ class BivariateAnalysis():
         numberOfUniqueValues = uniqueSortValues.size
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(overrides={"figure.figsize" : (6*numberOfUniqueValues, 6)})
+        PlotHelper.Format()
 
         # Create figure and a row of axes.
         figure, axeses = plt.subplots(1, numberOfUniqueValues)
+
+        figure.set_figwidth(6*numberOfUniqueValues)
+        figure.set_figheight(6)
 
         for i in range(numberOfUniqueValues):
             sns.histplot(
@@ -466,10 +481,13 @@ class BivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format("gridless", overrides={"figure.figsize" : (12, 6)})
+        PlotHelper.Format()
 
         # Create figure and a 2x2 grid of axes.
         figure, axeses = plt.subplots(1, 2)
+
+        figure.set_figwidth(12)
+        figure.set_figheight(5)
 
         # Box plot with outliers.
         sns.boxplot(data=data, x=sortColumn, y=independentColumn, ax=axeses[0])
@@ -482,6 +500,10 @@ class BivariateAnalysis():
         axeses[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
         figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
+
+        # Turn off the x-axis grid.
+        axeses[0].grid(False, axis="x")
+        axeses[1].grid(False, axis="x")
 
         plt.tight_layout()
         plt.show()

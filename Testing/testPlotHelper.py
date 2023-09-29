@@ -45,32 +45,48 @@ class TestPlotHelper(unittest.TestCase):
         #print(plt.rcParams)
         axis = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis)
-        AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix="Format with Seaborn")
+        AxesHelper.Label(axis, title="Seaborn Comparison - Seaborn Generated", xLabels="Values", yLabels="Count")
         plt.show()
 
-        self.CreateBasicPlot("Format with Seaborn Using Parameter File", parameterFile="seaborn.mplstyle", scale=0.6)
+        PlotHelper.PushSettings(FormatSettings(parameterFile="seaborn", scale=0.6))
+        self.CreateBasicPlot("Seaborn Comparison - Using Parameter File")
+        PlotHelper.PopSettings()
 
 
-    def testFormatScales(self):
-        self.CreateBasicPlot("Format by Scale", scale=2.0)
+    def testCopySettings(self):
+        self.CreateBasicPlot("Settings - Default Formatting")
+        PlotHelper.PushSettings(FormatSettings(scale=2.0))
+        self.CreateBasicPlot("Settings - Initial Format Settings")
 
+        settings = PlotHelper.GetSettings().Copy()
+        settings.ParameterFile = "seaborn"
+        PlotHelper.PushSettings(settings)
+        self.CreateBasicPlot("Settings - Copied Format Settings")
 
-    def testOverrides(self):
-        self.CreateBasicPlot("Test Overrides", overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15})
+        PlotHelper.PopSettings()
+        self.CreateBasicPlot("Settings - Popped Format Settings")
 
 
     def testPlotStyleFormats(self):
         self.CreateBasicPlot("Format with Defaults")
 
         # Test using the file extension or not using the file extension.
-        self.CreateBasicPlot("Format Parameter File with Extension", parameterFile="gridless.mplstyle")
-        self.CreateBasicPlot("Format Parameter File without Extension", parameterFile="gridless")
+        PlotHelper.PushSettings(FormatSettings(parameterFile="gridless.mplstyle"))
+        self.CreateBasicPlot("Format Parameter File with Extension")
+        PlotHelper.PushSettings(FormatSettings(parameterFile="gridless"))
+        self.CreateBasicPlot("Format Parameter File without Extension")
+        PlotHelper.PopSettings()
+
+        # Test that 2 pushes in a row did not lose original settings.
+        self.CreateBasicPlot("Format with Popped Defaults")
 
 
     def testPlotAllStyles(self):
         styleFiles = PlotHelper.GetListOfPlotStyles()
         for styleFile in styleFiles:
-            self.CreateBasicPlot("Format with "+styleFile, parameterFile=styleFile)
+            PlotHelper.PushSettings(FormatSettings(parameterFile=styleFile))
+            self.CreateBasicPlot("Format with "+styleFile)
+        PlotHelper.PopSettings()
 
 
     def testPushPopSettings(self):
@@ -101,14 +117,13 @@ class TestPlotHelper(unittest.TestCase):
         self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
 
 
-    def CreateBasicPlot(self, titleSuffix, scale=1.0, **kwargs):
-        PlotHelper.formatSettings.Scale = scale
-        PlotHelper.Format(**kwargs)
+    def CreateBasicPlot(self, title):
+        PlotHelper.Format()
 
         figure = plt.gcf()
         axis   = plt.gca()
         sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
-        AxesHelper.Label(axis, title="Test Plot", xLabels="Values", yLabels="Count", titleSuffix=titleSuffix)
+        AxesHelper.Label(axis, title=title, xLabels="Values", yLabels="Count")
 
         axis.legend()
         plt.show()

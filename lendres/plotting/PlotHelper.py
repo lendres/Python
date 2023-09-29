@@ -47,14 +47,29 @@ class PlotHelper():
 
 
     @classmethod
+    def GetSettings(cls):
+        return cls.formatSettings
+
+
+    @classmethod
+    def SetSettings(cls, formatSettings):
+        cls.formatSettings       = formatSettings
+
+
+    @classmethod
     def PushSettings(cls, formatSettings):
+        # Gaurd against a forgotten call to "Pop".
+        if cls.storedFormatSettings is not None:
+            cls.PopSettings()
+
         cls.storedFormatSettings = cls.formatSettings
         cls.formatSettings       = formatSettings
 
 
     @classmethod
     def PopSettings(cls):
-        cls.formatSettings = cls.storedFormatSettings
+        cls.formatSettings       = cls.storedFormatSettings
+        cls.storedFormatSettings = None
 
 
     @classmethod
@@ -107,27 +122,21 @@ class PlotHelper():
 
 
     @classmethod
-    def Format(cls, parameterFile:str=None, overrides:dict=None):
+    def Format(cls):
         """
         Sets the font sizes, weights, and other properties of a plot.
 
         Parameters
         ----------
-        parameterFile : string or None, optional
-            A Matplotlib parameters file that has formatting values.  If None, the default file is used.
-        overrides : dict, optional
-            A set of rcParams that will override any values in the parameterFile.
+        None.
 
         Returns
         -------
         None.
         """
-        # Handle input arguments default values.
-        # If a parameter file is not supplied, use a default.
         # If the file does not contain a directory, assume the same directory as this file.
         # If the file does not contain a file extension, assume a default.
-        if parameterFile is None:
-            parameterFile = os.path.join(File.GetDirectory(__file__), cls.formatSettings.ParameterFile)
+        parameterFile = cls.formatSettings.ParameterFile
 
         if not File.ContainsDirectory(parameterFile):
             parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
@@ -146,8 +155,6 @@ class PlotHelper():
         # Apply override, if they exist.
         if cls.formatSettings.Overrides is not None:
             plt.rcParams.update(cls.formatSettings.Overrides)
-        if overrides is not None:
-            plt.rcParams.update(overrides)
 
         # Apply scaling.
         parameters = {
@@ -272,9 +279,13 @@ class PlotHelper():
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
-        cls.Format(overrides={"figure.figsize" : (width, height)})
+        cls.Format()
 
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
+
+        figure.set_figwidth(width)
+        figure.set_figheight(height)
+
 
         figure.suptitle(title)
 
@@ -430,7 +441,9 @@ class PlotHelper():
         """
         if parameterFile is None:
             parameterFile = "artistic"
-        cls.Format(parameterFile)
+
+        cls.PushSettings(FormatSettings(parameterFile=parameterFile))
+        cls.Format()
 
         figure  = plt.gcf()
         axes    = plt.gca()
@@ -442,6 +455,8 @@ class PlotHelper():
 
         # Erase axis numbers (labels).
         axes.set(xticks=[], yticks=[])
+
+        cls.PopSettings()
 
         return figure, axes
 

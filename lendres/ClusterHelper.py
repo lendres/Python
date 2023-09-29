@@ -194,9 +194,13 @@ class ClusterHelper(SubsetHelper):
 
         numberOfRows = math.ceil(len(self.columns) / subPlotColumns)
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(overrides={"figure.figsize" : (25, 6*numberOfRows)})
+        PlotHelper.Format()
 
         figure, axes = plt.subplots(numberOfRows, subPlotColumns)
+
+        figure.set_figwidth(25)
+        figure.set_figheight(6*numberOfRows)
+
         figure.suptitle("Box Plot of Clusters for " + whichData.title() + " Data")
 
         # Flatten the array (if it is two dimensional) to make it easier to work with and so we
@@ -233,7 +237,7 @@ class ClusterHelper(SubsetHelper):
         -------
         None.
         """
-        PlotHelper.Format("gridless")
+        PlotHelper.Format()
 
         if type(columns) != list:
             columns = [columns]
@@ -242,5 +246,10 @@ class ClusterHelper(SubsetHelper):
             columns.append(self.labelColumn)
 
         self.dataHelper.data[columns].groupby(self.labelColumn).mean().plot.bar()
-        plt.gca().set_title("Feature Mean by Cluster")
+        axes = plt.gca()
+        axes.set_title("Feature Mean by Cluster")
+
+        # Turn off the x-axis grid.
+        axes.grid(False, axis="x")
+
         plt.show()

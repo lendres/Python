@@ -23,6 +23,10 @@ class FormatSettings():
         self.lineColorCycle              = lineColorCycle
 
 
+    def Copy(self):
+        return FormatSettings(self.parameterFile, self.overrides, self.scale, self.annotationSize, self.lineColorCycle)
+
+
     @property
     def ParameterFile(self):
         return self.parameterFile

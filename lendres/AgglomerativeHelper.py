@@ -62,7 +62,7 @@ class AgglomerativeHelper(ClusterHelper):
         cophenetCorrelation, cophenetDistances = cophenet(linkageDistances , pdist(self.scaledData))
 
         # Must be run before creating figure or plotting data.
-        PlotHelper.Format(overrides={"figure.figsize" : (15, 6)})
+        PlotHelper.Format()
 
         # The 0.80*PlotHelper.GetScaledStandardSize() is the standard size the PlotHelper uses.  We scale that
         # by the argument provided.
@@ -70,6 +70,10 @@ class AgglomerativeHelper(ClusterHelper):
         dendrogram(linkageDistances, leaf_rotation=90, color_threshold=cutDistance, leaf_font_size=leafFontSize)
 
         # Final formating.
+        figure = plt.gcf()
+        figure.set_figwidth(15)
+        figure.set_figheight(6)
+
         # Main title.
         axis  = plt.gca()
         title = "Agglomerative Hierarchical Clustering Dendogram\n"
