@@ -89,6 +89,14 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
+    def testPushIndividualtSettings(self):
+        self.CreateBasicPlot("Individual Settings - Format with Defaults")
+        PlotHelper.PushSettings(scale=2.0)
+        self.CreateBasicPlot("Individual Settings - Formated with Pushed Settings")
+        PlotHelper.PopSettings()
+        self.CreateBasicPlot("Individual Settings - Formated with Popped Settings")
+
+
     def testPushPopSettings(self):
         self.CreateBasicPlot("Format with Defaults")
         PlotHelper.PushSettings(FormatSettings(overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15}))

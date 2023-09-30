@@ -6,25 +6,36 @@ Created on Septemper 28, 2023
 class FormatSettings():
 
 
-    def __init__(self, parameterFile:str="default", overrides:dict=None, scale:int=1.0, annotationSize:int=15, lineColorCycle:str="seaborn"):
-        # Parameter file.
-        self.parameterFile               = parameterFile
-
-        # Overrides of rcParameters in the parameter file.
-        self.overrides                   = overrides
-
-        # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
-        self.scale                       = scale
-
-        # Alternate font size used for annotations, labeling, et cetera.
-        self.annotationSize              = annotationSize
-
-        # Format style.  This is the default, it can be overridden in the call to "Format".
-        self.lineColorCycle              = lineColorCycle
+    def __init__(self, parameterFile:str="default", overrides:dict={}, scale:int=1.0, annotationSize:int=15, lineColorCycle:str="seaborn"):
+        self.Set(parameterFile, overrides, scale, annotationSize, lineColorCycle)
 
 
     def Copy(self):
         return FormatSettings(self.parameterFile, self.overrides, self.scale, self.annotationSize, self.lineColorCycle)
+
+
+    def Set(self, parameterFile:str=None, overrides:dict=None, scale:int=None, annotationSize:int=None, lineColorCycle:str=None):
+        # Parameter file.
+        if parameterFile is not None:
+            self.parameterFile               = parameterFile
+
+        # Overrides of rcParameters in the parameter file.
+        if overrides is not None:
+            self.overrides                   = overrides
+
+        # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
+        if scale is not None:
+            self.scale                       = scale
+
+        # Alternate font size used for annotations, labeling, et cetera.
+        if annotationSize is not None:
+            self.annotationSize              = annotationSize
+
+        # Format style.  This is the default, it can be overridden in the call to "Format".
+        if lineColorCycle is not None:
+            self.lineColorCycle              = lineColorCycle
+
+        return self
 
 
     @property

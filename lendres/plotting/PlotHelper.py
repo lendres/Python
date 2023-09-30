@@ -35,14 +35,6 @@ class PlotHelper():
     formatSettings              = FormatSettings()
     storedFormatSettings        = None
 
-
-    # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
-    # scale                       = 1.0
-    # annotationSize              = 15
-
-    # # Format style.  This is the default, it can be overridden in the call to "Format".
-    # lineColorCycle              = "seaborn"
-
     currentColor                = 0
 
 
@@ -57,10 +49,14 @@ class PlotHelper():
 
 
     @classmethod
-    def PushSettings(cls, formatSettings):
+    def PushSettings(cls, formatSettings:FormatSettings=None, **kwargs):
         # Gaurd against a forgotten call to "Pop".
         if cls.storedFormatSettings is not None:
             cls.PopSettings()
+
+        # If formatSettings is None, copy the current settings and override with the supplied arguments.
+        if formatSettings is None:
+            formatSettings = cls.formatSettings.Copy().Set(**kwargs)
 
         cls.storedFormatSettings = cls.formatSettings
         cls.formatSettings       = formatSettings
