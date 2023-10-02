@@ -44,8 +44,12 @@ class PlotHelper():
 
 
     @classmethod
-    def SetSettings(cls, formatSettings):
-        cls.formatSettings       = formatSettings
+    def SetSettings(cls, formatSettings:FormatSettings=None, **kwargs):
+        # If formatSettings is None, copy the current settings and override with the supplied arguments.
+        if formatSettings is None:
+            formatSettings = cls.formatSettings.Copy().Set(**kwargs)
+
+        cls.formatSettings = formatSettings
 
 
     @classmethod
