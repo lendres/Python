@@ -8,11 +8,29 @@ import math
 import cv2
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
-from   lendres.plotting.FormatSettings                               import FormatSettings
 
 
 class ImageHelper():
     arrayImageSize = 2.5
+
+
+    @classmethod
+    def DefaultSettings(cls):
+        """
+        Gets the default image plotting settings parameter file.
+
+        Recommended usage:
+            PlotHelper.PushSettings(parameterFile=ImageHelper.DefaultSettings())
+            # Display images.
+            ...
+            PlotHelper.PopSettings()
+
+        Returns
+        -------
+        : str
+            The name of the parameters file..
+        """
+        return "imagedefault"
 
 
     @classmethod
@@ -30,14 +48,14 @@ class ImageHelper():
             Size (width and height) of figure.
         colorConversion : OpenCV color conversion enumeration.
             Color conversion to perform before plotting.  Images are plotted in RGB.  For example, if the
-            image is in BGR cv2.COLOR_BGR2RGB should be passed.
+            image is in BGR (as is used in OpenCV) then cv2.COLOR_BGR2RGB should be passed.
 
         Returns
         -------
-        None.
+        figure : matplotlib.figure.Figure
+            The newly created figure.
         """
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        #PlotHelper.formatSettings.Scale = 0.65
         PlotHelper.Format()
 
         # Adding subplots with 3 rows and 4 columns.
@@ -55,10 +73,11 @@ class ImageHelper():
         if title != None:
             axis.set_title(title)
 
-        # Turn off white grid lines.
-        plt.grid(False)
+        # Turn off the grid lines.
+        axis.grid(False)
 
         plt.show()
+        return figure
 
 
     @classmethod
@@ -84,10 +103,9 @@ class ImageHelper():
         """
         # Calculate required values.
         numberOfImages = len(images)
-        rows = math.ceil(numberOfImages / columns)
+        rows           = math.ceil(numberOfImages / columns)
 
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        PlotHelper.PushSettings(scale=0.55)
         PlotHelper.Format()
         figure = plt.figure()
         figure.set_figwidth(columns*ImageHelper.arrayImageSize+2)
@@ -117,7 +135,6 @@ class ImageHelper():
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
         plt.show()
-        PlotHelper.PopSettings()
 
 
     @classmethod
@@ -234,6 +251,36 @@ class ImageHelper():
                 newImages[i] = cv2.GaussianBlur(images[i], **kwargs)
 
         return newImages
+
+
+    @classmethod
+    def ApplyHighPassFilter(cls, images, convertToGrey=True, **kwargs):
+        """
+        Applies a high pass filter to images(s).
+
+        Parameters
+        ----------
+        images : array like set of images
+            Images in an array.
+        convertToGrey : TYPE, optional
+            DESCRIPTION. The default is True.
+        **kwargs : keyword arguments
+            Arguments passed to the Gaussian filter.  For example, "ksize=(21, 21), sigmaX=3"
+
+        Returns
+        -------
+        highPass : array like set of images
+            The high passed images.
+        """
+        # The high pass filter is created by subtracting a low pass filter from the original image(s).
+        lowPass  = cls.ApplyGaussianBlur(images, **kwargs)
+        highPass = images - lowPass
+
+        # If specified, the images are converted to a greyish color.  This is the expected result of a high pass.
+        if convertToGrey:
+            highPass -= 127
+
+        return highPass
 
 
     @classmethod
