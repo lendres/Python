@@ -8,6 +8,7 @@ import math
 import cv2
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.FormatSettings                               import FormatSettings
 
 
 class ImageHelper():
@@ -37,10 +38,14 @@ class ImageHelper():
         """
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
         #PlotHelper.formatSettings.Scale = 0.65
-        PlotHelper.Format(width=size, height=size)
+        PlotHelper.Format()
 
         # Adding subplots with 3 rows and 4 columns.
-        axis = plt.gca()
+        figure = plt.gcf()
+        figure.set_figwidth(size)
+        figure.set_figheight(size)
+
+        axis   = plt.gca()
 
         # Plotting the image.
         if colorConversion != None:
@@ -54,7 +59,6 @@ class ImageHelper():
         plt.grid(False)
 
         plt.show()
-        PlotHelper.formatSettings.Scale = 1.0
 
 
     @classmethod
@@ -83,9 +87,11 @@ class ImageHelper():
         rows = math.ceil(numberOfImages / columns)
 
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
-        PlotHelper.formatSettings.Scale = 0.55
-        PlotHelper.Format(width=columns*ImageHelper.arrayImageSize+2, height=rows*ImageHelper.arrayImageSize+2)
+        PlotHelper.PushSettings(scale=0.55)
+        PlotHelper.Format()
         figure = plt.figure()
+        figure.set_figwidth(columns*ImageHelper.arrayImageSize+2)
+        figure.set_figheight(rows*ImageHelper.arrayImageSize+2)
 
         # Position in the index array/range.
         k = -1
@@ -111,7 +117,7 @@ class ImageHelper():
         plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
         plt.show()
-        PlotHelper.formatSettings.Scale = 1.0
+        PlotHelper.PopSettings()
 
 
     @classmethod
