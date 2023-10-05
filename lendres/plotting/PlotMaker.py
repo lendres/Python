@@ -12,7 +12,7 @@ sns.set(color_codes=True)
 from   lendres.plotting.AxesHelper                                        import AxesHelper
 from   lendres.plotting.PlotHelper                                        import PlotHelper
 from   lendres.LogisticRegressionTools                                    import LogisticRegressionTools
-from   lendres.algorithms.DataType                                        import DataType
+from   lendres.datatypes.ListTools                                        import ListTools
 
 class PlotMaker():
     """
@@ -241,7 +241,7 @@ class PlotMaker():
         # done by using the PlotHelper.NextColor() function.
 
         # Convert the kwargs into individual series kwargs.
-        seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(DataType.GetLengthOfNestedObjects(axesesColumnNames), **kwargs)
+        seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(ListTools.GetLengthOfNestedObjects(axesesColumnNames), **kwargs)
 
         # Store the plotted lines so we can return them.
         lines2d     = []
