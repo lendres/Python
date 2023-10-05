@@ -4,7 +4,7 @@ Created on July 24, 2023
 """
 
 
-class DataType():
+class ListTools():
     """
     A class for checking and determining data types.  These are advanced checks, for example,
     checking elements of a list.

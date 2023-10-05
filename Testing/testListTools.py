@@ -5,7 +5,7 @@ Created on July 23, 2023
 import numpy                                                              as np
 
 from   lendres.ConsoleHelper                                              import ConsoleHelper
-from   lendres.algorithms.DataType                                        import DataType
+from   lendres.datatypes.ListTools                                        import ListTools
 
 import unittest
 
@@ -30,53 +30,53 @@ class TestBoundingDataType(unittest.TestCase):
 
 
     def testIsListOfLists(self):
-        result = DataType.IsListOfLists(self.listOfLists)
+        result = ListTools.IsListOfLists(self.listOfLists)
         self.assertTrue(result)
 
-        result = DataType.IsListOfLists(self.listOfTuples)
+        result = ListTools.IsListOfLists(self.listOfTuples)
         self.assertTrue(result)
 
-        result = DataType.IsListOfLists(self.mixedList)
+        result = ListTools.IsListOfLists(self.mixedList)
         self.assertFalse(result)
 
 
     def testContainsAtLeastOneList(self):
-        result = DataType.ContainsAtLeastOneList(self.listOfLists)
+        result = ListTools.ContainsAtLeastOneList(self.listOfLists)
         self.assertTrue(result)
 
-        result = DataType.ContainsAtLeastOneList(self.listOfTuples)
+        result = ListTools.ContainsAtLeastOneList(self.listOfTuples)
         self.assertTrue(result)
 
-        result = DataType.ContainsAtLeastOneList(self.mixedList)
+        result = ListTools.ContainsAtLeastOneList(self.mixedList)
         self.assertTrue(result)
 
-        result = DataType.ContainsAtLeastOneList([1, 2, 3])
+        result = ListTools.ContainsAtLeastOneList([1, 2, 3])
         self.assertFalse(result)
 
 
     def testAreListsOfListsSameSize(self):
-        result = DataType.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
+        result = ListTools.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
         self.assertTrue(result)
 
         newList = self.listOfLists.copy()
         newList[0][0] = 0
-        result = DataType.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
+        result = ListTools.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
         self.assertTrue(result)
 
-        self.assertRaises(Exception, DataType.AreListsOfListsSameSize, self.listOfLists, self.mixedList)
+        self.assertRaises(Exception, ListTools.AreListsOfListsSameSize, self.listOfLists, self.mixedList)
 
 
     def testCreateListOfLists(self):
-        newListofLists = DataType.CreateListOfLists(self.listOfLists, 1)
+        newListofLists = ListTools.CreateListOfLists(self.listOfLists, 1)
         self.consoleHelper.Display(newListofLists, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
-        self.assertTrue(DataType.AreListsOfListsSameSize(self.listOfLists, newListofLists))
+        self.assertTrue(ListTools.AreListsOfListsSameSize(self.listOfLists, newListofLists))
 
 
     def testGetLengthOfNestedObjects(self):
-        result = DataType.GetLengthOfNestedObjects(self.listOfLists)
+        result = ListTools.GetLengthOfNestedObjects(self.listOfLists)
         self.assertEqual(result, 6)
 
-        result = DataType.GetLengthOfNestedObjects(self.mixedList)
+        result = ListTools.GetLengthOfNestedObjects(self.mixedList)
         self.assertEqual(result, 5)
 
 
