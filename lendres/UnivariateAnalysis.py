@@ -356,14 +356,14 @@ class UnivariateAnalysis():
             The newly created figure.
         """
         # Must be run before creating figure or plotting data.
-        numberOfSamples = len(samples)
-        plt.rcParams['figure.constrained_layout.use'] = True
+        PlotHelper.Format()
 
         # Create figure and a row of axes.
-        topPercent   = 0.20
-        heightRatios = [topPercent, 1-topPercent] * numberOfSamples
-        gridspec     = {"height_ratios" : heightRatios}
-        figure, axes = plt.subplots(2*numberOfSamples, 1, sharex=True, gridspec_kw=gridspec)
+        topPercent      = 0.20
+        numberOfSamples = len(samples)
+        heightRatios    = [topPercent, 1-topPercent] * numberOfSamples
+        gridspec        = {"height_ratios" : heightRatios}
+        figure, axes    = plt.subplots(2*numberOfSamples, 1, sharex=True, gridspec_kw=gridspec, layout="constrained")
         figure.set_figwidth(10)
         figure.set_figheight(numberOfSamples*6)
 
