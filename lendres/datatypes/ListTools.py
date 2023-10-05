@@ -2,6 +2,7 @@
 Created on July 24, 2023
 @author: Lance A. Endres
 """
+from collections.abc import Iterable
 
 
 class ListTools():
@@ -11,7 +12,7 @@ class ListTools():
     """
 
     @classmethod
-    def IsListOfLists(cls, inputList):
+    def IsListOfLists(cls, inputList:list|tuple):
         """
         Determine is the input contains elements that are all lists.
 
@@ -29,7 +30,7 @@ class ListTools():
 
 
     @classmethod
-    def ContainsAtLeastOneList(cls, inputList):
+    def ContainsAtLeastOneList(cls, inputList:list|tuple):
         """
         Determine is the input contains elements that are all lists.
 
@@ -139,3 +140,18 @@ class ListTools():
             # Catch any data types that have not been acounted for and raise an error.
             case _:
                 raise Exception("Unknown object type.")
+
+
+    @classmethod
+    def Flatten(cls, nestedObjects:list|tuple):
+        output = []
+
+        for obj in nestedObjects:
+            if isinstance(obj, Iterable):
+                flattened = cls.Flatten(obj)
+                for item in flattened:
+                    output.append(item)
+            else:
+                output.append(obj)
+
+        return output
