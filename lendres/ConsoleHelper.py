@@ -217,6 +217,26 @@ class ConsoleHelper():
                 print(quotingNotation, message, quotingNotation)
 
 
+    @classmethod
+    def FormatAsColorString(self, message, forgroundColor, backgroundColor=None):
+        colorSpecification = "\33[38;2;" + str(forgroundColor[0])  + ";" + str(forgroundColor[1])  + ";" + str(forgroundColor[2])
+
+        if backgroundColor is not None:
+            colorSpecification += ";48;2;"    + str(backgroundColor[0]) + ";" + str(backgroundColor[1]) + ";" + str(backgroundColor[2])
+
+        colorSpecification += "m"
+
+        # End tag returns to the default print color.
+        message = colorSpecification + message + "\33[m"
+
+        return message
+
+
+    def PrintInColor(self, message, forgroundColor, backgroundColor=None, verboseLevel=None):
+        message = self.FormatAsColorString(message, forgroundColor, backgroundColor)
+        self.Print(message, verboseLevel)
+
+
     def PrintWarning(self, message):
         """
         Prints warning message.
