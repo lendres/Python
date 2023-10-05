@@ -3,6 +3,7 @@ Created on July 23, 2023
 @author: Lance A. Endres
 """
 import numpy                                                              as np
+import copy
 
 from   lendres.ConsoleHelper                                              import ConsoleHelper
 from   lendres.datatypes.ListTools                                        import ListTools
@@ -21,12 +22,14 @@ class TestListTools(unittest.TestCase):
         verboseLevel = ConsoleHelper.VERBOSETESTING
         cls.consoleHelper = ConsoleHelper(verboseLevel=verboseLevel)
 
-        cls.listOfLists  = [[1, 3], [5], [8, 11, 14]]
+        cls.listOfLists     = [[1, 3], [5], [8, 11, 14]]
 
         # Tuples have to have at least 2 elements.
-        cls.listOfTuples = [(1, 3), (5, 6), (8, 11, 14)]
+        cls.listOfTuples    = [(1, 3), (5, 6), (8, 11, 14)]
 
-        cls.mixedList    = [1, [5], [8, 11, 14]]
+        cls.mixedList       = [1, [5], [8, 11, 14]]
+
+        cls.deepListOfLists = [[1, 3], 5, [[8, 11], 14]]
 
 
     def testIsListOfLists(self):
@@ -58,7 +61,7 @@ class TestListTools(unittest.TestCase):
         result = ListTools.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
         self.assertTrue(result)
 
-        newList = self.listOfLists.copy()
+        newList = copy.deepcopy(self.listOfLists)
         newList[0][0] = 0
         result = ListTools.AreListsOfListsSameSize(self.listOfLists, self.listOfLists)
         self.assertTrue(result)
@@ -70,6 +73,23 @@ class TestListTools(unittest.TestCase):
         newListofLists = ListTools.CreateListOfLists(self.listOfLists, 1)
         self.consoleHelper.Display(newListofLists, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.assertTrue(ListTools.AreListsOfListsSameSize(self.listOfLists, newListofLists))
+
+
+    def testFlatten(self):
+        solution = [1, 3, 5, 8, 11, 14]
+        result   = ListTools.Flatten(self.listOfLists)
+
+        solution = [1, 3, 5, 6, 8, 11, 14]
+        result   = ListTools.Flatten(self.listOfTuples)
+
+        solution = [1, 5, 8, 11, 14]
+        result   = ListTools.Flatten(self.mixedList)
+
+        solution = [1, 3, 5, 8, 11, 14]
+        result   = ListTools.Flatten(self.deepListOfLists)
+
+
+        self.assertEqual(result, solution)
 
 
     def testGetLengthOfNestedObjects(self):
