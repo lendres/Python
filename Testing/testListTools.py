@@ -12,7 +12,7 @@ import unittest
 # More information at:
 # https://docs.python.org/3/library/unittest.html
 
-class TestBoundingDataType(unittest.TestCase):
+class TestListTools(unittest.TestCase):
 
 
     @classmethod
