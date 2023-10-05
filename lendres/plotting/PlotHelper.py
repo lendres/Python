@@ -40,11 +40,37 @@ class PlotHelper():
 
     @classmethod
     def GetSettings(cls):
+        """
+        Gets the current FormatSettings.
+
+        Returns
+        -------
+        : FormatSettings
+            The current format settings.
+        """
         return cls.formatSettings
 
 
     @classmethod
     def SetSettings(cls, formatSettings:FormatSettings=None, **kwargs):
+        """
+        Sets the format settings.  Does not save the existing settings.  It is necessary to supply either an instance
+        of FormatSettings or at least one keyword argument that is passed to FormatSettings.
+
+        If keyword arguments are supplied, the current setttings are used as the basis of the settings and just the
+        settings supplied as keyword arguments are overwritten.
+
+        Parameters
+        ----------
+        formatSettings : FormatSettings, optional
+            The format settings. The default is None.
+        **kwargs : keyword arguments
+            Keyword arguments recognized by FormatSettings.
+
+        Returns
+        -------
+        None.
+        """
         # If formatSettings is None, copy the current settings and override with the supplied arguments.
         if formatSettings is None:
             formatSettings = cls.formatSettings.Copy().Set(**kwargs)
