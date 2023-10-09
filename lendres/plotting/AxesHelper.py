@@ -292,7 +292,7 @@ class AxesHelper():
 
 
     @classmethod
-    def SetXAxisLimits(cls, axes, limits, numberOfTicks=None):
+    def SetXAxisLimits(cls, axes, limits:list=None, lowerLimit:float=None, upperLimit:float=None, numberOfTicks:int|str="same"):
         """
         Sets the x-axes limits.  Allows specifying the number of ticks to use.
 
@@ -300,49 +300,88 @@ class AxesHelper():
         ----------
         axes : matplotlib.axes.Axes
             Axes to change the limits on.
-        limits : array like of two values
-            The lower and upper limits of the axis.
-        numberOfTicks : int, optional
-            The number of ticks (labeled points) to show. The default is None.
+        limits : array like of two values, optional
+            The lower and upper limits of the axis.  The default is None
+        lowerLimit : float, optional
+            The lower limit of the axis. The default is None.
+        upperLimit : float, optional
+            The upper limit of the axis. The default is None.
+        numberOfTicks : int or string, optional
+            The number of ticks (labeled points) to show.
+            If "same", then the existing number of ticks is used.
+            If "plusone", then the number of ticks is calculated as (upper_limits - lower_limit + 1).  The default is "same".
 
         Returns
         -------
         None.
         """
-        tickSet       = axes.get_xticks()
+        limits  = cls._ProcessAxisLimitsArgument(limits, lowerLimit, upperLimit, cls.GetXBoundaries(axes))
+        tickSet = cls._ProcessAxisTicksArgument(limits, numberOfTicks, axes.get_xticks())
 
-        if numberOfTicks is None:
-            numberOfTicks = len(tickSet)
-
-        tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
         axes.set_xticks(tickSet)
         axes.set_xlim((tickSet[0], tickSet[-1]))
 
 
     @classmethod
-    def SetYAxisLimits(cls, axes, limits, numberOfTicks=None):
+    def SetYAxisLimits(cls, axes, limits:list=None, lowerLimit:float=None, upperLimit:float=None, numberOfTicks:int|str="same"):
         """
         Sets the y-axis limits.  Allows specifying the number of ticks to use.
+
+        Specify either the limits as a list, or one or both of lowerLimit and upperLimit.
 
         Parameters
         ----------
         axes : matplotlib.axes.Axes
             Axes to change the limits on.
-        limits : array like of two values
-            The lower and upper limits of the axis.
-        numberOfTicks : int, optional
-            The number of ticks (labeled points) to show. The default is None.
+        limits : array like of two values, optional
+            The lower and upper limits of the axis.  The default is None
+        lowerLimit : float, optional
+            The lower limit of the axis. The default is None.
+        upperLimit : float, optional
+            The upper limit of the axis. The default is None.
+        numberOfTicks : int or string, optional
+            The number of ticks (labeled points) to show.
+            If "same", then the existing number of ticks is used.
+            If "plusone", then the number of ticks is calculated as (upper_limits - lower_limit + 1).  The default is "same".
 
         Returns
         -------
         None.
         """
-        if numberOfTicks is None:
-            numberOfTicks = len(axes.get_yticks())
+        limits  = cls._ProcessAxisLimitsArgument(limits, lowerLimit, upperLimit, cls.GetYBoundaries(axes))
+        tickSet = cls._ProcessAxisTicksArgument(limits, numberOfTicks, axes.get_yticks())
 
-        tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
         axes.set_yticks(tickSet)
         axes.set_ylim((tickSet[0], tickSet[-1]))
+
+
+    @classmethod
+    def _ProcessAxisLimitsArgument(cls, limits:list, lowerLimit:float, upperLimit:float, boundaries:list):
+        if limits is None:
+            limits = boundaries
+
+            if lowerLimit is not None:
+                limits[0] = lowerLimit
+
+            if upperLimit is not None:
+                limits[1] = upperLimit
+        return limits
+
+
+    @classmethod
+    def _ProcessAxisTicksArgument(cls, limits:list, numberOfTicks:int|str, ticks:list):
+        match numberOfTicks:
+            case "same":
+                numberOfTicks = len(ticks)
+            case "plusone":
+                numberOfTicks = int(limits[1] - limits[0] + 1)
+            case int():
+                pass
+            case _:
+                raise Exception("An invalid value of 'numberOfTicks' was provided.")
+
+        tickSet = np.linspace(limits[0], limits[-1], numberOfTicks, endpoint=True)
+        return tickSet
 
 
     @classmethod
