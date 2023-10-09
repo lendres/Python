@@ -32,6 +32,10 @@ class TestPlotHelper(unittest.TestCase):
         cls.data  = pd.read_csv(inputFile)
 
 
+    def setUp(self):
+        PlotHelper.UseDefaultSettings()
+
+
     def testArtistiPlot(self):
         PlotHelper.NewArtisticFigure()
         plt.show()
@@ -48,19 +52,19 @@ class TestPlotHelper(unittest.TestCase):
         AxesHelper.Label(axis, title="Seaborn Comparison - Seaborn Generated", xLabels="Values", yLabels="Count")
         plt.show()
 
-        PlotHelper.PushSettings(FormatSettings(parameterFile="seaborn", scale=0.6))
+        PlotHelper.PushSettings(parameterFile="seaborn", scale=0.6)
         self.CreateBasicPlot("Seaborn Comparison - Using Parameter File")
         PlotHelper.PopSettings()
 
 
     def testCopySettings(self):
         self.CreateBasicPlot("Settings - Default Formatting")
-        PlotHelper.PushSettings(FormatSettings(scale=2.0))
+        PlotHelper.PushSettings(scale=2.0)
         self.CreateBasicPlot("Settings - Initial Format Settings")
 
         settings = PlotHelper.GetSettings().Copy()
         settings.ParameterFile = "seaborn"
-        PlotHelper.PushSettings(settings)
+        PlotHelper.SetSettings(settings)
         self.CreateBasicPlot("Settings - Copied Format Settings")
 
         PlotHelper.PopSettings()
@@ -71,9 +75,9 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Format with Defaults")
 
         # Test using the file extension or not using the file extension.
-        PlotHelper.PushSettings(FormatSettings(parameterFile="gridless.mplstyle"))
+        PlotHelper.PushSettings(parameterFile="gridless.mplstyle")
         self.CreateBasicPlot("Format Parameter File with Extension")
-        PlotHelper.PushSettings(FormatSettings(parameterFile="gridless"))
+        PlotHelper.PushSettings(parameterFile="gridless")
         self.CreateBasicPlot("Format Parameter File without Extension")
         PlotHelper.PopSettings()
 
@@ -84,7 +88,7 @@ class TestPlotHelper(unittest.TestCase):
     def testPlotAllStyles(self):
         styleFiles = PlotHelper.GetListOfPlotStyles()
         for styleFile in styleFiles:
-            PlotHelper.PushSettings(FormatSettings(parameterFile=styleFile))
+            PlotHelper.PushSettings(parameterFile=styleFile)
             self.CreateBasicPlot("Format with "+styleFile)
         PlotHelper.PopSettings()
 
@@ -97,12 +101,14 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Individual Settings - Formated with Popped Settings")
 
 
-    def testPushPopSettings(self):
-        self.CreateBasicPlot("Format with Defaults")
-        PlotHelper.PushSettings(FormatSettings(overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15}))
-        self.CreateBasicPlot("Formated with Pushed Settings")
+    def testSetPushPopSettings(self):
+        self.CreateBasicPlot("Push Pop - Format with Defaults")
+        PlotHelper.SetSettings(overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15})
+        self.CreateBasicPlot("Push Pop - Formated with Set Settings")
+        PlotHelper.PushSettings(overrides={"figure.titlesize" : 15})
+        self.CreateBasicPlot("Push Pop - Formated with Pushed Settings")
         PlotHelper.PopSettings()
-        self.CreateBasicPlot("Formated with Popped Settings")
+        self.CreateBasicPlot("Push Pop - Formated with Popped Settings")
 
 
     def testSavePlotBeforeShowMethod1(self):
@@ -114,6 +120,15 @@ class TestPlotHelper(unittest.TestCase):
 
         fullPath = self.GetFullPath(fileName)
         self.assertTrue(os.path.exists(fullPath))
+
+
+    def testScaleVersusParameterFiles(self):
+        self.CreateBasicPlot("Scale and File - Format with Defaults")
+        PlotHelper.PushSettings(scale=0.8)
+        self.CreateBasicPlot("Scale and File - Formated with Scale")
+        PlotHelper.PushSettings(parameterFile="mediumsizefont")
+        self.CreateBasicPlot("Scale and File - Formated with File")
+        PlotHelper.PopSettings()
 
 
     def testNumberFormatException(self):

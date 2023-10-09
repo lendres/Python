@@ -52,13 +52,29 @@ class PlotHelper():
 
 
     @classmethod
+    def UseDefaultSettings(cls):
+        """
+        Uses the default format settings.
+
+        Returns
+        -------
+        None.
+        """
+        cls.SetSettings(FormatSettings())
+
+
+    @classmethod
     def SetSettings(cls, formatSettings:FormatSettings=None, **kwargs):
         """
-        Sets the format settings.  Does not save the existing settings.  It is necessary to supply either an instance
-        of FormatSettings or at least one keyword argument that is passed to FormatSettings.
+        Sets the format settings.  It is necessary to supply either an instance  of FormatSettings or at least one
+        keyword argument that is passed to FormatSettings.
 
-        If keyword arguments are supplied, the current setttings are used as the basis of the settings and just the
+        If keyword arguments are supplied, the default setttings are used as the basis of the settings and just the
         settings supplied as keyword arguments are overwritten.
+
+        The different between SetSettings and PushSettings is that SetSettings uses the default settings as the basis
+        for any keyword arguments that are not explicitly declared and PushSetting uses the current settings.  Set means
+        existing settings are ignored, Push means retain existing settings except those provided.
 
         Parameters
         ----------
@@ -71,29 +87,53 @@ class PlotHelper():
         -------
         None.
         """
-        # If formatSettings is None, copy the current settings and override with the supplied arguments.
+        # If formatSettings is None, create a new instance.
         if formatSettings is None:
-            formatSettings = cls.formatSettings.Copy().Set(**kwargs)
+            formatSettings = FormatSettings(**kwargs)
 
-        cls.formatSettings = formatSettings
-
-
-    @classmethod
-    def PushSettings(cls, formatSettings:FormatSettings=None, **kwargs):
         # Gaurd against a forgotten call to "Pop".
         if cls.storedFormatSettings is not None:
             cls.PopSettings()
-
-        # If formatSettings is None, copy the current settings and override with the supplied arguments.
-        if formatSettings is None:
-            formatSettings = cls.formatSettings.Copy().Set(**kwargs)
 
         cls.storedFormatSettings = cls.formatSettings
         cls.formatSettings       = formatSettings
 
 
     @classmethod
+    def PushSettings(cls, **kwargs):
+        """
+        Sets the format settings.  Does not save the existing settings.  It is necessary to supply either an instance
+        of FormatSettings or at least one keyword argument that is passed to FormatSettings.
+
+        If keyword arguments are supplied, the current setttings are used as the basis of the settings and just the
+        settings supplied as keyword arguments are overwritten.
+
+        The different between SetSettings and PushSettings is that SetSettings uses the default settings as the basis
+        for any keyword arguments that are not explicitly declared and PushSetting uses the current settings.  Set means
+        existing settings are ignored, Push means retain existing settings except those provided.
+
+        Parameters
+        ----------
+        formatSettings : FormatSettings, optional
+            The format settings. The default is None.
+        **kwargs : keyword arguments
+            Keyword arguments recognized by FormatSettings.
+
+        Returns
+        -------
+        None.
+        """
+        # Create a new instance by copying the existing settings.
+        formatSettings = cls.formatSettings.Copy().Set(**kwargs)
+
+        cls.SetSettings(formatSettings)
+
+
+    @classmethod
     def PopSettings(cls):
+        if cls.storedFormatSettings is None:
+            raise Exception("Invalid call to PopSettings.  Settings must first be pushed before popping.")
+
         cls.formatSettings       = cls.storedFormatSettings
         cls.storedFormatSettings = None
 
@@ -468,7 +508,7 @@ class PlotHelper():
         if parameterFile is None:
             parameterFile = "artistic"
 
-        cls.PushSettings(FormatSettings(parameterFile=parameterFile))
+        cls.PushSettings(parameterFile=parameterFile)
         cls.Format()
 
         figure  = plt.gcf()
