@@ -385,6 +385,26 @@ class AxesHelper():
 
 
     @classmethod
+    def GetXBoundaries(cls, axes):
+        """
+        Gets the minimum and maximum x tick marks on the x-axis.
+
+        Parameters
+        ----------
+        axes : matplotlib.axes.Axes
+            Axes to extract the information from.
+
+        Returns
+        -------
+        yBoundries : list
+            The minimim and maximum tick mark as a list.
+        """
+        ticks      = axes.get_xticks()
+        boundries = [ticks[0], ticks[-1]]
+        return boundries
+
+
+    @classmethod
     def GetYBoundaries(cls, axes):
         """
         Gets the minimum and maximum y tick marks on the y-axis.
@@ -400,8 +420,8 @@ class AxesHelper():
             The minimim and maximum tick mark as a list.
         """
         ticks      = axes.get_yticks()
-        yBoundries = [ticks[0], ticks[-1]]
-        return yBoundries
+        boundries = [ticks[0], ticks[-1]]
+        return boundries
 
 
     @classmethod
