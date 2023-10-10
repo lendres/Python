@@ -2,13 +2,12 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import matplotlib.pyplot                                        as plt
+import matplotlib.pyplot                                             as plt
 
-#import DataSetLoading
-from   lendres.demonstration.FunctionGenerator                  import FunctionGenerator
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.plotting.AxesHelper                              import AxesHelper
-from   lendres.plotting.PlotMaker                               import PlotMaker
+from   lendres.demonstration.FunctionGenerator                       import FunctionGenerator
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.plotting.PlotMaker                                    import PlotMaker
 
 import unittest
 
@@ -20,11 +19,19 @@ class TestFunctionGenerator(unittest.TestCase):
         pass
 
 
+    def testNoisySineWave(self):
+        x, y = FunctionGenerator.NoisySineWave()
+        self.CreateSineWavePlot(x, y, "Noisy Sine Wave 1")
+
+        x, y = FunctionGenerator.NoisySineWave(noiseScale=1)
+        self.CreateSineWavePlot(x, y, "Noisy Sine Wave 2")
+
+
     def testSineWaveGenerator(self):
-        x, y = FunctionGenerator.GetSineWave()
+        x, y = FunctionGenerator.SineWave()
         self.CreateSineWavePlot(x, y, "No Arguments")
 
-        x, y = FunctionGenerator.GetSineWave(20, 2, 50, 2, 10, 10)
+        x, y = FunctionGenerator.SineWave(20, 2, 50, 2, 10, 10)
         self.CreateSineWavePlot(x, y, "Use All Arguments")
 
 

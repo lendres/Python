@@ -24,7 +24,7 @@ class TestPlotMaker(unittest.TestCase):
 
 
         # Generate a data set of 4 sine waves.
-        cls.sinesDataFrame = FunctionGenerator.GetSineWavesAsDataFrame(magnitude=[10, 6, 8, 2], frequency=[4, 8, 2, 1], yOffset=[0, 22, 0, 2], slope=[10, 0, -6, 0], steps=1000)
+        cls.sinesDataFrame = FunctionGenerator.SineWavesAsDataFrame(magnitude=[10, 6, 8, 2], frequency=[4, 8, 2, 1], yOffset=[0, 22, 0, 2], slope=[10, 0, -6, 0], steps=1000)
 
         cls.sinesDataFrame.rename({"y0" : "Sine A1"}, axis="columns", inplace=True)
         cls.sinesDataFrame.rename({"y1" : "Sine B1"}, axis="columns", inplace=True)
@@ -48,9 +48,9 @@ class TestPlotMaker(unittest.TestCase):
 
 
     def testCreateFastFigure(self):
-        x, a = FunctionGenerator.GetSineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
-        x, b = FunctionGenerator.GetSineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
-        x, c = FunctionGenerator.GetSineWave(magnitude=5, frequency=3, yOffset=30, slope=-5, steps=1000)
+        x, a = FunctionGenerator.SineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
+        x, b = FunctionGenerator.SineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
+        x, c = FunctionGenerator.SineWave(magnitude=5, frequency=3, yOffset=30, slope=-5, steps=1000)
         PlotMaker.CreateFastFigure([a])
         PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test Fast Figure 1 Kwarg", xLabel="Time", yLabel="Value", linewidth=7)
         PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test Fast Figure List Kwarg", xLabel="Time", yLabel="Value", linewidth=[3, 8])
