@@ -27,7 +27,7 @@ class TestDataHelper(unittest.TestCase):
 
 
     def testPrintInColor(self):
-        self.consoleHelper.PrintInColor("This is a test of foreground color.", (0, 255, 0))
+        self.consoleHelper.PrintInColor("\nThis is a test of foreground color.", (0, 255, 0))
         self.consoleHelper.PrintInColor("This is a test of foreground color and background.", (255, 0, 0), (255, 255, 255))
         self.consoleHelper.Print("Standard print, did the color return to normal?")
 
