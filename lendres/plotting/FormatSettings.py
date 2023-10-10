@@ -2,26 +2,34 @@
 Created on Septemper 28, 2023
 @author: lance.endres
 """
+from copy                                                            import deepcopy
+
 
 class FormatSettings():
 
 
     def __init__(self, parameterFile:str="default", overrides:dict={}, scale:int=1.0, annotationSize:int=15, lineColorCycle:str="seaborn"):
-        self.Set(parameterFile, overrides, scale, annotationSize, lineColorCycle)
+        self.Set(parameterFile, deepcopy(overrides), "overwrite", scale, annotationSize, lineColorCycle)
 
 
     def Copy(self):
         return FormatSettings(self.parameterFile, self.overrides, self.scale, self.annotationSize, self.lineColorCycle)
 
 
-    def Set(self, parameterFile:str=None, overrides:dict=None, scale:int=None, annotationSize:int=None, lineColorCycle:str=None):
+    def Set(self, parameterFile:str=None, overrides:dict=None, overrideUpdateMethod="overwrite", scale:int=None, annotationSize:int=None, lineColorCycle:str=None):
         # Parameter file.
         if parameterFile is not None:
             self.parameterFile               = parameterFile
 
         # Overrides of rcParameters in the parameter file.
         if overrides is not None:
-            self.overrides                   = overrides
+            match overrideUpdateMethod:
+                case "overwrite":
+                    self.overrides           = overrides
+                case "update":
+                    self.overrides.update(overrides)
+                case _:
+                    raise Exception("Invalid 'overrideUpdateMethod' argument provided to 'FormatSettings'.")
 
         # Scaling parameter used to adjust the plot fonts, lineweights, et cetera for the output scale of the plot. The default is 1.0.
         if scale is not None:

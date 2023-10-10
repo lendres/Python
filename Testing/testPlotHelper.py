@@ -33,7 +33,7 @@ class TestPlotHelper(unittest.TestCase):
 
 
     def setUp(self):
-        PlotHelper.UseDefaultSettings()
+        PlotHelper.ResetSettings()
 
 
     def testArtistiPlot(self):
@@ -64,51 +64,50 @@ class TestPlotHelper(unittest.TestCase):
 
         settings = PlotHelper.GetSettings().Copy()
         settings.ParameterFile = "seaborn"
-        PlotHelper.SetSettings(settings)
+        PlotHelper.PushSettings(settings)
         self.CreateBasicPlot("Settings - Copied Format Settings")
 
         PlotHelper.PopSettings()
         self.CreateBasicPlot("Settings - Popped Format Settings")
 
 
+    def testNumberFormatException(self):
+        # Should not cause an exception.
+        PlotHelper.GetColorCycle(numberFormat="RGB")
+        PlotHelper.GetColorCycle(lineColorCycle="seaborn", numberFormat="hex")
+
+        # Test the exception.
+        self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
+
+
     def testPlotStyleFormats(self):
-        self.CreateBasicPlot("Format with Defaults")
+        self.CreateBasicPlot("Style File Names - Format with Defaults")
 
         # Test using the file extension or not using the file extension.
         PlotHelper.PushSettings(parameterFile="gridless.mplstyle")
-        self.CreateBasicPlot("Format Parameter File with Extension")
+        self.CreateBasicPlot("Style File Names - With File Extension")
         PlotHelper.PushSettings(parameterFile="gridless")
-        self.CreateBasicPlot("Format Parameter File without Extension")
+        self.CreateBasicPlot("Style File Names - Without File Extension")
         PlotHelper.PopSettings()
 
         # Test that 2 pushes in a row did not lose original settings.
-        self.CreateBasicPlot("Format with Popped Defaults")
+        self.CreateBasicPlot("Style File Names - Popped Format Settings")
 
 
     def testPlotAllStyles(self):
         styleFiles = PlotHelper.GetListOfPlotStyles()
         for styleFile in styleFiles:
             PlotHelper.PushSettings(parameterFile=styleFile)
-            self.CreateBasicPlot("Format with "+styleFile)
+            self.CreateBasicPlot("Plot Styles - Format with "+styleFile)
         PlotHelper.PopSettings()
 
 
     def testPushIndividualtSettings(self):
         self.CreateBasicPlot("Individual Settings - Format with Defaults")
         PlotHelper.PushSettings(scale=2.0)
-        self.CreateBasicPlot("Individual Settings - Formated with Pushed Settings")
+        self.CreateBasicPlot("Individual Settings - Pushed Format Settings")
         PlotHelper.PopSettings()
-        self.CreateBasicPlot("Individual Settings - Formated with Popped Settings")
-
-
-    def testSetPushPopSettings(self):
-        self.CreateBasicPlot("Push Pop - Format with Defaults")
-        PlotHelper.SetSettings(overrides={"figure.figsize" : (8, 8), "figure.titlesize" : 15})
-        self.CreateBasicPlot("Push Pop - Formated with Set Settings")
-        PlotHelper.PushSettings(overrides={"figure.titlesize" : 15})
-        self.CreateBasicPlot("Push Pop - Formated with Pushed Settings")
-        PlotHelper.PopSettings()
-        self.CreateBasicPlot("Push Pop - Formated with Popped Settings")
+        self.CreateBasicPlot("Individual Settings - Popped Format Settings")
 
 
     def testSavePlotBeforeShowMethod1(self):
@@ -131,13 +130,16 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
-    def testNumberFormatException(self):
-        # Should not cause an exception.
-        PlotHelper.GetColorCycle(numberFormat="RGB")
-        PlotHelper.GetColorCycle(lineColorCycle="seaborn", numberFormat="hex")
-
-        # Test the exception.
-        self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
+    def testSetPushPopSettings(self):
+        self.CreateBasicPlot("Set Push Pop - Format with Defaults")
+        PlotHelper.SetSettings(overrides={"figure.figsize" : (8, 8), "axes.titlesize" : 15})
+        self.CreateBasicPlot("Set Push Pop - Formated with Set Settings")
+        PlotHelper.PushSettings(overrides={"axes.titlesize" : 22})
+        self.CreateBasicPlot("Set Push Pop - Pushed Settings")
+        PlotHelper.PopSettings()
+        self.CreateBasicPlot("Set Push Pop - Popped Settings")
+        PlotHelper.ResetSettings()
+        self.CreateBasicPlot("Set Push Pop - Reset Settings")
 
 
     def CreateBasicPlot(self, title):

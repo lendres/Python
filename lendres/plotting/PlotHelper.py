@@ -33,6 +33,7 @@ class PlotHelper():
 
     # Format settings.
     formatSettings              = FormatSettings()
+    defaultFormatSettings       = FormatSettings()
     storedFormatSettings        = None
 
     currentColor                = 0
@@ -52,9 +53,9 @@ class PlotHelper():
 
 
     @classmethod
-    def UseDefaultSettings(cls):
+    def ResetSettings(cls):
         """
-        Uses the default format settings.
+        Restores the original built-in format settings.
 
         Returns
         -------
@@ -69,12 +70,10 @@ class PlotHelper():
         Sets the format settings.  It is necessary to supply either an instance  of FormatSettings or at least one
         keyword argument that is passed to FormatSettings.
 
-        If keyword arguments are supplied, the default setttings are used as the basis of the settings and just the
+        If keyword arguments are supplied, the original built-in setttings are used as the basis of the settings and the
         settings supplied as keyword arguments are overwritten.
 
-        The different between SetSettings and PushSettings is that SetSettings uses the default settings as the basis
-        for any keyword arguments that are not explicitly declared and PushSetting uses the current settings.  Set means
-        existing settings are ignored, Push means retain existing settings except those provided.
+        The default settings are established and any stored settings (from pushed settings) will be cleared.
 
         Parameters
         ----------
@@ -91,6 +90,45 @@ class PlotHelper():
         if formatSettings is None:
             formatSettings = FormatSettings(**kwargs)
 
+        cls.formatSettings        = formatSettings
+        cls.defaultFormatSettings = formatSettings
+        cls.storedFormatSettings  = None
+
+
+    @classmethod
+    def PushSettings(cls, formatSettings:FormatSettings=None, base="current", **kwargs):
+        """
+        Sets the format settings (temporarily).  It is necessary to supply either an instance of FormatSettings or
+        at least one keyword argument that is passed to FormatSettings.  The original settings are restored by
+        calling "PopSettings".
+
+        If keyword arguments are supplied, they are used to override the settings.  The value of "base" specifies if
+        the "current" or "default" settings are used as the base settings to override.
+
+        Parameters
+        ----------
+        formatSettings : FormatSettings, optional
+            The format settings.  If "formatSettings" are provided, the keyword arguments are ignored.  The default is None.
+        base : str, optional
+            If keyword arguments are supplied, "base" specifies if the current of default settings are used as the basis
+            for applying the keyword arguements to.  Either "current" or "default" are allowed.  The default is "current".
+        **kwargs : keyword arguments
+            Keyword arguments recognized by FormatSettings.
+
+        Returns
+        -------
+        None.
+        """
+        if formatSettings is None:
+            match base:
+                case "current":
+                    # Create a new instance by copying the existing settings.
+                    formatSettings = cls.formatSettings.Copy().Set(overrideUpdateMethod="update", **kwargs)
+                case "default":
+                    formatSettings = cls.defaultFormatSettings(**kwargs)
+                case _:
+                    raise Exception("Invalid 'base' parameter provided to 'PushSettings'.")
+
         # Gaurd against a forgotten call to "Pop".
         if cls.storedFormatSettings is not None:
             cls.PopSettings()
@@ -100,37 +138,14 @@ class PlotHelper():
 
 
     @classmethod
-    def PushSettings(cls, **kwargs):
+    def PopSettings(cls):
         """
-        Sets the format settings.  Does not save the existing settings.  It is necessary to supply either an instance
-        of FormatSettings or at least one keyword argument that is passed to FormatSettings.
-
-        If keyword arguments are supplied, the current setttings are used as the basis of the settings and just the
-        settings supplied as keyword arguments are overwritten.
-
-        The different between SetSettings and PushSettings is that SetSettings uses the default settings as the basis
-        for any keyword arguments that are not explicitly declared and PushSetting uses the current settings.  Set means
-        existing settings are ignored, Push means retain existing settings except those provided.
-
-        Parameters
-        ----------
-        formatSettings : FormatSettings, optional
-            The format settings. The default is None.
-        **kwargs : keyword arguments
-            Keyword arguments recognized by FormatSettings.
+        Restores the previous settings.
 
         Returns
         -------
         None.
         """
-        # Create a new instance by copying the existing settings.
-        formatSettings = cls.formatSettings.Copy().Set(**kwargs)
-
-        cls.SetSettings(formatSettings)
-
-
-    @classmethod
-    def PopSettings(cls):
         if cls.storedFormatSettings is None:
             raise Exception("Invalid call to PopSettings.  Settings must first be pushed before popping.")
 
