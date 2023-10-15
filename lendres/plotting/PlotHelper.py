@@ -490,7 +490,7 @@ class PlotHelper():
 
             for key, value in kwargs.items():
                 match value:
-                    case int() | float() | str():
+                    case int() | float() | str() | None:
                         seriesKwargs[key] = value
 
                     case list():
