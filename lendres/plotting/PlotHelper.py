@@ -743,7 +743,7 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlot(cls, saveFileName, figure=None, transparent=True):
+    def SavePlot(cls, saveFileName, figure=None, transparent=False):
         """
         Saves a plot with a set of default parameters.
 
@@ -751,10 +751,11 @@ class PlotHelper():
         ----------
         saveFileName : string
             The (optionally) path and file name to save the image to.
-        figure : Figure
-            The figure to save.  If "None" is specified, the current figure will be used.
-        transparent : bool
-            Specificies if the background of the plot should be transparent.
+        figure : Figure, optional
+            The figure to save.  If None is specified, the current figure will be used.  The default is None.
+        transparent : bool, optional
+            Specificies if the background of the plot should be transparent.  If True, the background will be set to transparent, if False, nothing no
+            action is taken.  The default is False.
 
         Returns
         -------
