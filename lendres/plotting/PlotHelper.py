@@ -257,6 +257,22 @@ class PlotHelper():
 
 
     @classmethod
+    def ResetMatPlotLib(cls):
+        """
+        Resets Matplotlib to the default settings.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        plt.rcParams.update(plt.rcParamsDefault)
+
+
+    @classmethod
     def _ScaleFontSize(cls, size):
         """
         Scale a font by the scale.  Checks for missing values and converts values that are strings to their numerical values.
@@ -763,22 +779,6 @@ class PlotHelper():
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
-
-
-    @classmethod
-    def ResetMatPlotLib(cls):
-        """
-        Resets Matplotlib to the default settings.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-        """
-        plt.rcParams.update(plt.rcParamsDefault)
 
 
     @classmethod
