@@ -434,10 +434,7 @@ class BivariateAnalysis():
         PlotHelper.Format()
 
         # Create figure and a row of axes.
-        figure, axeses = plt.subplots(1, numberOfUniqueValues)
-
-        figure.set_figwidth(6*numberOfUniqueValues)
-        figure.set_figheight(6)
+        figure, axeses = plt.subplots(1, numberOfUniqueValues, figsize=(6*numberOfUniqueValues, 6))
 
         for i in range(numberOfUniqueValues):
             sns.histplot(
