@@ -5,15 +5,19 @@ Created on December 4, 2021
 The basis of this class was created in the PlotHelper.  As time went on and the PlotHelper class grew,
 it was split into several classes with specific functionality.  This class resulted from that split.
 """
+import pandas                                    as pd
 import numpy                                     as np
 import matplotlib.pyplot                         as plt
+
+import pint
+import pint_pandas
 
 
 class AxesHelper():
 
 
     @classmethod
-    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix=None):
+    def Label(cls, axeses, title, xLabels, yLabels=None, titleSuffix=None):
         """
         Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
 
@@ -77,6 +81,73 @@ class AxesHelper():
                 axeses[0].set(title=title, xlabel=xLabels)
                 for instance, yLabel in zip(axeses, yLabels):
                     instance.set(ylabel=yLabel)
+
+
+    @classmethod
+    def LabelWithUnits(cls, axeses, title, xLabels, xData, yLabels="", yData=None, titleSuffix=None):
+        """
+        Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
+        Extracts the units from PintArrays.
+
+        Parameters
+        ----------
+        axeses : figure or matplotlib.axes.Axes or array like of figure/axes
+            The object(s) to label.
+        title : TYPE
+            Main plot title.
+        xData : PintArray
+            X data to extract the units from.
+        xLabels : string or array like of strings
+            X-axis label(s).  If axeses is an array, xLabels can be an array of the same length.
+        yLabels : string or array like of strings, optional
+            Y-axis label(s).  Default is a blank string.  If axeses is an array, ylabels can be an array of the same length.
+        yData : PintArray, optional
+            Y data to extract the units from.  Default is none.
+        titleSuffix : string or None, optional
+            If supplied, the string is appended to the title.  Default is none.
+
+        Returns
+        -------
+        None.
+        """
+        # Convert the x labels by adding the units.
+        if isinstance(xData, pd.DataFrame):
+            xData = [xData[column] for column in xData]
+
+        if isinstance(xLabels, list):
+            if not isinstance(xData, list):
+                raise Exception("The x labels are a list and the x data type is not compatible.")
+
+            if not all([isinstance(item.values, pint_pandas.pint_array.PintArray) for item in xData]):
+                raise Exception("The x data must be PintArray(s).")
+
+            xLabels = [xLabel+" ("+data.values.quantity.units+")" for xLabel, data in zip(xLabels, xData)]
+        else:
+            if not isinstance(xData.values, pint_pandas.pint_array.PintArray):
+                raise Exception("The x data must be PintArray(s).")
+
+            xLabels = xLabels + " (" + str(xData.values.quantity.units) + ")"
+
+        # Convert the x labels by adding the units.
+        if isinstance(yData, pd.DataFrame):
+            yData = [yData[column] for column in yData]
+
+        if isinstance(yLabels, list):
+            if not isinstance(yData, list):
+                raise Exception("The y labels are a list and the y data type is not compatible.")
+
+            if not all([isinstance(item.values, pint_pandas.pint_array.PintArray) for item in yData]):
+                raise Exception("The y data must be PintArray(s).")
+
+            yLabels = [yLabel+" ("+data.values.quantity.units+")" for yLabel, data in zip(yLabels, yData)]
+        elif yLabels is not None:
+            if not isinstance(yData.values, pint_pandas.pint_array.PintArray):
+                raise Exception("The y data must be PintArray(s).")
+
+            yLabels = yLabels + " (" + str(yData.values.quantity.units) + ")"
+
+        # Forward to the main work.
+        cls.Label(axeses, title, xLabels, yLabels, titleSuffix)
 
 
     @classmethod
