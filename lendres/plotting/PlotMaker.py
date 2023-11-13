@@ -255,9 +255,11 @@ class PlotMaker():
                 defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
                 if independentAxis == "x":
-                    lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
+                    lines = axes.plot(data[independentColumnName].values.quantity.magnitude, data[column].values.quantity.magnitude, label=column, **defaultKwargs)
+                    # lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
                 else:
-                    lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
+                    lines = axes.plot(data[column].values.quantity.magnitude, data[independentColumnName].values.quantity.magnitude, label=column, **defaultKwargs)
+                    # lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
 
                 lines2d.append(lines[0])
                 seriesIndex += 1
