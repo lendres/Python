@@ -45,6 +45,22 @@ class File():
 
 
     @classmethod
+    def SetWorkingDirectoryFromFilePath(cls, filePath:str):
+        """
+        Sets the current working directory to that of the file's directory.
+
+        Parameters
+        ----------
+        filePath : str
+            A file name or path that contains the file name.
+
+        Returns
+        -------
+        None.
+        """
+        os.chdir(cls.GetDirectory(filePath))
+
+    @classmethod
     def ChangeDirectoryDotDot(cls, path:str, levels:int=1):
         """
         Returns the directory that is "levels" up from the provided path.  Works similar to the "CD.." OOS command, but with some added features.  The path
