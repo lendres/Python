@@ -18,7 +18,7 @@ from   PIL                                                           import Imag
 
 from   lendres.plotting.FormatSettings                               import FormatSettings
 from   lendres.plotting.AxesHelper                                   import AxesHelper
-from   lendres.path.File                                             import File
+from   lendres.path.Path                                             import Path
 
 
 class PlotHelper():
@@ -163,8 +163,8 @@ class PlotHelper():
         styles : list
             A list of plot styles.
         """
-        directory  = File.GetDirectory(__file__)
-        styleFiles = File.GetAllFilesByExtension(directory, "mplstyle")
+        directory  = Path.GetDirectory(__file__)
+        styleFiles = Path.GetAllFilesByExtension(directory, "mplstyle")
         styles     = [os.path.splitext(styleFile)[0] for styleFile in styleFiles]
         return styles
 
@@ -219,8 +219,8 @@ class PlotHelper():
         # If the file does not contain a file extension, assume a default.
         parameterFile = cls.formatSettings.ParameterFile
 
-        if not File.ContainsDirectory(parameterFile):
-            parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
+        if not Path.ContainsDirectory(parameterFile):
+            parameterFile = os.path.join(Path.GetDirectory(__file__), parameterFile)
 
         if not parameterFile.endswith(".mplstyle"):
             parameterFile += ".mplstyle"

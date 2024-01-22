@@ -38,52 +38,5 @@ class TestFile(unittest.TestCase):
         os.remove(combinedOutputPath)
 
 
-    def testChangeDirectoryDotDot(self):
-        thisDirectory = os.path.dirname(os.path.abspath(__file__))
-
-        solution      = os.path.dirname(thisDirectory)
-        result        = File.ChangeDirectoryDotDot(thisDirectory)
-
-        self.assertEqual(solution, result)
-
-        solution      = os.path.dirname(solution)
-        result        = File.ChangeDirectoryDotDot(thisDirectory, 2)
-        self.assertEqual(solution, result)
-
-        file          = os.path.join(thisDirectory, "file.txt")
-        result        = File.ChangeDirectoryDotDot(thisDirectory, 2)
-        self.assertEqual(solution, result)
-
-
-    def testContainsDirectory(self):
-        fileName = "c:/temp/test.txt"
-        result   = File.ContainsDirectory(fileName)
-        self.assertTrue(result)
-
-        fileName = "c:\\temp\\test.txt"
-        result   = File.ContainsDirectory(fileName)
-        self.assertTrue(result)
-
-        fileName = "test.txt"
-        result   = File.ContainsDirectory(fileName)
-        self.assertFalse(result)
-
-
-    def testGetDirectory(self):
-        fileName = "c:/temp/test.txt"
-        result   = File.GetDirectory(fileName)
-        self.assertEqual("c:\\temp", result)
-
-        fileName = "c:\\temp\\test.txt"
-        result   = File.GetDirectory(fileName)
-        self.assertEqual("c:\\temp", result)
-
-        # If no directory is provied, the current path will be used.
-        thisDirectory = os.path.dirname(os.path.abspath(__file__))
-        fileName      = "test.txt"
-        result        = File.GetDirectory(fileName)
-        self.assertEqual(thisDirectory, result.lower())
-
-
 if __name__ == "__main__":
     unittest.main()
