@@ -11,8 +11,10 @@ sns.set(color_codes=True)
 
 from   lendres.plotting.AxesHelper                                        import AxesHelper
 from   lendres.plotting.PlotHelper                                        import PlotHelper
+from   lendres.interop.PandasInterOp                                      import PandasInterOp
 from   lendres.LogisticRegressionTools                                    import LogisticRegressionTools
 from   lendres.datatypes.ListTools                                        import ListTools
+
 
 class PlotMaker():
     """
@@ -254,11 +256,17 @@ class PlotMaker():
                 defaultKwargs = {"color" : PlotHelper.NextColor()}
                 defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
+                # Used for pint.pandas integration.  If the series contains pint data, the magnitudes are extracted for
+                # plotting.  Plotting using the pint units data types is very slow.
+                independentData = PandasInterOp.GetSeriesMagnitudes(data[independentColumnName])
+                dependentData   = PandasInterOp.GetSeriesMagnitudes(data[column])
+
                 if independentAxis == "x":
-                    lines = axes.plot(data[independentColumnName].values.quantity.magnitude, data[column].values.quantity.magnitude, label=column, **defaultKwargs)
+                    # lines = axes.plot(data[independentColumnName].values.quantity.magnitude, data[column].values.quantity.magnitude, label=column, **defaultKwargs)
                     # lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
+                    lines = axes.plot(independentData, dependentData, label=column, **defaultKwargs)
                 else:
-                    lines = axes.plot(data[column].values.quantity.magnitude, data[independentColumnName].values.quantity.magnitude, label=column, **defaultKwargs)
+                    lines = axes.plot(dependentData, independentData, label=column, **defaultKwargs)
                     # lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
 
                 lines2d.append(lines[0])
