@@ -6,7 +6,7 @@ Created on July 27, 2022
 from   sklearn.feature_extraction.text                               import CountVectorizer
 from   sklearn.feature_extraction.text                               import TfidfVectorizer
 
-from   lendres.DataHelper                                            import DataHelper
+from   lendres.data.DataHelper                                       import DataHelper
 
 
 class LanguageDataHelper(DataHelper):

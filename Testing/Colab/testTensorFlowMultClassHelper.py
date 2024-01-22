@@ -2,24 +2,24 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
+# import pandas                                                        as pd
+# import numpy                                                         as np
 
-from   sklearn.model_selection                   import train_test_split
+from   sklearn.model_selection                                       import train_test_split
 
-import keras
-from   tensorflow.keras.utils                    import to_categorical
-from   tensorflow.keras                          import losses
-from   tensorflow.keras                          import optimizers
-from   tensorflow.keras                          import Sequential
-from   tensorflow.keras.layers                   import Dense
+# import keras
+# from   tensorflow.keras.utils                                        import to_categorical
+from   tensorflow.keras                                              import losses
+from   tensorflow.keras                                              import optimizers
+from   tensorflow.keras                                              import Sequential
+from   tensorflow.keras.layers                                       import Dense
 
-from   keras.datasets                            import mnist
+from   keras.datasets                                                import mnist
 
-from   lendres.plotting.PlotMaker                import PlotMaker
-from   lendres.DataHelper                        import DataHelper
-from   lendres.TensorFlowDataHelper              import TensorFlowDataHelper
-from   lendres.TensorFlowMultiClassHelper        import TensorFlowMultiClassHelper
+# from   lendres.plotting.PlotMaker                                    import PlotMaker
+from   lendres.data.DataHelper                                       import DataHelper
+# from   lendres.TensorFlowDataHelper                                  import TensorFlowDataHelper
+from   lendres.TensorFlowMultiClassHelper                            import TensorFlowMultiClassHelper
 
 import unittest
 
@@ -75,7 +75,7 @@ class TestTensorFlowHelper(unittest.TestCase):
         image_size = 28*28
 
         # Create model.
-        self.model = Sequential()  
+        self.model = Sequential()
 
         # Multiple Dense units with Relu activation.
         self.model.add(Dense(64, activation='relu', kernel_initializer='he_uniform', input_shape=(image_size,)))

@@ -14,7 +14,7 @@ from   sklearn.datasets                                              import make
 import unittest
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.DataHelper                                            import DataHelper
+from   lendres.data.DataHelper                                       import DataHelper
 from   lendres.KMeansHelper                                          import KMeansHelper
 
 skipTests = 0

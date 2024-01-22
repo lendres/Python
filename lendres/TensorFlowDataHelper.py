@@ -2,11 +2,11 @@
 Created on July 29, 2022
 @author: Lance A. Endres
 """
-from   lendres.DataHelperBase                                   import DataHelper
+from   lendres.data.DataHelperBase                              import DataHelperBase
 from   lendres.TensorFlowDataHelperFunctions                    import TensorFlowDataHelperFunctions
 
 
-class TensorFlowDataHelper(DataHelper):
+class TensorFlowDataHelper(DataHelperBase):
     """
     Class for storing and manipulating data for use in an artificial intelligence setting.
 

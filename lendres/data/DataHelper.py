@@ -15,7 +15,7 @@ import io
 
 from   lendres.algorithms.Search                                import Search
 from   lendres.io.ConsoleHelper                                 import ConsoleHelper
-from   lendres.DataHelperBase                                   import DataHelperBase
+from   lendres.data.DataHelperBase                              import DataHelperBase
 
 
 class DataHelper(DataHelperBase):
