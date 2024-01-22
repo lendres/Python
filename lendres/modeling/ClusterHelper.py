@@ -2,14 +2,14 @@
 Created on April 27, 2022
 @author: Lance
 """
-import pandas                                                   as pd
-import numpy                                                    as np
-from   matplotlib                                               import pyplot                     as plt
-import seaborn                                                  as sns
+import pandas                                                        as pd
+import numpy                                                         as np
+from   matplotlib                                                    import pyplot                     as plt
+import seaborn                                                       as sns
 import math
 
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.SubsetHelper                                     import SubsetHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.modeling.SubsetHelper                                 import SubsetHelper
 
 
 class ClusterHelper(SubsetHelper):

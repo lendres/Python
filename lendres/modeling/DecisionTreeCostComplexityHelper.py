@@ -2,11 +2,11 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-import numpy                                                    as np
-import matplotlib.pyplot                                        as plt
+import numpy                                                         as np
+import matplotlib.pyplot                                             as plt
 
-from lendres.plotting.PlotHelper                                import PlotHelper
-from lendres.DecisionTreeHelper                                 import DecisionTreeHelper
+from lendres.plotting.PlotHelper                                     import PlotHelper
+from lendres.modeling.DecisionTreeHelper                             import DecisionTreeHelper
 
 class DecisionTreeCostComplexityHelper(DecisionTreeHelper):
 

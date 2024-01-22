@@ -7,9 +7,9 @@ from   sklearn.ensemble                                              import Stac
 import DataSetLoading
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.AdaBoostHelper                                        import AdaBoostHelper
-from   lendres.GradientBoostingHelper                                import GradientBoostingHelper
-from   lendres.StackingHelper                                        import StackingHelper
+from   lendres.modeling.AdaBoostHelper                               import AdaBoostHelper
+from   lendres.modeling.GradientBoostingHelper                       import GradientBoostingHelper
+from   lendres.modeling.StackingHelper                               import StackingHelper
 
 import unittest
 

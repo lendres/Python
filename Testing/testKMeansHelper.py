@@ -15,7 +15,7 @@ import unittest
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.data.DataHelper                                       import DataHelper
-from   lendres.KMeansHelper                                          import KMeansHelper
+from   lendres.modeling.KMeansHelper                                 import KMeansHelper
 
 skipTests = 0
 

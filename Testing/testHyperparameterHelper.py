@@ -10,14 +10,14 @@ from   sklearn.ensemble                                              import AdaB
 
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.ModelHelper                                           import ModelHelper
-from   lendres.DecisionTreeHelper                                    import DecisionTreeHelper
-from   lendres.BaggingHelper                                         import BaggingHelper
-from   lendres.RandomForestHelper                                    import RandomForestHelper
-from   lendres.AdaBoostHelper                                        import AdaBoostHelper
-from   lendres.GradientBoostingHelper                                import GradientBoostingHelper
-from   lendres.XGradientBoostingHelper                               import XGradientBoostingHelper
-from   lendres.HyperparameterHelper                                  import HyperparameterHelper
+from   lendres.modeling.ModelHelper                                  import ModelHelper
+from   lendres.modeling.DecisionTreeHelper                           import DecisionTreeHelper
+from   lendres.modeling.BaggingHelper                                import BaggingHelper
+from   lendres.modeling.RandomForestHelper                           import RandomForestHelper
+from   lendres.modeling.AdaBoostHelper                               import AdaBoostHelper
+from   lendres.modeling.GradientBoostingHelper                       import GradientBoostingHelper
+from   lendres.modeling.XGradientBoostingHelper                      import XGradientBoostingHelper
+from   lendres.modeling.HyperparameterHelper                         import HyperparameterHelper
 
 import unittest
 

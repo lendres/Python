@@ -6,7 +6,7 @@ from   sklearn.linear_model                                          import Logi
 
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.CategoricalRegressionHelper                           import CategoricalRegressionHelper
+from   lendres.modeling.CategoricalRegressionHelper                  import CategoricalRegressionHelper
 
 import unittest
 

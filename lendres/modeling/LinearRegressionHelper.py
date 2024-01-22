@@ -9,7 +9,7 @@ from   sklearn.linear_model                                          import Line
 from   sklearn.metrics                                               import mean_squared_error
 from   sklearn.metrics                                               import mean_absolute_error
 
-from lendres.ModelHelper import ModelHelper
+from lendres.modeling.ModelHelper                                    import ModelHelper
 
 class LinearRegressionHelper(ModelHelper):
 

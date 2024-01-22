@@ -6,7 +6,7 @@ from   sklearn.linear_model                                          import Logi
 
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.BaggingHelper                                         import BaggingHelper
+from   lendres.modeling.BaggingHelper                                import BaggingHelper
 
 import unittest
 

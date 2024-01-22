@@ -7,7 +7,7 @@ import pandas                                                        as pd
 import DataSetLoading
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.PrincipleComponentAnalysisHelper                      import PrincipleComponentAnalysisHelper
+from   lendres.modeling.PrincipleComponentAnalysisHelper             import PrincipleComponentAnalysisHelper
 
 import unittest
 

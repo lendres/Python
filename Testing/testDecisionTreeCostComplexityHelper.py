@@ -3,8 +3,8 @@ Created on December 27, 2021
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.DecisionTreeHelper                               import DecisionTreeHelper
-from   lendres.DecisionTreeCostComplexityHelper                 import DecisionTreeCostComplexityHelper
+from   lendres.modeling.DecisionTreeHelper                           import DecisionTreeHelper
+from   lendres.modeling.DecisionTreeCostComplexityHelper             import DecisionTreeCostComplexityHelper
 
 import unittest
 

@@ -7,7 +7,7 @@ import pandas                                                        as pd
 import DataSetLoading
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.AgglomerativeHelper                                   import AgglomerativeHelper
+from   lendres.modeling.AgglomerativeHelper                          import AgglomerativeHelper
 
 import unittest
 

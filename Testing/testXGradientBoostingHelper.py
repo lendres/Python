@@ -6,7 +6,7 @@ from   IPython.display                                               import disp
 
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.XGradientBoostingHelper                               import XGradientBoostingHelper
+from   lendres.modeling.XGradientBoostingHelper                      import XGradientBoostingHelper
 
 import unittest
 

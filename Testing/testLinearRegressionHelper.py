@@ -3,7 +3,7 @@ Created on January 26, 2022
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.LinearRegressionHelper                           import LinearRegressionHelper
+from   lendres.modeling.LinearRegressionHelper                       import LinearRegressionHelper
 
 import unittest
 

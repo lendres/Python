@@ -14,8 +14,7 @@ import os
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.plotting.PlotHelper                                   import PlotHelper
-from   lendres.CategoricalHelper                                     import CategoricalHelper
-
+from   lendres.modeling.CategoricalHelper                            import CategoricalHelper
 
 class TensorFlowHelper(CategoricalHelper):
     # Class level variables.

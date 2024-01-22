@@ -4,9 +4,9 @@ Created on January 26, 2022
 """
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.ModelHelper                                           import ModelHelper
+from   lendres.modeling.ModelHelper                                  import ModelHelper
 
-from   lendres.BaggingHelper                                         import BaggingHelper
+from   lendres.modeling.BaggingHelper                                import BaggingHelper
 from   imblearn.over_sampling                                        import SMOTE
 
 import unittest

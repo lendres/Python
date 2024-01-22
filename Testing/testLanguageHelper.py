@@ -6,7 +6,7 @@ import pandas                                                        as pd
 
 import DataSetLoading
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.LanguageHelper                                        import LanguageHelper
+from   lendres.modeling.LanguageHelper                               import LanguageHelper
 
 import warnings
 import unittest

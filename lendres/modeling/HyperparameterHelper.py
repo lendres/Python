@@ -7,7 +7,7 @@ from   sklearn.model_selection                                       import Grid
 from   sklearn.model_selection                                       import RandomizedSearchCV
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
-from   lendres.ModelHelper                                           import ModelHelper
+from   lendres.modeling.ModelHelper                                  import ModelHelper
 
 
 class HyperparameterHelper():
