@@ -2,8 +2,8 @@
 Created on July 23, 2023
 @author: Lance A. Endres
 """
-from   lendres.ConsoleHelper                                              import ConsoleHelper
-from   lendres.plotting.DisplayColors                                     import PlotAllColors
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.plotting.DisplayColors                                import PlotAllColors
 
 import unittest
 

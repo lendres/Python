@@ -2,11 +2,11 @@
 Created on July 23, 2023
 @author: Lance A. Endres
 """
-import numpy                                                              as np
+import numpy                                                         as np
 import copy
 
-from   lendres.ConsoleHelper                                              import ConsoleHelper
-from   lendres.datatypes.ListTools                                        import ListTools
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.datatypes.ListTools                                   import ListTools
 
 import unittest
 

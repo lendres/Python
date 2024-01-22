@@ -4,8 +4,8 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from   lendres.ConsoleHelper                                         import ConsoleHelper
-from   lendres.BivariateAnalysis                                     import BivariateAnalysis
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.data.BivariateAnalysis                                import BivariateAnalysis
 from   lendres.plotting.PlotHelper                                   import PlotHelper
 from   lendres.plotting.FormatSettings                               import FormatSettings
 

@@ -3,11 +3,11 @@ Created on January 26, 2022
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.ModelHelper                                      import ModelHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.ModelHelper                                           import ModelHelper
 
-from   lendres.BaggingHelper                                    import BaggingHelper
-from   imblearn.over_sampling                                   import SMOTE
+from   lendres.BaggingHelper                                         import BaggingHelper
+from   imblearn.over_sampling                                        import SMOTE
 
 import unittest
 

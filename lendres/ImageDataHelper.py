@@ -7,7 +7,7 @@ import seaborn                                                       as sns
 import pandas                                                        as pd
 import numpy                                                         as np
 
-from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.TensorFlowDataHelper                                  import TensorFlowDataHelper
 from   lendres.plotting.PlotHelper                                   import PlotHelper
 from   lendres.UnivariateAnalysis                                    import UnivariateAnalysis

@@ -6,7 +6,7 @@ from   sklearn                                                       import metr
 from   sklearn.model_selection                                       import GridSearchCV
 from   sklearn.model_selection                                       import RandomizedSearchCV
 
-from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.ModelHelper                                           import ModelHelper
 
 

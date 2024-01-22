@@ -2,14 +2,14 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   sklearn.ensemble                                         import StackingClassifier
+from   sklearn.ensemble                                              import StackingClassifier
 
 import DataSetLoading
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.AdaBoostHelper                                   import AdaBoostHelper
-from   lendres.GradientBoostingHelper                           import GradientBoostingHelper
-from   lendres.StackingHelper                                   import StackingHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.AdaBoostHelper                                        import AdaBoostHelper
+from   lendres.GradientBoostingHelper                                import GradientBoostingHelper
+from   lendres.StackingHelper                                        import StackingHelper
 
 import unittest
 

@@ -4,7 +4,7 @@ Created on December 27, 2021
 """
 import DataSetLoading
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 
 import unittest
 

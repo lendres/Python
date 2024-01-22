@@ -2,15 +2,15 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
+import pandas                                                        as pd
+import numpy                                                         as np
 import cv2
 
 import os
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.ImageHelper                       import ImageHelper
-from   lendres.ImageDataHelper                   import ImageDataHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.ImageHelper                                           import ImageHelper
+from   lendres.ImageDataHelper                                       import ImageDataHelper
 
 import unittest
 

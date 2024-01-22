@@ -2,25 +2,25 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import numpy                                     as np
+import pandas                                                        as pd
+import numpy                                                         as np
 
 import os
 
 import keras
-from   tensorflow.keras                          import losses
-from   tensorflow.keras                          import optimizers
-from   tensorflow.keras                          import Sequential
-from   tensorflow.keras.layers                   import Dense
-from   tensorflow.keras                          import backend
-from   tensorflow.keras.layers                   import Conv2D
-from   tensorflow.keras.layers                   import MaxPooling2D
-from   tensorflow.keras.layers                   import Flatten
-from   tensorflow.keras.layers                   import Dropout
+from   tensorflow.keras                                              import losses
+from   tensorflow.keras                                              import optimizers
+from   tensorflow.keras                                              import Sequential
+from   tensorflow.keras.layers                                       import Dense
+from   tensorflow.keras                                              import backend
+from   tensorflow.keras.layers                                       import Conv2D
+from   tensorflow.keras.layers                                       import MaxPooling2D
+from   tensorflow.keras.layers                                       import Flatten
+from   tensorflow.keras.layers                                       import Dropout
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.ImageDataHelper                   import ImageDataHelper
-from   lendres.TensorFlowCNNHelper               import TensorFlowCNNHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.ImageDataHelper                                       import ImageDataHelper
+from   lendres.TensorFlowCNNHelper                                   import TensorFlowCNNHelper
 
 
 import unittest

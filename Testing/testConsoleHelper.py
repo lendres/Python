@@ -2,7 +2,7 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.io.ConsoleHelper                                 import ConsoleHelper
 
 import unittest
 
