@@ -2,11 +2,10 @@
 Created on Febuary 16, 2022
 @author: Lance A. Endres
 """
-import numpy                                                    as np
 import matplotlib.pyplot                                        as plt
 
-from   lendres.mathematics.LinearAlgebra                        import AngleIn360Degrees
-from   lendres.mathematics.LinearAlgebra                        import DiscritizeArc
+from   lendres.mathematics.Angles                               import AngleIn360Degrees
+from   lendres.mathematics.Angles                               import DiscritizeArc
 
 import unittest
 
