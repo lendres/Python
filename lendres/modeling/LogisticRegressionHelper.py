@@ -9,6 +9,8 @@ from   sklearn.linear_model                                          import Logi
 
 from   lendres.plotting.PlotMaker                                    import PlotMaker
 from   lendres.modeling.CategoricalRegressionHelper                  import CategoricalRegressionHelper
+from   lendres.modeling.LogisticRegressionTools                      import LogisticRegressionTools
+
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
 
@@ -166,6 +168,6 @@ class LogisticRegressionHelper(CategoricalRegressionHelper):
         if dataSet == "testing" or dataSet == "both":
             plottingData["testing"] = [self.dataHelper.yTestingData, self.yTestingPredicted]
 
-        figure, axis = PlotMaker.CreateRocCurvePlot(plottingData, "Logistic Regression")
+        figure, axis = LogisticRegressionTools.CreateRocCurvePlot(plottingData, "Logistic Regression")
 
         return figure, axis
