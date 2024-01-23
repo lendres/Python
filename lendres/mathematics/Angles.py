@@ -33,15 +33,33 @@ def AngleIn360Degrees(endPoint, startPoint=[0, 0], returnPositive=True):
     return angle
 
 
-def DiscritizeArc(center, radius, startAngle, endAngle, numberOfPoints):
+def DiscritizeArc(center, radius:float, startAngle:float, endAngle:float, numberOfPoints:int):
     """
     Creates a discritized arc.  Useful for plotting of discritized calculations.
 
     Works by creating the arc with the at [0, 0] and the start angle 0 degrees (positive x-axis).  The
     arc is then rotated and translated to the requested position.
+
+    Parameters
+    ----------
+    center : TYPE
+        DESCRIPTION.
+    radius : float
+        Arc radius.
+    startAngle : float
+        Arc start angle.
+    endAngle : float
+        Arc end angle.
+    numberOfPoints : int
+        The number of points to generate along the arc.
+
+    Returns
+    -------
+    points : ndarray
+        Points along the arc.
     """
     # Calculate the swept angle.
-    arcAngle = 360-startAngle+endAngle if endAngle<startAngle else endAngle-startAngle
+    arcAngle = 360 - startAngle + endAngle if endAngle < startAngle else endAngle - startAngle
     arcAngle = np.radians(arcAngle)
 
     # Get a set of angles (discritizes the total angle).
