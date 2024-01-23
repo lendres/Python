@@ -2,13 +2,13 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-import seaborn                                                  as sns
-import matplotlib.pyplot                                        as plt
-import numpy                                                    as np
+import seaborn                                                       as sns
+import matplotlib.pyplot                                             as plt
+import numpy                                                         as np
 
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.plotting.AxesHelper                              import AxesHelper
-from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 
 
 class UnivariateAnalysis():

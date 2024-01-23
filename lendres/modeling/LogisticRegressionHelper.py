@@ -8,7 +8,7 @@ import numpy                                                         as np
 from   sklearn.linear_model                                          import LogisticRegression
 
 from   lendres.plotting.PlotMaker                                    import PlotMaker
-from   lendres.CategoricalRegressionHelper                           import CategoricalRegressionHelper
+from   lendres.modeling.CategoricalRegressionHelper                  import CategoricalRegressionHelper
 
 class LogisticRegressionHelper(CategoricalRegressionHelper):
 

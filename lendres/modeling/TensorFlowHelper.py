@@ -2,20 +2,19 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import matplotlib.pyplot                                        as plt
-import seaborn                                                  as sns
+import pandas                                                        as pd
+import matplotlib.pyplot                                             as plt
+import seaborn                                                       as sns
 sns.set(color_codes=True)
 
-from   sklearn                                                  import metrics
-from   tensorflow.keras.models                                  import load_model
+from   sklearn                                                       import metrics
+from   tensorflow.keras.models                                       import load_model
 
 import os
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.plotting.PlotHelper                              import PlotHelper
-from   lendres.CategoricalHelper                                import CategoricalHelper
-
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.modeling.CategoricalHelper                            import CategoricalHelper
 
 class TensorFlowHelper(CategoricalHelper):
     # Class level variables.

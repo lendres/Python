@@ -2,16 +2,16 @@
 Created on January 19, 2022.
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import numpy                                                    as np
-import seaborn                                                  as sns
-from   sklearn                                                  import metrics
+import pandas                                                        as pd
+import numpy                                                         as np
+import seaborn                                                       as sns
+from   sklearn                                                       import metrics
 
-from   matplotlib                                               import pyplot                     as plt
+from   matplotlib                                                    import pyplot                     as plt
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.plotting.AxesHelper                              import AxesHelper
-from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
 
 
 class ModelHelper:

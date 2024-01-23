@@ -1,12 +1,12 @@
 """
-Created on January 19, 2022
+Created on March 9, 2022
 @author: Lance A. Endres
 """
-from   sklearn.ensemble                                         import RandomForestClassifier
+from sklearn.ensemble                                                import StackingClassifier
 
-from   lendres.CategoricalRegressionHelper                      import CategoricalRegressionHelper
+from lendres.modeling.CategoricalRegressionHelper                    import CategoricalRegressionHelper
 
-class RandomForestHelper(CategoricalRegressionHelper):
+class StackingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper, model=None, description=""):
         """
@@ -26,23 +26,23 @@ class RandomForestHelper(CategoricalRegressionHelper):
         None.
         """
         if model == None:
-            model = RandomForestHelper.CreateDefaultModel()
+            model = StackingHelper.CreateDefaultModel()
 
         super().__init__(dataHelper, model, description)
 
 
     @classmethod
-    def CreateDefaultModel(cls, **kwargs):
+    def CreateDefaultModel(self, **kwargs):
         """
         Creates a decision tree model.
 
         Parameters
         ----------
         **kwargs : keyword arguments
-            These arguments are passed on to the RandomForestClassifier.
+            These arguments are passed on to the DecisionTreeClassifier.
 
         Returns
         -------
-        RandomForestClassifier.
+        StackingClassifier.
         """
-        return RandomForestClassifier(random_state=1, **kwargs)
+        return StackingClassifier(**kwargs)

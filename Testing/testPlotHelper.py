@@ -41,6 +41,15 @@ class TestPlotHelper(unittest.TestCase):
         plt.show()
 
 
+    def testBuiltInStyleFormats(self):
+        self.CreateBasicPlot("Built In - Format with Defaults")
+
+        # Test using the file extension or not using the file extension.
+        PlotHelper.PushSettings(parameterFile="ggplot")
+        self.CreateBasicPlot("Built In - ggplot")
+        PlotHelper.PopSettings()
+
+
     def testCompareSeabornToSeaborn(self):
         """
         Compare the real Seaborn style to the "seaborn.mplstyle" version.

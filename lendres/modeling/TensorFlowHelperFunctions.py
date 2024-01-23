@@ -2,12 +2,12 @@
 Created on July 29, 2022
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-import numpy                                                    as np
-import tensorflow                                               as tf
+import pandas                                                        as pd
+import numpy                                                         as np
+import tensorflow                                                    as tf
 import random
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 
 class TensorFlowDataHelperFunctions():
     """

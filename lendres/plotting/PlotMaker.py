@@ -2,18 +2,19 @@
 Created on May 30, 2022
 @author: Lance A. Endres
 """
-import pandas                                                             as pd
-import numpy                                                              as np
-import matplotlib.pyplot                                                  as plt
+import pandas                                                        as pd
+import numpy                                                         as np
+import matplotlib.pyplot                                             as plt
 
-import seaborn                                                            as sns
+import seaborn                                                       as sns
 sns.set(color_codes=True)
 
-from   lendres.plotting.AxesHelper                                        import AxesHelper
-from   lendres.plotting.PlotHelper                                        import PlotHelper
-from   lendres.interop.PandasInterOp                                      import PandasInterOp
-from   lendres.LogisticRegressionTools                                    import LogisticRegressionTools
-from   lendres.datatypes.ListTools                                        import ListTools
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.interop.PandasInterOp                                 import PandasInterOp
+from   lendres.modeling.LogisticRegressionTools                      import LogisticRegressionTools
+from   lendres.datatypes.ListTools                                   import ListTools
+
 
 
 class PlotMaker():

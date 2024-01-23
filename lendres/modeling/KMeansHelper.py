@@ -17,7 +17,7 @@ from   yellowbrick.cluster                                           import Silh
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
 from   lendres.plotting.AxesHelper                                   import AxesHelper
-from   lendres.ClusterHelper                                         import ClusterHelper
+from   lendres.modeling.ClusterHelper                                import ClusterHelper
 
 class KMeansHelper(ClusterHelper):
 

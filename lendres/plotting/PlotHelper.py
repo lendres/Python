@@ -18,7 +18,7 @@ from   PIL                                                           import Imag
 
 from   lendres.plotting.FormatSettings                               import FormatSettings
 from   lendres.plotting.AxesHelper                                   import AxesHelper
-from   lendres.path.File                                             import File
+from   lendres.path.Path                                             import Path
 
 
 class PlotHelper():
@@ -163,8 +163,8 @@ class PlotHelper():
         styles : list
             A list of plot styles.
         """
-        directory  = File.GetDirectory(__file__)
-        styleFiles = File.GetAllFilesByExtension(directory, "mplstyle")
+        directory  = Path.GetDirectory(__file__)
+        styleFiles = Path.GetAllFilesByExtension(directory, "mplstyle")
         styles     = [os.path.splitext(styleFile)[0] for styleFile in styleFiles]
         return styles
 
@@ -219,11 +219,15 @@ class PlotHelper():
         # If the file does not contain a file extension, assume a default.
         parameterFile = cls.formatSettings.ParameterFile
 
-        if not File.ContainsDirectory(parameterFile):
-            parameterFile = os.path.join(File.GetDirectory(__file__), parameterFile)
+        # If the parameter file is one of the built in ones, we don't have to do anything.
+        if not parameterFile in plt.style.available:
+            # If the full path is specificied, we are ok.
+            # If the full path is not specified, it is assumed the file was shipped with this library and we need to locate it.
+            if not Path.ContainsDirectory(parameterFile):
+                parameterFile = os.path.join(Path.GetDirectory(__file__), parameterFile)
 
-        if not parameterFile.endswith(".mplstyle"):
-            parameterFile += ".mplstyle"
+            if not parameterFile.endswith(".mplstyle"):
+                parameterFile += ".mplstyle"
 
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
@@ -269,7 +273,7 @@ class PlotHelper():
         -------
         None.
         """
-        plt.rcParams.update(plt.rcParamsDefault)
+        plt.rcdefaults()
 
 
     @classmethod

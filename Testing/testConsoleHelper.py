@@ -2,7 +2,7 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   lendres.ConsoleHelper                                    import ConsoleHelper
+from   lendres.io.ConsoleHelper                                 import ConsoleHelper
 
 import unittest
 
@@ -28,7 +28,7 @@ class TestDataHelper(unittest.TestCase):
 
     def testPrintInColor(self):
         self.consoleHelper.PrintInColor("\nThis is a test of foreground color.", (0, 255, 0))
-        self.consoleHelper.PrintInColor("This is a test of foreground color and background.", (255, 0, 0), (255, 255, 255))
+        self.consoleHelper.PrintInColor("This is a test of foreground and background color.", (255, 0, 0), (255, 255, 255))
         self.consoleHelper.Print("Standard print, did the color return to normal?")
 
 

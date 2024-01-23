@@ -2,13 +2,13 @@
 Created on July 26, 2022
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
-from   matplotlib                                               import pyplot                     as plt
-import seaborn                                                  as sns
-from   sklearn.model_selection                                  import train_test_split
+import pandas                                                        as pd
+from   matplotlib                                                    import pyplot                     as plt
+import seaborn                                                       as sns
+from   sklearn.model_selection                                       import train_test_split
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.plotting.PlotHelper                              import PlotHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.plotting.PlotHelper                                   import PlotHelper
 
 
 class DataHelperBase():

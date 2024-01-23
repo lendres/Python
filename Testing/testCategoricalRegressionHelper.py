@@ -2,11 +2,11 @@
 Created on January 26, 2022
 @author: Lance A. Endres
 """
-from   sklearn.linear_model                                     import LogisticRegression
+from   sklearn.linear_model                                          import LogisticRegression
 
 import DataSetLoading
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.CategoricalRegressionHelper                      import CategoricalRegressionHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.modeling.CategoricalRegressionHelper                  import CategoricalRegressionHelper
 
 import unittest
 

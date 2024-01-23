@@ -6,7 +6,7 @@ import cv2
 
 import DataSetLoading
 from   lendres.plotting.PlotHelper                                   import PlotHelper
-from   lendres.ImageHelper                                           import ImageHelper
+from   lendres.computervision.ImageHelper                            import ImageHelper
 
 import unittest
 

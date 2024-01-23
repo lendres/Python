@@ -6,7 +6,7 @@ import pandas                                                        as pd
 import os
 import math
 
-from   lendres.ConsoleHelper                                         import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.data.DataComparison                                   import DataComparison
 
 import unittest

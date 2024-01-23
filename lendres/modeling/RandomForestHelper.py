@@ -2,12 +2,11 @@
 Created on January 19, 2022
 @author: Lance A. Endres
 """
-from xgboost                                                    import XGBClassifier
+from   sklearn.ensemble                                              import RandomForestClassifier
 
-from lendres.CategoricalRegressionHelper                        import CategoricalRegressionHelper
+from   lendres.modeling.CategoricalRegressionHelper                  import CategoricalRegressionHelper
 
-
-class XGradientBoostingHelper(CategoricalRegressionHelper):
+class RandomForestHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper, model=None, description=""):
         """
@@ -27,23 +26,23 @@ class XGradientBoostingHelper(CategoricalRegressionHelper):
         None.
         """
         if model == None:
-            model = XGradientBoostingHelper.CreateDefaultModel()
+            model = RandomForestHelper.CreateDefaultModel()
 
         super().__init__(dataHelper, model, description)
 
 
     @classmethod
-    def CreateDefaultModel(self, **kwargs):
+    def CreateDefaultModel(cls, **kwargs):
         """
         Creates a decision tree model.
 
         Parameters
         ----------
         **kwargs : keyword arguments
-            These arguments are passed on to the XGBClassifier.
+            These arguments are passed on to the RandomForestClassifier.
 
         Returns
         -------
-        XBGClassifier.
+        RandomForestClassifier.
         """
-        return XGBClassifier(eval_metric="logloss", use_label_encoder=False, random_state=1, **kwargs)
+        return RandomForestClassifier(random_state=1, **kwargs)

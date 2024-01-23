@@ -2,11 +2,11 @@
 Created on March 6, 2022
 @author: Lance A. Endres
 """
-import numpy                                     as np
+import numpy                                                         as np
 import os
 
-from   lendres.ConsoleHelper                     import ConsoleHelper
-from   lendres.DataHelper                        import DataHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.data.DataHelper                                       import DataHelper
 
 
 def GetDataDirectory():

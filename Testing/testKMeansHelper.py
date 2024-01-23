@@ -8,14 +8,14 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 import DataSetLoading
 
-import pandas                                                   as pd
-from   sklearn.datasets                                         import make_blobs
+import pandas                                                        as pd
+from   sklearn.datasets                                              import make_blobs
 
 import unittest
 
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.DataHelper                                       import DataHelper
-from   lendres.KMeansHelper                                     import KMeansHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.data.DataHelper                                       import DataHelper
+from   lendres.modeling.KMeansHelper                                 import KMeansHelper
 
 skipTests = 0
 

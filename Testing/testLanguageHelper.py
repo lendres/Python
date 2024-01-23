@@ -2,11 +2,11 @@
 Created on July 16, 2022
 @author: Lance A. Endres
 """
-import pandas                                                   as pd
+import pandas                                                        as pd
 
 import DataSetLoading
-from   lendres.ConsoleHelper                                    import ConsoleHelper
-from   lendres.LanguageHelper                                   import LanguageHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.modeling.LanguageHelper                               import LanguageHelper
 
 import warnings
 import unittest

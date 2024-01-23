@@ -1,12 +1,13 @@
 """
-Created on March 9, 2022
+Created on January 19, 2022
 @author: Lance A. Endres
 """
-from sklearn.ensemble                                           import StackingClassifier
+from xgboost                                                         import XGBClassifier
 
-from lendres.CategoricalRegressionHelper                        import CategoricalRegressionHelper
+from lendres.modeling.CategoricalRegressionHelper                    import CategoricalRegressionHelper
 
-class StackingHelper(CategoricalRegressionHelper):
+
+class XGradientBoostingHelper(CategoricalRegressionHelper):
 
     def __init__(self, dataHelper, model=None, description=""):
         """
@@ -26,7 +27,7 @@ class StackingHelper(CategoricalRegressionHelper):
         None.
         """
         if model == None:
-            model = StackingHelper.CreateDefaultModel()
+            model = XGradientBoostingHelper.CreateDefaultModel()
 
         super().__init__(dataHelper, model, description)
 
@@ -39,10 +40,10 @@ class StackingHelper(CategoricalRegressionHelper):
         Parameters
         ----------
         **kwargs : keyword arguments
-            These arguments are passed on to the DecisionTreeClassifier.
+            These arguments are passed on to the XGBClassifier.
 
         Returns
         -------
-        StackingClassifier.
+        XBGClassifier.
         """
-        return StackingClassifier(**kwargs)
+        return XGBClassifier(eval_metric="logloss", use_label_encoder=False, random_state=1, **kwargs)
