@@ -13,7 +13,7 @@ import unittest
 # More information at:
 # https://docs.python.org/3/library/unittest.html
 
-class TestBoundingBinarySearch(unittest.TestCase):
+class TestAngleAlgorithms(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
