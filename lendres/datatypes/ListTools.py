@@ -147,7 +147,7 @@ class ListTools():
         output = []
 
         for obj in nestedObjects:
-            if isinstance(obj, Iterable):
+            if isinstance(obj, Iterable) and not isinstance(obj, str):
                 flattened = cls.Flatten(obj)
                 for item in flattened:
                     output.append(item)
