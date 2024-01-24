@@ -106,6 +106,7 @@ class AxesHelper():
             data = [data[column] for column in data]
 
         if isinstance(labels, list):
+            # For a list of entries.
             if not isinstance(data, list):
                 raise Exception("The x labels are a list and the x data type is not compatible.")
 
@@ -114,6 +115,7 @@ class AxesHelper():
 
             labels = [label+" ("+str(entry.values.quantity.units)+")" for label, entry in zip(labels, data)]
         else:
+            # For a single entry.
             if not isinstance(data.values, pint_pandas.pint_array.PintArray):
                 raise Exception("The x data must be PintArray(s).")
 
