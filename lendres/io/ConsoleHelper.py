@@ -31,7 +31,7 @@ class ConsoleHelper():
         fileName : stirng, optional
             Path to load the data from.  This is a shortcut for creating a DataHelper and
             then calling "LoadAndInspectData."
-        data : pandas.self.dataFrame, optional
+        data : pandas.dataFrame, optional
             DataFrame to operate on. The default is None.  If None is specified, the
             data should be loaded in a separate function call, e.g., with "LoadAndInspectData"
             or by providing a fileName to load the data from.  You cannot provide both a file
