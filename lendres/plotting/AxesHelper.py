@@ -1,12 +1,9 @@
 """
 Created on December 4, 2021
 @author: Lance A. Endres
-
-The basis of this class was created in the PlotHelper.  As time went on and the PlotHelper class grew,
-it was split into several classes with specific functionality.  This class resulted from that split.
 """
-import numpy                                     as np
-import matplotlib.pyplot                         as plt
+import numpy                                                         as np
+import matplotlib.pyplot                                             as plt
 
 
 class AxesHelper():
