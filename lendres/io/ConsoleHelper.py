@@ -18,6 +18,7 @@ class ConsoleHelper():
     VERBOSEWARNING      = 50
     VERBOSEIMPORTANT    = 60
     VERBOSEALL          = 70
+    VERBOSEDEBUG        = 80
 
     markdownTitleLevel  =  3
 
