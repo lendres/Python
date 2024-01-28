@@ -274,7 +274,7 @@ class ConsoleHelper():
 
     def PrintWarning(self, message):
         """
-        Prints warning message.
+        Prints a warning message.
 
         Parameters
         ----------
@@ -285,7 +285,25 @@ class ConsoleHelper():
         -------
         None.
         """
-        self.PrintBold("WARNING: " + message, ConsoleHelper.VERBOSEWARNING)
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(ConsoleHelper.VERBOSEWARNING):
+            self.PrintInColor("WARNING: " + message, (255, 0, 0), (255, 255, 255))
+
+
+    def PrintError(self, message):
+        """
+        Prints an error message.
+
+        Parameters
+        ----------
+        message : string
+            Error to dislay.
+
+        Returns
+        -------
+        None.
+        """
+        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(ConsoleHelper.VERBOSEERROR):
+            self.PrintInColor("ERROR: " + message, (255, 0, 0), (255, 255, 255))
 
 
     def PrintNewLine(self, count=1, verboseLevel=None):
