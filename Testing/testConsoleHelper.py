@@ -25,8 +25,14 @@ class TestDataHelper(unittest.TestCase):
     def setUp(self):
         pass
 
+    def testPrintSpecialMessages(self):
+        print("\n\n")
+        self.consoleHelper.PrintWarning("This is a warning message.")
+        self.consoleHelper.PrintError("This is an error message.")
+
 
     def testPrintInColor(self):
+        print("\n\n")
         self.consoleHelper.PrintInColor("\nThis is a test of foreground color.", (0, 255, 0))
         self.consoleHelper.PrintInColor("This is a test of foreground and background color.", (255, 0, 0), (255, 255, 255))
         self.consoleHelper.Print("Standard print, did the color return to normal?")
