@@ -218,7 +218,24 @@ class ConsoleHelper():
 
 
     @classmethod
-    def FormatAsColorString(self, message, forgroundColor, backgroundColor=None):
+    def FormatAsColorString(self, message:str, forgroundColor:tuple, backgroundColor:tuple=None) -> str:
+        """
+        Adds color information to a string.  The colors are specified as RGB tuples.
+
+        Parameters
+        ----------
+        message : str
+            The message to format.
+        forgroundColor : tuple
+            A color in RGB format.  The components are specified in as integars in the range of 0-255.
+        backgroundColor : tuple, optional
+            A color in RGB format.  The components are specified in as integars in the range of 0-255.. The default is None.
+
+        Returns
+        -------
+        str
+            The formated message.
+        """
         colorSpecification = "\33[38;2;" + str(forgroundColor[0])  + ";" + str(forgroundColor[1])  + ";" + str(forgroundColor[2])
 
         if backgroundColor is not None:
@@ -232,7 +249,25 @@ class ConsoleHelper():
         return message
 
 
-    def PrintInColor(self, message, forgroundColor, backgroundColor=None, verboseLevel=None):
+    def PrintInColor(self, message:str, forgroundColor:tuple, backgroundColor:tuple=None, verboseLevel=None):
+        """
+        Prints a message formated with a foreground and/or background color.
+
+        Parameters
+        ----------
+        message : str
+            The message to format.
+        forgroundColor : tuple
+            A color in RGB format.  The components are specified in as integars in the range of 0-255.
+        backgroundColor : tuple, optional
+            A color in RGB format.  The components are specified in as integars in the range of 0-255.. The default is None.
+        verboseLevel : TYPE, optional
+            DESCRIPTION. The default is None.
+
+        Returns
+        -------
+        None.
+        """
         message = self.FormatAsColorString(message, forgroundColor, backgroundColor)
         self.Print(message, verboseLevel)
 
