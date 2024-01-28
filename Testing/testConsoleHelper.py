@@ -2,7 +2,8 @@
 Created on December 27, 2021
 @author: Lance A. Endres
 """
-from   lendres.io.ConsoleHelper                                 import ConsoleHelper
+from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+from   lendres.io.IO                                                 import IO
 
 import unittest
 
@@ -23,6 +24,11 @@ class TestDataHelper(unittest.TestCase):
 
     def setUp(self):
         pass
+
+
+    def testIOSingleton(self):
+        print("\n\n")
+        IO.consoleHelper.Print("Singleton test.")
 
 
     def testVerboseLevel(self):

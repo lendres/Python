@@ -2,7 +2,7 @@
 Created on July 24, 2023
 @author: Lance A. Endres
 """
-from collections.abc import Iterable
+from   collections.abc                                               import Iterable
 
 
 class ListTools():
