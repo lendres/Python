@@ -84,47 +84,6 @@ class AxesHelper():
 
 
     @classmethod
-    def AddUnitsSuffix(cls, labels:str|list, data:pd.DataFrame|pd.core.series.Series|list):
-        """
-        Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
-        Extracts the units from PintArrays.
-
-        Parameters
-        ----------
-        labels : string or array like of strings
-            Label(s).  If axeses is an array, labels can be an array of the same length.
-        data : pd.DataFrame, pd.core.series.Series, or list of pd.core.series.Series where each series contains a pint_pandas.pint_array.PintArray
-            Data to extract the units from.
-
-        Returns
-        -------
-        labels : string or list of strings
-            The labels with the units appended.
-        """
-        # Convert a DataFrame to a list of Series.
-        if isinstance(data, pd.DataFrame):
-            data = [data[column] for column in data]
-
-        if isinstance(labels, list):
-            # For a list of entries.
-            if not isinstance(data, list):
-                raise Exception("The x labels are a list and the x data type is not compatible.")
-
-            if not all([isinstance(item.values, pint_pandas.pint_array.PintArray) for item in data]):
-                raise Exception("The x data must be PintArray(s).")
-
-            labels = [label+" ("+str(entry.values.quantity.units)+")" for label, entry in zip(labels, data)]
-        else:
-            # For a single entry.
-            if not isinstance(data.values, pint_pandas.pint_array.PintArray):
-                raise Exception("The x data must be PintArray(s).")
-
-            labels = labels + " (" + str(data.values.quantity.units) + ")"
-
-        return labels
-
-
-    @classmethod
     def RotateXLabels(cls, xLabelRotation):
         """
         Rotate the x-axis labels.
