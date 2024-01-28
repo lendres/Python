@@ -18,12 +18,21 @@ class TestDataHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls.consoleHelper = ConsoleHelper(verboseLevel=cls.verboseLevel)
 
 
     def setUp(self):
         pass
+
+
+    def testVerboseLevel(self):
+        print("\n\n")
+        self.consoleHelper.Print("Standard level.")
+        self.consoleHelper.Print("Debug.", ConsoleHelper.VERBOSEDEBUG)
+        self.consoleHelper.verboseLevel = ConsoleHelper.VERBOSEDEBUG
+        self.consoleHelper.Print("Debug level.", ConsoleHelper.VERBOSEDEBUG)
+        self.consoleHelper.verboseLevel = self.verboseLevel
+
 
     def testPrintSpecialMessages(self):
         print("\n\n")
