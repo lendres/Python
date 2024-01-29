@@ -75,12 +75,40 @@ class ListTools():
 
 
     @classmethod
-    def GetSizesOfListOfLists(cls, listOfLists):
+    def GetSizesOfListOfLists(cls, listOfLists:list) -> list:
+        """
+        Gets the sizes of nested lists and returns them as a list.
+
+        Parameters
+        ----------
+        listOfLists : list of lists
+            A list that contains other lists.
+
+        Returns
+        -------
+        list
+            A list that contains the length (size) of each nest list supplied as input.
+        """
         return [len(element) for element in listOfLists]
 
 
     @classmethod
-    def CreateListOfLists(cls, sizes, initializationValue=0):
+    def CreateListOfLists(cls, sizes:list, initializationValue=0) ->list:
+        """
+        Creates a list of lists and populates them with the initialization value.
+
+        Parameters
+        ----------
+        sizes : list of lists
+            The length (size) of each list to create.
+        initializationValue : TYPE, optional
+            DESCRIPTION. The default is 0.
+
+        Returns
+        -------
+        list
+            A list with nested lists populated with the initialization value.
+        """
         if not cls.IsListOfLists(sizes):
             raise Exception("The input sizes is not a list of lists.")
 
@@ -143,7 +171,25 @@ class ListTools():
 
 
     @classmethod
-    def Flatten(cls, nestedObjects:list|tuple):
+    def Flatten(cls, nestedObjects:list|tuple) -> list:
+        """
+        Takes a list that contains nested lists and turns it into a single list.  The list may contain
+        any combination of single values and lists.
+
+        Example:
+            In:  [1, [2, [3, 4]]]
+            Out: [1, 2, 3, 4]
+
+        Parameters
+        ----------
+        nestedObjects : list|tuple
+            A list or tuple that may contain other lists/tuples.
+
+        Returns
+        -------
+        list
+            All the elements of the input as a single, flat list.
+        """
         output = []
 
         for obj in nestedObjects:
