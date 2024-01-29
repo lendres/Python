@@ -18,30 +18,22 @@ class ConsoleHelper():
     VERBOSEWARNING      = 50
     VERBOSEIMPORTANT    = 60
     VERBOSEALL          = 70
+    VERBOSEDEBUG        = 80
 
     markdownTitleLevel  =  3
 
 
-    def __init__(self, useMarkDown=False, verboseLevel=50):
+    def __init__(self, verboseLevel=50, useMarkDown=False):
         """
         Constructor.
 
         Parameters
         ----------
-        fileName : stirng, optional
-            Path to load the data from.  This is a shortcut for creating a DataHelper and
-            then calling "LoadAndInspectData."
-        data : pandas.self.dataFrame, optional
-            DataFrame to operate on. The default is None.  If None is specified, the
-            data should be loaded in a separate function call, e.g., with "LoadAndInspectData"
-            or by providing a fileName to load the data from.  You cannot provide both a file
-            and data.
-        deep : bool, optional
-            Specifies if a deep copy should be done. The default is False.  Only valid if
-            the "self.data" parameter is specified.
         verboseLevel : int, optional
             Specified how much output should be written. The default is 2.
             A class that uses verbose levels can choose how it operates.
+        useMarkDown : bool, optional
+            Specifies if mark down formatting should be used.  The default is False.
 
         Returns
         -------
@@ -80,7 +72,6 @@ class ConsoleHelper():
                 pass
 
 
-    @classmethod
     def ConvertPrintLevel(cls, verboseLevel):
         """
         Converts a level of None into a default value.
@@ -96,7 +87,7 @@ class ConsoleHelper():
             A valid print level.
         """
         if verboseLevel == None:
-            return cls.VERBOSEALL
+            return cls.verboseLevel
         else:
             return verboseLevel
 
@@ -117,7 +108,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
 
             if number == None:
                 self.questionNumber += 1
@@ -144,7 +135,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
 
             if self.useMarkDown:
                 # Don't use spaces between the asterisks and message so it prints bold in markdown.
@@ -183,7 +174,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
             #print(message)
             sys.stdout.write(message+"\n")
             sys.stdout.flush()
@@ -205,7 +196,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
             quotingNotation = "***"
 
             if self.useMarkDown:
@@ -274,7 +265,7 @@ class ConsoleHelper():
 
     def PrintWarning(self, message):
         """
-        Prints warning message.
+        Prints a warning message.
 
         Parameters
         ----------
@@ -285,7 +276,25 @@ class ConsoleHelper():
         -------
         None.
         """
-        self.PrintBold("WARNING: " + message, ConsoleHelper.VERBOSEWARNING)
+        if self.verboseLevel >= self.ConvertPrintLevel(ConsoleHelper.VERBOSEWARNING):
+            self.PrintInColor("WARNING: " + message, (255, 0, 0), (255, 255, 255))
+
+
+    def PrintError(self, message):
+        """
+        Prints an error message.
+
+        Parameters
+        ----------
+        message : string
+            Error to dislay.
+
+        Returns
+        -------
+        None.
+        """
+        if self.verboseLevel >= self.ConvertPrintLevel(ConsoleHelper.VERBOSEERROR):
+            self.PrintInColor("ERROR: " + message, (255, 0, 0), (255, 255, 255))
 
 
     def PrintNewLine(self, count=1, verboseLevel=None):
@@ -344,7 +353,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
             IPython.display.display(message)
 
 
@@ -372,7 +381,7 @@ class ConsoleHelper():
         -------
         None.
         """
-        if self.verboseLevel >= ConsoleHelper.ConvertPrintLevel(verboseLevel):
+        if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
             # Handle the input arguments.
             if numberOfRows == "all":
                 numberOfRows = None
