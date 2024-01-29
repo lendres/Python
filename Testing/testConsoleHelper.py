@@ -10,7 +10,7 @@ import unittest
 
 skipTests = False
 
-class TestDataHelper(unittest.TestCase):
+class TestConsoleHelper(unittest.TestCase):
     #verboseLevel = ConsoleHelper.VERBOSENONE
     #verboseLevel = ConsoleHelper.VERBOSETESTING
     #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
