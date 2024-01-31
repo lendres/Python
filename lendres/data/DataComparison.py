@@ -2,14 +2,16 @@
 Created on July 20, 2023
 @author: Lance A. Endres
 """
-import pandas                                    as pd
-import matplotlib.pyplot                         as plt
+import pandas                                                        as pd
+import matplotlib.pyplot                                             as plt
 import os
 
-from   lendres.algorithms.Search                 import Search
-from   lendres.plotting.PlotHelper               import PlotHelper
-from   lendres.plotting.AxesHelper               import AxesHelper
-from   lendres.plotting.PlotMaker                import PlotMaker
+from   lendres.algorithms.Search                                     import Search
+from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.plotting.AxesHelper                                   import AxesHelper
+from   lendres.plotting.PlotMaker                                    import PlotMaker
+from   lendres.plotting.LegendHelper                                 import LegendHelper
+from   lendres.plotting.LegendOptions                                import LegendOptions
 
 class DataComparison():
     """
@@ -192,7 +194,7 @@ class DataComparison():
              function(dataSet)
 
 
-    def CreateComparisonPlot(self, columns:list, xLabel=None, yLabel:str=None, **kwargs):
+    def CreateComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, legendOptions:LegendOptions=LegendOptions(), **kwargs):
         """
         Creates a plot comparing a column from each data set.
 
@@ -200,8 +202,14 @@ class DataComparison():
         ----------
         columns : list
             The name of the column to compare or a list of column names to compare.
+        title : str, optional
+            The plot title. The default is None.
+        xLabel : str, optional
+            The x-axis label. The default is None.
         yLabel : str, optional
             The y-axis label. The default is None.
+        legendOptions : LegendOptions, optional
+            Options that specify if and how the legend is generated. The default is LegendOptions().
         **kwargs : keyword arguments
             Keyword arguments to pass to the plot function.
 
@@ -219,30 +227,38 @@ class DataComparison():
         if type(columns) is str:
             columns = [columns]
 
+        # Convert the kwargs into individual series kwargs.
+        seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(len(columns)*len(self.dataSets), **kwargs)
+
         i = 0
+        j = 0
         for dataSet in self.dataSets:
             for column in columns:
-                axes.plot(dataSet[self.independentColumn], dataSet[column], label="Data "+str(i)+" "+column, color=PlotHelper.NextColor(), **kwargs)
+                axes.plot(dataSet[self.independentColumn], dataSet[column], label=self.dataSetNames[j]+" "+column, **(seriesKeyWordArgs[i]))
                 i += 1
+            j += 1
+
+        # If no title is provided, create a default.
+        if title is None:
+            title = "Comparison of "+column
 
         # If no x-axis label is provided, default to the column name.
-        if xLabel == None:
+        if xLabel is None:
             xLabel = self.independentColumn
 
         # If no y-axis label is provided, default to the column name.
-        if yLabel == None:
+        if yLabel is None:
             yLabel = column
 
-        AxesHelper.Label(axes, title="Comparison of "+column, xLabels=xLabel, yLabels=yLabel)
+        AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
-        legendColumns = 2 if len(self.dataSets)*len(columns) > 2 else 1
-        figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=legendColumns, bbox_transform=axes.transAxes)
+        LegendHelper.CreateLegendAtFigureBottom(figure, axes, offset=0.15*PlotHelper.GetSettings().Scale, legendOptions=legendOptions)
         plt.show()
 
         return figure
 
 
-    def CreateMultiAxisComparisonPlot(self, axesesColumnNames:list, yLabels:list, **kwargs):
+    def CreateMultiAxisComparisonPlot(self, axesesColumnNames:list, yLabels:list, legendOptions:LegendOptions=LegendOptions(), **kwargs):
         """
         Creates a multi y-axes plot.  The columns are plotted for each data set.
 
@@ -255,6 +271,8 @@ class DataComparison():
             plotted on the second right axes.
         yLabels : array like of strings
             A list of strings to use as labels for the y-axes.
+        legendOptions : LegendOptions, optional
+            Options that specify if and how the legend is generated. The default is LegendOptions().
         **kwargs : keyword arguments
             Keyword arguments to pass to the plot function.
 
