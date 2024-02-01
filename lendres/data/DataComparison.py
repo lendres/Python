@@ -195,6 +195,12 @@ class DataComparison():
 
 
     def CreateComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, legendOptions:LegendOptions=LegendOptions(), **kwargs):
+        figure, axes = self.NewComparisonPlot(columns, title, xLabel, yLabel, legendOptions, **kwargs)
+        plt.show()
+        return figure
+
+
+    def NewComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, legendOptions:LegendOptions=LegendOptions(), **kwargs):
         """
         Creates a plot comparing a column from each data set.
 
@@ -253,9 +259,8 @@ class DataComparison():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         LegendHelper.CreateLegendAtFigureBottom(figure, axes, offset=0.15*PlotHelper.GetSettings().Scale, legendOptions=legendOptions)
-        plt.show()
 
-        return figure
+        return figure, axes
 
 
     def CreateMultiAxisComparisonPlot(self, axesesColumnNames:list, yLabels:list, legendOptions:LegendOptions=LegendOptions(), **kwargs):
