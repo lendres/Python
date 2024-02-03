@@ -1,0 +1,40 @@
+# Created on August 12, 2023
+# @author: Lance A. Endres
+
+figure.figsize         : 10, 6
+figure.dpi             : 300
+font.size              : 20
+font.weight            : bold
+figure.titlesize       : 24
+text.color             : white
+figure.titleweight     : bold
+figure.facecolor       : black
+axes.titleweight       : bold
+axes.titlesize         : 24
+axes.labelcolor        : white
+axes.labelweight       : bold
+axes.labelsize         : 20
+axes.facecolor         : black
+xtick.labelsize        : 16
+ytick.labelsize        : 16
+xtick.color            : white
+ytick.color            : white
+xtick.major.size       : 0                 # Turn off tick lines (lines from axes labels to axes border).
+xtick.minor.size       : 0                 # Turn off tick lines (lines from axes labels to axes border).
+ytick.major.size       : 0                 # Turn off tick lines (lines from axes labels to axes border).
+ytick.minor.size       : 0                 # Turn off tick lines (lines from axes labels to axes border).
+axes.titlepad          : 25
+axes.labelpad          : 8
+axes.grid              : True              # Turn on axis grid.
+axes.linewidth         : 0.75              # Axis border.
+axes.edgecolor         : (1, 1, 1, 0)      # Hide (transparent) axis border.
+grid.color             : "#4FB8D5"         # Manim blue grid lines.
+grid.linewidth         : 1
+lines.linewidth        : 3
+lines.markersize       : 10
+legend.fontsize        : 16
+legend.title_fontsize  : 17
+legend.edgecolor       : white
+legend.framealpha      : 0                 # Transparent legend border.
+legend.facecolor       : black             # Dark, non-transparent legend.
+patch.linewidth        : 1.5               # Legend border.
