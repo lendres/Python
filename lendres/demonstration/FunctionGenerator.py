@@ -201,11 +201,13 @@ class FunctionGenerator():
         velocity     = np.gradient(displacement, dx)
         acceleration = np.gradient(velocity, dx)
 
-        dataFrame = {
-            "time"         : time,
-            "displacement" : displacement,
-            "velocity"     : velocity,
-            "acceleration" : acceleration
-        }
+        dataFrame = pd.DataFrame(
+            {
+                "time"         : time,
+                "displacement" : displacement,
+                "velocity"     : velocity,
+                "acceleration" : acceleration
+            }
+        )
 
         return dataFrame
