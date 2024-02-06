@@ -8,6 +8,7 @@ import math
 
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
 from   lendres.data.DataComparison                                   import DataComparison
+from   lendres.plotting.LegendOptions                                import LegendOptions
 
 import unittest
 
@@ -65,8 +66,12 @@ class TestDataComparison(unittest.TestCase):
         # Test supplying axes labels.
         self.dataComparison.CreateComparisonPlot("Displacement (revs)", xLabel="Time (s)", yLabel="Displacement (revolutions)")
 
+        # Test supplying keyword arguments labels.
+        legendOptions = LegendOptions(numberOfColumns=2, changeLineWidths=True, lineWidth=2.0)
+        self.dataComparison.CreateComparisonPlot("w_bit", xLabel="Time (s)", yLabel="Displacement (revolutions)", legendOptions=legendOptions, color=["blue", "red"])
+
         # Test supplying multiple columns.
-        self.dataComparison.CreateComparisonPlot(["w_td", "w_bit"], xLabel="Time (s)", yLabel="Displacement (revolutions)")
+        self.dataComparison.CreateComparisonPlot(["w_td", "w_bit"], xLabel="Time (s)", yLabel="Displacement (revolutions)", legendOptions=legendOptions)
 
 
     def testCreateDualAxisComparisonPlot(self):

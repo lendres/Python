@@ -182,3 +182,32 @@ class FunctionGenerator():
         : pandas.DataFrame
         """
         return cls.SineWavesAsDataFrame([9, 6, 4, 3], [4, 2, 2, 1], [20, 40, 60, 100], [8, 0, 0, 0])
+
+
+    @classmethod
+    def GetDisplacementVelocityAccelerationDataFrame(cls):
+        """
+        Creates a displacement vector and then differentiates to get the velocity and acceleration.
+
+        Returns
+        -------
+        dataFrame : pandas.DataFrame
+            A pandas.DataFrame containing series for displacement, velocity, and acceleration.
+        """
+        time         = np.linspace(0, 10, 1000)
+        dx           = time[1] - time[0]
+
+        displacement = time**2
+        velocity     = np.gradient(displacement, dx)
+        acceleration = np.gradient(velocity, dx)
+
+        dataFrame = pd.DataFrame(
+            {
+                "time"         : time,
+                "displacement" : displacement,
+                "velocity"     : velocity,
+                "acceleration" : acceleration
+            }
+        )
+
+        return dataFrame
