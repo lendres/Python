@@ -22,6 +22,17 @@ from   lendres.path.Path                                             import Path
 
 
 class PlotHelper():
+    """
+    This is a helper class for creating plots.
+        It does do formatting and provided formatting options.
+        It does handle creating new plots for some none trivial plotting cases (e.g. multi-axes plots).
+        It does have some plotting utility functions such as saving figures to files.
+        It does not plot lines.
+
+    See also FormatSettings.
+    """
+
+
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
@@ -96,7 +107,7 @@ class PlotHelper():
 
 
     @classmethod
-    def PushSettings(cls, formatSettings:FormatSettings=None, base="current", **kwargs):
+    def PushSettings(cls, formatSettings:FormatSettings|str="current", **kwargs):
         """
         Sets the format settings (temporarily).  It is necessary to supply either an instance of FormatSettings or
         at least one keyword argument that is passed to FormatSettings.  The original settings are restored by
@@ -105,13 +116,18 @@ class PlotHelper():
         If keyword arguments are supplied, they are used to override the settings.  The value of "base" specifies if
         the "current" or "default" settings are used as the base settings to override.
 
+        Pushing the settings does not erase or reset any parameters when keyword arguments are specified alone.  They
+        key word arguments are used to overwrite/update existing values.  To reset the format settings, supply your
+        own new instance of FormatSettings.
+
         Parameters
         ----------
-        formatSettings : FormatSettings, optional
-            The format settings.  If "formatSettings" are provided, the keyword arguments are ignored.  The default is None.
-        base : str, optional
-            If keyword arguments are supplied, "base" specifies if the current of default settings are used as the basis
-            for applying the keyword arguements to.  Either "current" or "default" are allowed.  The default is "current".
+        formatSettings : FormatSettings|str, optional
+            Specified the basis of the settings to apply the keyword arguments to.
+                "current"                 - The current format settings are used.
+                "default"                 - The default format settings are used.
+                FormatSettings instalnce  - The supplied instance of the format settings are used.
+            The default is "current".
         **kwargs : keyword arguments
             Keyword arguments recognized by FormatSettings.
 
@@ -119,15 +135,16 @@ class PlotHelper():
         -------
         None.
         """
-        if formatSettings is None:
-            match base:
-                case "current":
-                    # Create a new instance by copying the existing settings.
-                    formatSettings = cls.formatSettings.Copy().Set(overrideUpdateMethod="update", **kwargs)
-                case "default":
-                    formatSettings = cls.defaultFormatSettings(**kwargs)
-                case _:
-                    raise Exception("Invalid 'base' parameter provided to 'PushSettings'.")
+        match formatSettings:
+            case "current":
+                # Create a new instance by copying the existing settings.
+                formatSettings = cls.formatSettings.Copy().Update(**kwargs)
+            case "default":
+                formatSettings = cls.defaultFormatSettings.Copy().Update(**kwargs)
+            case FormatSettings():
+                formatSettings = formatSettings.Copy().Update(**kwargs)
+            case _:
+                raise Exception("Invalid 'formatSettings' parameter provided to 'PushSettings'.")
 
         # Gaurd against a forgotten call to "Pop".
         if cls.storedFormatSettings is not None:
