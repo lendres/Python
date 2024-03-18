@@ -162,6 +162,7 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Set Push Pop 1 - Reset Settings")
 
 
+    # @unittest.skip
     def testSetPushPopSettings2(self):
         self.CreateBasicPlot("Set Push Pop 2 - Format with Defaults")
         PlotHelper.PushSettings(formatSettings="default", overrides={"figure.figsize" : (8, 8), "axes.titlesize" : 15})
@@ -178,11 +179,11 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.Format()
 
         figure = plt.gcf()
-        axis   = plt.gca()
-        sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
-        AxesHelper.Label(axis, title=title, xLabels="Values", yLabels="Count")
+        axes   = plt.gca()
+        sns.histplot(self.data["bmi"], kde=True, ax=axes, label="Data")
+        AxesHelper.Label(axes, title=title, xLabels="Values", yLabels="Count")
 
-        axis.legend()
+        axes.legend()
         plt.show()
 
         return figure
