@@ -18,7 +18,7 @@ class FormatSettings():
     """
 
 
-    def __init__(self, parameterFile:str="default", overrides:dict={}, scale:int=1.0, annotationSize:int=15, lineColorCycle:str="seaborn"):
+    def __init__(self, parameterFile:str="default", overrides:dict={}, scale:int=1.0, annotationSize:int=12, lineColorCycle:str="seaborn"):
         """
         Constructors
 
