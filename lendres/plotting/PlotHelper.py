@@ -512,7 +512,7 @@ class PlotHelper():
         ----------
         numberOfSets : int
             The number of output key word argument sets.
-        **kwargs : kwargs
+        **kwargs : keyword arguments
             The key word arguments to convert.
 
         Returns
