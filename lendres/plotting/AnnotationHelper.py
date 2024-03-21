@@ -8,7 +8,7 @@ from   scipy.signal                                                  import find
 import heapq
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
-from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+
 
 class AnnotationHelper():
     """
