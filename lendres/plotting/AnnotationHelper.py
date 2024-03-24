@@ -4,10 +4,9 @@ Created on August 27, 2022
 """
 import numpy                                                         as np
 from   adjustText                                                    import adjust_text
-from   scipy.signal                                                  import find_peaks
-import heapq
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
+from   lendres.signalprocessing.SignalProcessing                     import SignalProcessing
 
 
 class AnnotationHelper():
@@ -116,40 +115,7 @@ class AnnotationHelper():
 
 
     def AddPeakAnnotations(self, lines, sortBy="localheight", **kwargs):
-        self.AddAnnotationsByFunction(lines, self._GetPeaks, sortBy=sortBy, **kwargs)
-
-
-    def _GetPeaks(self, y, number=6, sortBy="localheight", **kwargs):
-        # Create default arguments, then override/update with any specified arguments.
-        arguments = {"distance" : 4, "prominence" : 0.1}
-        arguments.update(kwargs)
-
-        # We find the peaks.
-        # The distance argument is provided to group values that are extremely close together.  I.e., a shallow slow with small local peaks is not of interest.
-        # The height argument is provided only to get the algorithm to return the relative peak prominences.  The relative heights/prominences are used as an 'importance' factor in sorting.
-        # The indices of the peaks are the first firsted value from find_peaks.
-        peakResults         = find_peaks(y, **arguments)
-
-        # Extract the top values from the results.  The prominances are the local heights and the first entry returned in peakResults are the y values.
-        # The output of find_peaks is [[y_values], dict{}]
-        localHeights        = (peakResults[1])["prominences"]
-        peakIndices         = peakResults[0]
-
-        # Sort the peakIndices (absolute heights) according to their local height value (how high are they above the surrounding local territory.
-        # The top values are defined as those with the largest local peak height.
-        match sortBy:
-            case "localheight":
-                largestPeaks = heapq.nlargest(number, zip(localHeights, peakIndices))
-            case "globalheight":
-                largestPeaks = heapq.nlargest(number, zip(y[peakIndices], peakIndices))
-            case _:
-                raise Exception("The 'sortBy' parameter is not valid.")
-
-        # Extract the y (absolute heights) from the sorted results.
-        largestPeaksIndices = [peakCouple[1] for peakCouple in largestPeaks]
-        largestYValues      = y[largestPeaksIndices]
-
-        return largestPeaksIndices, largestYValues
+        self.AddAnnotationsByFunction(lines, SignalProcessing.GetPeaks, sortBy=sortBy, **kwargs)
 
 
     def AddAnnotationsByFunction(self, lines, function, **kwargs):

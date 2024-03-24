@@ -39,7 +39,7 @@ class TestPlotHelper(unittest.TestCase):
         self.FinishPlot()
 
 
-    @unittest.skip
+    # @unittest.skip
     def testMax(self):
         annotationHelper = AnnotationHelper(formatString="{x:0.1f}, {y:0.0f}")
         annotationHelper.AddMaximumAnnotation(self.lines)
@@ -53,7 +53,7 @@ class TestPlotHelper(unittest.TestCase):
         self.title = "Label Peaks X"
 
 
-    @unittest.skip
+    # @unittest.skip
     def testPeaksY(self):
         annotationHelper = AnnotationHelper(formatString="{y:0.2f}")
         annotationHelper.AddPeakAnnotations(self.lines, number=5, sortBy="globalheight")
