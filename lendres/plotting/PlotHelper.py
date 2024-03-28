@@ -728,25 +728,6 @@ class PlotHelper():
 
 
     @classmethod
-    def CategoryTitle(cls, categoryName:str) -> str:
-        """
-        Formats a string as a category title.  It is converted to title case, quotes
-        added around the category name and "Category" added as a suffix.
-
-        Parameters
-        ----------
-        categoryName : str
-            Category name to convert to a title.
-
-        Returns
-        -------
-        title : str
-            The category converted to a title.
-        """
-        return "\"" + categoryName.title() + "\"" + " Category"
-
-
-    @classmethod
     def GetDefaultOutputDirectory(cls) -> str:
         """
         Gets the default output location for saving figures.
