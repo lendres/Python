@@ -16,8 +16,12 @@ import contractions
 
 # For plotting images & adjusting colors.
 import matplotlib.pyplot                                             as plt
+import matplotlib.figure                                             as fig
+
 from   wordcloud                                                     import WordCloud
 from   wordcloud                                                     import STOPWORDS
+
+import itertools
 
 import re
 import spacy
@@ -444,23 +448,29 @@ class LanguageHelper():
 
 
     @classmethod
-    def CreateWordCloud(cls, text, width=800, height=600):
+    def CreateWordCloud(cls, text:pd.core.series.Series|list|str, width:int=800, height:int=600, returnMostCommon:bool=False, numberOfMostCommon:int=10) -> fig.Figure:
         """
         Creates a plot of a word cloud.
 
         Parameters
         ----------
-        text : Pandas DataFrame, list, or string
+        text : pd.core.series.Series, list, or string
             The text to operate on.
         width : integer
             Plot width.
         height : integer
             Plot height.
+        returnMostCommon : bool
+            If True, the most common words are returned.
+        numberOfMostCommon : int
+            The number of most common words to return.  Only returned is returnMostCommon is True.
 
         Returns
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
+        : list
+            The most common words in the word cloud.
         """
         if type(text) == pd.core.series.Series:
             text = text.tolist()
@@ -484,7 +494,10 @@ class LanguageHelper():
         plt.axis("off")
         plt.show()
 
-        return figure
+        if returnMostCommon:
+            return figure, list(itertools.islice(wordcloud.words_.keys(), numberOfMostCommon))
+        else:
+            return figure
 
 
     @classmethod
