@@ -567,7 +567,7 @@ class PlotHelper():
         cls.PushSettings(parameterFile=parameterFile)
         cls.Format()
 
-        figure  = plt.gcf()
+        figure  = plt.figure()
         axes    = plt.gca()
 
         # Zero lines.
