@@ -2,10 +2,14 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import numpy                                                         as np
 import matplotlib
 import matplotlib.pyplot                                             as plt
 import matplotlib.figure                                             as fig
 import matplotlib.axes                                               as ax
+from   matplotlib.collections                                        import LineCollection
+from   matplotlib.colors                                             import ListedColormap
+from   matplotlib.colors                                             import BoundaryNorm
 import math
 
 #import seaborn                                                       as sns
@@ -581,6 +585,48 @@ class PlotHelper():
         cls.PopSettings()
 
         return figure, axes
+
+
+    @classmethod
+    def _MakeLineCollectionSegments(cls, x, y):
+        """
+        Create list of line segments from x and y coordinates, in the correct format for LineCollection:
+        an array of the form numlines x (points per line) x 2 (x and y) array
+        """
+        # Originally from https://nbviewer.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+        points   = np.array([x, y]).T.reshape(-1, 1, 2)
+        segments = np.concatenate([points[:-1], points[1:]], axis=1)
+
+        return segments
+
+
+    @classmethod
+    def PlotGradientColorLine(cls, x, y, z=None, axes:matplotlib.axes.Axes=None, cmap=plt.get_cmap("copper"), norm=plt.Normalize(0.0, 1.0), linewidth=3, alpha=1.0):
+        """
+        Plot a colored line with coordinates x and y
+        Optionally specify colors in the array z
+        Optionally specify a colormap, a norm function and a line width
+        """
+        # Originally from https://nbviewer.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+
+        # Default colors equally spaced on [0,1].
+        if z is None:
+            z = np.linspace(0.0, 1.0, len(x))
+
+        # Special case if a single number.
+        if not hasattr(z, "__iter__"):  # to check for numerical input -- this is a hack
+            z = np.array([z])
+
+        z = np.asarray(z)
+
+        segments       = cls._MakeLineCollectionSegments(x, y)
+        lineCollection = LineCollection(segments, array=z, cmap=cmap, norm=None, linewidth=linewidth, alpha=alpha)
+
+        if axes is None:
+            axes = plt.gca()
+        axes.add_collection(lineCollection)
+
+        return lineCollection
 
 
     @classmethod
