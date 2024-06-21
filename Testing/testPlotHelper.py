@@ -36,11 +36,13 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.ResetSettings()
 
 
+    # @unittest.skip
     def testArtistiPlot(self):
         PlotHelper.NewArtisticFigure()
         plt.show()
 
 
+    # @unittest.skip
     def testBuiltInStyleFormats(self):
         self.CreateBasicPlot("Built In - Format with Defaults")
 
@@ -50,6 +52,7 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
+    # @unittest.skip
     def testCompareSeabornToSeaborn(self):
         """
         Compare the real Seaborn style to the "seaborn.mplstyle" version.
@@ -66,6 +69,7 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
+    # @unittest.skip
     def testCopySettings(self):
         self.CreateBasicPlot("Settings - Default Formatting")
         PlotHelper.PushSettings(scale=2.0)
@@ -80,6 +84,7 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Settings - Popped Format Settings")
 
 
+    # @unittest.skip
     def testNumberFormatException(self):
         # Should not cause an exception.
         PlotHelper.GetColorCycle(numberFormat="RGB")
@@ -89,6 +94,7 @@ class TestPlotHelper(unittest.TestCase):
         self.assertRaises(Exception, PlotHelper.GetColorCycle, numberFormat="invalid")
 
 
+    # @unittest.skip
     def testPlotStyleFormats(self):
         self.CreateBasicPlot("Style File Names - Format with Defaults")
 
@@ -103,6 +109,7 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Style File Names - Popped Format Settings")
 
 
+    # @unittest.skip
     def testPlotAllStyles(self):
         styleFiles = PlotHelper.GetListOfPlotStyles()
         for styleFile in styleFiles:
@@ -111,6 +118,7 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
+    # @unittest.skip
     def testPushIndividualtSettings(self):
         self.CreateBasicPlot("Individual Settings - Format with Defaults")
         PlotHelper.PushSettings(scale=2.0)
@@ -119,6 +127,7 @@ class TestPlotHelper(unittest.TestCase):
         self.CreateBasicPlot("Individual Settings - Popped Format Settings")
 
 
+    # @unittest.skip
     def testSavePlotBeforeShowMethod1(self):
         self.CreateBasicPlot("Save Figure")
 
@@ -130,6 +139,7 @@ class TestPlotHelper(unittest.TestCase):
         self.assertTrue(os.path.exists(fullPath))
 
 
+    # @unittest.skip
     def testScaleVersusParameterFiles(self):
         self.CreateBasicPlot("Scale and File - Format with Defaults")
         PlotHelper.PushSettings(scale=0.8)
@@ -139,27 +149,41 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PopSettings()
 
 
-    def testSetPushPopSettings(self):
-        self.CreateBasicPlot("Set Push Pop - Format with Defaults")
+    # @unittest.skip
+    def testSetPushPopSettings1(self):
+        self.CreateBasicPlot("Set Push Pop 1 - Format with Defaults")
         PlotHelper.SetSettings(overrides={"figure.figsize" : (8, 8), "axes.titlesize" : 15})
-        self.CreateBasicPlot("Set Push Pop - Formated with Set Settings")
+        self.CreateBasicPlot("Set Push Pop 1 - Formated with Set Settings")
         PlotHelper.PushSettings(overrides={"axes.titlesize" : 22})
-        self.CreateBasicPlot("Set Push Pop - Pushed Settings")
+        self.CreateBasicPlot("Set Push Pop 1 - Pushed Settings")
         PlotHelper.PopSettings()
-        self.CreateBasicPlot("Set Push Pop - Popped Settings")
+        self.CreateBasicPlot("Set Push Pop 1 - Popped Settings")
         PlotHelper.ResetSettings()
-        self.CreateBasicPlot("Set Push Pop - Reset Settings")
+        self.CreateBasicPlot("Set Push Pop 1 - Reset Settings")
 
+
+    # @unittest.skip
+    def testSetPushPopSettings2(self):
+        self.CreateBasicPlot("Set Push Pop 2 - Format with Defaults")
+        PlotHelper.PushSettings(formatSettings="default", overrides={"figure.figsize" : (8, 8), "axes.titlesize" : 15})
+        self.CreateBasicPlot("Set Push Pop 2 - Formated with Push Settings on Defaults")
+        PlotHelper.PushSettings(FormatSettings(overrides={"axes.grid" : False}))
+        self.CreateBasicPlot("Set Push Pop 2 - Pushed FormatSettings")
+        PlotHelper.PopSettings()
+        self.CreateBasicPlot("Set Push Pop 2 - Popped Settings")
+
+        # Test the exception.
+        self.assertRaises(Exception, PlotHelper.PushSettings, formatSettings="invalid")
 
     def CreateBasicPlot(self, title):
         PlotHelper.Format()
 
         figure = plt.gcf()
-        axis   = plt.gca()
-        sns.histplot(self.data["bmi"], kde=True, ax=axis, label="Data")
-        AxesHelper.Label(axis, title=title, xLabels="Values", yLabels="Count")
+        axes   = plt.gca()
+        sns.histplot(self.data["bmi"], kde=True, ax=axes, label="Data")
+        AxesHelper.Label(axes, title=title, xLabels="Values", yLabels="Count")
 
-        axis.legend()
+        axes.legend()
         plt.show()
 
         return figure

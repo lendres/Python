@@ -36,6 +36,66 @@ class PlotMaker():
 
 
     @classmethod
+    def CreateSimpleFastFigure(cls, yData:list, yDataLabel:str=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
+        """
+        Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
+        to customize the plot.
+
+        Parameters
+        ----------
+        yData : array like
+            A list of data sets to plot.
+        yDataLabels : string, optional
+            Labels to use in the legend for each series. The default is None.
+        xData : array like, optional
+            The x-axis values.  If none is supplied, a list of integers of the length of the y-data
+            is created. The default is None.
+        title : string, optional
+            Top title for the figure. The default is None.
+        xLabel : string, optional
+            X-axis title/label. The default is None.
+        yLabel : string, optional
+            Y-axis title/label. The default is None.
+        showLegend : boolean, optional
+            Specifies if the legend should be shown. The default is True.
+        show : boolean, optional
+            If true, the plot is shown. The default is True.
+        **kwargs : key word arguments with array like values
+            Arguments to pass to each series when it is plotted.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        axeses : tuple of matplotlib.axes.Axes
+            The axes of the plot.
+        """
+        # Must be run before creating figure or plotting data.
+        PlotHelper.Format()
+
+        figure = plt.gcf()
+        axes   = plt.gca()
+
+        # Handle optional xData.  If none exist, create a set of integers from 1...N where N is the length of the y data.
+        if xData is None:
+            xData = range(1, len(yData[0])+1)
+
+        # Need to repackage all the key word arguments.
+        axes.plot(xData, yData, label=yDataLabel, **kwargs)
+
+        # Label the plot.
+        AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
+
+        if showLegend:
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
+
+        if show:
+            plt.show()
+
+        return figure, axes
+
+
+    @classmethod
     def CreateFastFigure(cls, yData:list, yDataLabels:list=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
         """
         Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available

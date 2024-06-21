@@ -10,7 +10,7 @@ class AxesHelper():
 
 
     @classmethod
-    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix=None):
+    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix:str=None):
         """
         Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
 
@@ -22,10 +22,10 @@ class AxesHelper():
             Main plot title.
         xLabels : string or array like of strings
             X-axis label(s).  If axeses is an array, xLabels can be an array of the same length.
-        yLabels : string or array like of strings, optional
+        yLabels : str or array like of str, optional
             Y-axis label(s).  Default is a blank string.  If axeses is an array, ylabels can be an array of the same length.
-        titleSuffix : string or None, optional
-            If supplied, the string is appended to the title.  Default is none.
+        titleSuffix : str or None, optional
+            If supplied, the string is appended as a second line to the title.  Default is none.
 
         Returns
         -------
