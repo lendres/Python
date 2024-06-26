@@ -10,7 +10,7 @@ class LegendHelper():
 
 
     @classmethod
-    def CreateLegendAtFigureBottom(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, offset=0.15, legendOptions:LegendOptions=LegendOptions()):
+    def CreateLegendAtFigureBottom(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, offset=0.15, legendOptions:LegendOptions=LegendOptions(), bottomPercentage: float = None):
         legend = None
 
         if legendOptions is not None:
@@ -18,6 +18,9 @@ class LegendHelper():
         
             if legendOptions.ChangeLineWidths:
                 cls.SetLegendLineWidths(legend, legendOptions.lineWidth)
+
+            if bottomPercentage is not None:
+                figure.subplots_adjust(bottom=bottomPercentage)
 
         return legend
 
