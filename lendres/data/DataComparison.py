@@ -194,14 +194,29 @@ class DataComparison():
              function(dataSet)
 
 
-    def CreateComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, legendOptions:LegendOptions=LegendOptions(), **kwargs):
+    def CreateComparisonPlot(
+            self,
+            columns:list,
+            title:str=None,
+            xLabel:str=None,
+            yLabel:str=None,
+            legendOptions:LegendOptions=LegendOptions(),
+            **kwargs):
         figure, axes = self.NewComparisonPlot(columns, title, xLabel, yLabel, legendOptions, **kwargs)
         LegendHelper.CreateLegendAtFigureBottom(figure, axes, offset=0.15*PlotHelper.GetSettings().Scale, legendOptions=legendOptions)
         plt.show()
         return figure
 
 
-    def NewComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, **kwargs):
+    def NewComparisonPlot(
+            self,
+            columns:list,
+            title:str=None,
+            xLabel:str=None,
+            yLabel:str|list=None,
+            labelSuffixes:str=None,
+            **kwargs
+        ):
         """
         Creates a plot comparing a column from each data set.
 
