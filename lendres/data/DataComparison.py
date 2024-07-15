@@ -194,14 +194,29 @@ class DataComparison():
              function(dataSet)
 
 
-    def CreateComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, legendOptions:LegendOptions=LegendOptions(), **kwargs):
+    def CreateComparisonPlot(
+            self,
+            columns:list,
+            title:str=None,
+            xLabel:str=None,
+            yLabel:str=None,
+            legendOptions:LegendOptions=LegendOptions(),
+            **kwargs
+        ):
         figure, axes = self.NewComparisonPlot(columns, title, xLabel, yLabel, legendOptions, **kwargs)
         LegendHelper.CreateLegendAtFigureBottom(figure, axes, offset=0.15*PlotHelper.GetSettings().Scale, legendOptions=legendOptions)
         plt.show()
         return figure
 
 
-    def NewComparisonPlot(self, columns:list, title:str=None, xLabel:str=None, yLabel:str=None, **kwargs):
+    def NewComparisonPlot(
+            self, columns:list,
+            title:str=None,
+            xLabel:str=None,
+            yLabel:str|list=None,
+            labelSuffixes:str=None,
+            **kwargs
+        ):
         """
         Creates a plot comparing a column from each data set.
 
@@ -215,6 +230,9 @@ class DataComparison():
             The x-axis label. The default is None.
         yLabel : str, optional
             The y-axis label. The default is None.
+        labelSuffixes : str, optional
+            The label suffix to append for each series plotted.  If None, then the column name is used.  If supplied, the number of
+            of values supplied must equal len(columns).  The default is None.
         **kwargs : keyword arguments
             Keyword arguments to pass to the plot function.
 
@@ -232,16 +250,21 @@ class DataComparison():
         if type(columns) is str:
             columns = [columns]
 
+        if type(labelSuffixes) is str:
+            labelSuffixes = [labelSuffixes]
+
+        if labelSuffixes is None:
+            labelSuffixes = columns
+
         # Convert the kwargs into individual series kwargs.
         seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(len(columns)*len(self.dataSets), **kwargs)
 
         i = 0
-        j = 0
-        for dataSet in self.dataSets:
-            for column in columns:
-                axes.plot(dataSet[self.independentColumn], dataSet[column], label=self.dataSetNames[j]+" "+column, **(seriesKeyWordArgs[i]))
+        for dataSet, dataSetName in zip(self.dataSets, self.dataSetNames):
+            for column, labelSuffix in zip(columns, labelSuffixes):
+                label = dataSetName + " " + labelSuffix
+                axes.plot(dataSet[self.independentColumn], dataSet[column], label=label, **(seriesKeyWordArgs[i]))
                 i += 1
-            j += 1
 
         # If no title is provided, create a default.
         if title is None:
