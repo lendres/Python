@@ -1,0 +1,21 @@
+[project]
+name = "lendres"
+version = "0.1.0"
+requires-python = ">=3.11.0"
+dynamic = ["dependencies"]
+
+[project.urls]
+homepage = "https://github.com/lendres/Python"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools]
+packages = ["lendres"]
+
+[build-system]
+requires = [
+    "setuptools",
+    "setuptools-scm"  # This automatically adds all files tracked by Git. Useful to include non-Python files.
+]
+build-backend = "setuptools.build_meta"
