@@ -3,7 +3,6 @@
 # The same as "default.mplstyle" except that the grid is turned off.
 
 figure.figsize         : 10, 6
-figure.dpi             : 300
 font.size              : 20
 font.weight            : bold
 figure.titlesize       : 24
