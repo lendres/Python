@@ -204,7 +204,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        cls._MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -251,7 +251,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        cls._MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
@@ -259,7 +259,7 @@ class PlotMaker():
 
 
     @classmethod
-    def MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", **kwargs):
+    def _MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
