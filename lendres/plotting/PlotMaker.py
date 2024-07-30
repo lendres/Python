@@ -391,13 +391,13 @@ class PlotMaker():
             for column in axesColumnNames:
 
                 # Key word arguments.  Start with a default set and then override with any specified as arguments.
-                defaultKwargs = {"color" : PlotHelper.NextColor()}
+                defaultKwargs = {"color" : PlotHelper.NextColor(), "label" : column}
                 defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
                 if independentAxis == "x":
-                    lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
+                    lines = axes.plot(data[independentColumnName], data[column], **defaultKwargs)
                 else:
-                    lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
+                    lines = axes.plot(data[column], data[independentColumnName], **defaultKwargs)
 
                 lines2d.append(lines[0])
                 seriesIndex += 1
