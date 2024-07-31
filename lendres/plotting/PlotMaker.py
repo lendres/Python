@@ -395,8 +395,10 @@ class PlotMaker():
                 defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
                 if independentAxis == "x":
+                    # X-axis is independent axis.
                     lines = axes.plot(data[independentColumnName], data[column], **defaultKwargs)
                 else:
+                    # Y-axis is independent axis.
                     lines = axes.plot(data[column], data[independentColumnName], **defaultKwargs)
 
                 lines2d.append(lines[0])
