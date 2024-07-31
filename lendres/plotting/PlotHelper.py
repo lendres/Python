@@ -432,7 +432,7 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (axis1, axis2, ..., axisN) : maptplotlib.axes.Axes list
+        (axis1, axis2, ..., axisN) : matplotlib.axes.Axes list
             The axes.
         """
         # The format setup needs to be run first.
@@ -479,7 +479,7 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxes, rightAxes1, rightAxes2, ..., rightAxesN) : axes list
+        [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : axes list
             The left axes and all the right axeses.
         """
         # The format setup needs to be run first.
