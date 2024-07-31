@@ -439,7 +439,33 @@ class PlotHelper():
         cls.Format()
 
         figure = plt.figure()
-        axeses = [figure.gca()]
+        axes   = [figure.gca()]
+
+        axeses = cls.MultiXAxes(axes, numberOfAxes)
+
+        return figure, axeses
+
+
+    @classmethod
+    def MultiXAxes(cls, baseAxes:matplotlib.axes.Axes, numberOfAxes:int) -> tuple[fig.Figure, list]:
+        """
+        Creates a new figure that has multiple axes that are on top of each other.  The axes have an aligned (shared) y-axis.
+
+        Parameters
+        ----------
+        baseAxes : matplotlib.axes.Axes
+            The base axes
+        numberOfAxes : int
+            The total number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The figure the axeses are on.  If no figure existed, a new figure is created.
+        [axis1, axis2, ..., axisN] : matplotlib.axes.Axes list
+            The axeses from top to bottom..
+        """
+        axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
             axeses.append(axeses[0].twiny())
@@ -458,8 +484,6 @@ class PlotHelper():
         # Move the first axis ticks and label to the top.
         axeses[0].xaxis.tick_top()
         axeses[0].xaxis.set_label_position("top")
-
-        return figure, axeses
 
 
     @classmethod
