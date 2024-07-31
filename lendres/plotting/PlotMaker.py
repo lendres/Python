@@ -204,7 +204,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls._MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        cls.MultiXAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -251,7 +251,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls._MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        cls.MultiYAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
