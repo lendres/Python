@@ -210,7 +210,8 @@ class DataComparison():
 
 
     def NewComparisonPlot(
-            self, columns:list,
+            self,
+            columns:list,
             title:str=None,
             xLabel:str=None,
             yLabel:str|list=None,
