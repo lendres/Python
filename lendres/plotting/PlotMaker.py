@@ -476,7 +476,7 @@ class PlotMaker():
 
 
     @classmethod
-    def PlotColorCycle(cls, lineColorCycle=None):
+    def CreateColorCyclePlot(cls, lineColorCycle=None):
         """
         Create a plot that shows the colors in a color cycle.
 
