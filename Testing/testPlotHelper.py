@@ -175,6 +175,7 @@ class TestPlotHelper(unittest.TestCase):
         # Test the exception.
         self.assertRaises(Exception, PlotHelper.PushSettings, formatSettings="invalid")
 
+
     def CreateBasicPlot(self, title):
         PlotHelper.Format()
 
