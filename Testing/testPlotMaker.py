@@ -42,8 +42,8 @@ class TestPlotMaker(unittest.TestCase):
 
     def testPlotColorCycle(self):
         # A test that will also conveniently display the color cycles for reference.
-        PlotMaker.PlotColorCycle(lineColorCycle="pyplot")
-        PlotMaker.PlotColorCycle(lineColorCycle="seaborn")
+        PlotMaker.CreateColorCyclePlot(lineColorCycle="pyplot")
+        PlotMaker.CreateColorCyclePlot(lineColorCycle="seaborn")
 
 
     def testCreateFastFigure(self):
