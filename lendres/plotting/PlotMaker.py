@@ -204,7 +204,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiXAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
+        cls.PlotMultiXAxes(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -251,14 +251,14 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiYAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
+        cls.PlotMultiYAxes(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
         return figure, axeses
 
     @classmethod
-    def MultiXAxesPlot(cls, axeses:list, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def PlotMultiXAxes(cls, axeses:list, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -294,11 +294,11 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
 
     @classmethod
-    def MultiYAxesPlot(cls, axeses:list, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def PlotMultiYAxes(cls, axeses:list, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -334,11 +334,11 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
 
     @classmethod
-    def _MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, **kwargs):
+    def _PlotMultiAxes(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
