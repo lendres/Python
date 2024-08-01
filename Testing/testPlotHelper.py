@@ -37,7 +37,7 @@ class TestPlotHelper(unittest.TestCase):
 
 
     # @unittest.skip
-    def testArtistiPlot(self):
+    def testArtisticPlot(self):
         PlotHelper.NewArtisticFigure()
         plt.show()
 
