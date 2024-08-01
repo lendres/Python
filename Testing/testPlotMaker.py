@@ -22,7 +22,6 @@ class TestPlotMaker(unittest.TestCase):
              [ 8,  6,  15]]
         )
 
-
         # Generate a data set of 4 sine waves.
         cls.sinesDataFrame = FunctionGenerator.SineWavesAsDataFrame(magnitude=[10, 6, 8, 2], frequency=[4, 8, 2, 1], yOffset=[0, 22, 0, 2], slope=[10, 0, -6, 0], steps=1000)
 
