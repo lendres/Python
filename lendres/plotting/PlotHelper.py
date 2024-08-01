@@ -401,7 +401,7 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxis, rightAxis) : axis array
+        (leftAxis, rightAxis) : tuple[matplotlib.axes.Axes]
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
@@ -432,14 +432,40 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (axis1, axis2, ..., axisN) : maptplotlib.axes.Axes list
-            The axes.
+        [axis1, axis2, ..., axisN] : list[matplotlib.axes.Axes]
+            The axeses from top to bottom.
         """
         # The format setup needs to be run first.
         cls.Format()
 
         figure = plt.figure()
-        axeses = [figure.gca()]
+        axes   = [figure.gca()]
+
+        axeses = cls.MultiXAxes(axes, numberOfAxes)
+
+        return figure, axeses
+
+
+    @classmethod
+    def MultiXAxes(cls, baseAxes:matplotlib.axes.Axes, numberOfAxes:int) -> tuple[fig.Figure, list]:
+        """
+        Creates a multiple axes that are on top of each other.  The axes have an aligned (shared) y-axis.
+
+        Parameters
+        ----------
+        baseAxes : matplotlib.axes.Axes
+            The base axes to add the other axeses to.
+        numberOfAxes : int
+            The total number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The figure the axeses are on.  If no figure existed, a new figure is created.
+        [axis1, axis2, ..., axisN] : list[matplotlib.axes.Axes]
+            The axeses from top to bottom..
+        """
+        axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
             axeses.append(axeses[0].twiny())
@@ -459,7 +485,7 @@ class PlotHelper():
         axeses[0].xaxis.tick_top()
         axeses[0].xaxis.set_label_position("top")
 
-        return figure, axeses
+        return axeses
 
 
     @classmethod
@@ -479,14 +505,43 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxes, rightAxes1, rightAxes2, ..., rightAxesN) : axes list
+        [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : list[matplotlib.axes.Axes]
             The left axes and all the right axeses.
         """
         # The format setup needs to be run first.
         cls.Format()
 
         figure = plt.figure()
-        axeses = [figure.gca()]
+        axes   = figure.gca()
+
+        axeses = cls.MultiYAxes(axes, numberOfAxes)
+
+        return figure, axeses
+
+
+    @classmethod
+    def MultiYAxes(cls, baseAxes:matplotlib.axes.Axes, numberOfAxes:int) -> tuple[fig.Figure, list]:
+        """
+        Creates a new figure that has multiple axes that are on top of each other.  The
+        axes have an aligned (shared) x-axis.
+
+        The first axis will be the left axis.  The remaining axes are stacked on the right side.
+
+        Parameters
+        ----------
+        baseAxes : matplotlib.axes.Axes
+            The base axes to add the other axeses to.
+        numberOfAxes : int
+            The number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : list[matplotlib.axes.Axes]
+            The left axes and all the right axeses.
+        """
+        axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
             # Create the remaining axis and specify that the same x-axis should be used.
@@ -499,7 +554,7 @@ class PlotHelper():
         # Change the drawing order of axes so the first one created is on top.
         AxesHelper.SetZOrderOfMultipleAxesFigure(axeses)
 
-        return figure, axeses
+        return axeses
 
 
     @classmethod

@@ -204,7 +204,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        cls.MultiXAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -251,15 +251,94 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        cls.MultiYAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
         return figure, axeses
 
+    @classmethod
+    def MultiXAxesPlot(cls, axeses:list, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
+        """
+        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
+        of the plot.
+
+        Parameters
+        ----------
+        axes : array like
+            A an array of axes to plot on.  There should be one axes for each grouping (list/array) in axesesColumnNames.
+        data : pandas.DataFrame
+            The data.
+        yAxisColumnName : string
+            Independent variable column in the data.
+        axesesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
+        **kwargs : keyword arguments
+            These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
+            a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
+            each series as it is plotted.
+            Example 1:
+                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+            Result
+                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+            Example 2:
+                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+            Result
+                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+
+        Returns
+        -------
+        lines2d : list of Line2D
+            The plotted line objects.
+        """
+        cls._MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+
 
     @classmethod
-    def MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str="x", **kwargs):
+    def MultiYAxesPlot(cls, axeses:list, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
+        """
+        Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
+        of the plot.
+
+        Parameters
+        ----------
+        axes : array like
+            A an array of axes to plot on.  There should be one axes for each grouping (list/array) in axesesColumnNames.
+        data : pandas.DataFrame
+            The data.
+        xAxisColumnName : string
+            Independent variable column in the data.
+        axesesColumnNames : array like of array like of strings
+            Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
+            each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
+            column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
+            plotted on the second right axes.
+        **kwargs : keyword arguments
+            These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
+            a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
+            each series as it is plotted.
+            Example 1:
+                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+            Result
+                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+            Example 2:
+                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+            Result
+                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+
+        Returns
+        -------
+        lines2d : list of Line2D
+            The plotted line objects.
+        """
+        cls._MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+
+
+    @classmethod
+    def _MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -277,6 +356,8 @@ class PlotMaker():
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
             plotted on the second right axes.
+        independentAxis : str
+            Which axis is independent.
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
@@ -310,13 +391,15 @@ class PlotMaker():
             for column in axesColumnNames:
 
                 # Key word arguments.  Start with a default set and then override with any specified as arguments.
-                defaultKwargs = {"color" : PlotHelper.NextColor()}
+                defaultKwargs = {"color" : PlotHelper.NextColor(), "label" : column}
                 defaultKwargs.update(seriesKeyWordArgs[seriesIndex])
 
                 if independentAxis == "x":
-                    lines = axes.plot(data[independentColumnName], data[column], label=column, **defaultKwargs)
+                    # X-axis is independent axis.
+                    lines = axes.plot(data[independentColumnName], data[column], **defaultKwargs)
                 else:
-                    lines = axes.plot(data[column], data[independentColumnName], label=column, **defaultKwargs)
+                    # Y-axis is independent axis.
+                    lines = axes.plot(data[column], data[independentColumnName], **defaultKwargs)
 
                 lines2d.append(lines[0])
                 seriesIndex += 1

@@ -1,0 +1,55 @@
+name: build-and-publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  build-windows-python312:
+
+    uses: ./.github/workflows/build-windows-wheel.yaml
+    with:
+      python_version: 3.12
+
+  build-source-dist:
+
+    uses: ./.github/workflows/build-source-dist.yaml
+
+  publish-release:
+
+    needs: [build-source-dist, build-windows-python312]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+
+      - name: Get Wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: file-*
+          path: "./dist"
+          merge-multiple: true
+
+      - name: Upload Wheels to Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" "./dist/"** --repo ${{ github.repository }}
+
+  publish-pypi:
+
+    needs: [build-source-dist, build-windows-python312]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+
+      - name: Get Wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: file-*
+          path: "./dist"
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
