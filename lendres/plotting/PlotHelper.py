@@ -804,7 +804,10 @@ class PlotHelper():
 
     @classmethod
     def NextColor(cls):
-        cls.currentColor += 1
+        if cls.currentColor == len(cls.GetColorCycle())-1:
+            cls.currentColor = 0
+        else:
+            cls.currentColor += 1
         return cls.GetColorCycle()[cls.currentColor]
 
 
