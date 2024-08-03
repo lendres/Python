@@ -439,7 +439,7 @@ class PlotHelper():
         cls.Format()
 
         figure = plt.figure()
-        axes   = [figure.gca()]
+        axes   = figure.gca()
 
         axeses = cls.MultiXAxes(axes, numberOfAxes)
 
