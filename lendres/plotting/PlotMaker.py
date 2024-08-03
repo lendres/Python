@@ -223,7 +223,7 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of array like of str
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
