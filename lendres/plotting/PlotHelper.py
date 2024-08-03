@@ -430,7 +430,7 @@ class PlotHelper():
             The axeses from top to bottom.
         """
         figure = plt.figure()
-        axes   = [figure.gca()]
+        axes   = figure.gca()
 
         axeses = cls.MultiXAxes(axes, numberOfAxes)
 
