@@ -2,8 +2,14 @@
 Created on December 4, 2021
 @author: Lance A. Endres
 """
+import numpy                                                         as np
 import matplotlib
 import matplotlib.pyplot                                             as plt
+import matplotlib.figure                                             as fig
+import matplotlib.axes                                               as ax
+from   matplotlib.collections                                        import LineCollection
+from   matplotlib.colors                                             import ListedColormap
+from   matplotlib.colors                                             import BoundaryNorm
 import math
 
 #import seaborn                                                       as sns
@@ -22,6 +28,17 @@ from   lendres.path.Path                                             import Path
 
 
 class PlotHelper():
+    """
+    This is a helper class for creating plots.
+        It does do formatting and provided formatting options.
+        It does handle creating new plots for some none trivial plotting cases (e.g. multi-axes plots).
+        It does have some plotting utility functions such as saving figures to files.
+        It does not plot lines.
+
+    See also FormatSettings.
+    """
+
+
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
@@ -40,7 +57,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetSettings(cls):
+    def GetSettings(cls) -> FormatSettings:
         """
         Gets the current FormatSettings.
 
@@ -96,7 +113,7 @@ class PlotHelper():
 
 
     @classmethod
-    def PushSettings(cls, formatSettings:FormatSettings=None, base="current", **kwargs):
+    def PushSettings(cls, formatSettings:FormatSettings|str="current", **kwargs):
         """
         Sets the format settings (temporarily).  It is necessary to supply either an instance of FormatSettings or
         at least one keyword argument that is passed to FormatSettings.  The original settings are restored by
@@ -105,13 +122,18 @@ class PlotHelper():
         If keyword arguments are supplied, they are used to override the settings.  The value of "base" specifies if
         the "current" or "default" settings are used as the base settings to override.
 
+        Pushing the settings does not erase or reset any parameters when keyword arguments are specified alone.  They
+        key word arguments are used to overwrite/update existing values.  To reset the format settings, supply your
+        own new instance of FormatSettings.
+
         Parameters
         ----------
-        formatSettings : FormatSettings, optional
-            The format settings.  If "formatSettings" are provided, the keyword arguments are ignored.  The default is None.
-        base : str, optional
-            If keyword arguments are supplied, "base" specifies if the current of default settings are used as the basis
-            for applying the keyword arguements to.  Either "current" or "default" are allowed.  The default is "current".
+        formatSettings : FormatSettings|str, optional
+            Specified the basis of the settings to apply the keyword arguments to.
+                "current"                 - The current format settings are used.
+                "default"                 - The default format settings are used.
+                FormatSettings instalnce  - The supplied instance of the format settings are used.
+            The default is "current".
         **kwargs : keyword arguments
             Keyword arguments recognized by FormatSettings.
 
@@ -119,15 +141,16 @@ class PlotHelper():
         -------
         None.
         """
-        if formatSettings is None:
-            match base:
-                case "current":
-                    # Create a new instance by copying the existing settings.
-                    formatSettings = cls.formatSettings.Copy().Set(overrideUpdateMethod="update", **kwargs)
-                case "default":
-                    formatSettings = cls.defaultFormatSettings(**kwargs)
-                case _:
-                    raise Exception("Invalid 'base' parameter provided to 'PushSettings'.")
+        match formatSettings:
+            case "current":
+                # Create a new instance by copying the existing settings.
+                formatSettings = cls.formatSettings.Copy().Update(**kwargs)
+            case "default":
+                formatSettings = cls.defaultFormatSettings.Copy().Update(**kwargs)
+            case FormatSettings():
+                formatSettings = formatSettings.Copy().Update(**kwargs)
+            case _:
+                raise Exception("Invalid 'formatSettings' parameter provided to 'PushSettings'.")
 
         # Gaurd against a forgotten call to "Pop".
         if cls.storedFormatSettings is not None:
@@ -154,7 +177,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetListOfPlotStyles(self):
+    def GetListOfPlotStyles(self) -> list:
         """
         Get a list of the plot styles.
 
@@ -186,7 +209,7 @@ class PlotHelper():
 
 
     @classmethod
-    def GetScaledAnnotationSize(cls):
+    def GetScaledAnnotationSize(cls) -> float:
         """
         Gets the annotation font size adjusted with the scaling factor.
 
@@ -196,7 +219,7 @@ class PlotHelper():
 
         Returns
         -------
-        : double
+        : float
             Scaled annotation size.
         """
         return cls.formatSettings.Scale*cls.formatSettings.AnnotationSize
@@ -277,7 +300,7 @@ class PlotHelper():
 
 
     @classmethod
-    def _ScaleFontSize(cls, size):
+    def _ScaleFontSize(cls, size) -> float:
         """
         Scale a font by the scale.  Checks for missing values and converts values that are strings to their numerical values.
 
@@ -301,7 +324,7 @@ class PlotHelper():
 
 
     @classmethod
-    def ConvertFontRelativeSizeToPoints(cls, relativeSize):
+    def ConvertFontRelativeSizeToPoints(cls, relativeSize) -> float:
         """
         Converts a relative size (large, small, medium, et cetera) to a numerical value.
 
@@ -328,44 +351,46 @@ class PlotHelper():
 
 
     @classmethod
-    def NewTopAndBottomAxisFigure(cls, title, topPercent=0.25):
+    def NewTopAndBottomAxisFigure(cls, title:str, topFraction:float=0.25) -> tuple[fig.Figure, tuple[ax.Axes, ax.Axes]]:
         """
         Creates a new figure that has two axes, one above another.
 
         Parameters
         ----------
-        title : string
+        title : str
             Figure title.
+        topFraction : float
+            The fraction of the total space the top figure should use.
 
         Returns
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (boxAxis, historgramAxis) : axis array
+        (boxAxis, historgramAxis) : matplotlib.axes.Axes tuple
             The top axis and bottom axis, respectively, for the box plot and histogram.
         """
         # Check input.
-        if topPercent <= 0 or topPercent >= 1.0:
+        if topFraction <= 0 or topFraction >= 1.0:
             raise Exception("Top percentage out of range.")
 
         # The format setup needs to be run first.
         cls.Format()
 
-        figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios" : (topPercent, 1-topPercent)})
+        figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios" : (topFraction, 1-topFraction)})
 
         figure.suptitle(title)
 
-        return (figure, (boxAxis, histogramAxis))
+        return figure, (boxAxis, histogramAxis)
 
 
     @classmethod
-    def NewSideBySideAxisFigure(cls, title, width=15, height=5):
+    def NewSideBySideAxisFigure(cls, title:str, width:float=15, height:float=5) -> tuple[fig.Figure, tuple[ax.Axes, ax.Axes]]:
         """
         Creates a new figure that has two axes, one above another.
 
         Parameters
         ----------
-        title : string
+        title : str
             Title to use for the plot.
         width : float, optional
             The width of the figure. The default is 15.
@@ -376,7 +401,7 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxis, rightAxis) : axis array
+        (leftAxis, rightAxis) : tuple[matplotlib.axes.Axes]
             The left axis and right axis, respectively.
         """
         # The format setup needs to be run first.
@@ -390,11 +415,11 @@ class PlotHelper():
 
         figure.suptitle(title)
 
-        return (figure, (leftAxis, rightAxis))
+        return figure, (leftAxis, rightAxis)
 
 
     @classmethod
-    def NewMultiXAxesFigure(cls, numberOfAxes):
+    def NewMultiXAxesFigure(cls, numberOfAxes:int) -> tuple[fig.Figure, list]:
         """
         Creates a new figure that has multiple axes that are on top of each other.  The axes have an aligned (shared) y-axis.
 
@@ -407,20 +432,46 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (axis1, axis2, ..., axisN) : axis list
-            The axes.
+        [axis1, axis2, ..., axisN] : list[matplotlib.axes.Axes]
+            The axeses from top to bottom.
         """
         # The format setup needs to be run first.
         cls.Format()
 
         figure = plt.figure()
-        axes   = [figure.gca()]
+        axes   = figure.gca()
+
+        axeses = cls.MultiXAxes(axes, numberOfAxes)
+
+        return figure, axeses
+
+
+    @classmethod
+    def MultiXAxes(cls, baseAxes:matplotlib.axes.Axes, numberOfAxes:int) -> tuple[fig.Figure, list]:
+        """
+        Creates a multiple axes that are on top of each other.  The axes have an aligned (shared) y-axis.
+
+        Parameters
+        ----------
+        baseAxes : matplotlib.axes.Axes
+            The base axes to add the other axeses to.
+        numberOfAxes : int
+            The total number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The figure the axeses are on.  If no figure existed, a new figure is created.
+        [axis1, axis2, ..., axisN] : list[matplotlib.axes.Axes]
+            The axeses from top to bottom..
+        """
+        axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
-            axes.append(axes[0].twiny())
+            axeses.append(axeses[0].twiny())
 
             # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
-            # axes[i].xaxis.label.get_size()
+            # axeses[i].xaxis.label.get_size()
             # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
             # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
             s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
@@ -428,17 +479,17 @@ class PlotHelper():
             m      = 4/3.0*(s1-s2)          # Slope.
             y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
             offset = m * cls.formatSettings.Scale + y0
-            axes[i].spines["top"].set_position(("outward", offset))
+            axeses[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.
-        axes[0].xaxis.tick_top()
-        axes[0].xaxis.set_label_position("top")
+        axeses[0].xaxis.tick_top()
+        axeses[0].xaxis.set_label_position("top")
 
-        return (figure, axes)
+        return axeses
 
 
     @classmethod
-    def NewMultiYAxesFigure(cls, numberOfAxes):
+    def NewMultiYAxesFigure(cls, numberOfAxes:int) -> tuple[fig.Figure, list]:
         """
         Creates a new figure that has multiple axes that are on top of each other.  The
         axes have an aligned (shared) x-axis.
@@ -454,14 +505,43 @@ class PlotHelper():
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        (leftAxes, rightAxes1, rightAxes2, ..., rightAxesN) : axes list
+        [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : list[matplotlib.axes.Axes]
             The left axes and all the right axeses.
         """
         # The format setup needs to be run first.
         cls.Format()
 
         figure = plt.figure()
-        axeses = [figure.gca()]
+        axes   = figure.gca()
+
+        axeses = cls.MultiYAxes(axes, numberOfAxes)
+
+        return figure, axeses
+
+
+    @classmethod
+    def MultiYAxes(cls, baseAxes:matplotlib.axes.Axes, numberOfAxes:int) -> tuple[fig.Figure, list]:
+        """
+        Creates a new figure that has multiple axes that are on top of each other.  The
+        axes have an aligned (shared) x-axis.
+
+        The first axis will be the left axis.  The remaining axes are stacked on the right side.
+
+        Parameters
+        ----------
+        baseAxes : matplotlib.axes.Axes
+            The base axes to add the other axeses to.
+        numberOfAxes : int
+            The number of axes to create.
+
+        Returns
+        -------
+        figure : matplotlib.figure.Figure
+            The newly created figure.
+        [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : list[matplotlib.axes.Axes]
+            The left axes and all the right axeses.
+        """
+        axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
             # Create the remaining axis and specify that the same x-axis should be used.
@@ -474,11 +554,11 @@ class PlotHelper():
         # Change the drawing order of axes so the first one created is on top.
         AxesHelper.SetZOrderOfMultipleAxesFigure(axeses)
 
-        return (figure, axeses)
+        return axeses
 
 
     @classmethod
-    def ConvertKeyWordArgumentsToSeriesSets(cls, numberOfSets:int, **kwargs):
+    def ConvertKeyWordArgumentsToSeriesSets(cls, numberOfSets:int, **kwargs) -> list:
         """
         Converts key word arguments into a set of key word arguments.
 
@@ -495,7 +575,7 @@ class PlotHelper():
         ----------
         numberOfSets : int
             The number of output key word argument sets.
-        **kwargs : kwargs
+        **kwargs : keyword arguments
             The key word arguments to convert.
 
         Returns
@@ -524,20 +604,20 @@ class PlotHelper():
 
 
     @classmethod
-    def NewArtisticFigure(cls, parameterFile=None):
+    def NewArtisticFigure(cls, parameterFile:str=None) -> tuple[fig.Figure, ax.Axes]:
         """
         Create a new artistic plot.
 
         Parameters
         ----------
-        parameterFile : string, optional
+        parameterFile : str, optional
             A Matplotlib parameter style file. The default is None.
 
         Returns
         -------
         figure : matplotlib.figure.Figure
             The newly created figure.
-        axeses : tuple of matplotlib.axes.Axes
+        axes : matplotlib.axes.Axes
             The axes of the plot.
         """
         if parameterFile is None:
@@ -546,7 +626,7 @@ class PlotHelper():
         cls.PushSettings(parameterFile=parameterFile)
         cls.Format()
 
-        figure  = plt.gcf()
+        figure  = plt.figure()
         axes    = plt.gca()
 
         # Zero lines.
@@ -563,12 +643,63 @@ class PlotHelper():
 
 
     @classmethod
-    def GetColorCycle(cls, lineColorCycle=None, numberFormat="RGB"):
+    def _MakeLineCollectionSegments(cls, x, y):
+        """
+        Create list of line segments from x and y coordinates, in the correct format for LineCollection:
+        an array of the form numlines x (points per line) x 2 (x and y) array
+        """
+        # Originally from https://nbviewer.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+        points   = np.array([x, y]).T.reshape(-1, 1, 2)
+        segments = np.concatenate([points[:-1], points[1:]], axis=1)
+
+        return segments
+
+
+    @classmethod
+    def PlotGradientColorLine(cls, x, y, z=None, axes:matplotlib.axes.Axes=None, cmap=plt.get_cmap("copper"), norm=plt.Normalize(0.0, 1.0), linewidth=3, alpha=1.0):
+        """
+        Plot a colored line with coordinates x and y
+        Optionally specify colors in the array z
+        Optionally specify a colormap, a norm function and a line width
+        """
+        # Originally from https://nbviewer.org/github/dpsanders/matplotlib-examples/blob/master/colorline.ipynb
+
+        # Default colors equally spaced on [0,1].
+        if z is None:
+            z = np.linspace(0.0, 1.0, len(x))
+
+        # Special case if a single number.
+        if not hasattr(z, "__iter__"):  # to check for numerical input -- this is a hack
+            z = np.array([z])
+
+        z = np.asarray(z)
+
+        segments       = cls._MakeLineCollectionSegments(x, y)
+        lineCollection = LineCollection(segments, array=z, cmap=cmap, norm=None, linewidth=linewidth, alpha=alpha)
+
+        if axes is None:
+            axes = plt.gca()
+        axes.add_collection(lineCollection)
+
+        return lineCollection
+
+
+    @classmethod
+    def GetColorCycle(cls, lineColorCycle:str=None, numberFormat:str="RGB") -> list:
         """
         Gets the default Matplotlib colors in the color cycle.
 
         Parameters
         ----------
+        lineColorCycle : str, optional
+            The color cycle to use for line colors.
+                None      : The color cycle is taken from the format settings.
+                "pyplot"  : The Matplotlib default color cycle is returned.
+                "seaborn" : The default Seaborn color cycle is returned.
+            The default is None.
+        numberFormat : str, optional
+            The number format to return the colors as.  The options are "RGB" or "hex".  The
+            default is "RGB".
 
         Returns
         -------
@@ -612,7 +743,7 @@ class PlotHelper():
 
 
     @classmethod
-    def ListOfHexToRgb(cls, colors):
+    def ListOfHexToRgb(cls, colors:list|tuple) -> list:
         """
         Convert a list of colors represented as hexadecimal strings into RGB colors.
 
@@ -630,7 +761,7 @@ class PlotHelper():
 
 
     @classmethod
-    def RgbToHex(cls, color):
+    def RgbToHex(cls, color:list|tuple) -> str:
         """
         Converts an RGB color to a hexadecimal string color.
 
@@ -641,7 +772,7 @@ class PlotHelper():
 
         Returns
         -------
-        : string
+        : str
             A hexadecimal color.
         """
         if isinstance(color[0], float):
@@ -651,7 +782,7 @@ class PlotHelper():
 
 
     @classmethod
-    def ListOfRgbToHex(cls, colors):
+    def ListOfRgbToHex(cls, colors:list) -> list:
         """
         Converts an list of RGB colors to a list of hexadecimal string colors.
 
@@ -673,7 +804,10 @@ class PlotHelper():
 
     @classmethod
     def NextColor(cls):
-        cls.currentColor += 1
+        if cls.currentColor == len(cls.GetColorCycle())-1:
+            cls.currentColor = 0
+        else:
+            cls.currentColor += 1
         return cls.GetColorCycle()[cls.currentColor]
 
 
@@ -693,31 +827,12 @@ class PlotHelper():
 
 
     @classmethod
-    def GetColor(cls, color:int):
+    def GetColor(cls, color:int) -> tuple:
         return cls.GetColorCycle()[color]
 
 
     @classmethod
-    def CategoryTitle(cls, categoryName):
-        """
-        Formats a string as a category title.  It is converted to title case, quotes
-        added around the category name and "Category" added as a suffix.
-
-        Parameters
-        ----------
-        categoryName : string
-            Category name to convert to a title.
-
-        Returns
-        -------
-        title : string
-            The category converted to a title.
-        """
-        return "\"" + categoryName.title() + "\"" + " Category"
-
-
-    @classmethod
-    def GetDefaultOutputDirectory(cls):
+    def GetDefaultOutputDirectory(cls) -> str:
         """
         Gets the default output location for saving figures.
 
@@ -747,15 +862,15 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlot(cls, saveFileName, figure=None, transparent=False):
+    def SavePlot(cls, saveFileName:str, figure:matplotlib.figure.Figure=None, transparent=False):
         """
         Saves a plot with a set of default parameters.
 
         Parameters
         ----------
-        saveFileName : string
+        saveFileName : str
             The (optionally) path and file name to save the image to.
-        figure : Figure, optional
+        figure : matplotlib.figure.Figure, optional
             The figure to save.  If None is specified, the current figure will be used.  The default is None.
         transparent : bool, optional
             Specificies if the background of the plot should be transparent.  If True, the background will be set to transparent, if False, nothing no
@@ -787,7 +902,7 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlotToBuffer(cls, figure=None, format="png", autoCrop=False, borderSize=0):
+    def SavePlotToBuffer(cls, figure=None, format="png", autoCrop=False, borderSize=0) -> BytesIO:
         """
         Saves a plot to a buffer.
 
@@ -800,7 +915,7 @@ class PlotHelper():
 
         Returns
         -------
-        BytesIO
+        plot : BytesIO
             Buffer with the figure written to it.
         """
         if figure == None:
@@ -824,7 +939,7 @@ class PlotHelper():
 
 
     @classmethod
-    def SaveToBuffer(cls, figure, format="PNG"):
+    def SaveToBuffer(cls, figure, format="PNG") -> BytesIO:
         """
         Saves a figure or image to an IO byte buffer.
 
@@ -837,7 +952,8 @@ class PlotHelper():
 
         Returns
         -------
-        BytesIO
+        buffer : BytesIO
+            Buffer with the figure written to it.
         """
         buffer = BytesIO()
 
@@ -862,13 +978,14 @@ class PlotHelper():
         Parameters
         ----------
         image : ByteIO
-            An image to crop the border.
+            An image saved in a buffer.
         borderSize : int
             The size of the border, in pixels, to leave remaing around the edge.
 
         Returns
         -------
-        BytesIO
+        image : BytesIO
+            Buffer with the cropped image.
         """
         backGround = Image.new(image.mode, image.size, image.getpixel((0, 0)))
         difference = ImageChops.difference(backGround, image)
