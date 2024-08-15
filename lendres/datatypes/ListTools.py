@@ -2,6 +2,7 @@
 Created on July 24, 2023
 @author: Lance A. Endres
 """
+import numpy                                                         as     np
 from   collections.abc                                               import Iterable
 
 
@@ -90,6 +91,37 @@ class ListTools():
             A list that contains the length (size) of each nest list supplied as input.
         """
         return [len(element) for element in listOfLists]
+
+
+    @classmethod
+    def GetFirstItemInEachListOfLists(cls, listOfLists:list) -> list:
+        """
+        Gets the item from each entry of the list of list.
+
+        Examples
+            [a, b, c]      -> [a, b, c]
+            [a, [b, c], d] -> [a, b, d]
+
+        Parameters
+        ----------
+        listOfLists : list of lists
+            A list, a list that contains other lists, or a list that contains a mix of single items and lists.
+
+        Returns
+        -------
+        list
+            A list that contains the first value in each element of the orignial list.
+        """
+        def GetFirstItem(item):
+            match item:
+                case str() | int() | float():
+                    return item
+                case list() | tuple() | np.array():
+                    return item[0]
+                case _:
+                    raise Exception("Unknown data type found in 'GetFirstItemInEachListOfLists'")
+
+        return [GetFirstItem(item) for item in listOfLists]
 
 
     @classmethod

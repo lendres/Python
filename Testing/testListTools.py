@@ -19,7 +19,7 @@ class TestListTools(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         verboseLevel = ConsoleHelper.VERBOSEREQUESTED
-        verboseLevel = ConsoleHelper.VERBOSETESTING
+        # verboseLevel = ConsoleHelper.VERBOSETESTING
         cls.consoleHelper = ConsoleHelper(verboseLevel=verboseLevel)
 
         cls.listOfLists     = [[1, 3], [5], [8, 11, 14]]
@@ -71,24 +71,37 @@ class TestListTools(unittest.TestCase):
 
     def testCreateListOfLists(self):
         newListofLists = ListTools.CreateListOfLists(self.listOfLists, 1)
-        self.consoleHelper.Display(newListofLists, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
+        # self.consoleHelper.Display(newListofLists, verboseLevel=ConsoleHelper.VERBOSEREQUESTED)
         self.assertTrue(ListTools.AreListsOfListsSameSize(self.listOfLists, newListofLists))
 
 
     def testFlatten(self):
         solution = [1, 3, 5, 8, 11, 14]
         result   = ListTools.Flatten(self.listOfLists)
+        self.assertEqual(result, solution)
 
         solution = [1, 3, 5, 6, 8, 11, 14]
         result   = ListTools.Flatten(self.listOfTuples)
+        self.assertEqual(result, solution)
 
         solution = [1, 5, 8, 11, 14]
         result   = ListTools.Flatten(self.mixedList)
+        self.assertEqual(result, solution)
 
         solution = [1, 3, 5, 8, 11, 14]
         result   = ListTools.Flatten(self.deepListOfLists)
+        self.assertEqual(result, solution)
 
 
+    def testGetFirstItemInEachListOfLists(self):
+        solution = [1, 5, 8]
+        result   = ListTools.GetFirstItemInEachListOfLists(self.listOfLists)
+        self.assertEqual(result, solution)
+
+        ListTools.GetFirstItemInEachListOfLists(self.listOfTuples)
+        self.assertEqual(result, solution)
+
+        ListTools.GetFirstItemInEachListOfLists(self.mixedList)
         self.assertEqual(result, solution)
 
 
