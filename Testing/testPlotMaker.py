@@ -6,6 +6,7 @@ import numpy                                                    as np
 import matplotlib.pyplot                                        as plt
 
 from   lendres.plotting.AxesHelper                              import AxesHelper
+from   lendres.plotting.PlotHelper                              import PlotHelper
 from   lendres.plotting.PlotMaker                               import PlotMaker
 from   lendres.demonstration.FunctionGenerator                  import FunctionGenerator
 
@@ -55,6 +56,14 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test Fast Figure List Kwarg", xLabel="Time", yLabel="Value", linewidth=[3, 8])
 
 
+    def testCreateSimpleFastFigure(self):
+        x, a = FunctionGenerator.SineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
+        x, b = FunctionGenerator.SineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
+        x, c = FunctionGenerator.SineWave(magnitude=5, frequency=3, yOffset=30, slope=-5, steps=1000)
+        PlotMaker.CreateSimpleFastFigure(a, title="Test Simple Fast Figure")
+        PlotMaker.CreateSimpleFastFigure(a, yDataLabel="Y 1", xData=x, title="Test Simple Fast Figure Kwarg", xLabel="Time", yLabel="Value", linewidth=7)
+
+
     def testMultiAxesPlot(self):
         """
         Demonstrate multi-axeses plotting.
@@ -69,6 +78,7 @@ class TestPlotMaker(unittest.TestCase):
 
 
     def PlotMultiAxes(self, titleSuffix, **kwargs):
+        PlotHelper.Format()
         figure, axeses = PlotMaker.NewMultiYAxesPlot(self.sinesDataFrame, "x", [["Sine A1", "Sine A2"], ["Sine B1", "Sine B2"]], **kwargs)
         AxesHelper.Label(axeses, title="Multiple Y Axis Plot\n"+titleSuffix, xLabels="Time", yLabels=["Left (A)", "Right (B)"])
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axeses[0].transAxes)

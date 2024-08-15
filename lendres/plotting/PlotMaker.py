@@ -78,7 +78,7 @@ class PlotMaker():
 
         # Handle optional xData.  If none exist, create a set of integers from 1...N where N is the length of the y data.
         if xData is None:
-            xData = range(1, len(yData[0])+1)
+            xData = range(1, len(yData)+1)
 
         # Need to repackage all the key word arguments.
         axes.plot(xData, yData, label=yDataLabel, **kwargs)
@@ -86,7 +86,7 @@ class PlotMaker():
         # Label the plot.
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
-        if showLegend:
+        if showLegend and yLabel is not None:
             figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
