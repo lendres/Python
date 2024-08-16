@@ -77,7 +77,7 @@ class AxesHelper():
 
 
     @classmethod
-    def RotateXLabels(cls, xLabelRotation):
+    def RotateXLabels(cls, xLabelRotation, axes=None):
         """
         Rotate the x-axis labels.
 
@@ -85,14 +85,23 @@ class AxesHelper():
         ----------
         xLabelRotation : float
             Rotation of x labels.  If none is passed, nothing is done.
+          axes : matplotlib.axes.Axes, optional
+              The axes to change the x-axis label rotation.  If None, the current axes is used.
 
         Returns
         -------
         None.
         """
+        savedCurrentAxes = plt.gca()
+
+        if axes is not None:
+            plt.sca(axes)
+
         # Option to rotate the x axis labels.
         if xLabelRotation is not None:
             plt.xticks(rotation=xLabelRotation, ha="right")
+
+        plt.sca(savedCurrentAxes)
 
 
     @classmethod
