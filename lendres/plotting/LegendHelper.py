@@ -14,10 +14,10 @@ class LegendHelper():
         legend = None
 
         if legendOptions is not None:
-            legend = figure.legend(loc="upper left", bbox_to_anchor=(0, -offset), ncol=legendOptions.NumberOfColumns, bbox_transform=axes.transAxes)
+            legend = figure.legend(loc="upper left", bbox_to_anchor=(0, -legendOptions.Offset), ncol=legendOptions.NumberOfColumns, bbox_transform=axes.transAxes)
 
-            if legendOptions.ChangeLineWidths:
-                cls.SetLegendLineWidths(legend, legendOptions.lineWidth)
+            if legendOptions.LineWidth is not None:
+                cls.SetLegendLineWidths(legend, legendOptions.LineWidth)
 
         return legend
 
