@@ -2,62 +2,62 @@
 Created on September 26, 2023
 @author: lance.endres
 """
-
-
 class LegendOptions():
-
+    """
+    A class that allows passing options for legend building.
+    """
 
     def __init__(
             self,
-            location:str="outsidebottomleft",
-            offset:float=0.17,
-            numberOfColumns:int=1,
-            changeLineWidths:bool=False,
-            lineWidth:float=None,
+            location:         str   = "outsidebottomleft",
+            offset:           float = 0.17,
+            numberOfColumns:  int   = 1,
+            changeLineWidths: bool  = False,
+            lineWidth:        float = None,
         ):
-        self.offset                 = offset
-        self.location               = location
-        self.numberOfColumns        = numberOfColumns
-        self.lineWidth              = lineWidth
+        self._offset                 = offset
+        self._location               = location
+        self._numberOfColumns        = numberOfColumns
+        self._lineWidth              = lineWidth
 
 
     @property
     def Location(self):
-        return self.location
+        return self._location
 
 
     @Location.setter
     def Location(self, location:float):
-        self.location = location
+        self._location = location
 
 
     @property
     def Offset(self):
-        return self.offset
+        return self._offset
 
 
     @Offset.setter
     def Offset(self, offset:float):
-        self.offset = offset
+        self._offset = offset
 
 
     @property
     def NumberOfColumns(self):
-        return self.numberOfColumns
+        return self._numberOfColumns
 
 
     @NumberOfColumns.setter
     def NumberOfColumns(self, numberOfColumns:int):
         if numberOfColumns < 1 or numberOfColumns > 10:
             raise Exception("Invalid number of columns specified for the legend.")
-        self.numberOfColumns = numberOfColumns
+        self._numberOfColumns = numberOfColumns
 
 
     @property
     def LineWidth(self):
-        return self.lineWidth
+        return self._lineWidth
 
 
     @LineWidth.setter
     def LineWidth(self, lineWidth:float):
-        self.lineWidth = lineWidth
+        self._lineWidth = lineWidth

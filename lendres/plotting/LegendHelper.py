@@ -10,27 +10,27 @@ class LegendHelper():
 
 
     @classmethod
-    def CreateLegendAtFigureBottom(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, offset=0.15, legendOptions:LegendOptions=LegendOptions()):
-        legend = None
+    def CreateLegend(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, legendOptions:LegendOptions=LegendOptions()):
+        if legendOptions is None:
+            return None
 
-        if legendOptions is not None:
-            legend = figure.legend(loc="upper left", bbox_to_anchor=(0, -legendOptions.Offset), ncol=legendOptions.NumberOfColumns, bbox_transform=axes.transAxes)
+        match legendOptions.Location:
+            case "outsidebottomleft":
+                loc          = "upper left"
+                bboxToAnchor = (0, -legendOptions.Offset)
+            case "outsidebottomcenter":
+                loc          = "upper center"
+                bboxToAnchor = (0.5, -legendOptions.Offset)
+            case "ousiderightcenter":
+                loc          = "center left"
+                bboxToAnchor = (1.0+legendOptions.Offset, 0.5)
+            case _:
+                raise Exception("The location argument is not valid.")
 
-            if legendOptions.LineWidth is not None:
-                cls.SetLegendLineWidths(legend, legendOptions.LineWidth)
+        legend = figure.legend(loc=loc, bbox_to_anchor=bboxToAnchor, ncol=legendOptions.NumberOfColumns, bbox_transform=axes.transAxes)
 
-        return legend
-
-
-    @classmethod
-    def CreateLegendAtFigureRight(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, offset=0.15, legendOptions:LegendOptions=LegendOptions()):
-        legend = None
-
-        if legendOptions is not None:
-            legend = figure.legend(loc="center left", bbox_to_anchor=(1.0+offset, 0.5), ncol=legendOptions.NumberOfColumns, bbox_transform=axes.transAxes)
-
-            if legendOptions.ChangeLineWidths:
-                cls.SetLegendLineWidths(legend, legendOptions.lineWidth)
+        if legendOptions.LineWidth is not None:
+            cls.SetLegendLineWidths(legend, legendOptions.LineWidth)
 
         return legend
 
