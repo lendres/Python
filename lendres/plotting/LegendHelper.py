@@ -10,7 +10,29 @@ class LegendHelper():
 
 
     @classmethod
-    def CreateLegend(cls, figure:matplotlib.figure.Figure, axes:matplotlib.axes.Axes, legendOptions:LegendOptions=LegendOptions()):
+    def CreateLegend(
+            cls,
+            figure        : matplotlib.figure.Figure,
+            axes          : matplotlib.axes.Axes,
+            legendOptions : LegendOptions=LegendOptions()
+        )   ->              matplotlib.legend.Legend:
+        """
+        Create a legend
+
+        Parameters
+        ----------
+        figure : matplotlib.figure.Figure
+            Matplotlib figure to create the legend for.
+        axes : matplotlib.axes.Axes
+            Axes to used to reference the location.
+        legendOptions : LegendOptions, optional
+            Options to control the placement and look of the legend. The default is LegendOptions().
+
+        Returns
+        -------
+        legend : matplotlib.legend.Legend
+            The newly created legend.
+        """
         if legendOptions is None:
             return None
 

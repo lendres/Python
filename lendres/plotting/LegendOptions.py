@@ -10,11 +10,32 @@ class LegendOptions():
     def __init__(
             self,
             location:         str   = "outsidebottomleft",
-            offset:           float = 0.17,
+            offset:           float = 0.15,
             numberOfColumns:  int   = 1,
-            changeLineWidths: bool  = False,
-            lineWidth:        float = None,
+            lineWidth:        float = None
         ):
+        """
+        Options to control how the LegendHelper creates legends.
+
+        Parameters
+        ----------
+        location : str, optional
+            Location to create the legend. The default is "outsidebottomleft".  The options are:
+                outsidebottomleft
+                outsidebottomcenter
+                ousiderightcenter
+        offset : float, optional
+            The distance to offset the legend of the anchor point. The default is 0.15.
+        numberOfColumns : int, optional
+            Number of columns in the legend. The default is 1.
+        lineWidth : float, optional
+            If specified, the line widths in the legend are set to this value.  If None, the original line widths are
+            kept. The default is None.
+
+        Returns
+        -------
+        None.
+        """
         self._offset                 = offset
         self._location               = location
         self._numberOfColumns        = numberOfColumns
