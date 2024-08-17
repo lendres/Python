@@ -78,7 +78,7 @@ class PlotMaker():
 
         # Handle optional xData.  If none exist, create a set of integers from 1...N where N is the length of the y data.
         if xData is None:
-            xData = range(1, len(yData[0])+1)
+            xData = range(1, len(yData)+1)
 
         # Need to repackage all the key word arguments.
         axes.plot(xData, yData, label=yDataLabel, **kwargs)
@@ -86,7 +86,7 @@ class PlotMaker():
         # Label the plot.
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
-        if showLegend:
+        if showLegend and yLabel is not None:
             figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
@@ -204,7 +204,7 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses    = PlotHelper.NewMultiXAxesFigure(len(axesesColumnNames))
 
-        cls.MultiXAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
+        cls.PlotMultiXAxes(axeses, data, yAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignXAxes(axeses)
 
@@ -223,7 +223,7 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of array like of str
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
@@ -251,14 +251,14 @@ class PlotMaker():
         # Creates a figure with two axes having an aligned (shared) x-axis.
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
-        cls.MultiYAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
+        cls.PlotMultiYAxes(axeses, data, xAxisColumnName, axesesColumnNames, **kwargs)
 
         AxesHelper.AlignYAxes(axeses)
 
         return figure, axeses
 
     @classmethod
-    def MultiXAxesPlot(cls, axeses:list, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def PlotMultiXAxes(cls, axeses:list, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -294,11 +294,11 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._MultiAxesPlot(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
 
     @classmethod
-    def MultiYAxesPlot(cls, axeses:list, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def PlotMultiYAxes(cls, axeses:list, data:pd.DataFrame, xAxisColumnName:str, axesesColumnNames:list, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -334,11 +334,11 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._MultiAxesPlot(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
 
     @classmethod
-    def _MultiAxesPlot(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, **kwargs):
+    def _PlotMultiAxes(cls, axeses:list, data:pd.DataFrame, independentColumnName:str, axesesColumnNames:list, independentAxis:str, **kwargs):
         """
         Plots data on two axes with the same x-axis but different y-axis scales.  The y-axis are on either side (left and right)
         of the plot.
@@ -476,7 +476,7 @@ class PlotMaker():
 
 
     @classmethod
-    def PlotColorCycle(cls, lineColorCycle=None):
+    def CreateColorCyclePlot(cls, lineColorCycle=None):
         """
         Create a plot that shows the colors in a color cycle.
 

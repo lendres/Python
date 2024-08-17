@@ -373,9 +373,6 @@ class PlotHelper():
         if topFraction <= 0 or topFraction >= 1.0:
             raise Exception("Top percentage out of range.")
 
-        # The format setup needs to be run first.
-        cls.Format()
-
         figure, (boxAxis, histogramAxis) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios" : (topFraction, 1-topFraction)})
 
         figure.suptitle(title)
@@ -404,9 +401,6 @@ class PlotHelper():
         (leftAxis, rightAxis) : tuple[matplotlib.axes.Axes]
             The left axis and right axis, respectively.
         """
-        # The format setup needs to be run first.
-        cls.Format()
-
         figure, (leftAxis, rightAxis) = plt.subplots(1, 2)
 
         figure.set_figwidth(width)
@@ -435,11 +429,8 @@ class PlotHelper():
         [axis1, axis2, ..., axisN] : list[matplotlib.axes.Axes]
             The axeses from top to bottom.
         """
-        # The format setup needs to be run first.
-        cls.Format()
-
         figure = plt.figure()
-        axes   = [figure.gca()]
+        axes   = figure.gca()
 
         axeses = cls.MultiXAxes(axes, numberOfAxes)
 
@@ -508,9 +499,6 @@ class PlotHelper():
         [leftAxes, rightAxes1, rightAxes2, ..., rightAxesN] : list[matplotlib.axes.Axes]
             The left axes and all the right axeses.
         """
-        # The format setup needs to be run first.
-        cls.Format()
-
         figure = plt.figure()
         axes   = figure.gca()
 
@@ -604,7 +592,7 @@ class PlotHelper():
 
 
     @classmethod
-    def NewArtisticFigure(cls, parameterFile:str=None) -> tuple[fig.Figure, ax.Axes]:
+    def FormatNewArtisticFigure(cls, parameterFile:str=None) -> tuple[fig.Figure, ax.Axes]:
         """
         Create a new artistic plot.
 
@@ -804,7 +792,10 @@ class PlotHelper():
 
     @classmethod
     def NextColor(cls):
-        cls.currentColor += 1
+        if cls.currentColor == len(cls.GetColorCycle())-1:
+            cls.currentColor = 0
+        else:
+            cls.currentColor += 1
         return cls.GetColorCycle()[cls.currentColor]
 
 

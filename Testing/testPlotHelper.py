@@ -37,8 +37,8 @@ class TestPlotHelper(unittest.TestCase):
 
 
     # @unittest.skip
-    def testArtistiPlot(self):
-        PlotHelper.NewArtisticFigure()
+    def testArtisticPlot(self):
+        PlotHelper.FormatNewArtisticFigure()
         plt.show()
 
 
@@ -174,6 +174,7 @@ class TestPlotHelper(unittest.TestCase):
 
         # Test the exception.
         self.assertRaises(Exception, PlotHelper.PushSettings, formatSettings="invalid")
+
 
     def CreateBasicPlot(self, title):
         PlotHelper.Format()
