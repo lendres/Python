@@ -8,8 +8,6 @@ import matplotlib.pyplot                                             as plt
 import matplotlib.figure                                             as fig
 import matplotlib.axes                                               as ax
 from   matplotlib.collections                                        import LineCollection
-from   matplotlib.colors                                             import ListedColormap
-from   matplotlib.colors                                             import BoundaryNorm
 import math
 
 #import seaborn                                                       as sns
@@ -37,16 +35,14 @@ class PlotHelper():
 
     See also FormatSettings.
     """
-
-
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
-    defaultOutputDirectory      = "./Output/"
+    DefaultOutputDirectory      = "./Output/"
 
     #If true, the image is saved to a subfolder or the current folder called "Output."  If false, the path is assumed to be part
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
-    usedefaultOutputDirectory   = True
+    UseDefaultOutputDirectory   = True
 
     # Format settings.
     formatSettings              = FormatSettings()
@@ -829,7 +825,7 @@ class PlotHelper():
         : string
             The default saving location for figures.
         """
-        return os.path.join(os.getcwd(), cls.defaultOutputDirectory)
+        return os.path.join(os.getcwd(), cls.DefaultOutputDirectory)
 
 
     @classmethod
@@ -845,8 +841,8 @@ class PlotHelper():
         -------
         None.
         """
-        if os.path.isdir(cls.defaultOutputDirectory):
-            shutil.rmtree(cls.defaultOutputDirectory)
+        if os.path.isdir(cls.DefaultOutputDirectory):
+            shutil.rmtree(cls.DefaultOutputDirectory)
 
 
     @classmethod
@@ -876,14 +872,14 @@ class PlotHelper():
 
         # If the default ouptput folder is specified, we need to make sure it exists and update
         # the save path to account for it.
-        if cls.usedefaultOutputDirectory:
+        if cls.UseDefaultOutputDirectory:
 
             # Directory needs to exist.
-            if not os.path.isdir(cls.defaultOutputDirectory):
-                os.mkdir(cls.defaultOutputDirectory)
+            if not os.path.isdir(cls.DefaultOutputDirectory):
+                os.mkdir(cls.DefaultOutputDirectory)
 
             # Update path.
-            path = os.path.join(cls.defaultOutputDirectory, saveFileName)
+            path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
