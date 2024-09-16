@@ -3,6 +3,7 @@ Created on December 27, 2021
 @author: Lance A. Endres
 """
 from   lendres.io.ConsoleHelper                                      import ConsoleHelper
+ConsoleHelper().ClearIPythonConsole()
 from   lendres.io.IO                                                 import IO
 
 import unittest
@@ -28,7 +29,7 @@ class TestConsoleHelper(unittest.TestCase):
 
     def testIOSingleton(self):
         print("\n\n")
-        IO.consoleHelper.Print("Singleton test.")
+        IO.ConsoleHelper.Print("Singleton test.")
 
 
     def testVerboseLevel(self):
