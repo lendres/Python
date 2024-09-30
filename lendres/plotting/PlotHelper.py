@@ -640,7 +640,17 @@ class PlotHelper():
 
 
     @classmethod
-    def PlotGradientColorLine(cls, x, y, z=None, axes:matplotlib.axes.Axes=None, cmap=plt.get_cmap("copper"), norm=plt.Normalize(0.0, 1.0), linewidth=3, alpha=1.0):
+    def PlotGradientColorLine(
+            cls,
+            x,
+            y,
+            z=None,
+            axes:       matplotlib.axes.Axes        = None,
+            colorMap:   matplotlib.colors.Colormap  = plt.get_cmap("copper"),
+            norm:       matplotlib.colors.Normalize = plt.Normalize(0.0, 1.0),
+            linewidth:  int                         = 3,
+            alpha:      float                       = 1.0
+        ):
         """
         Plot a colored line with coordinates x and y
         Optionally specify colors in the array z
@@ -659,7 +669,7 @@ class PlotHelper():
         z = np.asarray(z)
 
         segments       = cls._MakeLineCollectionSegments(x, y)
-        lineCollection = LineCollection(segments, array=z, cmap=cmap, norm=None, linewidth=linewidth, alpha=alpha)
+        lineCollection = LineCollection(segments, array=z, cmap=colorMap, norm=None, linewidth=linewidth, alpha=alpha)
 
         if axes is None:
             axes = plt.gca()
