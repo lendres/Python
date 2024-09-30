@@ -56,6 +56,7 @@ class TestColorHleper(unittest.TestCase):
         """
         self.PlotAllTables(label="hex", saveImage=True)
 
+
     def testColorMapPlot(self):
         # https://matplotlib.org/stable/gallery/color/colormap_reference.html
         # https://matplotlib.org/stable/users/explain/colors/colormap-manipulation.html#colormap-manipulation

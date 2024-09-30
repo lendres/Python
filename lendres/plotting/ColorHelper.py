@@ -136,6 +136,7 @@ class ColorHelper():
 
         plt.show()
 
+
     @classmethod
     def PlotExampleOfColorMap(cls, colorMaps):
         """
@@ -158,6 +159,7 @@ class ColorHelper():
             axes.set(title=colorMap.name)
         plt.show()
         return figure
+
 
     @classmethod
     def GetColorMap(cls, colorMap):
