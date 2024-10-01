@@ -186,13 +186,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -233,13 +233,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -281,13 +281,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -321,13 +321,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -363,13 +363,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -379,6 +379,11 @@ class PlotMaker():
         # The colors are needed because each axes wants to use it's own color cycle resulting in duplication of
         # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.  This is
         # done by using the PlotHelper.NextColor() function.
+
+        # Allow for a simplification of only supplying a string when one column is ploted on an axes.
+        # This converts:
+        # ["Column 1", ["Column 2", "Column 3"], "Column 4"] -> [["Column 1"], ["Column 2", "Column 3"], ["Column 4"]]
+        axesesColumnNames = [element if type(element) is list else [element] for element in axesesColumnNames]
 
         # Convert the kwargs into individual series kwargs.
         seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(ListTools.GetLengthOfNestedObjects(axesesColumnNames), **kwargs)
