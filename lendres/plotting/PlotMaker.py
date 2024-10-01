@@ -28,11 +28,10 @@ class PlotMaker():
             Shows the plot, the figure can no longer be manipulated after this.  It can be saved as an image.
         Create*
             Makes the entire figure.  The figure is made and formatted, the data plotted, and the figure is finalized.
-
     """
     # Class level variables.
     # Color map to use for plots.
-    ColorMap      = None
+    ColorMap = None
 
 
     @classmethod
@@ -166,7 +165,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list|tuple, **kwargs):
         """
         Plots data on two axes with the same y-axis but different x-axis scales.
 
@@ -176,11 +175,12 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
@@ -223,11 +223,12 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of str
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
@@ -271,11 +272,12 @@ class PlotMaker():
             The data.
         yAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
@@ -311,11 +313,12 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
@@ -351,11 +354,12 @@ class PlotMaker():
             The data.
         independentColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         independentAxis : str
             Which axis is independent.
         **kwargs : keyword arguments
