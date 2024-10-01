@@ -19,7 +19,7 @@ class ConsoleHelper():
     VERBOSEALL          = 70
     VERBOSEDEBUG        = 80
 
-    markdownTitleLevel  =  3
+    MarkdownTitleLevel  =  3
 
 
     def __init__(self, verboseLevel=50, useMarkDown=False):
@@ -142,8 +142,6 @@ class ConsoleHelper():
             Title to dislay.
         verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
-        markdownTitleLevel : int, optional
-            If markdown is being used, this is the title Level to use, i.e., "#", "##", et cetera.
 
         Returns
         -------
@@ -154,7 +152,7 @@ class ConsoleHelper():
             if self.useMarkDown:
                 # Don't use spaces between the asterisks and message so it prints bold in markdown.
                 prefix = "#"
-                for i in range(ConsoleHelper.markdownTitleLevel):
+                for i in range(ConsoleHelper.MarkdownTitleLevel):
                     prefix += "#"
 
                 IPython.display.display(IPython.display.Markdown(prefix + " " + title))

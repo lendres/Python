@@ -5,6 +5,7 @@ Created on July 16, 2022
 The NLTK stop words must be downloaded before using this module.  See below to find
 a function for doing this.
 """
+import os
 import pandas                                                        as pd
 import unicodedata
 from   bs4                                                           import BeautifulSoup
@@ -32,7 +33,7 @@ class LanguageHelper():
 
 
     @classmethod
-    def DownloadStopWords():
+    def DownloadStopWords(cls):
         """
         Downloads or upgrades the NLTK stop words.
 
@@ -42,7 +43,7 @@ class LanguageHelper():
         """
         nltk.download("stopwords")
         # Alternate method.
-        #os.system("python -m spacy download en_core_web_sm")
+        os.system("python -m spacy download en_core_web_sm")
 
 
     @classmethod

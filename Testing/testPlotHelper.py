@@ -75,7 +75,7 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PushSettings(scale=2.0)
         self.CreateBasicPlot("Settings - Initial Format Settings")
 
-        settings = PlotHelper.GetSettings().Copy()
+        settings = PlotHelper.FormatSettings.Copy()
         settings.ParameterFile = "seaborn"
         PlotHelper.PushSettings(settings)
         self.CreateBasicPlot("Settings - Copied Format Settings")

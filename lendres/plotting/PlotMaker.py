@@ -32,7 +32,7 @@ class PlotMaker():
     """
     # Class level variables.
     # Color map to use for plots.
-    colorMap      = None
+    ColorMap      = None
 
 
     @classmethod
@@ -87,7 +87,7 @@ class PlotMaker():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend and yLabel is not None:
-            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.FormatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
             plt.show()
@@ -157,7 +157,7 @@ class PlotMaker():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend:
-            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.FormatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
             plt.show()
@@ -294,7 +294,7 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        return cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
 
     @classmethod
@@ -334,7 +334,7 @@ class PlotMaker():
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        return cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
 
     @classmethod
@@ -465,7 +465,7 @@ class PlotMaker():
         figure.set_figwidth(5.35+categorySizeAdjustment)
         figure.set_figheight(4+categorySizeAdjustment)
 
-        axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.formatSettings.Scale}, fmt="")
+        axes   = sns.heatmap(confusionMatrix, cmap=cls.ColorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.FormatSettings.Scale}, fmt="")
         AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:

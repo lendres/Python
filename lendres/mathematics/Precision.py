@@ -4,7 +4,7 @@ Created on August 12, 2022
 """
 
 class Precision():
-    epsilon = 1e-10;
+    Epsilon = 1e-10;
 
 
     @classmethod
@@ -26,7 +26,7 @@ class Precision():
             Returns True if the value is less than epsilon, False otherwise.
         """
         if epsilon is None:
-            epsilon = Precision.epsilon
+            epsilon = cls.Epsilon
 
         return abs(value) < epsilon
 
@@ -52,6 +52,6 @@ class Precision():
             Returns True if the difference of the values is less than epsilon, False otherwise.
         """
         if epsilon is None:
-            epsilon = Precision.epsilon
+            epsilon = cls.Epsilon
 
         return abs(value1 - value2) < epsilon

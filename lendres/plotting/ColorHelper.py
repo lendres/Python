@@ -18,6 +18,7 @@ from   lendres.plotting.PlotHelper                                        import
 
 class ColorHelper():
 
+
     @classmethod
     def PlotAllColors(cls, colorTable, label="names", saveImage=False):
         """
@@ -41,8 +42,8 @@ class ColorHelper():
         None.
         """
         # Constants.
-        COLUMNWIDTH     = 17.0 / 6
-        ROWHEIGHT       = 46.0 / 195
+        columnWidth     = 17.0 / 6
+        rowHeight       = 46.0 / 195
 
         # Reset Matplotlib in case a non-standard formatting specification is in use or Seaborn colors have been specified, et cetera.
         plt.rcParams.update(plt.rcParamsDefault)
@@ -95,7 +96,7 @@ class ColorHelper():
         numberOfColumns = 6
         numberOfRows    = int(np.ceil((numberOfColors+1) / numberOfColumns))
 
-        figure  = plt.figure(figsize=(numberOfColumns*COLUMNWIDTH, numberOfRows*ROWHEIGHT), dpi=200)
+        figure  = plt.figure(figsize=(numberOfColumns*columnWidth, numberOfRows*rowHeight), dpi=200)
         grid    = GridSpec(numberOfRows, numberOfColumns, hspace=1, wspace=2)
 
         counter = 0

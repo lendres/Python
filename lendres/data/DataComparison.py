@@ -196,26 +196,26 @@ class DataComparison():
 
     def CreateComparisonPlot(
             self,
-            columns:list,
-            title:str=None,
-            xLabel:str=None,
-            yLabel:str=None,
-            legendOptions:LegendOptions=LegendOptions(),
+            columns:       list,
+            title:         str           = None,
+            xLabel:        str           = None,
+            yLabel:        str           = None,
+            legendOptions: LegendOptions = LegendOptions(),
             **kwargs
         ):
-        figure, axes = self.NewComparisonPlot(columns, title, xLabel, yLabel, legendOptions, **kwargs)
-        LegendHelper.CreateLegendAtFigureBottom(figure, axes, offset=0.15*PlotHelper.GetSettings().Scale, legendOptions=legendOptions)
+        figure, axes = self.NewComparisonPlot(columns, title, xLabel, yLabel, **kwargs)
+        LegendHelper.CreateLegend(figure, axes, legendOptions=legendOptions)
         plt.show()
         return figure
 
 
     def NewComparisonPlot(
             self,
-            columns:list,
-            title:str=None,
-            xLabel:str=None,
-            yLabel:str|list=None,
-            labelSuffixes:str=None,
+            columns:       list,
+            title:         str        = None,
+            xLabel:        str        = None,
+            yLabel:        str | list = None,
+            labelSuffixes: str        = None,
             **kwargs
         ):
         """
@@ -310,7 +310,7 @@ class DataComparison():
         figure, axeses = PlotHelper.NewMultiYAxesFigure(len(axesesColumnNames))
 
         for dataSet in self.dataSets:
-            lines = PlotMaker.MultiAxesPlot(axeses, dataSet, self.independentColumn, axesesColumnNames, independentAxis="x", **kwargs)
+            lines = PlotMaker.PlotMultiYAxes(axeses, dataSet, self.independentColumn, axesesColumnNames, **kwargs)
             for line in lines:
                 line.set_label(dataSet.name + " " + line.get_label())
 
