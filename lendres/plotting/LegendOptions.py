@@ -7,6 +7,7 @@ class LegendOptions():
     A class that allows passing options for legend building.
     """
 
+
     def __init__(
             self,
             location:         str   = "outsidebottomleft",
@@ -36,49 +37,49 @@ class LegendOptions():
         -------
         None.
         """
-        self._offset                 = offset
-        self._location               = location
-        self._numberOfColumns        = numberOfColumns
-        self._lineWidth              = lineWidth
+        self.offset                 = offset
+        self.location               = location
+        self.numberOfColumns        = numberOfColumns
+        self.lineWidth              = lineWidth
 
 
     @property
     def Location(self):
-        return self._location
+        return self.location
 
 
     @Location.setter
     def Location(self, location:float):
-        self._location = location
+        self.location = location
 
 
     @property
     def Offset(self):
-        return self._offset
+        return self.offset
 
 
     @Offset.setter
     def Offset(self, offset:float):
-        self._offset = offset
+        self.offset = offset
 
 
     @property
     def NumberOfColumns(self):
-        return self._numberOfColumns
+        return self.numberOfColumns
 
 
     @NumberOfColumns.setter
     def NumberOfColumns(self, numberOfColumns:int):
         if numberOfColumns < 1 or numberOfColumns > 10:
             raise Exception("Invalid number of columns specified for the legend.")
-        self._numberOfColumns = numberOfColumns
+        self.numberOfColumns = numberOfColumns
 
 
     @property
     def LineWidth(self):
-        return self._lineWidth
+        return self.lineWidth
 
 
     @LineWidth.setter
     def LineWidth(self, lineWidth:float):
-        self._lineWidth = lineWidth
+        self.lineWidth = lineWidth

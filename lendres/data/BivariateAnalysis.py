@@ -140,7 +140,7 @@ class BivariateAnalysis():
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
-        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.formatSettings.Scale}, fmt=".2f")
+        axes = sns.heatmap(correlationValues, annot=True, annot_kws={"fontsize" : 10*PlotHelper.FormatSettings.Scale}, fmt=".2f")
         axes.set(title="Heat Map for Continuous Data")
 
         # Turn off the grid.
@@ -190,7 +190,7 @@ class BivariateAnalysis():
         # Save it so we can return it.  Once "show" is called, the figure is no longer accessible.
         figure = plt.gcf()
 
-        figure.suptitle("Pair Plot for Continuous Data", y=1.015*BivariateAnalysis.supFigureYAdjustment)
+        figure.suptitle("Pair Plot for Continuous Data", y=1.015*cls.supFigureYAdjustment)
 
         plt.show()
 
@@ -447,7 +447,7 @@ class BivariateAnalysis():
             title = "Distribution for " + "\""+ sortColumn + "\"" + " = " + str(uniqueSortValues[i])
             axeses[i].set(title=title, xlabel=independentColumn)
 
-        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*cls.supFigureYAdjustment)
 
         plt.tight_layout()
         plt.show()
@@ -496,7 +496,7 @@ class BivariateAnalysis():
         title = "Boxplot without Outliers"
         axeses[1].set(title=title, xlabel=sortColumn, ylabel=independentColumn)
 
-        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*BivariateAnalysis.supFigureYAdjustment)
+        figure.suptitle("\"" + independentColumn + "\"" + " Separated by " + "\"" + sortColumn + "\"", y=0.92*cls.supFigureYAdjustment)
 
         # Turn off the x-axis grid.
         axeses[0].grid(False, axis="x")

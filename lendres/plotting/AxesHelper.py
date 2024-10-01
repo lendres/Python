@@ -450,7 +450,7 @@ class AxesHelper():
     @classmethod
     def AddArrows(cls, axes, size=15, color="black", both=False):
         from   lendres.plotting.PlotHelper               import PlotHelper
-        scale = PlotHelper.formatSettings.Scale
+        scale = PlotHelper.FormatSettings.Scale
         axes.plot((1), (0), linestyle="", marker=">", markersize=size*scale, color=color, transform=axes.get_yaxis_transform(), clip_on=False)
         axes.plot((0), (1), linestyle="", marker="^", markersize=size*scale, color=color, transform=axes.get_xaxis_transform(), clip_on=False)
 
