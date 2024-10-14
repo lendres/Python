@@ -91,9 +91,9 @@ class FunctionGenerator():
         x, y   = cls.SineWave(magnitude, frequency, yOffset, slope, startTime, timeLength, steps)
 
         noise   = noiseScale*magnitude*np.random.randn(len(x))
-        yNoisey = y + noise
+        yNoisy = y + noise
 
-        return x, yNoisey, y, noise
+        return x, yNoisy, y, noise
 
 
     @classmethod
