@@ -93,7 +93,7 @@ class FunctionGenerator():
         noise   = noiseScale*magnitude*np.random.randn(len(x))
         yNoisy = y + noise
 
-        return x, yNoisey, y, noise
+        return x, yNoisy, y, noise
 
 
     @classmethod
