@@ -20,10 +20,10 @@ class TestFunctionGenerator(unittest.TestCase):
 
 
     def testNoisySineWave(self):
-        x, y, ySine, yNoise = FunctionGenerator.NoisySineWave()
+        x, y, ySine, yNoise = FunctionGenerator.NoisySineWave(noiseMagnitude=3.0)
         self.CreateSineWavePlot(x, y, "Noisy Sine Wave 1")
 
-        x, y, ySine, yNoise = FunctionGenerator.NoisySineWave(noiseScale=1)
+        x, y, ySine, yNoise = FunctionGenerator.NoisySineWave(noiseMagnitude=20.0)
         self.CreateSineWavePlot(x, y, "Noisy Sine Wave 2")
 
 
