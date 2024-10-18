@@ -90,8 +90,11 @@ class FunctionGenerator():
         """
         x, y   = cls.SineWave(magnitude, frequency, yOffset, slope, startTime, timeLength, steps)
 
-        noise   = noiseScale*magnitude*np.random.randn(len(x))
-        yNoisy = y + noise
+        # The height of a normal distribution curve is 1 / sqrt(2pi) / sigma.
+        # Assuming a standard deviation of 1 below.
+        randomNumberGenerator = np.random.default_rng()
+        noise                 = noiseMagnitude * randomNumberGenerator.random(len(x))
+        yNoisy                = y + noise
 
         return x, yNoisy, y, noise
 
