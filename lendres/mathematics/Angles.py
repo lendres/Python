@@ -8,7 +8,7 @@ class Angles():
 
 
     @classmethod
-    def AngleIn360Degrees(endPoint, startPoint=[0, 0], returnPositive=True):
+    def AngleIn360Degrees(cls, endPoint, startPoint=[0, 0], returnPositive=True):
         """
         Calculates the angle (0 to 360) a point or line is at.
 
@@ -36,7 +36,7 @@ class Angles():
 
 
     @classmethod
-    def DiscritizeArc(center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int):
+    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int):
         """
         Creates a discritized arc.  Useful for plotting of discritized calculations.
 
@@ -50,9 +50,9 @@ class Angles():
         radius : float
             Arc radius.
         startAngle : float
-            Arc start angle.
+            Arc start angle in degrees.
         endAngle : float
-            Arc end angle.
+            Arc end angle in degrees.
         numberOfPoints : int
             The number of points to generate along the arc.
 
