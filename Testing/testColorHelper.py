@@ -15,7 +15,8 @@ import unittest
 
 # More information at:
 # https://docs.python.org/3/library/unittest.html
-skipTests = 1
+skipTests  = 0
+saveImages = False
 
 class TestColorHleper(unittest.TestCase):
 
@@ -34,6 +35,7 @@ class TestColorHleper(unittest.TestCase):
 
 
     @unittest.skipIf(skipTests, "Time saving")
+    @unittest.skipIf(not saveImages, "Skip image saving")
     def testDisplayColorsWithImageSave(self):
         """
         Plots all the colors tables with names as labels and saves them to a file.
@@ -50,6 +52,7 @@ class TestColorHleper(unittest.TestCase):
 
 
     @unittest.skipIf(skipTests, "Time saving")
+    @unittest.skipIf(not saveImages, "Skip image saving")
     def testDisplayHexColorsWithImageSave(self):
         """
         Plots all the colors tables with hex values as labels and saves them to a file.
