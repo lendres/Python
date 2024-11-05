@@ -210,6 +210,31 @@ class PlotHelper():
 
 
     @classmethod
+    def __FindParameterFile(cls):
+        parameterFile = cls.FormatSettings.ParameterFile
+
+        # If the parameter file is one of the built in ones, we don't have to do anything.
+        if parameterFile in plt.style.available:
+            return parameterFile
+
+        # Add the file extension if it was not included.
+        if not parameterFile.endswith(".mplstyle"):
+            parameterFile += ".mplstyle"
+
+        # If we can locate the file, then we are done.
+        if os.path.exists(parameterFile):
+            return parameterFile
+
+        # Try the library's installation location.
+        location = os.path.join(Path.GetDirectory(__file__), parameterFile)
+        if os.path.exists(location):
+            return location
+
+        # Could not locate the file, so raise an exception.
+        raise Exception("Could not locate the parameter file \"{}\".".format(cls.FormatSettings.ParameterFile))
+
+
+    @classmethod
     def Format(cls):
         """
         Sets the font sizes, weights, and other properties of a plot.
@@ -224,17 +249,7 @@ class PlotHelper():
         """
         # If the file does not contain a directory, assume the same directory as this file.
         # If the file does not contain a file extension, assume a default.
-        parameterFile = cls.FormatSettings.ParameterFile
-
-        # If the parameter file is one of the built in ones, we don't have to do anything.
-        if not parameterFile in plt.style.available:
-            # If the full path is specificied, we are ok.
-            # If the full path is not specified, it is assumed the file was shipped with this library and we need to locate it.
-            if not Path.ContainsDirectory(parameterFile):
-                parameterFile = os.path.join(Path.GetDirectory(__file__), parameterFile)
-
-            if not parameterFile.endswith(".mplstyle"):
-                parameterFile += ".mplstyle"
+        parameterFile = cls.__FindParameterFile()
 
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
