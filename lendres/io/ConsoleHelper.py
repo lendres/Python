@@ -4,7 +4,6 @@ Created on December 4, 2021
 """
 import pandas                                                   as pd
 import IPython
-import os
 import sys
 
 class ConsoleHelper():
@@ -20,7 +19,7 @@ class ConsoleHelper():
     VERBOSEALL          = 70
     VERBOSEDEBUG        = 80
 
-    markdownTitleLevel  =  3
+    MarkdownTitleLevel  =  3
 
 
     def __init__(self, verboseLevel=50, useMarkDown=False):
@@ -46,15 +45,9 @@ class ConsoleHelper():
 
 
     @classmethod
-    def SetUpClass(cls):
-        # Automatically clear the console when this file is imported.
-        cls.ClearSpyderConsole()
-
-
-    @classmethod
-    def ClearSpyderConsole(cls):
+    def ClearIPythonConsole(cls):
         """
-        Clears the consule on the Spyder IDE.
+        Clears the console when IPython is used.
 
         Parameters
         ----------
@@ -64,12 +57,33 @@ class ConsoleHelper():
         -------
         None.
         """
-        if any('SPYDER' in name for name in os.environ):
-            try:
-                IPython.get_ipython().magic('clear')
-                IPython.get_ipython().magic('reset -f')
-            except:
-                pass
+        try:
+            iPython = IPython.get_ipython()
+            if iPython is not None:
+                iPython.run_line_magic("clear", "")
+        except:
+            pass
+
+
+    @classmethod
+    def ClearIPythonVariables(cls):
+        """
+        Clears the varialbes when IPython is used.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        try:
+            iPython = IPython.get_ipython()
+            if iPython is not None:
+                iPython.get_ipython().run_line_magic("reset", "-sf")
+        except:
+            pass
 
 
     def ConvertPrintLevel(cls, verboseLevel):
@@ -128,8 +142,6 @@ class ConsoleHelper():
             Title to dislay.
         verboseLevel : int, optional
             Level that the message is printed at.  Default is None, which is treated as VERBOSEALL.
-        markdownTitleLevel : int, optional
-            If markdown is being used, this is the title Level to use, i.e., "#", "##", et cetera.
 
         Returns
         -------
@@ -140,7 +152,7 @@ class ConsoleHelper():
             if self.useMarkDown:
                 # Don't use spaces between the asterisks and message so it prints bold in markdown.
                 prefix = "#"
-                for i in range(ConsoleHelper.markdownTitleLevel):
+                for i in range(ConsoleHelper.MarkdownTitleLevel):
                     prefix += "#"
 
                 IPython.display.display(IPython.display.Markdown(prefix + " " + title))
@@ -522,7 +534,3 @@ class ConsoleHelper():
         else:
             self.PrintBoldMessage("The null hypothesis CAN NOT be rejected.")
             print(nullHypothesis)
-
-
-# Setup the class when this file is loaded.
-ConsoleHelper.SetUpClass()

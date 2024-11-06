@@ -71,15 +71,20 @@ class TestPlotMaker(unittest.TestCase):
         self.PlotMultiAxes("No Key Word Arguments")
 
 
-    def testKWArgsForMultiAxesPlot(self):
+    def testKeywordArgsForMultiAxesPlot(self):
         self.PlotMultiAxes("Key Word Argument as Int", linewidth=5.0)
         self.PlotMultiAxes("Key Word Argument as List", linewidth=[5.5, 3.5, 1.5, 7.5])
         self.PlotMultiAxes("Mixed Key Word Arguments", linewidth=[5.5, 3.5, 1.5, 7.5], linestyle="dashed")
 
 
-    def PlotMultiAxes(self, titleSuffix, **kwargs):
+    def testBracketsOnColumnNames(self):
+        self.PlotMultiAxes("Mixed Brackets", columns=["Sine A1", ["Sine B1", "Sine B2"]])
+        self.PlotMultiAxes("No Brackets", columns=["Sine A1", "Sine B1"])
+
+
+    def PlotMultiAxes(self, titleSuffix, columns=[["Sine A1", "Sine A2"], ["Sine B1", "Sine B2"]], **kwargs):
         PlotHelper.Format()
-        figure, axeses = PlotMaker.NewMultiYAxesPlot(self.sinesDataFrame, "x", [["Sine A1", "Sine A2"], ["Sine B1", "Sine B2"]], **kwargs)
+        figure, axeses = PlotMaker.NewMultiYAxesPlot(self.sinesDataFrame, "x", columns, **kwargs)
         AxesHelper.Label(axeses, title="Multiple Y Axis Plot\n"+titleSuffix, xLabels="Time", yLabels=["Left (A)", "Right (B)"])
         figure.legend(loc="upper left", bbox_to_anchor=(0, -0.15), ncol=2, bbox_transform=axeses[0].transAxes)
         plt.show()

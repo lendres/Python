@@ -3,6 +3,7 @@ Created on January 21, 2024
 @author: Lance A. Endres
 """
 import os
+import re
 
 
 class Path():
@@ -116,7 +117,7 @@ class Path():
 
         Parameters
         ----------
-        directory : string
+        directory : str
             The path (directory) to get the sub directories from.
 
         Returns
@@ -125,3 +126,37 @@ class Path():
             A list of directories that are subdirectories of the input path.
         """
         return [x.path for x in filter(lambda x : x.is_dir(), os.scandir(directory))]
+
+
+    @classmethod
+    def GetMatchingDirectories(cls, basePath, pattern):
+        """
+        Get all directories in the specified basePath whose names match the given pattern.
+
+        Parameters
+        ----------
+        basePath : str
+            The path to the subdirectory to search within.
+        pattern : str
+            The pattern to match directory names against.
+
+        Returns
+        -------
+        matchingDirs : list
+            A list of directory paths that match the pattern.
+        """
+        # Ensure the basePath is a directory.
+        if not os.path.isdir(basePath):
+            raise ValueError(f"The path {basePath} is not a directory or does not exist.")
+
+        matchingDirs = []
+        pattern = re.compile(pattern)
+
+        # Iterate over items in the base directory.
+        for item in os.listdir(basePath):
+            itemPath = os.path.join(basePath, item)
+            # Check if it's a directory and matches the pattern.
+            if os.path.isdir(itemPath) and pattern.match(item):
+                matchingDirs.append(itemPath)
+
+        return matchingDirs

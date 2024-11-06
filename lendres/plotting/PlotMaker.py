@@ -28,11 +28,10 @@ class PlotMaker():
             Shows the plot, the figure can no longer be manipulated after this.  It can be saved as an image.
         Create*
             Makes the entire figure.  The figure is made and formatted, the data plotted, and the figure is finalized.
-
     """
     # Class level variables.
     # Color map to use for plots.
-    colorMap      = None
+    ColorMap = None
 
 
     @classmethod
@@ -87,7 +86,7 @@ class PlotMaker():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend and yLabel is not None:
-            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.FormatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
             plt.show()
@@ -157,7 +156,7 @@ class PlotMaker():
         AxesHelper.Label(axes, title=title, xLabels=xLabel, yLabels=yLabel)
 
         if showLegend:
-            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.formatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
+            figure.legend(loc="upper left", bbox_to_anchor=(0, -0.12*PlotHelper.FormatSettings.Scale), ncol=2, bbox_transform=axes.transAxes)
 
         if show:
             plt.show()
@@ -166,7 +165,7 @@ class PlotMaker():
 
 
     @classmethod
-    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list, **kwargs):
+    def NewMultiXAxesPlot(cls, data:pd.DataFrame, yAxisColumnName:str, axesesColumnNames:list|tuple, **kwargs):
         """
         Plots data on two axes with the same y-axis but different x-axis scales.
 
@@ -176,23 +175,24 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -223,23 +223,24 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of str
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -271,30 +272,31 @@ class PlotMaker():
             The data.
         yAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
+        return cls._PlotMultiAxes(axeses, data, yAxisColumnName, axesesColumnNames, "y", **kwargs)
 
 
     @classmethod
@@ -311,30 +313,31 @@ class PlotMaker():
             The data.
         xAxisColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         **kwargs : keyword arguments
             These arguments are passed to the plot function.  Each keyword argument can be a single value or a list.  If it is
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
         lines2d : list of Line2D
             The plotted line objects.
         """
-        cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
+        return cls._PlotMultiAxes(axeses, data, xAxisColumnName, axesesColumnNames, "x", **kwargs)
 
 
     @classmethod
@@ -351,11 +354,12 @@ class PlotMaker():
             The data.
         independentColumnName : string
             Independent variable column in the data.
-        axesesColumnNames : array like of array like of strings
+        axesesColumnNames : array like of strings or array likes
             Column names of the data to plot.  The array contains one set (array) of strings for the data to plot on
             each axes.  Example: [[column1, column2], [column3], [column 4, column5]] creates a three axes plot with
             column1 and column2 plotted on the left axes, column3 plotted on the first right axes, and column4 and column5
-            plotted on the second right axes.
+            plotted on the second right axes.  If only one item is plotted on the axes, then a single string can be used instead
+            of a list.  For example, [column1, [column2, column3]].
         independentAxis : str
             Which axis is independent.
         **kwargs : keyword arguments
@@ -363,13 +367,13 @@ class PlotMaker():
             a single value, the same value is used for every call to plat.  If it is a list, the values are passed in order to
             each series as it is plotted.
             Example 1:
-                axesesColumnNames=['Column 1', 'Column 2'], linewidth=4
+                axesesColumnNames=["Column 1", "Column 2"], linewidth=4
             Result
-                The data in 'Column 1' and 'Column 2' are potted with a 'linewidth' of 4.
+                The data in "Column 1" and "Column 2" are potted with a linewidth of 4.
             Example 2:
-                axesesColumnNames=['Column 1', ['Column 2', 'Column 3'], 'Column 4'], linewidth=[1, 2, 3, 4]
+                axesesColumnNames=["Column 1", ["Column 2", "Column 3"], "Column 4"], linewidth=[1, 2, 3, 4]
             Result
-                The data in 'Column 1', 'Column 2', 'Column 3', and 'Column 4' are potted with a 'linewidth's of 1. 2. 3. and 4, respectively.
+                The data in "Column 1", "Column 2", "Column 3", and "Column 4" are potted with a linewidths of 1. 2. 3. and 4, respectively.
 
         Returns
         -------
@@ -379,6 +383,11 @@ class PlotMaker():
         # The colors are needed because each axes wants to use it's own color cycle resulting in duplication of
         # colors on the two axes.  Therefore, we have to manually specify the colors so they don't repeat.  This is
         # done by using the PlotHelper.NextColor() function.
+
+        # Allow for a simplification of only supplying a string when one column is ploted on an axes.
+        # This converts:
+        # ["Column 1", ["Column 2", "Column 3"], "Column 4"] -> [["Column 1"], ["Column 2", "Column 3"], ["Column 4"]]
+        axesesColumnNames = [element if type(element) is list else [element] for element in axesesColumnNames]
 
         # Convert the kwargs into individual series kwargs.
         seriesKeyWordArgs = PlotHelper.ConvertKeyWordArgumentsToSeriesSets(ListTools.GetLengthOfNestedObjects(axesesColumnNames), **kwargs)
@@ -460,7 +469,7 @@ class PlotMaker():
         figure.set_figwidth(5.35+categorySizeAdjustment)
         figure.set_figheight(4+categorySizeAdjustment)
 
-        axes   = sns.heatmap(confusionMatrix, cmap=PlotMaker.colorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.formatSettings.Scale}, fmt="")
+        axes   = sns.heatmap(confusionMatrix, cmap=cls.ColorMap, annot=labels, annot_kws={"fontsize" : 12*PlotHelper.FormatSettings.Scale}, fmt="")
         AxesHelper.Label(axes, title=title, xLabels="Predicted", yLabels="Actual", titleSuffix=titleSuffix)
 
         if axesLabels is not None:

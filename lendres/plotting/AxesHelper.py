@@ -77,7 +77,7 @@ class AxesHelper():
 
 
     @classmethod
-    def RotateXLabels(cls, xLabelRotation):
+    def RotateXLabels(cls, xLabelRotation, axes=None):
         """
         Rotate the x-axis labels.
 
@@ -85,14 +85,23 @@ class AxesHelper():
         ----------
         xLabelRotation : float
             Rotation of x labels.  If none is passed, nothing is done.
+          axes : matplotlib.axes.Axes, optional
+              The axes to change the x-axis label rotation.  If None, the current axes is used.
 
         Returns
         -------
         None.
         """
+        savedCurrentAxes = plt.gca()
+
+        if axes is not None:
+            plt.sca(axes)
+
         # Option to rotate the x axis labels.
         if xLabelRotation is not None:
             plt.xticks(rotation=xLabelRotation, ha="right")
+
+        plt.sca(savedCurrentAxes)
 
 
     @classmethod
@@ -441,7 +450,7 @@ class AxesHelper():
     @classmethod
     def AddArrows(cls, axes, size=15, color="black", both=False):
         from   lendres.plotting.PlotHelper               import PlotHelper
-        scale = PlotHelper.formatSettings.Scale
+        scale = PlotHelper.FormatSettings.Scale
         axes.plot((1), (0), linestyle="", marker=">", markersize=size*scale, color=color, transform=axes.get_yaxis_transform(), clip_on=False)
         axes.plot((0), (1), linestyle="", marker="^", markersize=size*scale, color=color, transform=axes.get_xaxis_transform(), clip_on=False)
 

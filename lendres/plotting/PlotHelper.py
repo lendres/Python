@@ -8,8 +8,6 @@ import matplotlib.pyplot                                             as plt
 import matplotlib.figure                                             as fig
 import matplotlib.axes                                               as ax
 from   matplotlib.collections                                        import LineCollection
-from   matplotlib.colors                                             import ListedColormap
-from   matplotlib.colors                                             import BoundaryNorm
 import math
 
 #import seaborn                                                       as sns
@@ -22,7 +20,8 @@ from   PIL                                                           import Imag
 from   PIL                                                           import ImageChops
 from   PIL                                                           import ImageColor
 
-from   lendres.plotting.FormatSettings                               import FormatSettings
+# It seems you cannot initialize a class variable (FormatSettings) with a class of the same name so we need to import this as another name.
+from   lendres.plotting.FormatSettings                               import FormatSettings as FormatSettingsClass
 from   lendres.plotting.AxesHelper                                   import AxesHelper
 from   lendres.path.Path                                             import Path
 
@@ -37,36 +36,21 @@ class PlotHelper():
 
     See also FormatSettings.
     """
-
-
     # Class level variables.
 
     # Default location of saved files is a subfolder of the current working directory.
-    defaultOutputDirectory      = "./Output/"
+    DefaultOutputDirectory      = "./Output/"
 
     #If true, the image is saved to a subfolder or the current folder called "Output."  If false, the path is assumed to be part
     # of "saveFileName."  If false and no path is part of "saveFileName" the current directory is used.
-    usedefaultOutputDirectory   = True
+    UseDefaultOutputDirectory   = True
 
     # Format settings.
-    formatSettings              = FormatSettings()
-    defaultFormatSettings       = FormatSettings()
+    FormatSettings              = FormatSettingsClass()
+    defaultFormatSettings       = FormatSettingsClass()
     storedFormatSettings        = None
 
     currentColor                = 0
-
-
-    @classmethod
-    def GetSettings(cls) -> FormatSettings:
-        """
-        Gets the current FormatSettings.
-
-        Returns
-        -------
-        : FormatSettings
-            The current format settings.
-        """
-        return cls.formatSettings
 
 
     @classmethod
@@ -78,7 +62,7 @@ class PlotHelper():
         -------
         None.
         """
-        cls.SetSettings(FormatSettings())
+        cls.SetSettings(FormatSettingsClass())
 
 
     @classmethod
@@ -105,15 +89,15 @@ class PlotHelper():
         """
         # If formatSettings is None, create a new instance.
         if formatSettings is None:
-            formatSettings = FormatSettings(**kwargs)
+            formatSettings = FormatSettingsClass(**kwargs)
 
-        cls.formatSettings        = formatSettings
+        cls.FormatSettings         = formatSettings
         cls.defaultFormatSettings = formatSettings
         cls.storedFormatSettings  = None
 
 
     @classmethod
-    def PushSettings(cls, formatSettings:FormatSettings|str="current", **kwargs):
+    def PushSettings(cls, formatSettings:FormatSettingsClass|str="current", **kwargs):
         """
         Sets the format settings (temporarily).  It is necessary to supply either an instance of FormatSettings or
         at least one keyword argument that is passed to FormatSettings.  The original settings are restored by
@@ -144,10 +128,10 @@ class PlotHelper():
         match formatSettings:
             case "current":
                 # Create a new instance by copying the existing settings.
-                formatSettings = cls.formatSettings.Copy().Update(**kwargs)
+                formatSettings = cls.FormatSettings.Copy().Update(**kwargs)
             case "default":
                 formatSettings = cls.defaultFormatSettings.Copy().Update(**kwargs)
-            case FormatSettings():
+            case FormatSettingsClass():
                 formatSettings = formatSettings.Copy().Update(**kwargs)
             case _:
                 raise Exception("Invalid 'formatSettings' parameter provided to 'PushSettings'.")
@@ -156,8 +140,8 @@ class PlotHelper():
         if cls.storedFormatSettings is not None:
             cls.PopSettings()
 
-        cls.storedFormatSettings = cls.formatSettings
-        cls.formatSettings       = formatSettings
+        cls.storedFormatSettings = cls.FormatSettings
+        cls.FormatSettings        = formatSettings
 
 
     @classmethod
@@ -172,8 +156,8 @@ class PlotHelper():
         if cls.storedFormatSettings is None:
             raise Exception("Invalid call to PopSettings.  Settings must first be pushed before popping.")
 
-        cls.formatSettings       = cls.storedFormatSettings
-        cls.storedFormatSettings = None
+        cls.FormatSettings        = cls.storedFormatSettings
+        cls.storedFormatSettings  = None
 
 
     @classmethod
@@ -222,7 +206,32 @@ class PlotHelper():
         : float
             Scaled annotation size.
         """
-        return cls.formatSettings.Scale*cls.formatSettings.AnnotationSize
+        return cls.FormatSettings.Scale*cls.FormatSettings.AnnotationSize
+
+
+    @classmethod
+    def __FindParameterFile(cls):
+        parameterFile = cls.FormatSettings.ParameterFile
+
+        # If the parameter file is one of the built in ones, we don't have to do anything.
+        if parameterFile in plt.style.available:
+            return parameterFile
+
+        # Add the file extension if it was not included.
+        if not parameterFile.endswith(".mplstyle"):
+            parameterFile += ".mplstyle"
+
+        # If we can locate the file, then we are done.
+        if os.path.exists(parameterFile):
+            return parameterFile
+
+        # Try the library's installation location.
+        location = os.path.join(Path.GetDirectory(__file__), parameterFile)
+        if os.path.exists(location):
+            return location
+
+        # Could not locate the file, so raise an exception.
+        raise Exception("Could not locate the parameter file \"{}\".".format(cls.FormatSettings.ParameterFile))
 
 
     @classmethod
@@ -240,17 +249,7 @@ class PlotHelper():
         """
         # If the file does not contain a directory, assume the same directory as this file.
         # If the file does not contain a file extension, assume a default.
-        parameterFile = cls.formatSettings.ParameterFile
-
-        # If the parameter file is one of the built in ones, we don't have to do anything.
-        if not parameterFile in plt.style.available:
-            # If the full path is specificied, we are ok.
-            # If the full path is not specified, it is assumed the file was shipped with this library and we need to locate it.
-            if not Path.ContainsDirectory(parameterFile):
-                parameterFile = os.path.join(Path.GetDirectory(__file__), parameterFile)
-
-            if not parameterFile.endswith(".mplstyle"):
-                parameterFile += ".mplstyle"
+        parameterFile = cls.__FindParameterFile()
 
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
@@ -261,8 +260,8 @@ class PlotHelper():
         plt.style.use(parameterFile)
 
         # Apply override, if they exist.
-        if cls.formatSettings.Overrides is not None:
-            plt.rcParams.update(cls.formatSettings.Overrides)
+        if cls.FormatSettings.Overrides is not None:
+            plt.rcParams.update(cls.FormatSettings.Overrides)
 
         # Apply scaling.
         parameters = {
@@ -274,11 +273,11 @@ class PlotHelper():
             "axes.labelsize"         : cls._ScaleFontSize(plt.rcParams["axes.labelsize"]),
             "xtick.labelsize"        : cls._ScaleFontSize(plt.rcParams["xtick.labelsize"]),
             "ytick.labelsize"        : cls._ScaleFontSize(plt.rcParams["ytick.labelsize"]),
-            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.formatSettings.Scale,                   # Axis border.
-            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.formatSettings.Scale,                  # Legend border.
-            "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.formatSettings.Scale,
-            "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.formatSettings.Scale,
-            "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.formatSettings.Scale,
+            "axes.linewidth"         : plt.rcParams["axes.linewidth"]*cls.FormatSettings.Scale,                   # Axis border.
+            "patch.linewidth"        : plt.rcParams["patch.linewidth"]*cls.FormatSettings.Scale,                  # Legend border.
+            "lines.linewidth"        : plt.rcParams["lines.linewidth"]*cls.FormatSettings.Scale,
+            "lines.markersize"       : plt.rcParams["lines.markersize"]*cls.FormatSettings.Scale,
+            "axes.labelpad"          : plt.rcParams["axes.labelpad"]*cls.FormatSettings.Scale,
         }
         plt.rcParams.update(parameters)
 
@@ -320,7 +319,7 @@ class PlotHelper():
         if type(size) is str:
             size = cls.ConvertFontRelativeSizeToPoints(size)
 
-        return size*cls.formatSettings.Scale
+        return size*cls.FormatSettings.Scale
 
 
     @classmethod
@@ -469,7 +468,7 @@ class PlotHelper():
             s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
             m      = 4/3.0*(s1-s2)          # Slope.
             y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
-            offset = m * cls.formatSettings.Scale + y0
+            offset = m * cls.FormatSettings.Scale + y0
             axeses[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.
@@ -618,8 +617,8 @@ class PlotHelper():
         axes    = plt.gca()
 
         # Zero lines.
-        axes.axhline(y=0, color="black", linewidth=3.6*cls.formatSettings.Scale)
-        axes.axvline(x=0, color="black", linewidth=3.6*cls.formatSettings.Scale)
+        axes.axhline(y=0, color="black", linewidth=3.6*cls.FormatSettings.Scale)
+        axes.axvline(x=0, color="black", linewidth=3.6*cls.FormatSettings.Scale)
         AxesHelper.AddArrows(axes, color="black")
 
         # Erase axis numbers (labels).
@@ -644,7 +643,17 @@ class PlotHelper():
 
 
     @classmethod
-    def PlotGradientColorLine(cls, x, y, z=None, axes:matplotlib.axes.Axes=None, cmap=plt.get_cmap("copper"), norm=plt.Normalize(0.0, 1.0), linewidth=3, alpha=1.0):
+    def PlotGradientColorLine(
+            cls,
+            x,
+            y,
+            z=None,
+            axes:       matplotlib.axes.Axes        = None,
+            colorMap:   matplotlib.colors.Colormap  = plt.get_cmap("copper"),
+            norm:       matplotlib.colors.Normalize = plt.Normalize(0.0, 1.0),
+            linewidth:  int                         = 3,
+            alpha:      float                       = 1.0
+        ):
         """
         Plot a colored line with coordinates x and y
         Optionally specify colors in the array z
@@ -663,7 +672,7 @@ class PlotHelper():
         z = np.asarray(z)
 
         segments       = cls._MakeLineCollectionSegments(x, y)
-        lineCollection = LineCollection(segments, array=z, cmap=cmap, norm=None, linewidth=linewidth, alpha=alpha)
+        lineCollection = LineCollection(segments, array=z, cmap=colorMap, norm=None, linewidth=linewidth, alpha=alpha)
 
         if axes is None:
             axes = plt.gca()
@@ -699,7 +708,7 @@ class PlotHelper():
             raise Exception("The number format specified is not valid.\nRequested format: "+numberFormat)
 
         if lineColorCycle is None:
-            lineColorCycle = cls.formatSettings.LineColorCycle
+            lineColorCycle = cls.FormatSettings.LineColorCycle
 
         if lineColorCycle == "pyplot":
             prop_cycle = plt.rcParams['axes.prop_cycle']
@@ -829,7 +838,7 @@ class PlotHelper():
         : string
             The default saving location for figures.
         """
-        return os.path.join(os.getcwd(), cls.defaultOutputDirectory)
+        return os.path.join(os.getcwd(), cls.DefaultOutputDirectory)
 
 
     @classmethod
@@ -845,8 +854,8 @@ class PlotHelper():
         -------
         None.
         """
-        if os.path.isdir(cls.defaultOutputDirectory):
-            shutil.rmtree(cls.defaultOutputDirectory)
+        if os.path.isdir(cls.DefaultOutputDirectory):
+            shutil.rmtree(cls.DefaultOutputDirectory)
 
 
     @classmethod
@@ -876,14 +885,14 @@ class PlotHelper():
 
         # If the default ouptput folder is specified, we need to make sure it exists and update
         # the save path to account for it.
-        if cls.usedefaultOutputDirectory:
+        if cls.UseDefaultOutputDirectory:
 
             # Directory needs to exist.
-            if not os.path.isdir(cls.defaultOutputDirectory):
-                os.mkdir(cls.defaultOutputDirectory)
+            if not os.path.isdir(cls.DefaultOutputDirectory):
+                os.mkdir(cls.DefaultOutputDirectory)
 
             # Update path.
-            path = os.path.join(cls.defaultOutputDirectory, saveFileName)
+            path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
         # And, finally, get down to the work.
         figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")

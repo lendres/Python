@@ -2,6 +2,7 @@
 Created on July 20, 2023
 @author: Lance A. Endres
 """
+import math
 import pandas                                    as pd
 import numpy                                     as np
 
@@ -54,14 +55,14 @@ class FunctionGenerator():
 
 
     @classmethod
-    def NoisySineWave(cls, noiseScale:float=0.1, magnitude:float=10, frequency:float=4, yOffset:float=0, slope:float=0, startTime:float=0, timeLength:float=4, steps:int=1000):
+    def NoisySineWave(cls, noiseMagnitude:float=1.0, magnitude:float=10, frequency:float=4, yOffset:float=0, slope:float=0, startTime:float=0, timeLength:float=4, steps:int=1000):
         """
         Creates a sine wave that has noise added to it.
 
         Parameters
         ----------
-        noiseScale : float, optional
-            The amount of noise to add.  It is a scale relative to the magnitude. The default is 0.1.
+        noiseMagnitude : float, optional
+            The magnitude of the noise to add.  The default is 1.0.
          magnitude : float, optional
             Magnitude of the sine wave. The default is 10.
         frequency : float, optional
@@ -90,21 +91,24 @@ class FunctionGenerator():
         """
         x, y   = cls.SineWave(magnitude, frequency, yOffset, slope, startTime, timeLength, steps)
 
-        noise   = noiseScale*magnitude*np.random.randn(len(x))
-        yNoisey = y + noise
+        # The height of a normal distribution curve is 1 / sqrt(2pi) / sigma.
+        # Assuming a standard deviation of 1 below.
+        randomNumberGenerator = np.random.default_rng()
+        noise                 = noiseMagnitude * randomNumberGenerator.random(len(x))
+        yNoisy                = y + noise
 
-        return x, yNoisey, y, noise
+        return x, yNoisy, y, noise
 
 
     @classmethod
-    def NoisySineWaveAsDataFrame(cls, noiseScale:float=0.1, magnitude:float=10, frequency:float=4, yOffset:float=0, slope:float=0, startTime:float=0, timeLength:float=4, steps:int=1000):
+    def NoisySineWaveAsDataFrame(cls, noiseMagnitude:float=1.0, magnitude:float=10, frequency:float=4, yOffset:float=0, slope:float=0, startTime:float=0, timeLength:float=4, steps:int=1000):
         """
         Creates a sine wave that has noise added to it.
 
         Parameters
         ----------
-        noiseScale : float, optional
-            The amount of noise to add.  It is a scale relative to the magnitude. The default is 0.1.
+        noiseMagnitude : float, optional
+            The magnitude of the noise to add.  The default is 1.0.
          magnitude : float, optional
             Magnitude of the sine wave. The default is 10.
         frequency : float, optional
@@ -126,7 +130,7 @@ class FunctionGenerator():
             A DataFrame the contains the x and y values of the noisey sine wave, and the decomposed components of the noisy sine wave.  Those are the orginal sine
             wave (no noise) and the noise.
         """
-        x, yNoisey, y, noise = cls.NoisySineWave(noiseScale, magnitude, frequency, yOffset, slope, startTime, timeLength, steps)
+        x, yNoisey, y, noise = cls.NoisySineWave(noiseMagnitude, magnitude, frequency, yOffset, slope, startTime, timeLength, steps)
         return pd.DataFrame({"x" : x, "y" : yNoisey, "y original" : y, "noise" : noise})
 
 

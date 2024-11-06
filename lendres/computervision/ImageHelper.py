@@ -11,7 +11,7 @@ from   lendres.plotting.PlotHelper                                   import Plot
 
 
 class ImageHelper():
-    arrayImageSize = 2.5
+    _arrayImageSize = 2.5
 
 
     @classmethod
@@ -103,13 +103,13 @@ class ImageHelper():
         """
         # Calculate required values.
         numberOfImages = len(images)
-        rows           = math.ceil(numberOfImages / columns)
+        rows           = math.ceil(numberOfImages/columns)
 
         # Defining the figure size.  Automatically adjust for the number of images to be displayed.
         PlotHelper.Format()
         figure = plt.figure()
-        figure.set_figwidth(columns*ImageHelper.arrayImageSize+2)
-        figure.set_figheight(rows*ImageHelper.arrayImageSize+2)
+        figure.set_figwidth(columns*cls._arrayImageSize+2)
+        figure.set_figheight(rows*cls._arrayImageSize+2)
 
         # Position in the index array/range.
         k = -1

@@ -67,7 +67,7 @@ class TestDataComparison(unittest.TestCase):
         self.dataComparison.CreateComparisonPlot("Displacement (revs)", xLabel="Time (s)", yLabel="Displacement (revolutions)")
 
         # Test supplying keyword arguments labels.
-        legendOptions = LegendOptions(numberOfColumns=2, changeLineWidths=True, lineWidth=2.0)
+        legendOptions = LegendOptions(numberOfColumns=2, lineWidth=2.0)
         self.dataComparison.CreateComparisonPlot("w_bit", xLabel="Time (s)", yLabel="Displacement (revolutions)", legendOptions=legendOptions, color=["blue", "red"])
 
         # Test supplying multiple columns.

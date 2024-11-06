@@ -6,12 +6,12 @@ from   lendres.io.ConsoleHelper                                      import Cons
 
 
 class IOSingleton(object):
-    consoleHelper = None
+    ConsoleHelper = None
 
     def __new__(cls):
         if not hasattr(cls, "instance"):
             cls.instance = super(IOSingleton, cls).__new__(cls)
-            cls.consoleHelper = ConsoleHelper()
+            cls.ConsoleHelper = ConsoleHelper()
         return cls.instance
 
 

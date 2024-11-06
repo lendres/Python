@@ -4,7 +4,7 @@ Created on August 12, 2022
 """
 
 class Precision():
-    epsilon = 1e-10;
+    Epsilon = 1e-10;
 
 
     @classmethod
@@ -26,7 +26,7 @@ class Precision():
             Returns True if the value is less than epsilon, False otherwise.
         """
         if epsilon is None:
-            epsilon = Precision.epsilon
+            epsilon = cls.Epsilon
 
         return abs(value) < epsilon
 
@@ -52,6 +52,32 @@ class Precision():
             Returns True if the difference of the values is less than epsilon, False otherwise.
         """
         if epsilon is None:
-            epsilon = Precision.epsilon
+            epsilon = cls.Epsilon
 
         return abs(value1 - value2) < epsilon
+
+
+    @classmethod
+    def NotEqual(cls, value1:float, value2:float, epsilon:float=None):
+        """
+        Finite precision arthimetic check for unequality.  The numbers are considered equal if their difference is
+        greater than the specifiied perceision value (epsilon).
+
+        Parameters
+        ----------
+        value1 : float
+            The first value.
+        value2 : float
+            The second value.
+        epsilon : float, optional
+            The epsilon value to use.  If None is specified, the value from the class will be used. The default is None.
+
+        Returns
+        -------
+        bool
+            Returns True if the difference of the values is less than epsilon, False otherwise.
+        """
+        if epsilon is None:
+            epsilon = cls.Epsilon
+
+        return abs(value1 - value2) > epsilon

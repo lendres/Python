@@ -75,13 +75,27 @@ class TestPlotHelper(unittest.TestCase):
         PlotHelper.PushSettings(scale=2.0)
         self.CreateBasicPlot("Settings - Initial Format Settings")
 
-        settings = PlotHelper.GetSettings().Copy()
+        settings = PlotHelper.FormatSettings.Copy()
         settings.ParameterFile = "seaborn"
         PlotHelper.PushSettings(settings)
         self.CreateBasicPlot("Settings - Copied Format Settings")
 
         PlotHelper.PopSettings()
         self.CreateBasicPlot("Settings - Popped Format Settings")
+
+
+    def testExceptionForStyleFile(self):
+        # Test the exception.
+        PlotHelper.PushSettings(parameterFile="invalid")
+        self.assertRaises(Exception, self.CreateBasicPlot, "Test Exception")
+        PlotHelper.PopSettings()
+
+
+    def testFindInCurrentDirectory(self):
+        # Test finding in the current directory.  Formatting should be a little different.
+        PlotHelper.PushSettings(parameterFile="test")
+        self.CreateBasicPlot("Test.mplstyle")
+        PlotHelper.PopSettings()
 
 
     # @unittest.skip
