@@ -4,6 +4,7 @@ Created on December 4, 2021
 """
 import numpy                                                         as np
 import matplotlib.pyplot                                             as plt
+from   matplotlib.axes                                               import Axes
 
 
 class AxesHelper():
@@ -104,8 +105,9 @@ class AxesHelper():
         plt.sca(savedCurrentAxes)
 
 
+    # Mark for deletion.  This no longer seems to be needed since to approach to axes stacking changed.
     @classmethod
-    def SetZOrderOfMultipleAxesFigure(cls, axes):
+    def SetZOrderOfMultipleAxesFigure(cls, axes:Axes):
         """
         Puts the left hand axes of a multiple y-axis plot on top of the z-order.
 
@@ -144,6 +146,75 @@ class AxesHelper():
 
         # Make the front axes transparent (or whatever the last one was before).
         axes[0].patch.set_alpha(alphaSave)
+
+
+    @classmethod
+    def SetMultipleXAxisPostions(cls, axeses:list[Axes]):
+        """
+        Sets the first Axes to have the x-axis labels and ticks at the top and offset each consecutive axis above it.
+
+        Parameters
+        ----------
+        axeses : list[Axes]
+            List of Matplotlib Axes.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfAxes = len(axeses)
+
+        for i in range(1, numberOfAxes):
+            # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
+            # axeses[i].xaxis.label.get_size()
+            # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
+            # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
+            s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
+            s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
+            m      = 4/3.0*(s1-s2)          # Slope.
+            y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
+            offset = m * cls.FormatSettings.Scale + y0
+            axeses[i].spines["top"].set_position(("outward", offset))
+
+        # Move the first axis ticks and label to the top.
+        axeses[0].xaxis.tick_top()
+        axeses[0].xaxis.set_label_position("top")
+
+
+    @classmethod
+    def SetForMultipleYAxesPostions(cls, axeses:list[Axes]):
+        """
+        Sets the first Axes to have the y-axis labels and ticks to the left.  The remainder of the axeses are positioned
+        on the right side and offset from each other.
+
+        Parameters
+        ----------
+        axeses : list[Axes]
+            List of Matplotlib Axes.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfAxes = len(axeses)
+
+        # Move the first axes y-axis to the left side.
+        axeses[0].yaxis.tick_left()
+        axeses[0].yaxis.set_label_position("left")
+        axeses[0].grid(False)
+
+        for i in range(1, numberOfAxes):
+            # Turn off everything except the bottom axes grid.  The bottom one resorts to the default.
+            if i < numberOfAxes-1:
+                axeses[i].grid(False)
+
+            # Move the y-axis to the right side.
+            axeses[i].yaxis.tick_right()
+            axeses[i].yaxis.set_label_position("right")
+
+            # Create an offset for consecutive right axis labels.
+            offset = 1.0 + (i-1)*0.12
+            axeses[i].spines["right"].set_position(("axes", offset))
 
 
     @classmethod

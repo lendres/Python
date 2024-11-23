@@ -458,22 +458,9 @@ class PlotHelper():
         axeses = [baseAxes]
 
         for i in range(1, numberOfAxes):
-            axeses.append(axeses[0].twiny())
+            axeses.insert(0, baseAxes.twiny())
 
-            # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
-            # axeses[i].xaxis.label.get_size()
-            # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
-            # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
-            s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
-            s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
-            m      = 4/3.0*(s1-s2)          # Slope.
-            y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
-            offset = m * cls.FormatSettings.Scale + y0
-            axeses[i].spines["top"].set_position(("outward", offset))
-
-        # Move the first axis ticks and label to the top.
-        axeses[0].xaxis.tick_top()
-        axeses[0].xaxis.set_label_position("top")
+        AxesHelper.SetMultipleXAxisPostions(axeses)
 
         return axeses
 
@@ -532,14 +519,10 @@ class PlotHelper():
 
         for i in range(1, numberOfAxes):
             # Create the remaining axis and specify that the same x-axis should be used.
-            axeses.append(axeses[0].twinx())
+            axeses.insert(0, baseAxes.twinx())
 
-            # Off set the new y-axis labels to the right of the previous.
-            offset = 1.0 + (i-1)*0.12
-            axeses[i].spines["right"].set_position(("axes", offset))
-
-        # Change the drawing order of axes so the first one created is on top.
-        AxesHelper.SetZOrderOfMultipleAxesFigure(axeses)
+        # Change the positions of the y-axis labels and ticks.
+        AxesHelper.SetForMultipleYAxesPostions(axeses)
 
         return axeses
 
