@@ -105,49 +105,6 @@ class AxesHelper():
         plt.sca(savedCurrentAxes)
 
 
-    # Mark for deletion.  This no longer seems to be needed since to approach to axes stacking changed.
-    @classmethod
-    def SetZOrderOfMultipleAxesFigure(cls, axes:Axes):
-        """
-        Puts the left hand axes of a multiple y-axis plot on top of the z-order.
-
-        Parameters
-        ----------
-        axes : matplotlib.axes.Axes
-            The axes.  The axes with a y-axis on the left is in axes[0].  The axes with the y-axis on
-            the right are in axes[0] ... axes[N].
-
-        Returns
-        -------
-        None.
-        """
-        # This is necessary to have the axes with the left y-axis show in front of the axes with the right y-axis.
-        # In order to do this, two things are required:
-        #    1) Reverse the z order so that the left axes is drawn above (after) the right axes.
-        #    2) Reverse the patch (background) transparency.  The patch of the axes in front (left) has to be
-        #       transparent.  We want the patch of the axes in back to be the same as before, so the alpha has
-        #       to be taken from the left and set on the right.
-
-        # It seems that the right axes can have an alpha of "None" and be transparent, but if we set that on
-        # the left axes, it does not produce the same result.  Therefore, if it is "None", we default to
-        # completely transparent.
-        alphaSave  = axes[1].patch.get_alpha()
-        alphaSave  = 0 if alphaSave is None else alphaSave
-
-        # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
-        # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
-        # Typically, they default to all the same, so this should be ok.
-        maxZOrder = len(axes) - 1 + axes[-1].get_zorder()
-
-        # Reverse the order.
-        for i in range(0, len(axes)):
-            axes[i].set_zorder(maxZOrder-i)
-            axes[i].patch.set_alpha(axes[0].patch.get_alpha())
-
-        # Make the front axes transparent (or whatever the last one was before).
-        axes[0].patch.set_alpha(alphaSave)
-
-
     @classmethod
     def SetMultipleXAxisPostions(cls, axeses:list[Axes]):
         """
