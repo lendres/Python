@@ -106,7 +106,7 @@ class AxesHelper():
 
 
     @classmethod
-    def SetMultipleXAxisPostions(cls, axeses:list[Axes]):
+    def SetMultipleXAxisPostions(cls, axeses:list[Axes], scale:float=1):
         """
         Sets the first Axes to have the x-axis labels and ticks at the top and offset each consecutive axis above it.
 
@@ -114,6 +114,8 @@ class AxesHelper():
         ----------
         axeses : list[Axes]
             List of Matplotlib Axes.
+        sale : float
+            Plotting scale from PlotHelper.
 
         Returns
         -------
@@ -130,7 +132,7 @@ class AxesHelper():
             s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
             m      = 4/3.0*(s1-s2)          # Slope.
             y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
-            offset = m * cls.FormatSettings.Scale + y0
+            offset = m*scale + y0
             axeses[i].spines["top"].set_position(("outward", offset))
 
         # Move the first axis ticks and label to the top.

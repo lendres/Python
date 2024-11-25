@@ -460,7 +460,7 @@ class PlotHelper():
         for i in range(1, numberOfAxes):
             axeses.insert(0, baseAxes.twiny())
 
-        AxesHelper.SetMultipleXAxisPostions(axeses)
+        AxesHelper.SetMultipleXAxisPostions(axeses, cls.FormatSettings.Scale)
 
         return axeses
 
