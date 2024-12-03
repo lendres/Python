@@ -91,7 +91,7 @@ class PlotHelper():
         if formatSettings is None:
             formatSettings = FormatSettingsClass(**kwargs)
 
-        cls.FormatSettings         = formatSettings
+        cls.FormatSettings        = formatSettings
         cls.defaultFormatSettings = formatSettings
         cls.storedFormatSettings  = None
 
