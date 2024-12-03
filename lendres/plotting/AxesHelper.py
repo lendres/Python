@@ -11,7 +11,7 @@ class AxesHelper():
 
 
     @classmethod
-    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix:str=None):
+    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix:str=None, topAxes=-1):
         """
         Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
 
@@ -27,6 +27,10 @@ class AxesHelper():
             Y-axis label(s).  Default is a blank string.  If axeses is an array, ylabels can be an array of the same length.
         titleSuffix : str or None, optional
             If supplied, the string is appended as a second line to the title.  Default is none.
+        topAxes : int, optional
+            Specifies which axes should have the independent axis label.  This should be the highest in the z-order so it does
+            not get covered by the other axeses.  The values is an integer specifying the index into "axeses".  The default is
+            to select the highest element of axeses (highest in the z-order is the last element).
 
         Returns
         -------
@@ -68,11 +72,11 @@ class AxesHelper():
                 for instance, xLabel, yLabel in zip(axeses, xLabels, yLabels):
                     instance.set(xlabel=xLabel, ylabel=yLabel)
             case "multipleX":
-                axeses[0].set(title=title, ylabel=yLabels)
+                axeses[topAxes].set(title=title, ylabel=yLabels)
                 for instance, xLabel in zip(axeses, xLabels):
                     instance.set(xlabel=xLabel)
             case "multipleY":
-                axeses[0].set(title=title, xlabel=xLabels)
+                axeses[topAxes].set(title=title, xlabel=xLabels)
                 for instance, yLabel in zip(axeses, yLabels):
                     instance.set(ylabel=yLabel)
 
