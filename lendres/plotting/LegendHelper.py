@@ -34,7 +34,8 @@ class LegendHelper():
             The newly created legend.
         """
         if legendOptions is None:
-            raise Exception("LegendOptions must be supplied.")
+            # Setting "legendOptions" to None turns off the legend.
+            return
 
         match legendOptions.Location:
             case "insidetopleft":
