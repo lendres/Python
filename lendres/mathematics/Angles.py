@@ -8,7 +8,7 @@ class Angles():
 
 
     @classmethod
-    def AngleIn360Degrees(cls, endPoint, startPoint=[0, 0], returnPositive=True):
+    def AngleIn360Degrees(cls, endPoint, startPoint=[0, 0], returnPositive=True) -> float:
         """
         Calculates the angle (0 to 360) a point or line is at.
 
@@ -36,7 +36,7 @@ class Angles():
 
 
     @classmethod
-    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int):
+    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int) -> np.array:
         """
         Creates a discritized arc.  Useful for plotting of discritized calculations.
 
@@ -79,8 +79,8 @@ class Angles():
         # Create a rotation matrix.
         startAsRadians = np.radians(startAngle)
         rotationMatrix = [
-            [np.cos(startAsRadians),  -np.sin(startAsRadians)],
-            [np.sin(startAsRadians),   np.cos(startAsRadians)]
+            [np.cos(startAsRadians), -np.sin(startAsRadians)],
+            [np.sin(startAsRadians),  np.cos(startAsRadians)]
         ]
 
         # Perform the translation and rotation to the points.
