@@ -2,6 +2,9 @@
 Created on September 26, 2023
 @author: lance.endres
 """
+import copy
+from   typing import Self
+
 class LegendOptions():
     """
     A class that allows passing options for legend building.
@@ -41,6 +44,10 @@ class LegendOptions():
         self.location               = location
         self.numberOfColumns        = numberOfColumns
         self.lineWidth              = lineWidth
+
+
+    def Copy(self) -> Self:
+        return copy.deepcopy(self)
 
 
     @property
