@@ -34,9 +34,13 @@ class LegendHelper():
             The newly created legend.
         """
         if legendOptions is None:
-            raise Exception("LegendOptions must be supplied.")
+            # Setting "legendOptions" to None turns off the legend.
+            return
 
         match legendOptions.Location:
+            case "insidetopleft":
+                loc          = "upper left"
+                bboxToAnchor = (0, 1.0-legendOptions.Offset)
             case "outsidebottomleft":
                 loc          = "upper left"
                 bboxToAnchor = (0, -legendOptions.Offset)
@@ -58,7 +62,7 @@ class LegendHelper():
 
 
     @classmethod
-    def SetLegendLineWidths(cls, legend:plt.legend, linewidth:float=4.0):
+    def SetLegendLineWidths(cls, legend:plt.legend, lineWidth:float=4.0):
         """
         Change the line width for the legend.  Sets all the line widths to the same value.  Useful for when the
         legend lines are too thin to see the color well.
@@ -67,7 +71,7 @@ class LegendHelper():
         ----------
         legend : matplotlib.pyplot.legend
             The legend.
-        linewidth : float, optional
+        lineWidth : float, optional
             The line width. The default is 4.0.
 
         Returns
@@ -76,4 +80,4 @@ class LegendHelper():
         """
         # Loop over all the lines in the legend and set the line width.  Doesn't change patches.
         for line in legend.get_lines():
-            line.set_linewidth(linewidth)
+            line.set_linewidth(lineWidth)

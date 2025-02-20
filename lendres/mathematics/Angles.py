@@ -8,7 +8,7 @@ class Angles():
 
 
     @classmethod
-    def AngleIn360Degrees(cls, endPoint, startPoint=[0, 0], returnPositive=True):
+    def AngleIn360Degrees(cls, endPoint, startPoint=[0, 0], returnPositive=True) -> float:
         """
         Calculates the angle (0 to 360) a point or line is at.
 
@@ -25,9 +25,9 @@ class Angles():
             Angle between 0 and 360 degrees.
         """
         # Translate line/point to the origin.
-        p1 = np.array(endPoint) - np.array(startPoint)
+        point1 = np.array(endPoint) - np.array(startPoint)
 
-        angle = np.degrees(np.arctan2(p1[1], p1[0]))
+        angle = np.degrees(np.arctan2(point1[1], point1[0]))
 
         if returnPositive:
             angle = angle % 360.0
@@ -36,7 +36,7 @@ class Angles():
 
 
     @classmethod
-    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int):
+    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int) -> np.array:
         """
         Creates a discritized arc.  Useful for plotting of discritized calculations.
 
@@ -45,8 +45,8 @@ class Angles():
 
         Parameters
         ----------
-        center : TYPE
-            DESCRIPTION.
+        center : list
+            Center point of the arc.
         radius : float
             Arc radius.
         startAngle : float
@@ -71,14 +71,16 @@ class Angles():
         # Initialize output.
         points = np.zeros((numberOfPoints, 2))
 
+        # The discritized points in the angle range of zero to arcAngle.
         points[:, 0] = radius * np.cos(angles)
         points[:, 1] = radius * np.sin(angles)
 
+        # Now we need to rotate everything to the start angle and then offset by the translation.
         # Create a rotation matrix.
         startAsRadians = np.radians(startAngle)
         rotationMatrix = [
-            [np.cos(startAsRadians),  -np.sin(startAsRadians)],
-            [np.sin(startAsRadians),   np.cos(startAsRadians)]
+            [np.cos(startAsRadians), -np.sin(startAsRadians)],
+            [np.sin(startAsRadians),  np.cos(startAsRadians)]
         ]
 
         # Perform the translation and rotation to the points.

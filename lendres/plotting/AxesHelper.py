@@ -4,13 +4,14 @@ Created on December 4, 2021
 """
 import numpy                                                         as np
 import matplotlib.pyplot                                             as plt
+from   matplotlib.axes                                               import Axes
 
 
 class AxesHelper():
 
 
     @classmethod
-    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix:str=None):
+    def Label(cls, axeses, title, xLabels, yLabels="", titleSuffix:str=None, topAxes=-1):
         """
         Add title, x-axis label, and y-axis label.  Allows for multiple axes to be labeled at once.
 
@@ -26,6 +27,10 @@ class AxesHelper():
             Y-axis label(s).  Default is a blank string.  If axeses is an array, ylabels can be an array of the same length.
         titleSuffix : str or None, optional
             If supplied, the string is appended as a second line to the title.  Default is none.
+        topAxes : int, optional
+            Specifies which axes should have the independent axis label.  This should be the highest in the z-order so it does
+            not get covered by the other axeses.  The values is an integer specifying the index into "axeses".  The default is
+            to select the highest element of axeses (highest in the z-order is the last element).
 
         Returns
         -------
@@ -67,11 +72,11 @@ class AxesHelper():
                 for instance, xLabel, yLabel in zip(axeses, xLabels, yLabels):
                     instance.set(xlabel=xLabel, ylabel=yLabel)
             case "multipleX":
-                axeses[0].set(title=title, ylabel=yLabels)
+                axeses[topAxes].set(title=title, ylabel=yLabels)
                 for instance, xLabel in zip(axeses, xLabels):
                     instance.set(xlabel=xLabel)
             case "multipleY":
-                axeses[0].set(title=title, xlabel=xLabels)
+                axeses[topAxes].set(title=title, xlabel=xLabels)
                 for instance, yLabel in zip(axeses, yLabels):
                     instance.set(ylabel=yLabel)
 
@@ -105,45 +110,74 @@ class AxesHelper():
 
 
     @classmethod
-    def SetZOrderOfMultipleAxesFigure(cls, axes):
+    def SetMultipleXAxisPostions(cls, axeses:list[Axes], scale:float=1):
         """
-        Puts the left hand axes of a multiple y-axis plot on top of the z-order.
+        Sets the first Axes to have the x-axis labels and ticks at the top and offset each consecutive axis above it.
 
         Parameters
         ----------
-        axes : matplotlib.axes.Axes
-            The axes.  The axes with a y-axis on the left is in axes[0].  The axes with the y-axis on
-            the right are in axes[0] ... axes[N].
+        axeses : list[Axes]
+            List of Matplotlib Axes.
+        sale : float
+            Plotting scale from PlotHelper.
 
         Returns
         -------
         None.
         """
-        # This is necessary to have the axes with the left y-axis show in front of the axes with the right y-axis.
-        # In order to do this, two things are required:
-        #    1) Reverse the z order so that the left axes is drawn above (after) the right axes.
-        #    2) Reverse the patch (background) transparency.  The patch of the axes in front (left) has to be
-        #       transparent.  We want the patch of the axes in back to be the same as before, so the alpha has
-        #       to be taken from the left and set on the right.
+        numberOfAxes = len(axeses)
 
-        # It seems that the right axes can have an alpha of "None" and be transparent, but if we set that on
-        # the left axes, it does not produce the same result.  Therefore, if it is "None", we default to
-        # completely transparent.
-        alphaSave  = axes[1].patch.get_alpha()
-        alphaSave  = 0 if alphaSave is None else alphaSave
+        for i in range(1, numberOfAxes):
+            # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
+            # axeses[i].xaxis.label.get_size()
+            # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
+            # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
+            s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
+            s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
+            m      = 4/3.0*(s1-s2)          # Slope.
+            y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
+            offset = m*scale + y0
+            axeses[i].spines["top"].set_position(("outward", offset))
 
-        # We use axes[-1] because it is the last axes on the right side and should be the highest in the order.  This
-        # is an assumption.  The safer thing to do would be to loop through them all and retrieve the highest z-order.
-        # Typically, they default to all the same, so this should be ok.
-        maxZOrder = len(axes) - 1 + axes[-1].get_zorder()
+        # Move the first axis ticks and label to the top.
+        axeses[0].xaxis.tick_top()
+        axeses[0].xaxis.set_label_position("top")
 
-        # Reverse the order.
-        for i in range(0, len(axes)):
-            axes[i].set_zorder(maxZOrder-i)
-            axes[i].patch.set_alpha(axes[0].patch.get_alpha())
 
-        # Make the front axes transparent (or whatever the last one was before).
-        axes[0].patch.set_alpha(alphaSave)
+    @classmethod
+    def SetForMultipleYAxesPostions(cls, axeses:list[Axes]):
+        """
+        Sets the first Axes to have the y-axis labels and ticks to the left.  The remainder of the axeses are positioned
+        on the right side and offset from each other.
+
+        Parameters
+        ----------
+        axeses : list[Axes]
+            List of Matplotlib Axes.
+
+        Returns
+        -------
+        None.
+        """
+        numberOfAxes = len(axeses)
+
+        # Move the first axes y-axis to the left side.
+        axeses[0].yaxis.tick_left()
+        axeses[0].yaxis.set_label_position("left")
+        axeses[0].grid(False)
+
+        for i in range(1, numberOfAxes):
+            # Turn off everything except the bottom axes grid.  The bottom one resorts to the default.
+            if i < numberOfAxes-1:
+                axeses[i].grid(False)
+
+            # Move the y-axis to the right side.
+            axeses[i].yaxis.tick_right()
+            axeses[i].yaxis.set_label_position("right")
+
+            # Create an offset for consecutive right axis labels.
+            offset = 1.0 + (i-1)*0.12
+            axeses[i].spines["right"].set_position(("axes", offset))
 
 
     @classmethod

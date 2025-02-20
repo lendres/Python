@@ -32,6 +32,7 @@ class TestPlotMaker(unittest.TestCase):
         cls.sinesDataFrame.rename({"y3" : "Sine B2"}, axis="columns", inplace=True)
 
 
+    # @unittest.skip
     def testConfusionMatrix(self):
         PlotMaker.CreateConfusionMatrixPlot(self.confusionMatrix3x3, "3 by 3 Confusion Matrix")
         PlotMaker.colorMap = "Blues"
@@ -41,12 +42,14 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.CreateConfusionMatrixPlot(self.confusionMatrix3x3, "3 by 3 Confusion Matrix", axesLabels=labels)
 
 
+    # @unittest.skip
     def testPlotColorCycle(self):
         # A test that will also conveniently display the color cycles for reference.
         PlotMaker.CreateColorCyclePlot(lineColorCycle="pyplot")
         PlotMaker.CreateColorCyclePlot(lineColorCycle="seaborn")
 
 
+    # @unittest.skip
     def testCreateFastFigure(self):
         x, a = FunctionGenerator.SineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
         x, b = FunctionGenerator.SineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
@@ -56,6 +59,7 @@ class TestPlotMaker(unittest.TestCase):
         PlotMaker.CreateFastFigure([a, b], yDataLabels=["Y 1", "Y 2"], xData=x, title="Test Fast Figure List Kwarg", xLabel="Time", yLabel="Value", linewidth=[3, 8])
 
 
+    # @unittest.skip
     def testCreateSimpleFastFigure(self):
         x, a = FunctionGenerator.SineWave(magnitude=10, frequency=4, yOffset=0, slope=0, steps=1000)
         x, b = FunctionGenerator.SineWave(magnitude=4, frequency=2, yOffset=0, slope=10, steps=1000)
@@ -71,12 +75,14 @@ class TestPlotMaker(unittest.TestCase):
         self.PlotMultiAxes("No Key Word Arguments")
 
 
+    # @unittest.skip
     def testKeywordArgsForMultiAxesPlot(self):
         self.PlotMultiAxes("Key Word Argument as Int", linewidth=5.0)
         self.PlotMultiAxes("Key Word Argument as List", linewidth=[5.5, 3.5, 1.5, 7.5])
         self.PlotMultiAxes("Mixed Key Word Arguments", linewidth=[5.5, 3.5, 1.5, 7.5], linestyle="dashed")
 
 
+    # @unittest.skip
     def testBracketsOnColumnNames(self):
         self.PlotMultiAxes("Mixed Brackets", columns=["Sine A1", ["Sine B1", "Sine B2"]])
         self.PlotMultiAxes("No Brackets", columns=["Sine A1", "Sine B1"])
