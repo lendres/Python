@@ -1,5 +1,6 @@
 # Created on August 12, 2023
 # @author: Lance A. Endres
+# A style with smaller fonts than the default style.
 
 figure.figsize         : 10, 6
 font.size              : 16
@@ -9,6 +10,7 @@ figure.titleweight     : bold
 legend.fontsize        : 12
 legend.title_fontsize  : 13
 legend.edgecolor       : black
+axes.axisbelow         : True
 axes.titlesize         : 19
 axes.titleweight       : bold
 axes.labelweight       : bold
@@ -23,5 +25,6 @@ axes.edgecolor         : black             # Axis border.
 patch.linewidth        : 1.5               # Legend border.
 lines.linewidth        : 3
 lines.markersize       : 10
+lines.solid_capstyle   : round
 legend.framealpha      : 1.0               # Non-transparent legend.
 legend.facecolor       : inherit           # Non-transparent legend.

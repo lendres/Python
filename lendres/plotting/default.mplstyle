@@ -1,5 +1,6 @@
 # Created on August 12, 2023
 # @author: Lance A. Endres
+# The style used if a different style is not supplied.
 
 figure.figsize         : 10, 6
 font.size              : 20
