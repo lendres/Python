@@ -58,16 +58,14 @@ class Search():
                 continueSearch = False
 
             # This catches when the point is bounded.
-            elif item > points[midpoint-1] and item < points[midpoint]:
-                first          = midpoint-1
-                last           = midpoint
+            elif last - first < 2:
                 continueSearch = False
 
             else:
                 if item < points[midpoint]:
-                    last = midpoint - 1
+                    last = midpoint
                 else:
-                    first = midpoint + 1
+                    first = midpoint
 
         # Return either the indices (position) of the array the bounded values are located at
         # or return the values that bound the input item.
