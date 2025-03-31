@@ -127,15 +127,16 @@ class AxesHelper():
         """
         numberOfAxes = len(axeses)
 
+        # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
+        # axeses[i].xaxis.label.get_size()
+        # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
+        # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
+        s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
+        s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
+        m      = 4/3.0*(s1-s2)          # Slope.
+        y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
+
         for i in range(1, numberOfAxes):
-            # Ideally, we would calculate an offset based on all the text sizes and spacing, but that seems challenging.
-            # axeses[i].xaxis.label.get_size()
-            # plt.rcParams["axes.titlesize"]  plt.rcParams["axes.labelsize"] plt.rcParams["xtick.labelsize"]
-            # Instead, we will use a linear scaling with a y-intercept that doesn't pass through zero.  This seems to work reasonable well.
-            s1     = 55                     # First point selected at a plot scale of 1.0.  This is the size in points.
-            s2     = 25                     # Second point selected at a plot scale of 0.25.  This is the size in points.
-            m      = 4/3.0*(s1-s2)          # Slope.
-            y0     = (4.0*s2-s1) / 3.0      # Y-intercept.
             offset = m*scale + y0
             axeses[i].spines["top"].set_position(("outward", offset))
 
@@ -159,12 +160,20 @@ class AxesHelper():
         -------
         None.
         """
+        from lendres.plotting.PlotHelper import PlotHelper
+        scale = PlotHelper.FormatSettings.Scale
+
         numberOfAxes = len(axeses)
 
         # Move the first axes y-axis to the left side.
         axeses[0].yaxis.tick_left()
         axeses[0].yaxis.set_label_position("left")
         axeses[0].grid(False)
+
+        # Scale factor.  Accounts for different sizes of the axis title and tick lables.  Also accounts
+        # for the overall formatting scale.  The font sizes themselves would have been scaled by the scale
+        # factor.
+        scale = scale*plt.rcParams["axes.labelsize"]/(scale*20)*plt.rcParams["xtick.labelsize"]/(scale*16)
 
         for i in range(1, numberOfAxes):
             # Turn off everything except the bottom axes grid.  The bottom one resorts to the default.
@@ -176,7 +185,7 @@ class AxesHelper():
             axeses[i].yaxis.set_label_position("right")
 
             # Create an offset for consecutive right axis labels.
-            offset = 1.0 + (i-1)*0.12
+            offset = 1.0 + (i-1)*0.15*scale
             axeses[i].spines["right"].set_position(("axes", offset))
 
 
@@ -483,7 +492,7 @@ class AxesHelper():
 
     @classmethod
     def AddArrows(cls, axes, size=15, color="black", both=False):
-        from   lendres.plotting.PlotHelper               import PlotHelper
+        from lendres.plotting.PlotHelper import PlotHelper
         scale = PlotHelper.FormatSettings.Scale
         axes.plot((1), (0), linestyle="", marker=">", markersize=size*scale, color=color, transform=axes.get_yaxis_transform(), clip_on=False)
         axes.plot((0), (1), linestyle="", marker="^", markersize=size*scale, color=color, transform=axes.get_xaxis_transform(), clip_on=False)

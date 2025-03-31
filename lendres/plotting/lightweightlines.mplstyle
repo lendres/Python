@@ -1,5 +1,6 @@
 # Created on August 12, 2023
 # @author: Lance A. Endres
+# Same as the default except the line widths are smaller.
 
 figure.figsize         : 10, 6
 font.size              : 20
@@ -9,6 +10,7 @@ figure.titleweight     : bold
 legend.fontsize        : 16
 legend.title_fontsize  : 17
 legend.edgecolor       : black
+axes.axisbelow         : True
 axes.titlesize         : 24
 axes.titleweight       : bold
 axes.labelweight       : bold
@@ -23,5 +25,6 @@ axes.edgecolor         : black             # Axis border.
 patch.linewidth        : 1.5               # Legend border.
 lines.linewidth        : 1.1
 lines.markersize       : 10
+lines.solid_capstyle   : round
 legend.framealpha      : 1.0               # Non-transparent legend.
 legend.facecolor       : inherit           # Non-transparent legend.
