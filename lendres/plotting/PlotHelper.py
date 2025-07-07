@@ -842,19 +842,18 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlot(cls, saveFileName:str, figure:matplotlib.figure.Figure=None, transparent=False):
+    def SavePlot(cls, saveFileName:str, figure:matplotlib.figure.Figure=None, **kwargs):
         """
         Saves a plot with a set of default parameters.
 
         Parameters
         ----------
         saveFileName : str
-            The (optionally) path and file name to save the image to.
+            The (optionally) path and file name to save the image to. The file name can optionally contain an extension.
         figure : matplotlib.figure.Figure, optional
             The figure to save.  If None is specified, the current figure will be used.  The default is None.
-        transparent : bool, optional
-            Specificies if the background of the plot should be transparent.  If True, the background will be set to transparent, if False, nothing no
-            action is taken.  The default is False.
+        **kwargs : keyword arguments
+            Keyword arguments passed to Matplotlib's 'savefig' method.
 
         Returns
         -------
@@ -866,7 +865,7 @@ class PlotHelper():
         # Default is to use the save path and file name exactly as it was passed.
         path = saveFileName
 
-        # If the default ouptput folder is specified, we need to make sure it exists and update
+        # If the default output folder is specified, we need to make sure it exists and update
         # the save path to account for it.
         if cls.UseDefaultOutputDirectory:
 
@@ -877,8 +876,12 @@ class PlotHelper():
             # Update path.
             path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
+        # Adding default argument values if not passed.
+        savefigKwargs = {"dpi": 500, "bbox_inches": "tight"}
+        savefigKwargs.update(kwargs)
+
         # And, finally, get down to the work.
-        figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
+        figure.savefig(path, **savefigKwargs)
 
 
     @classmethod
