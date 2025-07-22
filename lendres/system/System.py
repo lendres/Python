@@ -2,7 +2,6 @@
 Created on July 16, 2025
 @author: Lance A. Endres
 """
-print("welcome to the system")
 import os
 import sys
 
