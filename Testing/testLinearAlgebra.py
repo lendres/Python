@@ -23,6 +23,7 @@ class TestLinearAlgebra(unittest.TestCase):
         cls.consoleHelper = ConsoleHelper(verboseLevel=verboseLevel)
 
         cls.list            = [1, 2, 3, 4]
+        cls.tuple           = (1, 2, 3, 4)
         cls.normL1          = 1 + 2 + 3 + 4
         cls.normL2          = math.sqrt(1+4+9+16)
         cls.normMax         = 4
@@ -41,6 +42,10 @@ class TestLinearAlgebra(unittest.TestCase):
 
     def testL1NormWithList(self):
         self._TestL1(self.list)
+
+
+    def testL1NormWithTuple(self):
+        self._TestL1(self.tuple)
 
 
     def testL1NormWithArray(self):
