@@ -50,7 +50,7 @@ class PlotHelper():
     defaultFormatSettings       = FormatSettingsClass()
     storedFormatSettings        = None
 
-    currentColor                = 0
+    currentColor                = -1
 
 
     @classmethod
@@ -254,7 +254,7 @@ class PlotHelper():
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
-        cls.currentColor = -1
+        cls.ResetColor()
 
         # Establish the parameters specified in the input file.
         plt.style.use(parameterFile)
@@ -781,6 +781,10 @@ class PlotHelper():
 
         return ["#{:02x}{:02x}{:02x}".format(color[0], color[1], color[2]) for color in colors]
 
+
+    @classmethod
+    def ResetColor(cls):
+        cls.currentColor = -1
 
     @classmethod
     def NextColor(cls):
