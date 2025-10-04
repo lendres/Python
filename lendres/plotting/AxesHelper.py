@@ -341,6 +341,44 @@ class AxesHelper():
 
 
     @classmethod
+    def GetLimits(cls, axes:Axes) -> list:
+        """
+        Gets the current limits of an Axes.
+
+        Parameters
+        ----------
+        axes : Axes
+            The axes to get the limits from.
+
+        Returns
+        -------
+        list
+            A list of limits [xLimits, yLimits].
+        """
+        return [axes.get_xlim(), axes.get_ylim()]
+
+
+    @classmethod
+    def SetLimits(cls, axes:Axes, limits:list):
+        """
+        Sets the limits of an Axes.
+
+        Parameters
+        ----------
+        axes : Axes
+            The axes to set the limits from.
+        limits : list
+            A list of limits [xLimits, yLimits].
+
+        Returns
+        -------
+        None.
+        """
+        axes.set_xlim(limits[0])
+        axes.set_ylim(limits[1])
+
+
+    @classmethod
     def SetXAxisLimits(cls, axes, limits:list=None, lowerLimit:float=None, upperLimit:float=None, numberOfTicks:int|str="same"):
         """
         Sets the x-axes limits.  Allows specifying the number of ticks to use.
