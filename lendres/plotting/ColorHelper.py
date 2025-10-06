@@ -26,7 +26,7 @@ class ColorHelper():
 
         Parameters
         ----------
-        colors : string
+        colorTable : str
             Color table to plot.
                 "base"    : mcolors.BASE_COLORS
                 "tableau" : mcolors.TABLEAU_COLORS
@@ -34,6 +34,8 @@ class ColorHelper():
                 "xkcd"    : mcolors.XKCD_COLORS
                 "full"    : mcolors._colors_full_map
                 "seaborn" : sns.color_palette() (Seaborn default palette)
+        label : str
+            The type of labels to use, names or hex values.
         saveImage : bool, optional
             If True, the image is saved to the disk. The default is False.
 
