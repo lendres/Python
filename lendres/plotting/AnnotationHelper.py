@@ -108,6 +108,10 @@ class AnnotationHelper():
 
 
     def _GetMax(self, y, **kwargs):
+        # If there is a "nan" in the data, it treats that as the max and returns nothing for the index.
+        # Therefore, replace the "nan"s with zeros.
+        y       = np.nan_to_num(y)
+
         yMax    = max(y)
         index   = np.where(np.asarray(y) == np.asarray(yMax))
         index   = index[0][0]
