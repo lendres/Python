@@ -11,7 +11,7 @@ from   typing                      import Union
 class LinearAlgebra():
 
     @classmethod
-    def Normalize(cls, vector:list|tuple|np.ndarray, norm:int|float|str = 2, returnNorm:bool=False) -> Union[np.ndarray, tuple[np.ndarray, float]]:
+    def Normalize(cls, vector:list|tuple|np.ndarray, norm:int|float|str=2, returnNorm:bool=False) -> Union[np.ndarray, tuple[np.ndarray, float]]:
         """
         Normalizes a 1 dimensional vector.
 

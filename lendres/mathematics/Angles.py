@@ -36,7 +36,7 @@ class Angles():
 
 
     @classmethod
-    def DiscritizeArc(cls, center:list | tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int) -> np.array:
+    def DiscritizeArc(cls, center:list|tuple, radius:float, startAngle:float, endAngle:float, numberOfPoints:int) -> np.array:
         """
         Creates a discritized arc.  Useful for plotting of discritized calculations.
 

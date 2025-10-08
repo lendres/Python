@@ -630,7 +630,7 @@ class PlotHelper():
             cls,
             x,
             y,
-            z=None,
+            z                                       = None,
             axes:       matplotlib.axes.Axes        = None,
             colorMap:   matplotlib.colors.Colormap  = plt.get_cmap("copper"),
             norm:       matplotlib.colors.Normalize = plt.Normalize(0.0, 1.0),

@@ -12,10 +12,10 @@ class LegendHelper():
     @classmethod
     def CreateLegend(
             cls,
-            figure        : matplotlib.figure.Figure,
-            axes          : matplotlib.axes.Axes,
-            legendOptions : LegendOptions=LegendOptions()
-        )   ->              matplotlib.legend.Legend:
+            figure:        matplotlib.figure.Figure,
+            axes:          matplotlib.axes.Axes,
+            legendOptions: LegendOptions             = LegendOptions()
+        )   ->             matplotlib.legend.Legend:
         """
         Create a legend
 
