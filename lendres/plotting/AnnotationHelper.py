@@ -3,7 +3,9 @@ Created on August 27, 2022
 @author: Lance A. Endres
 """
 import numpy                                                         as np
+from   matplotlib.lines                                              import Line2D
 from   adjustText                                                    import adjust_text
+from   collections.abc                                               import Callable
 
 from   lendres.plotting.PlotHelper                                   import PlotHelper
 from   lendres.signalprocessing.SignalProcessing                     import SignalProcessing
@@ -89,7 +91,7 @@ class AnnotationHelper():
         self.adjustTextKwargs = kwargs
 
 
-    def AddMaximumAnnotation(self, lines):
+    def AddMaximumAnnotation(self, lines:Line2D|list[Line2D]) -> tuple[list, list]:
         """
         Adds an annotation to the line(s) at the maximum Y value.
 
@@ -102,12 +104,15 @@ class AnnotationHelper():
 
         Returns
         -------
-        None.
+        indices : list
+            The indices of the labeled values.
+        yValues : list
+            The values of the labeled values.
         """
-        self.AddAnnotationsByFunction(lines, self._GetMax)
+        return self.AddAnnotationsByFunction(lines, self._GetMax)
 
 
-    def _GetMax(self, y, **kwargs):
+    def _GetMax(self, y, **kwargs) -> tuple[list, list]:
         # If there is a "nan" in the data, it treats that as the max and returns nothing for the index.
         # Therefore, replace the "nan"s with zeros.
         y       = np.nan_to_num(y)
@@ -118,11 +123,58 @@ class AnnotationHelper():
         return [index], [yMax]
 
 
-    def AddPeakAnnotations(self, lines, sortBy="localheight", **kwargs):
-        self.AddAnnotationsByFunction(lines, SignalProcessing.GetPeaks, sortBy=sortBy, **kwargs)
+    def AddAnnotationToLastValue(self, lines:Line2D|list) -> tuple[list, list]:
+        """
+        Labels the last value of the line.
+
+        Parameters
+        ----------
+        lines : Line2D or list of Line2D
+            Line(s) returned by plotting on an axes.  The maximum value of each line is found and annotated.
+
+        Returns
+        -------
+        indices : list
+            The indices of the labeled values.
+        yValues : list
+            The values of the labeled values.
+        """
+        return self.AddAnnotationsByFunction(lines, self._GetLastValue)
 
 
-    def AddAnnotationsByFunction(self, lines, function, **kwargs):
+    def _GetLastValue(self, y, **kwargs) -> tuple[list, list]:
+        index   = len(y) -1
+        return [index], [y[index]]
+
+
+    def AddPeakAnnotations(self, lines:Line2D|list, sortBy:str="localheight", **kwargs) -> tuple[list, list]:
+        """
+        Labels the local maximum values.
+
+        Parameters
+        ----------
+        lines : Line2D or list of Line2D
+            Line(s) returned by plotting on an axes.  The maximum value of each line is found and annotated.
+        sortBy : str, optional
+            The method used to sort the peaks.
+                localheight  : The peaks are sorted according to how high are they above the local terrain.  In this method
+                    the highest peak (locally) is not necessarily the highest peak overall (globally).
+                globalheight : The peaks are sorted according to which ones are highest overall (globally).
+            The default is "localheight".
+        **kwargs : keyword arguments
+            Keyword arguments passed to the SignalProcessing.GetPeaks function.
+
+        Returns
+        -------
+        indices : list
+            The indices of the labeled values.
+        yValues : list
+            The values of the labeled values.
+        """
+        return self.AddAnnotationsByFunction(lines, SignalProcessing.GetPeaks, sortBy=sortBy, **kwargs)
+
+
+    def AddAnnotationsByFunction(self, lines:Line2D|list[Line2D], function:Callable, **kwargs) -> tuple[list, list]:
         """
         Applies the function to the line to find the value (Y) and location (X) of a point on the line.  That point
         is then annotated on the specified axes using a combination of the default and overrides settings.
@@ -137,7 +189,10 @@ class AnnotationHelper():
 
         Returns
         -------
-        None.
+        indices : list
+            The indices of the labeled values.
+        yValues : list
+            The values of the labeled values.
         """
         if type(lines) is not list:
             lines = [lines]
@@ -162,6 +217,8 @@ class AnnotationHelper():
 
         if self.adjustText:
             self._AdjustAnnotations()
+
+        return indices, yValues
 
 
     def _AdjustAnnotations(self):
