@@ -190,6 +190,22 @@ class PlotHelper():
         None.
         """
         return plt.rcParams["font.size"]
+    
+    
+    @classmethod
+    def GetScaledLegendFontSize(cls):
+        """
+        Gets the legend font size adjusted with the scaling factor.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        return plt.rcParams["legend.fontsize"]
 
 
     @classmethod

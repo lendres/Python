@@ -69,7 +69,6 @@ class TestLinearAlgebra(unittest.TestCase):
         self._TestL2(np.array(self.list))
 
 
-
     def _TestL2(self, vector):
         result = LinearAlgebra.Normalize(vector)
         np.testing.assert_allclose(self.solutionL2, result)
