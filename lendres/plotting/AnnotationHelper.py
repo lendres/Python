@@ -68,6 +68,16 @@ class AnnotationHelper():
         self.defaults = self._CombineSettingsAndOverrides(kwargs)
 
 
+    @property
+    def FormatString(self):
+        return self.formatString
+
+
+    @FormatString.setter
+    def FormatString(self, formatString):
+        self.formatString = formatString
+
+
     def SetAdjustText(self, adjustText:bool=False, **kwargs):
         """
         Sets the values for adjusting the text to avoid other entities.
