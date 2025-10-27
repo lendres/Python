@@ -67,6 +67,19 @@ class EnumArray(Generic[RowEnum, ColEnum]):
             self.data[rowIndex][colIndex] = values[rowIndex]
 
 
+    def FindEnumForRowValue(self, rowEnum:RowEnum, value:str) -> ColEnum | None:
+        """
+        Given a row enum and a string value, return the column enum whose cell equals that value.
+        Returns None if no match is found. If multiple matches exist, returns the first match.
+        """
+        rowIndex = self.rowToIndex[rowEnum]
+        indexToColEnum = {index: enumMember for enumMember, index in self.colToIndex.items()}
+        for colIndex, cell in enumerate(self.data[rowIndex]):
+            if cell == value:
+                return indexToColEnum[colIndex]
+        return None
+
+
     def ToDataFrame(self) -> "pd.DataFrame":
         def getLabels(grid, axis: str) -> list[str]:
             if axis == "row":
