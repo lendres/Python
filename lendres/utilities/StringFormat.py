@@ -20,3 +20,8 @@ class StringFormat():
     def FixedWidthCurrency(cls, value:float, width:int=10, showChange:bool=True, currencySymbol:str="$"):
         formatString = "{:>" + str(width) + "}"
         return formatString.format(cls.Currency(value, showChange, currencySymbol))
+    
+    
+    @classmethod
+    def RightJustifiedFixedWidth(cls, value:float, formatString:str, width:int):
+        return ("{:>" + str(width) + "}").format(formatString.format(value))
