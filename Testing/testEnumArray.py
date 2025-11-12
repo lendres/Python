@@ -3,11 +3,11 @@ Created on November 16, 2022
 @author: Lance A. Endres
 """
 import os
-from   enum              import IntEnum
-from   enum              import auto
-from   enum              import unique
+from   enum                      import IntEnum
+from   enum                      import auto
+from   enum                      import unique
 
-from   lendres.path.Path import Path
+from   lendres.path.Path         import Path
 from   lendres.generic.EnumArray import EnumArray
 
 import DataSetLoading
