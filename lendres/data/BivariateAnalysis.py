@@ -424,11 +424,10 @@ class BivariateAnalysis():
         """
         # Unique values in sorting column.  Sort them so they are presented correctly (in order) and
         # so the colors match those used in CreateBoxPlotByTarget.
-        uniqueSortValues = data[sortColumn].unique()
-        uniqueSortValues.sort()
+        uniqueSortValues = sorted(data[sortColumn].unique())
 
         # Number of unique values.
-        numberOfUniqueValues = uniqueSortValues.size
+        numberOfUniqueValues = len(uniqueSortValues)
 
         # Must be run before creating figure or plotting data.
         PlotHelper.Format()
