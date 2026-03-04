@@ -171,7 +171,7 @@ class ConsoleHelper():
                 print(hashes)
 
 
-    def Print(self, message, verboseLevel=None):
+    def Print(self, message:str|pd.DataFrame, verboseLevel=None):
         """
         Displays a message if the specified level is at or above the verbose Level.
 
@@ -186,7 +186,14 @@ class ConsoleHelper():
         -------
         None.
         """
+        # If we have a DataFrame, we need to explicitly convert it to a string.  The "sys.strout.write" function
+        # cannot automatically handle this.
+        if isinstance(message, pd.DataFrame):
+            message = message.to_string()
+            
         if self.verboseLevel >= self.ConvertPrintLevel(verboseLevel):
+            # The "sys.stdout" is used to allow flushing to (attempt) to prevent delays in output that can happen with "print".
+            # The "print" function buffers output to write large chunks at once for effieciency.
             #print(message)
             sys.stdout.write(message+"\n")
             sys.stdout.flush()

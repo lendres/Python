@@ -526,7 +526,7 @@ class DataHelper(DataHelperBase):
         for column in columns:
             for i in range(numberOfRows):
                 value = self.data[column].iloc[i]
-                dataFrame[column].iloc[i] = value.split()[1]
+                dataFrame.loc[i, column] = value.split()[1]
 
         return dataFrame
 
@@ -883,7 +883,8 @@ class DataHelper(DataHelperBase):
         newColumnName : string
             Name of the new column that contains the categorized numbers.
         """
-        newColumn      = pd.Series(np.zeros(self.data.shape[0]))
+        categoryType = pd.CategoricalDtype(categories=labels, ordered=False)
+        newColumn      = pd.Series(data=np.nan, index=self.data.index, dtype=categoryType)
         existingColumn = self.data[column]
 
         for i in range(existingColumn.size):
@@ -898,7 +899,7 @@ class DataHelper(DataHelperBase):
         else:
             newColumnName = column + "_categories"
 
-        self.data[newColumnName] = newColumn.astype("category")
+        self.data[newColumnName] = newColumn
         return newColumnName
 
 
