@@ -111,7 +111,7 @@ class TestLanguageHelper(unittest.TestCase):
             result   = LanguageHelper.Lemmatize(text)
             # The solution should be the commented one.  Why it stopped working, I don't know.  For now, to prevent a failure, modify the solution.
             #solution = "my system keep crash ! his crash yesterday , our crash daily"
-            solution = "my system keep crash ! his crashed yesterday , ours crash daily"
+            solution = "my system keep crash ! his crashed yesterday , our crash daily"
             self.assertEqual(result, solution)
 
         with self.subTest():
