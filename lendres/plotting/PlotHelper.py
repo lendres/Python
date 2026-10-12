@@ -897,7 +897,7 @@ class PlotHelper():
             path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
         # Adding default argument values if not passed.
-        savefigKwargs = {"dpi": 500, "bbox_inches": "tight"}
+        savefigKwargs = {"dpi": 500, "bbox_inches": "tight", "format": "png"}
         savefigKwargs.update(kwargs)
 
         # And, finally, get down to the work.
