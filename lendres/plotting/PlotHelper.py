@@ -9,8 +9,9 @@ import matplotlib.figure                                             as fig
 import matplotlib.axes                                               as ax
 from   matplotlib.collections                                        import LineCollection
 import math
+from   pathlib                                                       import Path             as PathLib
+from   matplotlib.backend_bases                                      import FigureCanvasBase
 
-#import seaborn                                                       as sns
 
 import os
 import shutil
@@ -21,7 +22,7 @@ from   PIL                                                           import Imag
 from   PIL                                                           import ImageColor
 
 # It seems you cannot initialize a class variable (FormatSettings) with a class of the same name so we need to import this as another name.
-from   lendres.plotting.FormatSettings                               import FormatSettings as FormatSettingsClass
+from   lendres.plotting.FormatSettings                               import FormatSettings   as FormatSettingsClass
 from   lendres.plotting.AxesHelper                                   import AxesHelper
 from   lendres.path.Path                                             import Path
 
@@ -897,11 +898,39 @@ class PlotHelper():
             path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
         # Adding default argument values if not passed.
-        savefigKwargs = {"dpi": 500, "bbox_inches": "tight", "format": "png"}
+        savefigKwargs = {"dpi": 500, "bbox_inches": "tight"}
         savefigKwargs.update(kwargs)
+        
+        # Check file extension.
+        if not cls.HasSupportedMatplotlibExtension(path):
+            path += ".png"
 
         # And, finally, get down to the work.
         figure.savefig(path, **savefigKwargs)
+        
+    @classmethod
+    def HasSupportedMatplotlibExtension(cls, filename: str) -> bool:
+        """
+        Checks that a path has a valid Matplotlib extension.
+
+        Parameters
+        ----------
+        filename : str
+            File name to check.
+        
+        Returns
+        -------
+        bool
+            Returns True if Matplotlib can infer the file type from the extension.
+        """
+        # Fetch dynamically supported formats (e.g., {'png': '...', 'pdf': '...'})
+        supportedFormats = FigureCanvasBase.get_supported_filetypes()
+        
+        # Extract the suffix from the filename and normalize it (strip '.' and lowercase).
+        fileSuffix = PathLib(filename).suffix.lower().lstrip('.')
+        
+        # Check if the suffix is supported
+        return fileSuffix in supportedFormats
 
 
     @classmethod
