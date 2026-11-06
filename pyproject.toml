@@ -1,7 +1,7 @@
 [project]
 name = "lendres"
 version = "0.3.0"
-requires-python = ">=3.13.0"
+requires-python = ">=3.12.0"
 description = "A collection of general Python utilities from Lance A. Endres."
 readme = "README.md"
 license = {file = "License.txt"}
@@ -14,7 +14,11 @@ homepage = "https://github.com/lendres/Python"
 dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools]
-packages = ["lendres"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["lendres*"]
 
 [build-system]
 requires = [
