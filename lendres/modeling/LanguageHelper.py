@@ -43,7 +43,7 @@ class LanguageHelper():
         """
         nltk.download("stopwords")
         # Alternate method.
-        os.system("python -m spacy download en_core_web_sm")
+        # os.system("python -m spacy download en_core_web_sm")
 
 
     @classmethod
@@ -623,7 +623,6 @@ class LanguageHelper():
         """
         # !pip install spacy
         # !python -m spacy download en_core_web_sm
-        # Install language packages using Anaconda environments.
         nlp    = spacy.load("en_core_web_sm")
 
         result = None

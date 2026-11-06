@@ -37,7 +37,7 @@ class PlotMaker():
     @classmethod
     def CreateSimpleFastFigure(cls, yData:list, yDataLabel:str=None, xData=None, title=None, xLabel=None, yLabel=None, showLegend=True, show=True, **kwargs):
         """
-        Easly create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
+        Easily create a basic plot.  While intended to make simple plots fast and easy, a number of options are available
         to customize the plot.
 
         Parameters

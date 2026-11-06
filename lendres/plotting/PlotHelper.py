@@ -9,8 +9,9 @@ import matplotlib.figure                                             as fig
 import matplotlib.axes                                               as ax
 from   matplotlib.collections                                        import LineCollection
 import math
+from   pathlib                                                       import Path             as PathLib
+from   matplotlib.backend_bases                                      import FigureCanvasBase
 
-#import seaborn                                                       as sns
 
 import os
 import shutil
@@ -21,7 +22,7 @@ from   PIL                                                           import Imag
 from   PIL                                                           import ImageColor
 
 # It seems you cannot initialize a class variable (FormatSettings) with a class of the same name so we need to import this as another name.
-from   lendres.plotting.FormatSettings                               import FormatSettings as FormatSettingsClass
+from   lendres.plotting.FormatSettings                               import FormatSettings   as FormatSettingsClass
 from   lendres.plotting.AxesHelper                                   import AxesHelper
 from   lendres.path.Path                                             import Path
 
@@ -50,7 +51,7 @@ class PlotHelper():
     defaultFormatSettings       = FormatSettingsClass()
     storedFormatSettings        = None
 
-    currentColor                = 0
+    currentColor                = -1
 
 
     @classmethod
@@ -190,6 +191,22 @@ class PlotHelper():
         None.
         """
         return plt.rcParams["font.size"]
+    
+    
+    @classmethod
+    def GetScaledLegendFontSize(cls):
+        """
+        Gets the legend font size adjusted with the scaling factor.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
+        return plt.rcParams["legend.fontsize"]
 
 
     @classmethod
@@ -254,7 +271,7 @@ class PlotHelper():
         # Reset so we start from a clean slate.  This prevent values that were changed previously from unexpectedly leaking
         # through to another plot.  This resets everything then applies new base formatting (matplotlib, seaborn, et cetera).
         cls.ResetMatPlotLib()
-        cls.currentColor = -1
+        cls.ResetColor()
 
         # Establish the parameters specified in the input file.
         plt.style.use(parameterFile)
@@ -630,7 +647,7 @@ class PlotHelper():
             cls,
             x,
             y,
-            z=None,
+            z                                       = None,
             axes:       matplotlib.axes.Axes        = None,
             colorMap:   matplotlib.colors.Colormap  = plt.get_cmap("copper"),
             norm:       matplotlib.colors.Normalize = plt.Normalize(0.0, 1.0),
@@ -783,6 +800,10 @@ class PlotHelper():
 
 
     @classmethod
+    def ResetColor(cls):
+        cls.currentColor = -1
+
+    @classmethod
     def NextColor(cls):
         if cls.currentColor == len(cls.GetColorCycle())-1:
             cls.currentColor = 0
@@ -842,19 +863,18 @@ class PlotHelper():
 
 
     @classmethod
-    def SavePlot(cls, saveFileName:str, figure:matplotlib.figure.Figure=None, transparent=False):
+    def SavePlot(cls, saveFileName:str, figure:matplotlib.figure.Figure=None, **kwargs):
         """
         Saves a plot with a set of default parameters.
 
         Parameters
         ----------
         saveFileName : str
-            The (optionally) path and file name to save the image to.
+            The (optionally) path and file name to save the image to. The file name can optionally contain an extension.
         figure : matplotlib.figure.Figure, optional
             The figure to save.  If None is specified, the current figure will be used.  The default is None.
-        transparent : bool, optional
-            Specificies if the background of the plot should be transparent.  If True, the background will be set to transparent, if False, nothing no
-            action is taken.  The default is False.
+        **kwargs : keyword arguments
+            Keyword arguments passed to Matplotlib's 'savefig' method.
 
         Returns
         -------
@@ -866,7 +886,7 @@ class PlotHelper():
         # Default is to use the save path and file name exactly as it was passed.
         path = saveFileName
 
-        # If the default ouptput folder is specified, we need to make sure it exists and update
+        # If the default output folder is specified, we need to make sure it exists and update
         # the save path to account for it.
         if cls.UseDefaultOutputDirectory:
 
@@ -877,8 +897,40 @@ class PlotHelper():
             # Update path.
             path = os.path.join(cls.DefaultOutputDirectory, saveFileName)
 
+        # Adding default argument values if not passed.
+        savefigKwargs = {"dpi": 500, "bbox_inches": "tight"}
+        savefigKwargs.update(kwargs)
+        
+        # Check file extension.
+        if not cls.HasSupportedMatplotlibExtension(path):
+            path += ".png"
+
         # And, finally, get down to the work.
-        figure.savefig(path, dpi=500, transparent=transparent, bbox_inches="tight")
+        figure.savefig(path, **savefigKwargs)
+        
+    @classmethod
+    def HasSupportedMatplotlibExtension(cls, filename: str) -> bool:
+        """
+        Checks that a path has a valid Matplotlib extension.
+
+        Parameters
+        ----------
+        filename : str
+            File name to check.
+        
+        Returns
+        -------
+        bool
+            Returns True if Matplotlib can infer the file type from the extension.
+        """
+        # Fetch dynamically supported formats (e.g., {'png': '...', 'pdf': '...'})
+        supportedFormats = FigureCanvasBase.get_supported_filetypes()
+        
+        # Extract the suffix from the filename and normalize it (strip '.' and lowercase).
+        fileSuffix = PathLib(filename).suffix.lower().lstrip('.')
+        
+        # Check if the suffix is supported
+        return fileSuffix in supportedFormats
 
 
     @classmethod

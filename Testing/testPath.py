@@ -3,8 +3,9 @@ Created on November 16, 2022
 @author: Lance A. Endres
 """
 import DataSetLoading
-from   lendres.path.Path                                             import Path
+from   lendres.path.Path import Path
 
+from   pathlib           import Path as PathLib
 import os
 import unittest
 
@@ -57,10 +58,10 @@ class TestPath(unittest.TestCase):
         self.assertEqual("c:\\temp", result)
 
         # If no directory is provied, the current path will be used.
-        thisDirectory = os.path.dirname(os.path.abspath(__file__))
+        thisDirectory = str(PathLib.cwd())
         fileName      = "test.txt"
         result        = Path.GetDirectory(fileName)
-        self.assertEqual(thisDirectory, result.lower())
+        self.assertEqual(thisDirectory.lower(), result.lower())
 
 
 if __name__ == "__main__":

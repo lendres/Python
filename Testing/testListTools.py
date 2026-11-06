@@ -10,8 +10,6 @@ from   lendres.datatypes.ListTools                                   import List
 
 import unittest
 
-# More information at:
-# https://docs.python.org/3/library/unittest.html
 
 class TestListTools(unittest.TestCase):
 

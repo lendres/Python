@@ -12,10 +12,10 @@ import unittest
 skipTests = False
 
 class TestDataHelper(unittest.TestCase):
-    #verboseLevel = ConsoleHelper.VERBOSENONE
-    verboseLevel = ConsoleHelper.VERBOSETESTING
-    #verboseLevel = ConsoleHelper.VERBOSEREQUESTED
-    #verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
+    verboseLevel = ConsoleHelper.VERBOSENONE
+    # verboseLevel = ConsoleHelper.VERBOSETESTING
+    # verboseLevel = ConsoleHelper.VERBOSEREQUESTED
+    # verboseLevel = ConsoleHelper.VERBOSEIMPORTANT
 
     @classmethod
     def setUpClass(cls):
